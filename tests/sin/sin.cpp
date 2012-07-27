@@ -7,7 +7,7 @@
 
 int main( int argc, char** argv ) {
 	//std::cout << "opening" << std::endl;
-	PDFGrid* grid = PDFGrid::load( "/Users/Martin/Development/LHAPDF/tests/sin/test.LHm" );
+	PDFGrid* grid = PDFGrid::load( "test.LHm" );
 
 	//std::cout << "interpolator" << std::endl;	
 	BicubicInterpolator bic;
