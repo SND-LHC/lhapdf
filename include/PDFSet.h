@@ -30,6 +30,9 @@ public:
     
     ///Loads the given member by name
     static PDFSet* loadByName( const std::string& );
+
+    ///Calculates the renormalised effective QCD coupling constant at Q2 energy scale
+    double alphaS(double Q2);
     
 private:
     /// Holds all loaded members
