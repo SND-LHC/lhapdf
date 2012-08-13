@@ -2,6 +2,8 @@
 #include <math.h>
 
 static const double PI = 3.1415926535;
+
+// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
 static const double quarkMasses[] = {0.0017, 0.0041, 0.1, 1.29, 4.1, 172};
 
 // TODO: maybe allow for general lambdaQCD, set to 0.4 for now
@@ -27,7 +29,7 @@ double PDFSet::alphaS( double Q2 ) {
     bool isNf = false;
     int nf = 0;
     while ( isNf == false ) {
-	if ( quarkMasses[nf] <= Q2 ) {
+	if ( quarkMasses[nf] <= Q2 && nf < 6) {
 	    nf++;
 	} else {
 	    isNf = true;

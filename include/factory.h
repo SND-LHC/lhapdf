@@ -42,8 +42,8 @@ private:
 };
 
 ///Include all Interpolator Types
-#include "bilinear.h"
-#include "bicubic.h"
+#include "Bilinear.h"
+#include "Bicubic.h"
 
 ///Interpolator Factory
 static Interpolator* createInterpolator( const std::string& Name ) {
@@ -57,7 +57,7 @@ static Interpolator* createInterpolator( const std::string& Name ) {
 }
 
 ///Include all Extrapolator Types
-#include "nearest.h"
+#include "Nearest.h"
 
 ///Extrapolator Factory
 static Extrapolator* createExtrapolator( const std::string& Name ) {

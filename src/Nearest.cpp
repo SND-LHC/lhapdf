@@ -1,5 +1,5 @@
 //LHAPDF Includes
-#include "nearest.h"
+#include "Nearest.h"
 #include "PDFGrid.h"
 
 //NearestExtrapolator Definitions

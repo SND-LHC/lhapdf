@@ -1,4 +1,4 @@
-#include "bilinear.h"
+#include "Bilinear.h"
 #include "PDFGrid.h"
 
 /// The one dimensional implementation of linear interpolation.

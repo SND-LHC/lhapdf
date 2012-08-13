@@ -87,11 +87,11 @@ cdef extern from "../../include/PDFSet.h":
     cdef PDFSet *PDFSet_load "PDFSet::load" (string)
     cdef PDFSet *PDFSet_loadByName "PDFSet::loadByName" (string)
 
-cdef extern from "../../include/bicubic.h":
+cdef extern from "../../include/Bicubic.h":
     cdef cppclass BicubicInterpolator(Interpolator):
         pass
 
-cdef extern from "../../include/bilinear.h":
+cdef extern from "../../include/Bilinear.h":
     cdef cppclass BilinearInterpolator(Interpolator):
         pass
 
@@ -99,7 +99,7 @@ cdef extern from "../../include/factory.h":
     cdef Interpolator* createInterpolator(string)
     cdef Extrapolator* createExtrapolator(string)
 
-cdef extern from "../../include/nearest.h":
+cdef extern from "../../include/Nearest.h":
     cdef cppclass NearestExtrapolator(Extrapolator):
         pass
 

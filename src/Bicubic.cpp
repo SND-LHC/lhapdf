@@ -1,4 +1,4 @@
-#include "bicubic.h"
+#include "Bicubic.h"
 #include "PDFGrid.h"
 
 #include <iostream>
