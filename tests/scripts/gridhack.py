@@ -1,6 +1,6 @@
 from ctypes import *
 
-_lha = CDLL('libLHAPDF.so')
+_lha = CDLL('libLHAPDF.dylib')
 
 def get_grid():
     nxgrid = c_uint()

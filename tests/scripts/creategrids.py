@@ -28,7 +28,7 @@ for pdf in pdf_sets:
 	xfxs = []
 	for q2 in q2s:
 		for x in xs:
-			xfxs.append([lhapdf.xfx(x, q2, pid) for pid in lhapids])
+			xfxs.append([lhapdf.xfx(x, sqrt(q2), pid) for pid in lhapids])
 
 	# Print results to file:
 	# ---------------------
@@ -39,7 +39,7 @@ for pdf in pdf_sets:
 	# ---------------------
 	with open(output, 'w') as output:
 		print >>output, " ".join(str(x) for x in xs)
-		print >>output, " ".join(str(numpy.sqrt(q2)) for q2 in q2s)
+		print >>output, " ".join(str(q2) for q2 in q2s)
 		print >>output, " ".join(str(pid) for pid in pids)
 		for line in xfxs:
 			print >>output, " ".join(str(i) for i in line)

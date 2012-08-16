@@ -8,7 +8,7 @@
 namespace LHAPDF {
 	//NearestExtrapolator Declaration
 	///Extrapolates nearest point of PDFGrid
-	class NearestExtrapolator: public Extrapolator
+	class ErrExtrapolator: public Extrapolator
 	{
 		/// Extrapolates using the closest point on the Grid.
 		
