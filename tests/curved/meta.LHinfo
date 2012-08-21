@@ -1,0 +1,11 @@
+---
+SetName: curved
+SetDescription: This is a test set.
+
+SetOrder: 0
+
+SetFlavours: [1]
+
+SetInterpolator: bicubic
+SetExtrapolator: nearest
+...

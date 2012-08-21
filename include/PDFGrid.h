@@ -194,9 +194,9 @@ namespace LHAPDF {
 			return true;
 	}
 	
-	size_t PDFGrid::index( const Idx_t xidx, const Idx_t qidx ) const {
-		//X is along a scanline, Q is a scanline
-		return xidx + qidx * xknots.size();
+	size_t PDFGrid::index( const Idx_t xidx, const Idx_t q2idx ) const {
+		//X is along a scanline, Q2 is a scanline
+		return xidx + q2idx * xknots.size();
 	}
 	
 	const AxisKnots& PDFGrid::getXKnots() const {

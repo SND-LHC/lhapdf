@@ -38,7 +38,8 @@ namespace LHAPDF {
 		double m1 = (t3 - t2)*VDH;
 		
 		//Sum them
-		return p0 + m0 + p1 + m1;
+		double t = p0 + m0 + p1 + m1;
+		return t;
 	}
 	
 	double BicubicInterpolator::interpolateQ2( const PDFGrid& grid, const PID_t id, const X_t x, const Q2_t q2 ) const {

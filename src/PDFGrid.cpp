@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <stdexcept>
 
 //YAML-CPP Includes
 #include "yaml-cpp/yaml.h"
@@ -204,7 +205,8 @@ namespace LHAPDF {
 		//File stream to member
 		std::cout << "Loading member " << path << std::endl;
 		
-		std::ifstream file( path.c_str(), std::ifstream::in );
+		std::ifstream file( path.c_str() );
+		//file.exceptions( std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit );
 		
 		//Initiate PDFGrid
 		std::cout << "Initialize set" << std::endl;
@@ -223,7 +225,7 @@ namespace LHAPDF {
 			if (line.empty()) {
 				break;
 			}
-			else if (line.size()==4) {
+			else if (line.size()==3) {
 				//FIND A BETTER DELIM METHOD!
 				break;
 			}
@@ -268,13 +270,20 @@ namespace LHAPDF {
 		//Allocate flavor data
 		std::vector<PID_t>::const_iterator piditer = set.getFlavours().begin();
 		for( ; piditer != set.getFlavours().end(); ++piditer ) {
+			//std::cout << *piditer << std::endl;
 			grid->flavors[*piditer] = new double[grid->xknots.size()*grid->q2knots.size()];
 		}
 		
+		double* d = grid->flavors[1];
+		
 		//Parse flavor data
-		uint32_t lcount = 0;
+		/*uint32_t lcount = 0;
 		while (file.good()) {
 			getline( file, line );
+			
+			if( !file.good() ) {
+				break;
+			}
 			
 			size_t start = 0;
 			size_t pos;
@@ -283,20 +292,49 @@ namespace LHAPDF {
 				pos = line.find_first_of( " ", start );
 				
 				grid->flavors[*piditer][lcount] = atof( line.substr( start, (pos - start) ).c_str() );
+				//std::cout << line.substr( start, (pos - start) ).c_str() << " : " << grid->flavors[*piditer][lcount] << std::endl;
 				
 				start = pos+1;
 			}
 			
 			++lcount;
-		}
+		}*/
 		
-		std::cout << "Load inter/extra/polators" << std::endl;
+		uint32_t cline = 0;
+		for(; cline < grid->xknots.size()*grid->q2knots.size(); ++cline ) {
+			//GET LINE			
+			if( !file.good() ) {
+				std::stringstream error;
+				error << cline;
+				
+				std::cout << "needed: " << grid->xknots.size()*grid->q2knots.size() << std::endl;
+				std::cout << "received: " << cline << std::endl;
+				
+				throw std::runtime_error( error.str() );
+			}
+			getline( file, line );
+			
+			//PARSE LINE
+			size_t start = 0;
+			size_t pos;
+			std::vector<PID_t>::const_iterator piditer = set.getFlavours().begin();
+			for (; piditer != set.getFlavours().end(); ++piditer) {
+				pos = line.find_first_of( " ", start );
+				
+				grid->flavors[*piditer][cline] = atof( line.substr( start, (pos - start) ).c_str() );
+				//std::cout << line.substr( start, (pos - start) ).c_str() << " : " << grid->flavors[*piditer][lcount] << std::endl;
+				
+				start = pos+1;
+			}
+		}
+				
+		//std::cout << "Load inter/extra/polators" << std::endl;
  			
 		//Set defaults
 		grid->setDefaultInterpolator();
 		grid->setDefaultExtrapolator();
 		
-		std::cout << "Loaded inter/extra/polators" << std::endl;
+		//std::cout << "Loaded inter/extra/polators" << std::endl;
 		
 		return grid;
 	}
