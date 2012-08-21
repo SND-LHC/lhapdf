@@ -1,0 +1,11 @@
+---
+SetName: MSTW2008lo90cl_nf3
+SetDescription: MSTW 2008 LO (90% C.L.), evolved with 3 flavours
+
+SetOrder: 0
+
+SetFlavours: [-3, -2, -1, 21, 1, 2, 3]
+
+SetInterpolator: bicubic
+SetExtrapolator: nearest
+...
