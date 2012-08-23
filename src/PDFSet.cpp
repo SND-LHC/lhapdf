@@ -29,21 +29,21 @@ namespace LHAPDF {
 		}
 	}
 	
-	PDF* PDFSet::getMember( const Member_t id ) {
+	PDF& PDFSet::getMember( const Member_t id ) {
 		std::map<Member_t, PDF*>::const_iterator member = members.find(id);
 		
 		if (member == members.end()) {
 			//Load member
 			std::stringstream mpath;
-			mpath << path << "/mbr_" << id << ".LHgm";
+			mpath << path << "mbr_" << id << ".LHm";
 			
 			members[id] = PDFGrid::load( mpath.str(), *this );
 			
-			return members[id];
+			return *(members[id]);
 		}
 		else {
 			//Member is already loaded
-			return member->second;
+			return *(member->second);
 		}
 	}
 
@@ -125,7 +125,7 @@ namespace LHAPDF {
 		std::stringstream path;
 		//LHAPDFPATH/ << NAME
 		path << "/usr/local/share/lhapdf/PDFsets/";
-		path << name;
+		path << name << "/";
 		
 		//Use load by path to load file
 		return load( path.str() );

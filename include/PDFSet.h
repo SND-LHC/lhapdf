@@ -39,7 +39,7 @@ namespace LHAPDF {
 		
 		/// This will load the member if it is not loaded yet or simply return a pointer to the loaded
 		/// instance.
-		PDF* getMember( const Member_t );
+		PDF& getMember( const Member_t );
 		
 		/// Loads the set by path
 		static PDFSet* load( const std::string& );
@@ -48,7 +48,8 @@ namespace LHAPDF {
 		
 		/// This function loads uses a default path to load a named set.
 		static PDFSet* loadByName( const std::string& );
-		
+
+		//TEMP
 		double alphaS( double q2 ) const;
 		
 	private:

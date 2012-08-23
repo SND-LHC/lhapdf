@@ -111,11 +111,13 @@ namespace LHAPDF {
 		/// Check of valid Extrapolator.
 		bool hasExtrapolator() const;
 	
+	/**************************************/
 		/// Loads the given member by path
 		
-		/// \param Path the file path to the ".LHgm" file
+		/// \param Path the file path to the ".LHm" file
 		/// \return 
 		static PDFGrid* load( const std::string&, const PDFSet& set );
+	/**************************************/
 		
 	private:
 		///

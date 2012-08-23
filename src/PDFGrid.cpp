@@ -206,7 +206,7 @@ namespace LHAPDF {
 		std::cout << "Loading member " << path << std::endl;
 		
 		std::ifstream file( path.c_str() );
-		//file.exceptions( std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit );
+		file.exceptions( std::ifstream::failbit | std::ifstream::badbit );
 		
 		//Initiate PDFGrid
 		std::cout << "Initialize set" << std::endl;
@@ -221,25 +221,36 @@ namespace LHAPDF {
 		//Get next line
 		while (true) {
 			getline( file, line );
-									
-			if (line.empty()) {
-				break;
-			}
-			else if (line.size()==3) {
-				//FIND A BETTER DELIM METHOD!
+			
+			std::cout << line << std::endl;
+			
+			if (line.substr(0, 3)=="---") {
+				header << "---";
 				break;
 			}
 			
 			header << line << "\n";
 		}
-						
+								
 		//Parse header
 		YAML::Parser parser( header );
 		YAML::Node headdoc;
 		parser.GetNextDocument( headdoc );
 		
-		headdoc["MemberName"] >> grid->name;
-		headdoc["MemberID"] >> grid->id;
+		for (YAML::Iterator it = headdoc.begin(); it != headdoc.end(); ++it) {
+			std::string key;
+			it.first() >> key;
+			
+			std::cout << key << std::endl;
+			
+			if( key != "Xs" && key != "Q2s" ) {
+				//Simple key value pair
+				std::string value;
+				it.second() >> value;
+								
+				grid->meta[key] = value;
+			}
+		}
 		
 		std::cout << "YAML done..." << std::endl;
 		
@@ -255,7 +266,7 @@ namespace LHAPDF {
 		for (YAML::Iterator q2sit = headdoc["Q2s"].begin(); q2sit != headdoc["Q2s"].end(); ++q2sit) {
 			double q2;
 			(*q2sit) >> q2;
-			
+						
 			grid->q2knots.push_back(q2);
 		}
 		
@@ -305,10 +316,7 @@ namespace LHAPDF {
 			//GET LINE			
 			if( !file.good() ) {
 				std::stringstream error;
-				error << cline;
-				
-				std::cout << "needed: " << grid->xknots.size()*grid->q2knots.size() << std::endl;
-				std::cout << "received: " << cline << std::endl;
+				error << "Not enough lines." << cline;
 				
 				throw std::runtime_error( error.str() );
 			}

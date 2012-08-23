@@ -16,16 +16,19 @@ using namespace LHAPDF;
 
 int main(int argc, const char * argv[]) {
     LHAPDF::initPDFSetByName( "MSTW2008lo90cl_nf3.LHgrid" );
-    LHAPDF::initPDF( 0 );
+    LHAPDF::initPDF( 3 );
     
-    std::cout << "Loaded lhapdfv5..." << std::endl;
+	std::cout << "Loaded lhapdfv5..." << std::endl;
 
-    //PDFSet* set = PDFSet::loadByName( "MSTW2008lo90cl_nf3" );
+    PDFSet* set = PDFSet::loadByName( "MSTW2008lo90cl_nf3" );
     //PDFSet* set = PDFSet::load("/Users/Martin/Desktop/lhapdfv6/tests/constant/");
-    PDFSet* set = PDFSet::load("/Users/Martin/Desktop/lhapdfv6/tests/curved/");
+    //PDFSet* set = PDFSet::load("/Users/Martin/Desktop/lhapdfv6/tests/curved/");
     std::cout << "Loaded set" << std::endl;
-    PDFGrid* grid = dynamic_cast<PDFGrid*>( set->getMember( 0 ) );
-    
+    PDF& pdf = set->getMember( 3 );
+
+	PDFGrid* grid = dynamic_cast<PDFGrid*>(&pdf);
+	if( grid == NULL ) return -1;
+	
     std::cout << "Loaded lhapdfv6..." << std::endl;
     
     AxisKnots xs, q2s;
@@ -50,41 +53,41 @@ int main(int argc, const char * argv[]) {
 	}*/
 
 	//Accuracy
-	uint32_t samples = 10;
-	for( unsigned int xidx = 0; xidx < xs.size()-1; ++xidx ) {
-		for( unsigned int q2idx = 0; q2idx < q2s.size()-1; ++q2idx ) {
+	//uint32_t samples = 1;
+	for( unsigned int xidx = 0; xidx < xs.size(); ++xidx ) {
+		for( unsigned int q2idx = 0; q2idx < q2s.size(); ++q2idx ) {
 	//for( unsigned int q2idx = 0; q2idx < q2s.size()-1; ++q2idx ) {
 	//	for( unsigned int xidx = 0; xidx < xs.size()-1; ++xidx ) {
 	
-			double xi = (xs[xidx+1] - xs[xidx])/samples;
-			double q2i = (q2s[q2idx+1] - q2s[q2idx])/samples;
+			//double xi = (xs[xidx+1] - xs[xidx])/samples;
+			//double q2i = (q2s[q2idx+1] - q2s[q2idx])/samples;
 	
-			for( uint32_t x_sample = 0; x_sample < samples; ++x_sample ) {
-				for( uint32_t q2_sample = 0; q2_sample < samples; ++q2_sample ) {
+			//for( uint32_t x_sample = 0; x_sample < samples; ++x_sample ) {
+				//for( uint32_t q2_sample = 0; q2_sample < samples; ++q2_sample ) {
 					//Interval middle
-					double x = xs[xidx] + xi * x_sample;
-					double q2 = q2s[q2idx] + q2i * q2_sample;
+					//double x = xs[xidx] + xi * x_sample;
+					//double q2 = q2s[q2idx] + q2i * q2_sample;
 							
-					//double x = xs[xidx];
-					//double q2 = q2s[q2idx];
+					double x = xs[xidx];
+					double q2 = q2s[q2idx];
 			
-					//double xfxv5 = LHAPDF::xfx( x, sqrt(q2), 1 );
+					double xfxv5 = LHAPDF::xfx( x, sqrt(q2), 2 );
 					//double xfxv5 = 1.0;
-					double xfxv5 = x*x + q2*q2;
+					//double xfxv5 = x*x + q2*q2;
 					
-					double xfxv6 = grid->xfxQ2( 1, x, q2 );
+					double xfxv6 = grid->xfxQ2( 2, x, q2 );
 						
 					double diff = xfxv6 - xfxv5;
-					double rel = diff / xfxv5;
+					double rel = (diff) / (xfxv5);
 					double p = rel * 100.0;
 			
 					//printf( "@x %+10.4e | @q2 %+10.4e | @file %+10.4e | @xfxv5 %+10.4e | @xfxv6 %+10.4e | D %+10.4e | R %+10.4e | %% %10.4f\n", x, q2, data[grid->index(xidx,q2idx)],xfxv5, xfxv6, diff, rel, p );
-					printf( "@x %+10.4e | @q2 %+10.4e | @xfxv5 %+10.4e | @xfxv6 %+10.4e | D %+10.4e | R %+10.4e | %% %10.4f\n", x, q2,xfxv5, xfxv6, diff, rel, p );
+					printf( "@x %+10.4e | @q2 %+10.4e | @xfxv5 %+10.4e | @xfxv6 %+10.4e | dl %+10.4e | R %+10.4e | %% %10.4f\n", x, q2,xfxv5, xfxv6, diff, rel, p );
 					//printf( "@x %10.4e | @q2 %10.4e | @xfxv5 %10.4e | @xfxv6 %10.4e | Idx %10.4e\n", x, q2, xfxv5, xfxv6, data[grid->index(xidx,q2idx)] );
 			
 					//printf( "%10.4e %10.4e %10.4e %10.4e\n", x, q2, diff, rel );
-				}
-			}
+				//}
+			//}
 		}
 		
 		std::cout << std::endl;

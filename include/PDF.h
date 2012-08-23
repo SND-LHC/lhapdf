@@ -5,6 +5,7 @@
 #include <vector>
 #include <sstream>
 #include <stdexcept>
+#include <map>
 
 //LHAPDF Includes
 #include "types.h"
@@ -93,19 +94,25 @@ namespace LHAPDF {
 		/// \return 
 		virtual bool hasPID( const PID_t ) const =0;
 		
+		/// Gives reference to containing PDFSet
+		inline const PDFSet& getPDFSet() const;
+		
+		/// Gives access to any meta data in the member
+		inline std::string getMetadata( const std::string& ) const;
+		
 		/// Gives Member Name
 		inline std::string getMemberName() const;
 		
 		/// Gives Member ID
 		inline Member_t getMemberID() const;
-		
-		/// Gives reference to containing PDFSet
-		inline const PDFSet& getPDFSet() const;
+
+		/// Gives access to the type it declares
+		inline std::string getType() const;
 		
 	protected:
-		std::string name;
-		Member_t id;
 		PDFSet* set;
+		
+		std::map<std::string, std::string> meta;
 	};
 	
 	//PDF Definitions
@@ -151,10 +158,34 @@ namespace LHAPDF {
 	}
 	
 	std::string PDF::getMemberName() const {
-		return name;
+		return meta.find("name")->second;
 	}
-		
+
 	Member_t PDF::getMemberID() const {
+		std::stringstream idss;
+		idss << meta.find("id")->second;
+		
+		Member_t id;
+		idss >> id;
+		
 		return id;
+	}
+	
+	std::string PDF::getType() const {
+		return meta.find("type")->second;
+	}
+	
+	std::string PDF::getMetadata( const std::string& key ) const {
+		std::map<std::string, std::string>::const_iterator data = meta.find( key );
+		
+		if( data != meta.end() )
+			return data->second;
+		else {
+			//Metadata not found
+			std::stringstream error;
+			error << "Metadata for key: " << key << " not found.";
+			
+			throw std::runtime_error( error.str() );
+		}
 	}
 }
