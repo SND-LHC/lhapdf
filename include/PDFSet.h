@@ -49,7 +49,11 @@ namespace LHAPDF {
 		/// This function loads uses a default path to load a named set.
 		static PDFSet* loadByName( const std::string& );
 
-		//TEMP
+    		/// Calculates alphaS depending on what information it can pull from meta data.  It either
+    		/// returns alphaS directly from file, or calculates it numerically from alpha_s at m_Z, or 
+		/// calculates an approximate analytical solution from a value of lambdaQCD, or does so with
+		/// lambdaQCD set to 0.4
+	   
 		double alphaS( double q2 ) const;
 		
 	private:
