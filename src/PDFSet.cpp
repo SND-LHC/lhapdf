@@ -8,7 +8,6 @@
 
 //LHAPDF Includes
 #include "PDFGrid.h"
-#include "Parser.h"
 
 //Constants
 static const double PI = 3.1415926535;
@@ -39,7 +38,8 @@ namespace LHAPDF {
 			mpath << path << "mbr_" << id << ".LHm";
 			
 			//members[id] = PDFGrid::load( mpath.str(), *this );
-			members[id] = parseMember( this, mpath.str() );
+			//members[id] = parseMember( this, mpath.str() );
+			members[id] = PDF::load( this, mpath.str() );
 			
 			return *(members[id]);
 		}
@@ -124,6 +124,7 @@ namespace LHAPDF {
 	PDFSet* PDFSet::loadByName( const std::string& name ) {
 		//Search default path for name
 		
+//TODO: This needs to be changed to some cross OS solution		
 		std::stringstream path;
 		//LHAPDFPATH/ << NAME
 		path << "/usr/local/share/lhapdf/PDFsets/";

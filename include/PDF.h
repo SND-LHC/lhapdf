@@ -109,6 +109,8 @@ namespace LHAPDF {
 		/// Gives access to the type it declares
 		inline std::string getType() const;
 		
+		/// Load PDF
+		static PDF* load( const PDFSet*, const std::string& );
 	protected:
 		const PDFSet* set;
 		

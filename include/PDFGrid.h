@@ -26,6 +26,9 @@ namespace LHAPDF {
 	/// Grid implementation of PDF interface.
 	class PDFGrid: public PDF {
 	public:
+		///
+		inline PDFGrid( const PDFSet* );
+	
 		/// Deletes allocated data.
 		inline ~PDFGrid();
 		
@@ -121,12 +124,9 @@ namespace LHAPDF {
 		/// \param Path the file path to the ".LHm" file
 		/// \return 
 		//static PDFGrid* load( const std::string&, const PDFSet& set );
-		static PDFGrid* load( const PDFSet* set, const YAML::Node& head, std::ifstream& file );
+		static PDFGrid* load( PDFGrid*, const YAML::Node&, std::ifstream& );
 		
-	private:
-		///
-		inline PDFGrid( const PDFSet* set );
-		
+	private:		
 		/// Momentum fraction knots
 		AxisKnots xknots;
 		

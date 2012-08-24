@@ -197,23 +197,7 @@ namespace LHAPDF {
 		} while (pos != std::string::npos);
 	}
 	
-	PDFGrid* PDFGrid::load( const PDFSet* set, const YAML::Node& head, std::ifstream& file ) {
-		PDFGrid* grid = new PDFGrid( set );
-		
-		//Parse header data
-		for (YAML::Iterator it = head.begin(); it != head.end(); ++it) {
-			std::string key;
-			it.first() >> key;
-			
-			if( key != "Xs" && key != "Q2s" ) {
-				//Simple key value pair
-				std::string value;
-				it.second() >> value;
-								
-				grid->metadict[key] = value;
-			}
-		}
-		
+	PDFGrid* PDFGrid::load( PDFGrid* grid, const YAML::Node& head, std::ifstream& file ) {
 		//Parse Grid Knots
 		for (YAML::Iterator xsit = head["Xs"].begin(); xsit != head["Xs"].end(); ++xsit) {
 			double x;
@@ -231,8 +215,8 @@ namespace LHAPDF {
 		
 		//Parse grid data
 		//Allocate flavor data
-		std::vector<PID_t>::const_iterator piditer = set->getFlavours().begin();
-		for( ; piditer != set->getFlavours().end(); ++piditer ) {
+		std::vector<PID_t>::const_iterator piditer = grid->set->getFlavours().begin();
+		for( ; piditer != grid->set->getFlavours().end(); ++piditer ) {
 			grid->flavors[*piditer] = new double[grid->xknots.size()*grid->q2knots.size()];
 		}
 		
@@ -250,15 +234,19 @@ namespace LHAPDF {
 			getline( file, line );
 			
 			//Parsing individual grid line
-			size_t start = 0, pos;
-			std::vector<PID_t>::const_iterator piditer = set->getFlavours().begin();
-//TODO: Make this more stable and forgiving for white spaces!
-			for (; piditer != set->getFlavours().end(); ++piditer) {
-				pos = line.find_first_of( " ", start );
-				
-				grid->flavors[*piditer][cline] = atof( line.substr( start, (pos - start) ).c_str() );
-				
-				start = pos+1;
+			const char* cstr = line.c_str();
+			char str[line.size()+1];
+			memcpy( str, cstr, (line.size()+1)*sizeof(char) );
+			
+			char *token, *prog;
+			unsigned int flavor=0;
+			token = strtok_r( str, " ", &prog );
+			while( token != NULL ) {
+				//Process token
+				grid->flavors[grid->set->getFlavours()[flavor]][cline] = atof( token );
+			
+				token = strtok_r( NULL, " ", &prog );
+				++flavor;
 			}
 		}
 		
@@ -268,150 +256,4 @@ namespace LHAPDF {
 		
 		return grid;
 	}
-	
-	/*PDFGrid* PDFGrid::load( const std::string& path, const PDFSet& set ) {
-		//File stream to member
-		std::cout << "Loading member " << path << std::endl;
-		
-		std::ifstream file( path.c_str() );
-		file.exceptions( std::ifstream::failbit | std::ifstream::badbit );
-		
-		//Initiate PDFGrid
-		std::cout << "Initialize set" << std::endl;
-		
-		PDFGrid* grid = new PDFGrid( set );
-		
-		//Read header
-		std::string line;
-		std::stringstream header;
-		header << "---\n";
-		
-		//Get next line
-		while (true) {
-			getline( file, line );
-			
-			std::cout << line << std::endl;
-			
-			if (line.substr(0, 3)=="---") {
-				header << "---";
-				break;
-			}
-			
-			header << line << "\n";
-		}
-								
-		//Parse header
-		YAML::Parser parser( header );
-		YAML::Node headdoc;
-		parser.GetNextDocument( headdoc );
-		
-		for (YAML::Iterator it = headdoc.begin(); it != headdoc.end(); ++it) {
-			std::string key;
-			it.first() >> key;
-			
-			std::cout << key << std::endl;
-			
-			if( key != "Xs" && key != "Q2s" ) {
-				//Simple key value pair
-				std::string value;
-				it.second() >> value;
-								
-				grid->meta[key] = value;
-			}
-		}
-		
-		std::cout << "YAML done..." << std::endl;
-		
-		//Parse Xs
-		for (YAML::Iterator xsit = headdoc["Xs"].begin(); xsit != headdoc["Xs"].end(); ++xsit) {
-			double x;
-			(*xsit) >> x;
-			
-			grid->xknots.push_back(x);
-		}
-		
-		//Parse Q2s
-		for (YAML::Iterator q2sit = headdoc["Q2s"].begin(); q2sit != headdoc["Q2s"].end(); ++q2sit) {
-			double q2;
-			(*q2sit) >> q2;
-						
-			grid->q2knots.push_back(q2);
-		}
-		
-		//Check for valid file
-		if ( !file.good() ) {
-			std::cout << "File not good" << std::endl;
-			throw -1;
-		}
-		
-		std::cout << "Load data from " << path << std::endl;
-		
-		//Allocate flavor data
-		std::vector<PID_t>::const_iterator piditer = set.getFlavours().begin();
-		for( ; piditer != set.getFlavours().end(); ++piditer ) {
-			//std::cout << *piditer << std::endl;
-			grid->flavors[*piditer] = new double[grid->xknots.size()*grid->q2knots.size()];
-		}
-		
-		double* d = grid->flavors[1];
-		
-		//Parse flavor data
-		/*uint32_t lcount = 0;
-		while (file.good()) {
-			getline( file, line );
-			
-			if( !file.good() ) {
-				break;
-			}
-			
-			size_t start = 0;
-			size_t pos;
-			std::vector<PID_t>::const_iterator piditer = set.getFlavours().begin();
-			for (; piditer != set.getFlavours().end(); ++piditer) {
-				pos = line.find_first_of( " ", start );
-				
-				grid->flavors[*piditer][lcount] = atof( line.substr( start, (pos - start) ).c_str() );
-				//std::cout << line.substr( start, (pos - start) ).c_str() << " : " << grid->flavors[*piditer][lcount] << std::endl;
-				
-				start = pos+1;
-			}
-			
-			++lcount;
-		}*/
-		
-		/*uint32_t cline = 0;
-		for(; cline < grid->xknots.size()*grid->q2knots.size(); ++cline ) {
-			//GET LINE			
-			if( !file.good() ) {
-				std::stringstream error;
-				error << "Not enough lines." << cline;
-				
-				throw std::runtime_error( error.str() );
-			}
-			getline( file, line );
-			
-			//PARSE LINE
-			size_t start = 0;
-			size_t pos;
-			std::vector<PID_t>::const_iterator piditer = set.getFlavours().begin();
-			for (; piditer != set.getFlavours().end(); ++piditer) {
-				pos = line.find_first_of( " ", start );
-				
-				grid->flavors[*piditer][cline] = atof( line.substr( start, (pos - start) ).c_str() );
-				//std::cout << line.substr( start, (pos - start) ).c_str() << " : " << grid->flavors[*piditer][lcount] << std::endl;
-				
-				start = pos+1;
-			}
-		}
-				
-		//std::cout << "Load inter/extra/polators" << std::endl;
- 			
-		//Set defaults
-		grid->setDefaultInterpolator();
-		grid->setDefaultExtrapolator();
-		
-		//std::cout << "Loaded inter/extra/polators" << std::endl;
-		
-		return grid;
-	}*/
 }
