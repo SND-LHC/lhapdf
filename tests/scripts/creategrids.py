@@ -7,11 +7,11 @@ def setup():
     lhapdf.initPDFSetByName('cteq66.LHgrid')
     return gridhack.get_grid()
 
-def xfx_values(lhapids, xs, q2s):
+def xfx_values(lhapids, xs, qs):
     xfxs = []
-    for q2 in q2s:
+    for q in qs:
         for x in xs:
-            xfxs.append([lhapdf.xfx(x, q2, pid) for pid in lhapids])
+            xfxs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
     return xfxs
 
 def active_flavours(xfxs):
@@ -51,9 +51,10 @@ for pdf_set in pdf_sets:
 
     # Use gridhack python wrapper to call LHAPDF for exact x and q2 grid points
     xs, q2s = gridhack.get_grid()
+    qs = numpy.sqrt(numpy.array(q2s))
 
     # Determine active flavours
-    xfxs = xfx_values(lhapids, xs, q2s)
+    xfxs = xfx_values(lhapids, xs, qs)
     lhapids = active_flavours(xfxs)        
 
     # Create meta file for set
@@ -80,7 +81,7 @@ for pdf_set in pdf_sets:
         lhapdf.initPDF(member)
 
         # Set up new output grid format file
-        output_file = 'mbr_' + str(member)+ '.LHgm'
+        output_file = 'mbr_' + str(member)+ '.LHm'
 
         # Set member name to be central if it is the 0th member, errors
         # otherwise
@@ -91,7 +92,7 @@ for pdf_set in pdf_sets:
             member_name = 'Errors'
 
         # Get xfx values
-        xfxs = xfx_values(lhapids, xs, q2s)
+        xfxs = xfx_values(lhapids, xs, qs)
 
         # Print results to file:
         # ---------------------
@@ -103,7 +104,7 @@ for pdf_set in pdf_sets:
             print >>output, 'MemberName: ' + member_name
             print >>output, 'MemberID: ' + str(member)
             print >>output, 'Xs: ' + str(xs)
-            print >>output, 'Q2s: ' + str(q2s)           
+            print >>output, 'Q2s: ' + str(q2s)
             print >>output, '---'
             for line in xfxs:
                 print >>output, " ".join(str(i) for i in line)

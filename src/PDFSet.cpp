@@ -55,7 +55,9 @@ namespace LHAPDF {
 		
 		//Generate path to meta file
 		std::stringstream info;
-		info << path << "/meta.LHinfo";
+		info << path << "meta.LHinfo";
+
+		std::cout << info.str() << std::endl;
 							
 		//Open meta file
 		std::ifstream file( info.str().c_str(), std::ifstream::in );
@@ -127,7 +129,8 @@ namespace LHAPDF {
 //TODO: This needs to be changed to some cross OS solution		
 		std::stringstream path;
 		//LHAPDFPATH/ << NAME
-		path << "/usr/local/share/lhapdf/PDFsets/";
+		//path << "/usr/local/share/lhapdf/PDFsets/";
+		path << "/phys/linux/s0821167/Summer Project/Interpolator/lhapdfv6/tests/";
 		path << name << "/";
 		
 		//Use load by path to load file

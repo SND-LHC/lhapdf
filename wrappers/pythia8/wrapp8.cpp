@@ -1,10 +1,11 @@
 #include <sstream>
 #include <exception>
-
+#include <iostream>
 #include "version.h"
 #include "PDFSet.h"
 #include "PDFGrid.h"
 
+using namespace LHAPDF;
 /// PDFSetNotLoadedException is thrown from the Pythia8 wrapper when the selected PDFSet is not loaded.
 class PDFSetNotLoadedException: public std::exception {
 public:
@@ -26,7 +27,7 @@ private:
 /// LHAPDF interface.
 struct PDFSetWrap {
     PDFSet* set;
-    PDFGrid* pdf;
+    PDF* pdf;
 };
 
 static const int nPartons = 13;
@@ -44,40 +45,30 @@ extern "C" {
     void initpdfsetm_(int& nset, const char* setpath, int setpathlength) {
         if (wrapmap.find(nset) == wrapmap.end()) {
             //Set does not exist
-            //wrapmap[nset].set = PDFSet::load( setpath );
-            
-            wrapmap[nset].set = 0;
-        }
-        else {
-            //TODO: What do we do when it is loaded?
+            wrapmap[nset].set = PDFSet::load( setpath );
         }
     }
     
     /// Load a PDFSet by name.
     void initpdfsetbynamem_(int& nset, const char* name, int namelength) {	
         if ( wrapmap.find( nset ) == wrapmap.end() ) {
-            //Set does not exist
+            //Set does not exist            
             //wrapmap[nset].set = PDFSet::loadByName( name );
-            
-            wrapmap[nset].set = 0;
-        }
-        else {
-            //TODO: What do we do when it is loaded?
+	    wrapmap[nset].set = PDFSet::loadByName( "MSTW2008lo90cl" );
+
         }
     }
 
     /// Load a PDF in current PDFSet.
     void initpdfm_(int& nset, int& nmember) {
-        std::map<int, PDFSetWrap>::const_iterator bundle = wrapmap.find( nset );
+        std::map<int, PDFSetWrap>::iterator bundle = wrapmap.find( nset );
         
         //Check if PDFSet has been loaded
-        if ( bundle != wrapmap.end() ) {
-            //bundle->second.set->getMember( nmember );
-            
-            bundle->second.pdf = PDFGrid::load( "/Home/s0821167/Summer Project/Interpolator/lhapdf/Tests/MSTW2008/MSTW2008lo90cl.LHm" );
+        if ( bundle != wrapmap.end() ) {        
+            bundle->second.pdf = &bundle->second.set->getMember( nmember );
         }
         else {
-            throw PDFSetNotLoadedException( int );
+            throw PDFSetNotLoadedException( nset );
         }
     }
 
@@ -89,7 +80,11 @@ extern "C" {
         if ( bundle != wrapmap.end() ) {
             //Evaluate LHAPDF standard partons
             for (int i = 0; i < nPartons; i++) {
-                fxq[i] = bundle->pdf->xfxQ2( pid[i], x, q*q );
+		try {    
+                    fxq[i] = bundle->second.pdf->xfxQ2( pid[i], x, q*q );
+		} catch ( std::exception e ) {
+		    fxq[i] = 0;
+		}
             }
         }
     }
@@ -100,10 +95,10 @@ extern "C" {
         
         //Check that set exists
         if ( bundle != wrapmap.end() ) {
-            fxq = bundle->xfxQ2( 22, x, q*q );
+            fxq = bundle->second.pdf->xfxQ2( 22, x, q*q );
         }
         else {
-            throw PDFSetNotLoadedException();
+            throw PDFSetNotLoadedException( nset );
         }
     }
 
