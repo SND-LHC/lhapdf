@@ -6,11 +6,16 @@
 #include <map>
 #include <stdlib.h>
 #include <exception>
+#include <fstream>
 
 //LHAPDF Includes
 #include "types.h"
 #include "factory.h"
 #include "PDF.h"
+#include "PDFSet.h"
+
+//YAML Includes
+#include "yaml-cpp/yaml.h"
 
 namespace LHAPDF {
 	//Forward Declarations
@@ -111,17 +116,16 @@ namespace LHAPDF {
 		/// Check of valid Extrapolator.
 		bool hasExtrapolator() const;
 	
-	/**************************************/
 		/// Loads the given member by path
 		
 		/// \param Path the file path to the ".LHm" file
 		/// \return 
-		static PDFGrid* load( const std::string&, const PDFSet& set );
-	/**************************************/
+		//static PDFGrid* load( const std::string&, const PDFSet& set );
+		static PDFGrid* load( const PDFSet* set, const YAML::Node& head, std::ifstream& file );
 		
 	private:
 		///
-		inline PDFGrid( const PDFSet& set );
+		inline PDFGrid( const PDFSet* set );
 		
 		/// Momentum fraction knots
 		AxisKnots xknots;
@@ -141,22 +145,14 @@ namespace LHAPDF {
 		Extrapolator* extrapolator;
 		/// Flag for self allocated Extrapolator
 		bool allocatedExtrapolator;
-		
-		/// Member Name
-		std::string name;
-		
-		/// Member ID
-		Member_t id;
-		
-		/// 
-		const PDFSet& set;
 	};
 		
 	//PDFGrid Definitions
-	PDFGrid::PDFGrid( const PDFSet& set )
+	PDFGrid::PDFGrid( const PDFSet* setp )
 	: interpolator(0), allocatedInterpolator(false),
-	  extrapolator(0), allocatedExtrapolator(false),
-	  set(set) {}
+	  extrapolator(0), allocatedExtrapolator(false) {
+		set = setp;  	
+	}
 	
 	PDFGrid::~PDFGrid() {
 		//Check if the class created the interpolator

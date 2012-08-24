@@ -16,7 +16,7 @@ using namespace LHAPDF;
 
 int main(int argc, const char * argv[]) {
     LHAPDF::initPDFSetByName( "MSTW2008lo90cl_nf3.LHgrid" );
-    LHAPDF::initPDF( 3 );
+    LHAPDF::initPDF( 0 );
     
 	std::cout << "Loaded lhapdfv5..." << std::endl;
 
@@ -24,7 +24,7 @@ int main(int argc, const char * argv[]) {
     //PDFSet* set = PDFSet::load("/Users/Martin/Desktop/lhapdfv6/tests/constant/");
     //PDFSet* set = PDFSet::load("/Users/Martin/Desktop/lhapdfv6/tests/curved/");
     std::cout << "Loaded set" << std::endl;
-    PDF& pdf = set->getMember( 3 );
+    PDF& pdf = set->getMember( 0 );
 
 	PDFGrid* grid = dynamic_cast<PDFGrid*>(&pdf);
 	if( grid == NULL ) return -1;

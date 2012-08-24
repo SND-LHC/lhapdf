@@ -8,6 +8,7 @@
 
 //LHAPDF Includes
 #include "PDFGrid.h"
+#include "Parser.h"
 
 //Constants
 static const double PI = 3.1415926535;
@@ -37,7 +38,8 @@ namespace LHAPDF {
 			std::stringstream mpath;
 			mpath << path << "mbr_" << id << ".LHm";
 			
-			members[id] = PDFGrid::load( mpath.str(), *this );
+			//members[id] = PDFGrid::load( mpath.str(), *this );
+			members[id] = parseMember( this, mpath.str() );
 			
 			return *(members[id]);
 		}

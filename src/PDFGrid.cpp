@@ -10,9 +10,6 @@
 #include <string>
 #include <stdexcept>
 
-//YAML-CPP Includes
-#include "yaml-cpp/yaml.h"
-
 namespace LHAPDF {
 	bool PDFGrid::hasInterpolator() const {
 		if (interpolator != 0)
@@ -52,8 +49,7 @@ namespace LHAPDF {
 		std::cout << "Ejected old interpolator" << std::endl;
 		
 		//Use Interpolator factory
-		std::string name = set.getMetadata("SetInterpolator");
-		interpolator = createInterpolator( name );
+		interpolator = createInterpolator( set->getMetadata("SetInterpolator") );
 		allocatedInterpolator = true;
 		
 		std::cout << "Loaded new interplator" << std::endl;
@@ -88,7 +84,7 @@ namespace LHAPDF {
 		}
 	
 		//Use Extrapolator factory
-		extrapolator = createExtrapolator( set.getMetadata("SetExtrapolator") );
+		extrapolator = createExtrapolator( set->getMetadata("SetExtrapolator") );
 		allocatedExtrapolator = true;
 	}
 	
@@ -201,7 +197,79 @@ namespace LHAPDF {
 		} while (pos != std::string::npos);
 	}
 	
-	PDFGrid* PDFGrid::load( const std::string& path, const PDFSet& set ) {
+	PDFGrid* PDFGrid::load( const PDFSet* set, const YAML::Node& head, std::ifstream& file ) {
+		PDFGrid* grid = new PDFGrid( set );
+		
+		//Parse header data
+		for (YAML::Iterator it = head.begin(); it != head.end(); ++it) {
+			std::string key;
+			it.first() >> key;
+			
+			if( key != "Xs" && key != "Q2s" ) {
+				//Simple key value pair
+				std::string value;
+				it.second() >> value;
+								
+				grid->metadict[key] = value;
+			}
+		}
+		
+		//Parse Grid Knots
+		for (YAML::Iterator xsit = head["Xs"].begin(); xsit != head["Xs"].end(); ++xsit) {
+			double x;
+			(*xsit) >> x;
+			
+			grid->xknots.push_back(x);
+		}
+		
+		for (YAML::Iterator q2sit = head["Q2s"].begin(); q2sit != head["Q2s"].end(); ++q2sit) {
+			double q2;
+			(*q2sit) >> q2;
+						
+			grid->q2knots.push_back(q2);
+		}
+		
+		//Parse grid data
+		//Allocate flavor data
+		std::vector<PID_t>::const_iterator piditer = set->getFlavours().begin();
+		for( ; piditer != set->getFlavours().end(); ++piditer ) {
+			grid->flavors[*piditer] = new double[grid->xknots.size()*grid->q2knots.size()];
+		}
+		
+		//Parse grid lines
+		unsigned int cline = 0;
+		for(; cline < grid->xknots.size()*grid->q2knots.size(); ++cline ) {
+			//Read a line
+			if( !file.good() ) {
+				std::stringstream error;
+				error << "ifstream ran out of data @ " << cline;
+				
+				throw std::runtime_error( error.str() );
+			}
+			std::string line;
+			getline( file, line );
+			
+			//Parsing individual grid line
+			size_t start = 0, pos;
+			std::vector<PID_t>::const_iterator piditer = set->getFlavours().begin();
+//TODO: Make this more stable and forgiving for white spaces!
+			for (; piditer != set->getFlavours().end(); ++piditer) {
+				pos = line.find_first_of( " ", start );
+				
+				grid->flavors[*piditer][cline] = atof( line.substr( start, (pos - start) ).c_str() );
+				
+				start = pos+1;
+			}
+		}
+		
+		//Set default inter/extra/polators
+		grid->setDefaultInterpolator();
+		grid->setDefaultExtrapolator();
+		
+		return grid;
+	}
+	
+	/*PDFGrid* PDFGrid::load( const std::string& path, const PDFSet& set ) {
 		//File stream to member
 		std::cout << "Loading member " << path << std::endl;
 		
@@ -311,7 +379,7 @@ namespace LHAPDF {
 			++lcount;
 		}*/
 		
-		uint32_t cline = 0;
+		/*uint32_t cline = 0;
 		for(; cline < grid->xknots.size()*grid->q2knots.size(); ++cline ) {
 			//GET LINE			
 			if( !file.good() ) {
@@ -345,5 +413,5 @@ namespace LHAPDF {
 		//std::cout << "Loaded inter/extra/polators" << std::endl;
 		
 		return grid;
-	}
+	}*/
 }

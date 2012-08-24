@@ -110,9 +110,9 @@ namespace LHAPDF {
 		inline std::string getType() const;
 		
 	protected:
-		PDFSet* set;
+		const PDFSet* set;
 		
-		std::map<std::string, std::string> meta;
+		std::map<std::string, std::string> metadict;
 	};
 	
 	//PDF Definitions
@@ -158,12 +158,12 @@ namespace LHAPDF {
 	}
 	
 	std::string PDF::getMemberName() const {
-		return meta.find("name")->second;
+		return metadict.find("name")->second;
 	}
 
 	Member_t PDF::getMemberID() const {
 		std::stringstream idss;
-		idss << meta.find("id")->second;
+		idss << metadict.find("id")->second;
 		
 		Member_t id;
 		idss >> id;
@@ -172,13 +172,13 @@ namespace LHAPDF {
 	}
 	
 	std::string PDF::getType() const {
-		return meta.find("type")->second;
+		return metadict.find("type")->second;
 	}
 	
 	std::string PDF::getMetadata( const std::string& key ) const {
-		std::map<std::string, std::string>::const_iterator data = meta.find( key );
+		std::map<std::string, std::string>::const_iterator data = metadict.find( key );
 		
-		if( data != meta.end() )
+		if( data != metadict.end() )
 			return data->second;
 		else {
 			//Metadata not found

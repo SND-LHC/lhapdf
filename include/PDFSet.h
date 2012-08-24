@@ -10,14 +10,13 @@
 
 namespace LHAPDF {
 	//Type Declarations
-	typedef unsigned int Standard_t;
 	typedef unsigned int Order_t;
 	
 	//PDFSet Declaration
 	/// The PDFSet is the most general container.
 	
-	/// A Set contains PDF 'members' and meta data that is either Set general or default meta data for
-	/// members.
+	/// A Set contains PDF 'members' and meta data that is either Set general or default 
+	/// meta data for members.
 	class PDFSet {
 	public:
 		/// Deletes allocated memory when deconstructing.
@@ -37,8 +36,8 @@ namespace LHAPDF {
 			
 		/// Get selected member.
 		
-		/// This will load the member if it is not loaded yet or simply return a pointer to the loaded
-		/// instance.
+		/// This will load the member if it is not loaded yet or simply return a 
+		/// reference to the loaded PDF.
 		PDF& getMember( const Member_t );
 		
 		/// Loads the set by path
