@@ -1,0 +1,11 @@
+LHAPDF6 TODO list
+-----------------
+
+* Design sub-grid "patch" system
+
+* Implement numerica alpha_s running with several options, and also support
+   interpolation of tablulated alpha_s values (with 1D subgrids).
+
+* Only expose headers with the public interface: internalise headers used for
+   implementation components only.
+
