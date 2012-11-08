@@ -114,10 +114,10 @@ namespace LHAPDF {
 		void setDefaultExtrapolator();
 		
 		/// Check of valid Interpolator.
-		bool hasInterpolator() const;
+		inline bool hasInterpolator() const;
 		
 		/// Check of valid Extrapolator.
-		bool hasExtrapolator() const;
+		inline bool hasExtrapolator() const;
 	
 		/// Loads the given member by path
 		
@@ -161,6 +161,14 @@ namespace LHAPDF {
 		if (extrapolator != 0 && allocatedExtrapolator)
 			delete extrapolator;
 	}
+
+    bool PDFGrid::hasInterpolator() const {
+        return (interpolator != 0);
+    }
+
+    bool PDFGrid::hasExtrapolator() const {
+        return (extrapolator != 0);
+    }
 	
 	bool PDFGrid::inRangeQ2( const X_t x, const Q2_t q2 ) const {
 		//Check x is in range

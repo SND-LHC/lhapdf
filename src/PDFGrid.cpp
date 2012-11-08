@@ -10,16 +10,6 @@
 #include <cstring>
 
 namespace LHAPDF {
-
-	bool PDFGrid::hasInterpolator() const {
-      /// @todo Clean up! This is a one-liner... and hence should be inline
-      /// Should be: return (interpolator != 0)
-		if (interpolator != 0)
-			return true;
-		else
-			return false;
-    }
-
 	void PDFGrid::setInterpolator( Interpolator* i ) {
 		if (interpolator != 0) {
 			if (allocatedInterpolator)
@@ -57,14 +47,7 @@ namespace LHAPDF {
 		std::cout << "Loaded new interplator" << std::endl;
 	}
 
-	bool PDFGrid::hasExtrapolator() const {
-		if (extrapolator != 0)
-			return true;
-		else
-			return false;
-	}
-
-	void PDFGrid::setExtrapolator( Extrapolator* e ) {
+    void PDFGrid::setExtrapolator( Extrapolator* e ) {
 		if (extrapolator != 0) {
 			if (allocatedExtrapolator)
 				delete extrapolator;
@@ -90,8 +73,7 @@ namespace LHAPDF {
 		allocatedExtrapolator = true;
 	}
 
-	double PDFGrid::xfxQ2( const PID_t id, const X_t x, const Q2_t q2 ) const
-	{
+	double PDFGrid::xfxQ2( const PID_t id, const X_t x, const Q2_t q2 ) const {
 		///Error checks
 		//Physical Ranges
 		if (!inPhysicalRangeQ2( x, q2 )) {
@@ -161,8 +143,7 @@ namespace LHAPDF {
 		q2idx = bisectionSearch( q2, q2knots );
 	}
 
-	Idx_t binarySearch( const double x, const AxisKnots& points )
-	{
+	Idx_t binarySearch( const double x, const AxisKnots& points ) {
 		Idx_t low = 0, high = points.size()-1;
 
 		while (true) {

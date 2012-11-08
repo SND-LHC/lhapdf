@@ -1,0 +1,35 @@
+By using MSTW2008cl90_nf3 (continous flavors no subgrids) and NNPDF2008(something)
+we compared the accuracy of our general bicubic interpolator to either 
+of the set specific interpolators. (Extrapolators have been ingored 
+for the moment)
+
+The goal of our interpolation is to have a shortest path between all 
+points with in C-infinity. Meaning we have a requirment of having 
+hopefully a simple interpolated function in the end. As such polynomial 
+interpolation falls straight away because of runge's phenonema. 
+(Extreme frequencies with many points)
+
+Two tests to compare our interpolations were:
+1) Simply, xfxv6 - xfxv5, and relative error... Showed us how we 
+differ from each other...
+
+However since both are interpolating and both are just giving their 
+version of "wanted" function should be we had to come up with a better 
+test of accuracy. Hence the definition of a good interpolation.
+
+Linear interpolation is the shortest path between the two points, 
+with a discontinuous first derivative (C0 I think). 
+
+let value xfxl be the linear interpolation of (X,Q2)
+
+we compared xfxv6 and xfxv5 by:
+xfxl - xfxv6
+xfxl - xfxv5
+
+relative errors, we get a measure of how far each interpolation strayed 
+from the ideal path, while both interpolations are C2...
+
+We need to have color/heat graphs which Dave and I produced near the 
+end, sadly this was rather informal and not well documented, should be 
+worked on alittle, before we really say we had a better overall 
+interpolation.
