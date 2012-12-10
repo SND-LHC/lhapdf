@@ -1,11 +1,26 @@
 LHAPDF6 TODO list
 -----------------
 
-* Design sub-grid "patch" system
+* Design & implement sub-grid "patch" system
+   Implement in 1D first, then integrate into (x,Q) interpolation. Subgrids
+   should only be necessary in Q... and also needed for alpha_s ipol.
 
-* Implement numerica alpha_s running with several options, and also support
+* Implement numerical alpha_s running with several options, and also support
    interpolation of tablulated alpha_s values (with 1D subgrids).
 
-* Only expose headers with the public interface: internalise headers used for
-   implementation components only.
+* Only expose headers with the public interface
+   Internalise headers used for implementation components only.
 
+* LHAGLUE interface, including number -> set name mappings
+
+* Validation system and plotting
+   Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
+   point list, then separately dump out xf(x) values into separate files with
+   old and new LHAPDF, and finally compare the files line-by-line, with
+   pulls/ratios to the "old" LHAPDF as the reference.
+
+* Deal specially with CTEQ6L1
+   The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
+   compatibility at the same time as sorting out the misnaming.
+
+* More Fortran API elements? On demand after first beta release
