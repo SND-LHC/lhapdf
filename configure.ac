@@ -32,7 +32,7 @@ fi
 
 ## Checks and config headers
 AC_LANG(C++)
-AC_CONFIG_SRCDIR([src/PDFSet.cpp])
+AC_CONFIG_SRCDIR([src/PDFSet.cc])
 AC_CONFIG_HEADERS([config/config.h include/LHAPDF/LHAPDFConfig.h])
 
 

@@ -2,12 +2,12 @@ lib_LTLIBRARIES = libLHAPDF.la
 
 # PATHFINDCODE = getdatapath.cc binreloc.c
 
-libLHAPDF_la_SOURCES = PDFGrid.cpp PDFSet.cpp
-libLHAPDF_la_SOURCES += Bicubic.cpp Bilinear.cpp Nearest.cpp
-libLHAPDF_la_SOURCES += AlphaS.cpp
+libLHAPDF_la_SOURCES = PDFGrid.cc PDFSet.cc
+libLHAPDF_la_SOURCES += Bicubic.cc Bilinear.cc Nearest.cc
+libLHAPDF_la_SOURCES += AlphaS.cc
 
 # if ENABLE_LHAGLUE
-# libLHAPDFCore_la_SOURCES += LHAGlue.cpp
+# libLHAPDFCore_la_SOURCES += LHAGlue.cc
 # endif
 
 if USING_WIN32
