@@ -13,6 +13,12 @@ LHAPDF6 TODO list
 
 * LHAGLUE interface, including number -> set name mappings
 
+* Treating missing flavours with error vs. return 0
+   Provide a switch to distinguish the two responses. Put ID check into
+   PDF::xfxQ2 function?
+
+* Interpolation in (log(x), log(Q2)) as well as (x, Q)
+
 * Validation system and plotting
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
@@ -24,3 +30,5 @@ LHAPDF6 TODO list
    compatibility at the same time as sorting out the misnaming.
 
 * More Fortran API elements? On demand after first beta release
+
+* Set search paths (default and LHAPDF_SET_PATH) and version string access

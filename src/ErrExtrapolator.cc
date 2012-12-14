@@ -1,15 +1,15 @@
-//Standard Includes
-#include <iostream>
-
-//LHAPDF Includes
 #include "ErrExtrapolator.h"
 #include "PDFGrid.h"
+#include <iostream>
 
 namespace LHAPDF {
-	//ErrExtrapoltor Definitions
-	double ErrExtrapolator::extrapolateQ2( const PDFGrid& grid, const PID_t id, const X_t x, const Q2_t q2 ) const {
-		std::cout << "Extrapolation not allowed." << std::endl;
-		
+
+
+	/// ErrExtrapolator definition
+	double ErrExtrapolator::extrapolateQ2(const PDFGrid& grid, PID_t id, double x, double q2 ) const {
+		std::cerr << "Extrapolation not allowed." << std::endl;
 		throw -1;
 	}
+
+
 }
