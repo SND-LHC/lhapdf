@@ -1,12 +1,11 @@
+#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/BicubicInterpolator.h"
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
 
-#include "PDFGrid.h"
-#include "Bicubic.h"
-
 int main( int argc, char** argv ) {
-  PDFGrid* grid = PDFGrid::load( "test.LHm" );
+  PDFGrid* grid = PDFGrid::load("test.LHm");
   BicubicInterpolator bic;
   grid->setInterpolator( &bic );
 

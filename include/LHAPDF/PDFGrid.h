@@ -1,7 +1,7 @@
 #pragma once
 
-#include "LHAPDF/types.h"
-#include "LHAPDF/factory.h"
+#include "LHAPDF/Types.h"
+#include "LHAPDF/Factories.h"
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/PDFSet.h"
 #include <vector>

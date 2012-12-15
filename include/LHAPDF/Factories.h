@@ -1,10 +1,9 @@
 #pragma once
 
 #include "LHAPDF/PDFSet.h"
-/// @todo need better names with Interpolator/Extrapolator prefixes
-#include "LHAPDF/Bilinear.h"
-#include "LHAPDF/Bicubic.h"
-#include "LHAPDF/Nearest.h"
+#include "LHAPDF/BilinearInterpolator.h"
+#include "LHAPDF/BicubicInterpolator.h"
+#include "LHAPDF/NearestPointExtrapolator.h"
 #include <string>
 #include <sstream>
 #include <stdexcept>

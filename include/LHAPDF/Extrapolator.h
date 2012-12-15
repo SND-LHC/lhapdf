@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LHAPDF/types.h"
+#include "LHAPDF/Types.h"
 
 namespace LHAPDF {
 

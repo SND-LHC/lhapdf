@@ -1,16 +1,12 @@
-#include "Bicubic.h"
-#include "PDFGrid.h"
-
+#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/BicubicInterpolator.h"
 #include <iostream>
 
 namespace LHAPDF {
 
 
-  /// @todo Idx_t -> size_t
-
-
   // Provides d/dx at all grid locations
-  double ddx(const PDFGrid& grid, const double* pid, Idx_t xidx, Idx_t q2idx ) {
+  double ddx(const PDFGrid& grid, const double* pid, size_t xidx, size_t q2idx ) {
     // Check for edge
     if (xidx == 0) {
       // Use forward difference
@@ -46,7 +42,7 @@ namespace LHAPDF {
 
   double BicubicInterpolator::interpolateQ2(const PDFGrid& grid, PID_t id, double x, double q2) const {
     // Index look-up
-    Idx_t xidx, q2idx;
+    size_t xidx, q2idx;
     grid.lookupClosestLow(x, q2, xidx, q2idx);
 
     // Fractional parameters

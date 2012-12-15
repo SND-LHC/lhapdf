@@ -1,39 +1,27 @@
 #pragma once
 
-#include <cstdint.h>
+#include <stdint.h> // -> cstdint with C++11
 #include <cstdlib>
 #include <vector>
 #include <map>
 
-/// @todo Really need this? Probably remove and localise remaining types...
+#include "boost/foreach.hpp"
+#ifndef foreach
+#define foreach BOOST_FOREACH
+#endif
 
 namespace LHAPDF {
 
-	///
-	typedef long PID_t;
+  /// Safe type for PID codes (is int safe enough?)
+  typedef long PID_t;
 
-	///
-	typedef double* PIDdata;
+  /// @todo Kill
+  typedef double* PIDdata;
 
-	///
-	typedef std::map<PID_t,PIDdata> PIDmap;
+  /// @todo Kill
+  typedef std::map<PID_t,PIDdata> PIDmap;
 
-	///
-	typedef std::vector<double> AxisKnots;
-
-	// ///
-	// typedef double X_t;
-
-	// ///
-	// typedef double Q_t;
-
-	// ///
-	// typedef double Q2_t;
-
-	// ///
-	// typedef size_t Member_t;
-
-	// ///
-	// typedef size_t Idx_t;
+  /// @todo Kill
+  typedef std::vector<double> AxisKnots;
 
 }

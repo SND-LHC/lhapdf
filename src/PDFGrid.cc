@@ -1,6 +1,6 @@
 #include "LHAPDF/PDFGrid.h"
 #include "LHAPDF/Interpolator.h"
-#include "LHAPDF/factory.h"
+#include "LHAPDF/Factories.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -127,11 +127,11 @@ namespace LHAPDF {
       }
     }
 
-    Idx_t bisectionSearch( const double x, const AxisKnots& knots ) {
-      Idx_t low = 0, high = knots.size()-1;
+    size_t bisectionSearch( const double x, const AxisKnots& knots ) {
+      size_t low = 0, high = knots.size()-1;
 
       while ((high - low) > 1) {
-        Idx_t middle = low + ( (high - low) >> 1 );
+        size_t middle = low + ( (high - low) >> 1 );
 
         if (x > knots[middle])
           low = middle;
@@ -144,10 +144,10 @@ namespace LHAPDF {
 
 
     /// @todo Use std library lookups (upper_bound, etc.)
-    Idx_t binarySearch( const double x, const AxisKnots& points ) {
-      Idx_t low = 0, high = points.size()-1;
+    size_t binarySearch( const double x, const AxisKnots& points ) {
+      size_t low = 0, high = points.size()-1;
       while (true) {
-        Idx_t middle = low + ((high - low) >> 2);
+        size_t middle = low + ((high - low) >> 2);
         if (middle == low || middle == high)
           break;
         if (x > points[middle])
@@ -159,7 +159,7 @@ namespace LHAPDF {
     }
 
 
-    void PDFGrid::lookupClosestLow( const X_t x, const Q2_t q2, Idx_t& xidx, Idx_t& q2idx ) const {
+    void PDFGrid::lookupClosestLow( const X_t x, const Q2_t q2, size_t& xidx, size_t& q2idx ) const {
       //DO ERROR CHECKS ON X AND Q?
       //TRUST INTERPOLATORS?
 
@@ -170,7 +170,7 @@ namespace LHAPDF {
     }
 
 
-    void PDFGrid::lookupClosest( const X_t x, const Q2_t q2, Idx_t& xidx, Idx_t& q2idx ) const {
+    void PDFGrid::lookupClosest( const X_t x, const Q2_t q2, size_t& xidx, size_t& q2idx ) const {
       //Binary Search Axes
       xidx = binarySearch( x, xknots );
       q2idx = binarySearch( q2, q2knots );

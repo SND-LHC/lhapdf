@@ -102,8 +102,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libLHAPDF_la_LIBADD =
-am_libLHAPDF_la_OBJECTS = PDFGrid.lo PDFSet.lo Bicubic.lo Bilinear.lo \
-	Nearest.lo AlphaS.lo
+am_libLHAPDF_la_OBJECTS = PDFGrid.lo PDFSet.lo BicubicInterpolator.lo \
+	BilinearInterpolator.lo NearestPointExtrapolator.lo AlphaS.lo
 libLHAPDF_la_OBJECTS = $(am_libLHAPDF_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -279,8 +279,12 @@ top_srcdir = ..
 lib_LTLIBRARIES = libLHAPDF.la
 
 # PATHFINDCODE = getdatapath.cc binreloc.c
-libLHAPDF_la_SOURCES = PDFGrid.cc PDFSet.cc Bicubic.cc Bilinear.cc \
-	Nearest.cc AlphaS.cc
+libLHAPDF_la_SOURCES = \
+  PDFGrid.cc PDFSet.cc \
+  BicubicInterpolator.cc BilinearInterpolator.cc \
+  NearestPointExtrapolator.cc \
+  AlphaS.cc
+
 all: all-am
 
 .SUFFIXES:
@@ -357,9 +361,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/AlphaS.Plo
-include ./$(DEPDIR)/Bicubic.Plo
-include ./$(DEPDIR)/Bilinear.Plo
-include ./$(DEPDIR)/Nearest.Plo
+include ./$(DEPDIR)/BicubicInterpolator.Plo
+include ./$(DEPDIR)/BilinearInterpolator.Plo
+include ./$(DEPDIR)/NearestPointExtrapolator.Plo
 include ./$(DEPDIR)/PDFGrid.Plo
 include ./$(DEPDIR)/PDFSet.Plo
 

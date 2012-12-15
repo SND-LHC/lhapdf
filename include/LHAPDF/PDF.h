@@ -1,7 +1,6 @@
 #pragma once
 
-/// @todo Remove/replace?
-#include "LHAPDF/types.h"
+#include "LHAPDF/Types.h"
 #include <vector>
 #include <sstream>
 #include <stdexcept>
@@ -72,11 +71,12 @@ namespace LHAPDF {
     /// @param Q2 the energy scale (squared)
     /// @return the value of xf(x,q2)
     ///
-    std::map<PID_t, double> double xfxQ2(double x, double q2) const {
+    std::map<PID_t, double> xfxQ2(double x, double q2) const {
       std::map<PID_t, double> rtn;
-      foreach (PID_t id, pids()) {
+      foreach (PID_t id, flavors()) {
         rtn[id] = xfxQ2(id, x, q2);
       }
+      return rtn;
     }
 
     /// @brief Get the PDF xf(x) value at (x,q) for all supported PIDs.
@@ -171,12 +171,12 @@ namespace LHAPDF {
     //@{
 
     /// Get all metadata as a map
-    const map<std::string, std::string>& metadata() const {
+    const std::map<std::string, std::string>& metadata() const {
       return _metadict;
     }
 
     /// Get all metadata as a map (non-const)
-    map<std::string, std::string>& metadata() {
+    std::map<std::string, std::string>& metadata() {
       return _metadict;
     }
 
@@ -197,13 +197,13 @@ namespace LHAPDF {
     }
 
     /// Get the name of this PDF set member
-    std::string PDF::name() const {
+    std::string name() const {
       return metadata("Name");
     }
 
     /// Get the ID code of this PDF set member
-    Member_t PDF::memberID() const {
-      return metadata<Member_t>("ID");
+    size_t memberID() const {
+      return metadata<size_t>("ID");
     }
 
     /// Get the type of PDF (LO, NLO, etc.)

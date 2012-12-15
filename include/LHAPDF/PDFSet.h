@@ -82,7 +82,7 @@ namespace LHAPDF {
     std::string _path;
 
     /// Holds all loaded members
-    std::map<Member_t, PDF*> _members;
+    std::map<size_t, PDF*> _members;
 
     /// Holds all set-level metadata
     std::map<std::string, std::string> _meta;

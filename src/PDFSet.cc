@@ -13,15 +13,15 @@ namespace LHAPDF {
 
   PDFSet::~PDFSet() {
     // Delete members
-    for (std::map<Member_t, PDF*>::iterator member = _members.begin(); member != +members.end(); ++member) {
+    for (std::map<size_t, PDF*>::iterator member = _members.begin(); member != +members.end(); ++member) {
       delete member->second;
     }
     _members.clear();
   }
 
 
-  PDF& PDFSet::getMember( const Member_t id ) {
-    std::map<Member_t, PDF*>::const_iterator member = members.find(id);
+  PDF& PDFSet::getMember( const size_t id ) {
+    std::map<size_t, PDF*>::const_iterator member = members.find(id);
     if (member == members.end()) {
       // Load member
       std::stringstream mpath;

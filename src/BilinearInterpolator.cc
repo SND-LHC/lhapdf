@@ -1,5 +1,5 @@
-#include "Bilinear.h"
-#include "PDFGrid.h"
+#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/BilinearInterpolator.h"
 
 namespace LHAPDF {
 
@@ -19,7 +19,7 @@ namespace LHAPDF {
 
   double BilinearInterpolator::interpolateQ2(const PDFGrid& grid, PID_t id, double x, double q2) const {
     // Find top left corner of patch
-    Idx_t idx_x, idx_q2;
+    size_t idx_x, idx_q2;
     grid.lookupClosestLow( x, q2, idx_x, idx_q2 );
 
     // Calculate interpolation along X axis
