@@ -1,12 +1,13 @@
 #pragma once
 
-#include "LHAPDF/Types.h"
-#include "LHAPDF/Factories.h"
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/PDFSet.h"
+#include "LHAPDF/Types.h"
+#include "LHAPDF/Factories.h"
 #include <vector>
+#include <algorithm>
 #include <map>
-#include <stdlib.h>
+#include <cstdlib>
 #include <exception>
 #include <fstream>
 #include "yaml-cpp/yaml.h"
@@ -23,23 +24,20 @@ namespace LHAPDF {
   class PDFGrid : public PDF {
   public:
 
+
     /// Constructor
-    /// @todo Shouldn't it be possible to construct without a set pointer?
-    PDFGrid(const PDFSet* setp=0)
-      : interpolator(0), allocatedInterpolator(false),
-        extrapolator(0), allocatedExtrapolator(false)
-        _set(setp)
-    {  }
+    PDFGrid(PDFSet* setp = 0)
+      : //_set(setp), /// @todo Why didn't this work?!
+        _interpolator(0) _extrapolator(0)
+    {
+      /// @todo Parse metadata file, create set if needed, set up alpha_s object, etc.
+    }
 
 
     /// Destructor
-    PDFGrid::~PDFGrid() {
-      // Check if the class created the interpolator
-      /// @todo Use shared ptrs instead of this manual allocation stuff
-      if (interpolator != 0 && allocatedInterpolator)
-        delete interpolator;
-      if (extrapolator != 0 && allocatedExtrapolator)
-        delete extrapolator;
+    ~PDFGrid() {
+      delete _interpolator;
+      delete _extrapolator;
     }
 
 
@@ -47,83 +45,48 @@ namespace LHAPDF {
     double xfxQ2( PID_t, double x, double q2 ) const;
 
 
-    /// @name Information about the interpolation grid
+    /// Metadata
     //@{
 
-    /// Checks whether (X,Q2) is in PDF data.
-    ///
-    /// \param X the momentum fraction
-    /// \param Q2 the squared energy scale
-    /// \return
-    bool inRangeQ2(double x, double q2) const {
-      // Check x is in range
-      if (x < xknots[0]) return false;
-      if (xknots[xknots.size()-1] < x) return false;
-      // Check q2 is in range
-      if (q2 < q2knots[0]) return false;
-      if (q2knots[q2knots.size()-1] < q2) return false;
-      // Else...
+    /// Get the list of available flavours by PDG ID code.
+    /// @todo Or get the flavour list from the set?
+    std::vector<PID_t> flavors() const {
+      std::vector<PID_t> rtn;
+      for (std::map<PID_t, double*>::const_iterator i = _rawdata.begin(); i != _rawdata.end(); ++i) {
+        rtn.push_back(i->first);
+      }
+      return rtn;
+    }
+
+    /// Check if x is in the grid range
+    bool inRangeX(double x) const {
+      if (x < xKnots().front()) return false;
+      if (x > xKnots().back()) return false;
       return true;
     }
 
-
-    /// Look up the lowest knot of the rectangle in which (X,Q2) is located.
-    ///
-    /// This function is useful for interpolators to be able to look up which patch the (X,Q2) is
-    /// in and then interpolating between the returned index and the index+1.
-    ///
-    /// The index returned will never be on the high edge of the grid knots.
-    ///
-    /// \param X Momentum fraction coordinate.
-    /// \param Q2 Energy scale coordinate.
-    /// \param XIdx Index in X axis.
-    /// \param Q2Idx Index in Q2 axis.
-    ///
-    /// @todo Return pair<size_t, size_t>
-    /// @todo Need Q2 in name?
-    std::pair<size_t, size_t> lookupClosestLow(double x, double q2) const;
-
-    /// Looks up the closest grid knot.
-    ///
-    /// \param X Momentum fraction
-    /// \param Q2 Energy scale
-    /// \param XIdx Index in X axis.
-    /// \param Q2Idx Index in Q2 axis.
-    ///
-    /// @todo Symmetry -- how does this differ from ClosestLow and why no ClosestHigh?
-    ///
-    std::pair<size_t, size_t> lookupClosest(double x, double q2) const;
-
-    /// Check whether the (XIdx,Q2Idx) is valid in this PDF.
-    bool isValidIndex(size_t ix, size_t iq2) const;
-
-    /// @brief Transform a (ix, iQ2) pair into a 1D index
-    ///
-    /// Used to access flavor images at knots in this PDF.
-    size_t index(size_t ix, size_t iq2) const {
-      // X is along a scanline, Q2 is a scanline
-      return xidx + q2idx * xknots.size();
+    /// Check if q2 is in the grid range
+    bool inRangeQ2(double q2) const {
+      if (q2 < q2Knots().front()) return false;
+      if (q2 > q2Knots().back()) return false;
+      return true;
     }
 
-    /// Return knot values in x
-    const AxisKnots& getXKnots() const {
-      return _xknots;
-    }
+    //@}
 
-    /// Return knot values in Q2
-    const AxisKnots& getQ2Knots() const {
-      return _q2knots;
-    }
+
+    /// @name Interpolators and extrapolators
+    //@{
 
     /// Sets the Interpolator to be used for interpolating between grid knots.
-    void setInterpolator(Interpolator* );
+    void setInterpolator(Interpolator* ipol);
 
     /// Sets the default interpolator.
     /// @todo Needed on public API? Just read from grid file.
     void setDefaultInterpolator();
 
     /// Sets the Extrapolator to be used for extrapolating outside the grid boundaries.
-    void setExtrapolator( Extrapolator* );
+    void setExtrapolator(Extrapolator* epol);
 
     /// Sets the default extrapolator.
     /// @todo Needed on public API? Just read from grid file.
@@ -131,60 +94,85 @@ namespace LHAPDF {
 
     /// Check of valid Interpolator.
     bool hasInterpolator() const {
-      return (interpolator != 0);
+      return _interpolator != 0;
     }
 
     /// Check of valid Extrapolator.
     bool hasExtrapolator() const {
-      return (extrapolator != 0);
+      return _extrapolator != 0;
     }
 
     //@}
 
-    /// Get the list of available flavours by PDG ID code.
-  vector<PID_t> flavors() const {
-    return _flavors;
-  }
 
-    /// @todo What is a PIDdata (and rename it...)
-    const PIDdata getPIDData(PID_t id) const {
-      if (!hasPID(id)) {
-        std::stringstream error;
-        error << "Undefined PID_t requested: " << id;
-        throw std::runtime_error(error.str());
-      }
-      return flavors().find(id)->second;
+
+    /// Loads the given member by path to the member grid file.
+    /// @todo Also need loading by filename, and by set name + member ID
+    static PDFGrid* load( PDFGrid*, const YAML::Node&, std::ifstream& );
+
+
+
+    /// @name Info about the grid, and access to the raw data points
+    //@{
+
+    /// Return knot values in x
+    const AxisKnots& xKnots() const {
+      return _xknots;
     }
 
+    /// Return knot values in Q2
+    const AxisKnots& q2Knots() const {
+      return _q2knots;
+    }
 
-    /// Loads the given member by path
-    ///
-    /// \param Path the file path to the ".LHm" file
-    /// \return
-    //static PDFGrid* load( const std::string&, const PDFSet& set );
-    static PDFGrid* load( PDFGrid*, const YAML::Node&, std::ifstream& );
+    /// Get the index of the closest x knot row <= x
+    size_t xKnotLow(double x) const {
+      /// @todo Test for x in grid range
+      size_t i = lower_bound(xKnots().begin(), xKnots().end(), x) - xKnots().begin();
+      if (i == xKnots().size()-1) --i; // if last row, step back
+      return i;
+    }
+
+    /// Get the index of the closest Q2 knot column <= q2
+    size_t q2KnotLow(double q2) const {
+      size_t i = lower_bound(q2Knots().begin(), q2Knots().end(), q2) - q2Knots().begin();
+      if (i == q2Knots().size()-1) --i; // if last col, step back
+      return i;
+    }
+
+    /// Get the raw xf(x,Q2) data points
+    const double* rawdata(PID_t id) const {
+      if (!hasPID(id)) {
+        std::stringstream error;
+        error << "Undefined particle ID requested: " << id;
+        throw std::runtime_error(error.str());
+      }
+      return _rawdata.find(id)->second;
+    }
+
+    /// @brief Transform a (ix, iQ2) pair into a 1D "raw" index
+    size_t rawindex(size_t ix, size_t iq2) const {
+      if (ix >= xKnots().size()) throw std::runtime_error("Invalid x index");
+      if (iq2 >= q2Knots().size()) throw std::runtime_error("Invalid Q2 index");
+      return ix + iq2 * xKnots().size();
+    }
+
+    //@}
 
 
   private:
 
-    /// Momentum fraction knots
-    AxisKnots _xknots;
+    /// Interpolation grid anchor point lists in x and Q2
+    AxisKnots _xknots, _q2knots;
 
-    /// Squared energy scale knots
-    AxisKnots _q2knots;
+    /// Raw data grids, indexed by flavour
+    std::map<PID_t, double*> _rawdata;
 
-    /// Flavor map
-    PIDmap _flavors;
-
-    /// Associated Interpolator
+    /// Associated interpolator
     Interpolator* _interpolator;
-    /// Flag for self allocated Interpolator
-    bool _allocatedInterpolator;
 
-    /// Associated Extrapolator
+    /// Associated extrapolator
     Extrapolator* _extrapolator;
-    /// Flag for self allocated Extrapolator
-    bool _allocatedExtrapolator;
 
   };
 

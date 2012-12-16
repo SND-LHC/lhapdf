@@ -5,11 +5,15 @@ LHAPDF6 TODO list
    Implement in 1D first, then integrate into (x,Q) interpolation. Subgrids
    should only be necessary in Q... and also needed for alpha_s ipol.
 
+* Get values for all flavours at once, since all will usually be needed? Caching
+
 * Implement numerical alpha_s running with several options, and also support
    interpolation of tablulated alpha_s values (with 1D subgrids).
 
 * Only expose headers with the public interface
    Internalise headers used for implementation components only.
+
+* Add "proper" LHAPDF exception classes
 
 * LHAGLUE interface, including number -> set name mappings
 
@@ -32,3 +36,5 @@ LHAPDF6 TODO list
 * More Fortran API elements? On demand after first beta release
 
 * Set search paths (default and LHAPDF_SET_PATH) and version string access
+
+* Replace set/PDF allocation nightmare with shared_ptrs, etc.

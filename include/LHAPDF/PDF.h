@@ -1,9 +1,11 @@
 #pragma once
 
 #include "LHAPDF/Types.h"
+#include "boost/lexical_cast.hpp"
 #include <vector>
 #include <sstream>
 #include <stdexcept>
+#include <algorithm>
 #include <map>
 
 namespace LHAPDF {
@@ -23,7 +25,7 @@ namespace LHAPDF {
     virtual ~PDF() { }
 
     /// Access the PDFSet
-    const PDFSet* pdfSet() {
+    const PDFSet* pdfSet() const {
       return _set;
     }
 
@@ -99,22 +101,36 @@ namespace LHAPDF {
     /// @name Range checks
     //@{
 
-    /// Checks whether (X,Q2) is a valid physical point.
+    /// Check whether the given x is physically valid
     ///
-    /// This will return false in the following cases:
-    ///  1) on points below 0.0 in X, since a negative momentum fraction is not valid.
-    ///  2) on points above 1.0 in X, since X is a fraction of momentum.
-    ///  3) on points below 0.0 in Q2, TODO
+    /// Returns false for x less than 0 or greater than 1, since it
+    /// is a momentum fraction and not valid outside those values.
+    bool inPhysicalRangeX(double x) const {
+      return x >= 0.0 && x < 1.0;
+    }
+
+    /// Check whether the given Q2 is physically valid
     ///
-    /// \param X the momentum fraction
-    /// \param Q2 the squared energy scale
-    /// \return
+    /// Returns false for Q2 less than 0 (Q must be real-valued).
+    bool inPhysicalRangeQ2(double q2) const {
+      return q2 >= 0.0;
+    }
+
+    /// Check whether the given Q is physically valid
     ///
-    /// @todo Move the physical range check into LHAPDF::PDF
-    /// @todo Better name
-    bool inPhysicalRangeQ2(double x, double q2) const {
-      if (x < 0.0 || x > 1.0) return false;
-      return (q2 >= 0.0);
+    /// Returns false for Q less than 0 (Q must be positive).
+    bool inPhysicalRangeQ(double q) const {
+      return inPhysicalRangeQ2(q*q);
+    }
+
+    /// Check whether the given (x,Q2) is physically valid
+    bool inPhysicalRangeXQ2(double x, double q2) const {
+      return inPhysicalRangeX(x) && inPhysicalRangeQ2(q2);
+    }
+
+    /// Check whether the given (x,Q) is physically valid
+    bool inPhysicalRangeXQ(double x, double q) const {
+      return inPhysicalRangeX(x) && inPhysicalRangeQ(q);
     }
 
     /// inRangeQ will return true when given (X,Q) are in the range of this PDF.
@@ -123,29 +139,32 @@ namespace LHAPDF {
     /// \param X the momentum fraction
     /// \param Q the energy scale
     /// \return whether q is in range
-    virtual inline bool inRangeQ(double q) const {
-      return inRangeQ2( x, q*q );
+    virtual bool inRangeQ(double q) const {
+      return inRangeQ2(q*q);
     }
 
-    /// Range check for (X,Q2)
+    /// Grid range check for Q2
     ///
-    /// inRangeQ2 will return true when given (X,Q2) are in the range of this PDF.
+    /// inRangeQ2 will return true when given Q2 is in the coverage range of this PDF.
     ///
-    /// \param X the momentum fraction
     /// \param Q2 the squared energy scale
     /// \return
-    virtual bool inRangeQ2(double q2) const {
-      return true;
-    }
+    virtual bool inRangeQ2(double q2) const = 0;
 
-    virtual bool inRangeX(double x) const {
-      return true;
-    }
+    /// Grid range check for x
+    ///
+    /// inRangex will return true when given x is in the coverage range of this PDF.
+    ///
+    /// \param x the momentum fraction
+    /// \return
+    virtual bool inRangeX(double x) const = 0;
 
+    /// Combined range check for x and Q
     virtual bool inRangeXQ(double x, double q) const {
       return inRangeX(x) && inRangeQ(q);
     }
 
+    /// Combined range check for x and Q2
     bool inRangeXQ2(double x, double q2) const {
       return inRangeX(x) && inRangeQ2(q2);
     }
@@ -161,7 +180,8 @@ namespace LHAPDF {
 
     /// Checks whether @a id is a valid parton for this PDF.
     bool hasFlavor(PID_t id) const {
-      return flavors().find(id) != flavors().end()
+      std::vector<PID_t> ids = flavors();
+      return std::find(ids.begin(), ids.end(), id) != ids.end();
     }
 
     //@}
@@ -182,8 +202,8 @@ namespace LHAPDF {
 
     /// Get a specific metadata key as a string
     std::string metadata(const std::string& key) const {
-      std::map<std::string, std::string>::const_iterator data = metadict.find(key);
-      if (data != metadict.end()) {
+      std::map<std::string, std::string>::const_iterator data = _metadict.find(key);
+      if (data != _metadict.end()) {
         throw std::runtime_error("Metadata for key: " + key + " not found.");
       }
       return data->second;
@@ -219,15 +239,15 @@ namespace LHAPDF {
     //@}
 
 
-    /// Load PDF
-    /// @todo What?
-    static PDF* load(const PDFSet*, const std::string& );
+    // /// Load PDF
+    // /// @todo What?
+    // static PDF* load(const PDFSet*, const std::string& );
 
 
   protected:
 
     /// Pointer back to the containing set
-    const PDFSet* _set;
+    PDFSet* _set;
 
     /// Metadata dictionary
     std::map<std::string, std::string> _metadict;

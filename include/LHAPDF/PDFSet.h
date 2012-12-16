@@ -17,8 +17,8 @@ namespace LHAPDF {
 
     /// Retrieve general metadata
     std::string metadata( const std::string& key) const {
-      std::map<std::string, std::string>::const_iterator data = _meta.find(key);
-      if (data == meta.end())
+      std::map<std::string, std::string>::const_iterator data = _metadata.find(key);
+      if (data == _metadata.end())
         throw std::runtime_error("Metadata for key: " + key + " not found.");
       return data->second;
     }
@@ -39,8 +39,9 @@ namespace LHAPDF {
     /// Order of QCD at which this PDF has been constructed
     int qcdOrder() const;
 
-    /// Value of alpha_s(Q2) used by this PDF set.
-    /// @todo Always defined at set level? Prefer to ony access on the PDF
+    /// @brief Value of alpha_s(Q2) used by this PDF set.
+    ///
+    /// Calculated numerically, analytically, or interpolated according to metadata.
     double alphaS(double q2) const;
 
     /// List of flavours defined by this PDF set.
@@ -62,13 +63,6 @@ namespace LHAPDF {
     /// Load a named set in the default search path
     static PDFSet* loadByName( const std::string& );
 
-    /// Calculates alphaS depending on what information it can pull from meta data.  It either
-    /// returns alphaS directly from file, or calculates it numerically from alpha_s at m_Z, or
-    /// calculates an approximate analytical solution from a value of lambdaQCD, or does so with
-    /// lambdaQCD set to 0.4
-
-    double alphaS( double q2 ) const;
-
 
   private:
 
@@ -85,7 +79,7 @@ namespace LHAPDF {
     std::map<size_t, PDF*> _members;
 
     /// Holds all set-level metadata
-    std::map<std::string, std::string> _meta;
+    std::map<std::string, std::string> _metadata;
 
     /// Holds all flavours defined by this set
     std::vector<PID_t> _flavors;
