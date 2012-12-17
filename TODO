@@ -1,11 +1,25 @@
 LHAPDF6 TODO list
 -----------------
 
+NOW
+
+* Rename "knots" to "points" or "anchors"
+
+* Replace set/PDF allocation nightmare with shared_ptrs, etc.
+
+* Interpolation attachment to PDFGrid in both directions
+   Means that e.g. Extrapolator can make use of the current interpolator
+
+* Get values for all flavours at once, since all will usually be needed? Caching
+
+
+FOR BETA 1
+
 * Design & implement sub-grid "patch" system
    Implement in 1D first, then integrate into (x,Q) interpolation. Subgrids
    should only be necessary in Q... and also needed for alpha_s ipol.
 
-* Get values for all flavours at once, since all will usually be needed? Caching
+* Set search paths (default and LHAPDF_SET_PATH) and version string access
 
 * Implement numerical alpha_s running with several options, and also support
    interpolation of tablulated alpha_s values (with 1D subgrids).
@@ -17,12 +31,6 @@ LHAPDF6 TODO list
 
 * LHAGLUE interface, including number -> set name mappings
 
-* Treating missing flavours with error vs. return 0
-   Provide a switch to distinguish the two responses. Put ID check into
-   PDF::xfxQ2 function?
-
-* Interpolation in (log(x), log(Q2)) as well as (x, Q)
-
 * Validation system and plotting
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
@@ -33,8 +41,13 @@ LHAPDF6 TODO list
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
    compatibility at the same time as sorting out the misnaming.
 
+
+FOR BETA 2
+
+* Treating missing flavours with error vs. return 0
+   Provide a switch to distinguish the two responses. Put ID check into
+   PDF::xfxQ2 function?
+
+* Interpolation in (log(x), log(Q2)) as well as (x, Q)
+
 * More Fortran API elements? On demand after first beta release
-
-* Set search paths (default and LHAPDF_SET_PATH) and version string access
-
-* Replace set/PDF allocation nightmare with shared_ptrs, etc.

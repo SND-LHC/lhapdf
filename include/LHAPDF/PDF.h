@@ -37,14 +37,31 @@ namespace LHAPDF {
     ///
     /// All grids are defined in q2 rather than q since the natural value
     /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
-    /// This is the key function to be overridden in concrete PDF types.
     ///
     /// @param id the parton ID in the PDG scheme
     /// @param x the momentum fraction
     /// @param Q2 the energy scale (squared)
     /// @return the value of xf(x,q2)
     ///
-    virtual double xfxQ2(PID_t id, double x, double q2) const = 0;
+    double xfxQ2(PID_t id, double x, double q2) const {
+      // Physical x range check
+      if (!inPhysicalRangeX(x)) {
+        std::string err = "Unphysical x given: " + boost::lexical_cast<std::string>(x);
+        throw runtime_error(err);
+      }
+      // Physical Q2 range check
+      if (!inPhysicalRangeQ2(q2)) {
+        std::string err = "Unphysical Q2 given: " + boost::lexical_cast<std::string>(q2);
+        throw runtime_error(err);
+      }
+      // Undefined PIDs
+      if (!hasFlavor(id)) {
+        std::string err = "Undefined flavour requested: " + boost::lexical_cast<std::string>(id);
+        throw runtime_error(err);
+      }
+      // Call the delegated method in the concrete PDF object to calculate the in-range value
+      return _xfxQ2(id, x, q2);
+    }
 
 
     /// @brief Get the PDF xf(x) value at (x,q) for the given PID.
@@ -95,8 +112,28 @@ namespace LHAPDF {
       return xfxQ2(x, q*q);
     }
 
+
+  protected:
+
+    /// @brief Calculate the PDF xf(x) value at (x,q2) for the given PID.
+    ///
+    /// This is the key function to be overridden in concrete PDF types, since
+    /// it actually does the calculation of xf(x,Q2) by analytic, interpolation,
+    /// or other means. The user-called xfxQ2 method exists so that the physical
+    /// range and PID checks need only be done in one place, rather than need to
+    /// be re-implemented in each concrete implementation.
+    ///
+    /// @param id the parton ID in the PDG scheme
+    /// @param x the momentum fraction
+    /// @param Q2 the energy scale (squared)
+    /// @return the value of xf(x,q2)
+    ///
+    virtual double _xfxQ2(PID_t id, double x, double q2) const = 0;
+
     //@}
 
+
+  public:
 
     /// @name Range checks
     //@{
@@ -204,7 +241,9 @@ namespace LHAPDF {
     std::string metadata(const std::string& key) const {
       std::map<std::string, std::string>::const_iterator data = _metadict.find(key);
       if (data != _metadict.end()) {
-        throw std::runtime_error("Metadata for key: " + key + " not found.");
+        /// @todo If metadata not found on the PDF, try the parent PDFSet before giving up
+        data = pdfSet().metadata(key);
+        // throw std::runtime_error("Metadata for key: " + key + " not found.");
       }
       return data->second;
     }

@@ -5,6 +5,23 @@
 namespace LHAPDF {
 
 
+  double interpolateCubic(double T, double VL, double VDL, double VH, double VDH) {
+    // Pre-calculate powers of T
+    const double t2 = T*T;
+    const double t3 = t2*T;
+
+    // Calculate left point
+    const double p0 = (2*t3 - 3*t2 + 1)*VL;
+    const double m0 = (t3 - 2*t2 + T)*VDL;
+
+    // Calculate right point
+    const double p1 = (-2*t3 + 3*t2)*VH;
+    const double m1 = (t3 - t2)*VDH;
+
+    return p0 + m0 + p1 + m1;
+  }
+
+
   // Provides d/dx at all grid locations
   double ddx(const PDFGrid& grid, const double* pid, size_t xidx, size_t q2idx ) {
     // Check for edge
@@ -23,42 +40,25 @@ namespace LHAPDF {
   }
 
 
-  double interpolateCubic(double T, double VL, double VDL, double VH, double VDH) {
-    // Pre-calculate powers of T
-    const double t2 = T*T;
-    const double t3 = t2*T;
-
-    // Calculate left point
-    const double p0 = (2*t3 - 3*t2 + 1)*VL;
-    const double m0 = (t3 - 2*t2 + T)*VDL;
-
-    // Calculate right point
-    const double p1 = (-2*t3 + 3*t2)*VH;
-    const double m1 = (t3 - t2)*VDH;
-
-    return p0 + m0 + p1 + m1;
-  }
-
-
-  double BicubicInterpolator::interpolateQ2(const PDFGrid& grid, PID_t id, double x, double q2) const {
+  double BicubicInterpolator::interpolateXQ2(const PDFGrid& grid, PID_t id, double x, double q2) const {
     // Index look-up
-    size_t xidx, q2idx;
-    grid.lookupClosestLow(x, q2, xidx, q2idx);
+    size_t xidx = grid.xKnotLow(x);
+    size_t q2idx = grid.q2KnotLow(q2);
 
     // Fractional parameters
     double tx = (x - grid.getXKnots()[xidx]) / (grid.getXKnots()[xidx+1] - grid.getXKnots()[xidx]);
     double tq = (q2 - grid.getQ2Knots()[q2idx]) / (grid.getQ2Knots()[q2idx+1] - grid.getQ2Knots()[q2idx]);
 
-    double* pid = grid.getPIDData(id);
+    double* pid = grid.ptdata(id);
 
     // Points in Q2
-    double vl = interpolateCubic(tx, pid[grid.index(xidx, q2idx)],
+    double vl = interpolateCubic(tx, pid[grid.ptindex(xidx, q2idx)],
                                  ddx(grid, pid, xidx, q2idx)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]),
-                                 pid[grid.index(xidx+1, q2idx)],
+                                 pid[grid.ptindex(xidx+1, q2idx)],
                                  ddx(grid, pid, xidx+1, q2idx)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]) );
-    double vh = interpolateCubic(tx, pid[grid.index(xidx, q2idx+1)],
+    double vh = interpolateCubic(tx, pid[grid.ptindex(xidx, q2idx+1)],
                                  ddx(grid, pid, xidx, q2idx+1)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]),
-                                 pid[grid.index(xidx+1, q2idx+1)],
+                                 pid[grid.ptindex(xidx+1, q2idx+1)],
                                  ddx(grid, pid, xidx+1, q2idx+1)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]) );
 
     // Derivatives in Q2
@@ -69,9 +69,9 @@ namespace LHAPDF {
       vdl = (vh - vl)/(grid.getQ2Knots()[q2idx+1]-grid.getQ2Knots()[q2idx]);
 
       // Central difference for higher q
-      double vhh = interpolateCubic(tx, pid[grid.index(xidx, q2idx+2)],
+      double vhh = interpolateCubic(tx, pid[grid.ptindex(xidx, q2idx+2)],
                                     ddx(grid, pid, xidx, q2idx+2)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]),
-                                    pid[grid.index(xidx+1, q2idx+2)],
+                                    pid[grid.ptindex(xidx+1, q2idx+2)],
                                     ddx(grid, pid, xidx+1, q2idx+2)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]) );
       vdh = 0.5 * vdl + 0.5 * (vhh - vh)/(grid.getQ2Knots()[q2idx+2]-grid.getQ2Knots()[q2idx+1]);
     }
@@ -80,24 +80,24 @@ namespace LHAPDF {
       vdh = (vh - vl)/(grid.getQ2Knots()[q2idx+1]-grid.getQ2Knots()[q2idx]);
 
       // Central difference for lower q
-      double vll = interpolateCubic(tx, pid[grid.index(xidx, q2idx-1)],
+      double vll = interpolateCubic(tx, pid[grid.ptindex(xidx, q2idx-1)],
                                     ddx(grid, pid, xidx, q2idx-1)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]),
-                                    pid[grid.index(xidx+1, q2idx-1)],
+                                    pid[grid.ptindex(xidx+1, q2idx-1)],
                                     ddx(grid, pid, xidx+1, q2idx-1)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]) );
       vdl = 0.5 * vdh + 0.5 * (vl - vll)/(grid.getQ2Knots()[q2idx]-grid.getQ2Knots()[q2idx-1]);
     }
     else {
       // Central difference for both q
-      double vll = interpolateCubic( tx, pid[grid.index(xidx, q2idx-1)],
+      double vll = interpolateCubic( tx, pid[grid.ptindex(xidx, q2idx-1)],
                                      ddx(grid, pid, xidx, q2idx-1)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]),
-                                     pid[grid.index(xidx+1, q2idx-1)],
+                                     pid[grid.ptindex(xidx+1, q2idx-1)],
                                      ddx(grid, pid, xidx+1, q2idx-1)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]) );
 
       vdl = 0.5 * (vh - vl)/(grid.getQ2Knots()[q2idx+1]-grid.getQ2Knots()[q2idx]) + 0.5 * (vl - vll)/(grid.getQ2Knots()[q2idx]-grid.getQ2Knots()[q2idx-1]);
 
-      double vhh = interpolateCubic( tx, pid[grid.index(xidx, q2idx+2)],
+      double vhh = interpolateCubic( tx, pid[grid.ptindex(xidx, q2idx+2)],
                                      ddx(grid, pid, xidx, q2idx+2)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]),
-                                     pid[grid.index(xidx+1, q2idx+2)],
+                                     pid[grid.ptindex(xidx+1, q2idx+2)],
                                      ddx(grid, pid, xidx+1, q2idx+2)*(grid.getXKnots()[xidx+1]-grid.getXKnots()[xidx]) );
 
       vdh = 0.5 * (vh - vl)/(grid.getQ2Knots()[q2idx+1]-grid.getQ2Knots()[q2idx]) + 0.5 * (vhh - vh)/(grid.getQ2Knots()[q2idx+2]-grid.getQ2Knots()[q2idx+1]);
@@ -110,4 +110,6 @@ namespace LHAPDF {
 
     return f_f;
   }
+
+
 }

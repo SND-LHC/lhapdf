@@ -13,9 +13,10 @@ namespace LHAPDF {
 
   /// Interpolator factory
   static Interpolator* createInterpolator(const std::string& name) {
-    if (name == "bilinear")
+    /// @todo Convert name to lower case for comparisons
+    if (name == "linear")
       return new BilinearInterpolator();
-    else if (name == "bicubic")
+    else if (name == "cubic")
       return new BicubicInterpolator();
     else
       throw std::runtime_error("Undeclared interpolator requested: " + name);
@@ -24,8 +25,9 @@ namespace LHAPDF {
 
   /// Extrapolator factory
   static Extrapolator* createExtrapolator(const std::string& name) {
+    /// @todo Convert name to lower case for comparisons
     if (name == "nearest")
-      return new NearestExtrapolator();
+      return new NearestPointExtrapolator();
     else
       throw std::runtime_error("Undeclared extrapolator requested: " + name);
   }

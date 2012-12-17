@@ -14,37 +14,30 @@ namespace LHAPDF {
   public:
 
     /// Destructor to allow inheritance
-    virtual ~Interpolator() {};
+    virtual ~Interpolator() { }
 
-    /// Bind to PDFGrid.
-    ///
-    /// \param pdf the PDFGrid to bind
-    virtual void bind(const PDFGrid& pdf) { }
+    /// Bind to a PDFGrid.
+    void bind(const PDFGrid* pdf) {
+      _pdf = pdf;
+    }
 
     /// Unbind from PDFGrid.
-    ///
-    /// \param pdf the PDFGrid to unbind
-    virtual void unbind(const PDFGrid& pdf) { }
+    void unbind() {
+      _pdf = 0;
+    }
 
     /// Interpolate a single-point in (x,Q).
-    ///
-    /// \param pdf the PDFGrid to interpolate
-    /// \param id the MC Parton ID
-    /// \param x the momentum fraction
-    /// \param q the energy scale
-    /// \return
-    virtual double interpolateQ(const PDFGrid& pdf, PID_t id, double x, double q) const {
-      return interpolateQ2(pdf, id, x, q*q);
+    virtual double interpolateXQ(PID_t id, double x, double q) const {
+      return interpolateQ2(_pdf, id, x, q*q);
     }
 
     /// Interpolate single-point in Q2.
-    ///
-    /// \param pdf the PDFGrid to interpolate
-    /// \param id the MC Parton ID
-    /// \param x the momentum fraction
-    /// \param q2 the squared energy scale
-    /// \return
-    virtual double interpolateQ2(const PDFGrid& pdf, PID_t id, double x, double q2) const = 0;
+    virtual double interpolateXQ2(PID_t id, double x, double q2) const = 0;
+
+
+  private:
+
+    const PDFGrid* _pdf;
 
   };
 

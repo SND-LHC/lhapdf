@@ -36,6 +36,7 @@ namespace LHAPDF {
 
     /// Destructor
     ~PDFGrid() {
+      /// @todo And delete the data grids!
       delete _interpolator;
       delete _extrapolator;
     }
@@ -52,7 +53,7 @@ namespace LHAPDF {
     /// @todo Or get the flavour list from the set?
     std::vector<PID_t> flavors() const {
       std::vector<PID_t> rtn;
-      for (std::map<PID_t, double*>::const_iterator i = _rawdata.begin(); i != _rawdata.end(); ++i) {
+      for (std::map<PID_t, double*>::const_iterator i = _ptdata.begin(); i != _ptdata.end(); ++i) {
         rtn.push_back(i->first);
       }
       return rtn;
@@ -78,28 +79,76 @@ namespace LHAPDF {
     /// @name Interpolators and extrapolators
     //@{
 
-    /// Sets the Interpolator to be used for interpolating between grid knots.
-    void setInterpolator(Interpolator* ipol);
-
-    /// Sets the default interpolator.
-    /// @todo Needed on public API? Just read from grid file.
-    void setDefaultInterpolator();
-
-    /// Sets the Extrapolator to be used for extrapolating outside the grid boundaries.
-    void setExtrapolator(Extrapolator* epol);
-
-    /// Sets the default extrapolator.
-    /// @todo Needed on public API? Just read from grid file.
-    void setDefaultExtrapolator();
-
-    /// Check of valid Interpolator.
-    bool hasInterpolator() const {
-      return _interpolator != 0;
+    /// @brief Set the interpolator by value
+    ///
+    /// The passed value must be a concrete instantiation of the Interpolator
+    /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
+    template <typename INTERPOLATOR>
+    void PDFGrid::setInterpolator(INTERPOLATOR ipol) {
+      _interpolator = new INTERPOLATOR(ipol);
+      _interpolator->bind(this);
     }
 
-    /// Check of valid Extrapolator.
-    bool hasExtrapolator() const {
-      return _extrapolator != 0;
+    /// @brief Set the interpolator by pointer
+    ///
+    /// This interpolator argument is exactly the one that will be used by this
+    /// PDFGrid: it will not be copied and the PDF takes ownership of the
+    /// pointer and will delete the interpolator when the PDF goes out of scope.
+    ///
+    /// @todo Use smart pointers?
+    void setInterpolator(Interpolator* ipol) {
+      _interpolator = ipol;
+      _interpolator->bind(this);
+    }
+
+    /// @brief Set the interpolator by name
+    ///
+    /// Use the interpolator specified by the given name, as passed to the
+    /// createInterpolator factory function.
+    void setInterpolator(const std::string& ipolname) {
+      setInterpolator(createInterpolator(ipolname));
+    }
+
+    /// Get the current interpolator (ownership remains with the PDFGrid).
+    const Interpolator* interpolator() const {
+      return _interpolator;
+    }
+
+
+
+    /// @brief Set the extrapolator by value
+    ///
+    /// The passed value must be a concrete instantiation of the Extrapolator
+    /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
+    template <typename EXTRAPOLATOR>
+    void PDFGrid::setExtrapolator(EXTRAPOLATOR xpol) {
+      _extrapolator = new EXTRAPOLATOR(xpol);
+      _extrapolator->bind(this);
+    }
+
+    /// @brief Set the extrapolator by pointer
+    ///
+    /// This extrapolator argument is exactly the one that will be used by this
+    /// PDFGrid: it will not be copied and the PDF takes ownership of the
+    /// pointer and will delete the extrapolator when the PDF goes out of scope.
+    ///
+    /// @todo Use smart pointers?
+    void setExtrapolator(Extrapolator* xpol) {
+      _extrapolator = xpol;
+      _extrapolator->bind(this);
+    }
+
+    /// @brief Set the extrapolator by name
+    ///
+    /// Use the extrapolator specified by the given name, as passed to the
+    /// createExtrapolator factory function.
+    void setExtrapolator(const std::string& xpolname) {
+      setExtrapolator(createExtrapolator(xpolname));
+    }
+
+    /// Get the current extrapolator (ownership remains with the PDFGrid).
+    const Extrapolator* extrapolator() const {
+      return _extrapolator;
     }
 
     //@}
@@ -108,7 +157,7 @@ namespace LHAPDF {
 
     /// Loads the given member by path to the member grid file.
     /// @todo Also need loading by filename, and by set name + member ID
-    static PDFGrid* load( PDFGrid*, const YAML::Node&, std::ifstream& );
+    static PDFGrid* load(PDFGrid*, const YAML::Node&, std::ifstream&);
 
 
 
@@ -141,17 +190,17 @@ namespace LHAPDF {
     }
 
     /// Get the raw xf(x,Q2) data points
-    const double* rawdata(PID_t id) const {
+    const double* ptdata(PID_t id) const {
       if (!hasPID(id)) {
         std::stringstream error;
         error << "Undefined particle ID requested: " << id;
         throw std::runtime_error(error.str());
       }
-      return _rawdata.find(id)->second;
+      return _ptdata.find(id)->second;
     }
 
     /// @brief Transform a (ix, iQ2) pair into a 1D "raw" index
-    size_t rawindex(size_t ix, size_t iq2) const {
+    size_t ptindex(size_t ix, size_t iq2) const {
       if (ix >= xKnots().size()) throw std::runtime_error("Invalid x index");
       if (iq2 >= q2Knots().size()) throw std::runtime_error("Invalid Q2 index");
       return ix + iq2 * xKnots().size();
@@ -166,7 +215,7 @@ namespace LHAPDF {
     AxisKnots _xknots, _q2knots;
 
     /// Raw data grids, indexed by flavour
-    std::map<PID_t, double*> _rawdata;
+    std::map<PID_t, double*> _ptdata;
 
     /// Associated interpolator
     Interpolator* _interpolator;

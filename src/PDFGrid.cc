@@ -13,55 +13,15 @@ using namespace std;
 namespace LHAPDF {
 
 
-  void PDFGrid::setInterpolator(Interpolator* ipol) {
-    _interpolator = ipol;
-    _interpolator->bind(*this);
-  }
-
-  void PDFGrid::setDefaultInterpolator() {
-    const string ipolname = metadata("Interpolator");
-    setInterpolator(createInterpolator(ipolname));
-  }
-
-  void PDFGrid::setExtrapolator(Extrapolator* xpol) {
-    _extrapolator = xpol;
-    _extrapolator->bind(*this);
-  }
-
-  void PDFGrid::setDefaultExtrapolator() {
-    const string xpolname = metadata("Extrapolator");
-    setExtrapolator(createExtrapolator(xpolname));
-  }
-
-
-  double PDFGrid::xfxQ2(PID_t id, double x, double q2 ) const {
-    /// @todo Move these first three checks into PDF: should *always* be called
-    // Physical x range check
-    if (!inPhysicalRangeX(x)) {
-      stringstream error;
-      error << "Unphysical x range given: " << x;
-      throw runtime_error( error.str() );
-    }
-    // Physical Q2 range check
-    if (!inPhysicalRangeQ2(q2)) {
-      stringstream error;
-      error << "Unphysical Q2 range given: " << q2;
-      throw runtime_error( error.str() );
-    }
-    // Undefined PIDs
-    if (!hasFlavor(id)) {
-      stringstream error;
-      error << "Undefined flavour requested: " << id;
-      throw runtime_error( error.str() );
-    }
-
-    // Decide whether to use interpolation or extrapolation
+  double PDFGrid::_xfxQ2(PID_t id, double x, double q2 ) const {
+    // Decide whether to use interpolation or extrapolation... the sanity checks
+    // are done in the public PDF::xfxQ2 function.
     if (inRangeXQ2(x, q2)) {
-      if (!hasInterpolator()) throw runtime_error("Undefined interpolator");
-      return _interpolator->interpolateQ2(*this, id, x, q2);
+      if (interpolator() == 0) throw runtime_error("Undefined interpolator");
+      return interpolator()->interpolateXQ2(*this, id, x, q2);
     } else {
-      if (!hasExtrapolator()) throw runtime_error("Undefined extrapolator");
-      return _extrapolator->extrapolateQ2(*this, id, x, q2);
+      if (extrapolator() == 0) throw runtime_error("Undefined extrapolator");
+      return extrapolator()->extrapolateXQ2(*this, id, x, q2);
     }
   }
 
@@ -80,12 +40,13 @@ namespace LHAPDF {
 
   PDFGrid* PDFGrid::load( PDFGrid* grid, const YAML::Node& head, ifstream& file ) {
     // Parse grid knots
+    /// @todo Replace with a special vector<double> specialisation of PDF::metadata()
     for (YAML::Iterator xsit = head["Xs"].begin(); xsit != head["Xs"].end(); ++xsit) {
       double x;
       (*xsit) >> x;
       grid->_xknots.push_back(x);
     }
-
+    /// @todo Replace with a special vector<double> specialisation of PDF::metadata()
     for (YAML::Iterator q2sit = head["Q2s"].begin(); q2sit != head["Q2s"].end(); ++q2sit) {
       double q2;
       (*q2sit) >> q2;
@@ -93,23 +54,24 @@ namespace LHAPDF {
     }
 
     // Parse grid data
-    // Allocate flavor data
-    vector<PID_t>::const_iterator piditer = grid->_set->flavors().begin();
-    for( ; piditer != grid->_set->flavors().end(); ++piditer ) {
-      grid->flavors[*piditer] = new double[grid->xKnots().size() * grid->q2Knots().size()];
+    // Allocate function point arrays
+
+    for (vector<PID_t>::const_iterator fl = grid->flavors().begin(); fl != grid->flavors().end(); ++fl) {
+      /// @todo Remember to call delete[] when destructing...
+      grid->_ptdata[*fl] = new double[grid->xKnots().size() * grid->q2Knots().size()];
     }
 
     // Parse grid lines
-    unsigned int cline = 0;
-    for(; cline < grid->xKnots().size()*grid->q2Knots().size(); ++cline ) {
+    size_t cline = 0;
+    for (; cline < grid->xKnots().size()*grid->q2Knots().size(); ++cline) {
       // Read a line
-      if( !file.good() ) {
+      if (!file.good()) {
         stringstream error;
         error << "ifstream ran out of data @ " << cline;
-        throw runtime_error( error.str() );
+        throw runtime_error(error.str());
       }
       string line;
-      getline( file, line );
+      getline(file, line);
 
       // Parsing individual grid line
       const char* cstr = line.c_str();
@@ -121,15 +83,18 @@ namespace LHAPDF {
       token = strtok_r( str, " ", &prog );
       while( token != NULL ) {
         // Process token
-        grid->flavors[grid->_set->flavors()[flavor]][cline] = atof( token );
+        grid->_ptdata[grid->_set->flavors()[flavor]][cline] = atof( token );
         token = strtok_r( NULL, " ", &prog );
         ++flavor;
       }
     }
 
     // Set default inter/extra/polators
-    grid->setDefaultInterpolator();
-    grid->setDefaultExtrapolator();
+    /// @todo What if these keys aren't defined? Require that they are and throw helpfully
+    const string ipolname = metadata("Interpolator");
+    grid->setInterpolator(ipolname);
+    const string xpolname = metadata("Extrapolator");
+    grid->setExtrapolator(xpolname);
 
     return grid;
   }
