@@ -1,3 +1,11 @@
+2013-01-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Major restructuring of the API: lots of subtle problems with the
+	first attempt, and room for improvement. Painful, but worth the
+	reworking to get it right. Lots left to do... see the TODO and
+	DESIGN files for the ideas and tasks.
+
 2012-10-22  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Start of autotools build system on top of initial summer student work by Martin and Steve.
+	* Start of autotools build system on top of initial summer student
+	work by Martin and Steve.

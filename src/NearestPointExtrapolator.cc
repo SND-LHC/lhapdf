@@ -1,13 +1,15 @@
-#include "LHAPDF/Nearest.h"
+#include "LHAPDF/NearestPointExtrapolator.h"
 #include "LHAPDF/PDFGrid.h"
 
 namespace LHAPDF {
 
 
-  double NearestExtrapolator::extrapolateQ2( const PDFGrid& grid, PID_t id, const X_t x, const Q2_t q2 ) const {
-    size_t xidx, q2idx;
-    grid.lookupClosest( x, q2, xidx, q2idx );
-    return grid.getPIDData(id)[grid.index(xidx, q2idx)];
+  double NearestPointExtrapolator::extrapolateXQ2(PID_t id, double x, double q2) const {
+    /// @todo Functionality needs to be re-added to PDFGrid... or implemented here.
+    pair<size_t, size_t> idx = pdf()->lookupClosest(x, q2);
+    xidx = idx.first;
+    q2idx = idx.second;
+    return pdf()->getPIDData(id)[pdf()->ptindex(xidx, q2idx)];
   }
 
 

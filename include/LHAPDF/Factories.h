@@ -4,6 +4,7 @@
 #include "LHAPDF/BilinearInterpolator.h"
 #include "LHAPDF/BicubicInterpolator.h"
 #include "LHAPDF/NearestPointExtrapolator.h"
+#include "boost/algorithm/string.hpp"
 #include <string>
 #include <sstream>
 #include <stdexcept>
@@ -13,23 +14,25 @@ namespace LHAPDF {
 
   /// Interpolator factory
   static Interpolator* createInterpolator(const std::string& name) {
-    /// @todo Convert name to lower case for comparisons
-    if (name == "linear")
+    // Convert name to lower case for comparisons
+    const std::string iname = boost::to_lower_copy(name);
+    if (iname == "linear")
       return new BilinearInterpolator();
-    else if (name == "cubic")
+    else if (iname == "cubic")
       return new BicubicInterpolator();
     else
-      throw std::runtime_error("Undeclared interpolator requested: " + name);
+      throw FactoryError("Undeclared interpolator requested: " + name);
   }
 
 
   /// Extrapolator factory
   static Extrapolator* createExtrapolator(const std::string& name) {
-    /// @todo Convert name to lower case for comparisons
-    if (name == "nearest")
+    // Convert name to lower case for comparisons
+    const std::string iname = boost::to_lower_copy(name);
+    if (iname == "nearest")
       return new NearestPointExtrapolator();
     else
-      throw std::runtime_error("Undeclared extrapolator requested: " + name);
+      throw FactoryError("Undeclared extrapolator requested: " + name);
   }
 
 

@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 using namespace LHAPDF;
+using namespace std;
 
 
 /// @todo Rewrite this testing to have separate programs for each LHAPDF sampling,
@@ -20,24 +21,24 @@ int main(int argc, const char * argv[]) {
   LHAPDF::initPDFSetByName( "MSTW2008lo90cl_nf3.LHgrid" );
   LHAPDF::initPDF( 0 );
 
-  std::cout << "Loaded lhapdfv5..." << std::endl;
+  cout << "Loaded lhapdfv5..." << endl;
 
   PDFSet* set = PDFSet::loadByName( "MSTW2008lo90cl_nf3" );
   //PDFSet* set = PDFSet::load("/Users/Martin/Desktop/lhapdfv6/tests/constant/");
   //PDFSet* set = PDFSet::load("/Users/Martin/Desktop/lhapdfv6/tests/curved/");
-  std::cout << "Loaded set" << std::endl;
+  cout << "Loaded set" << endl;
   PDF& pdf = set->getMember( 0 );
 
   PDFGrid* grid = dynamic_cast<PDFGrid*>(&pdf);
   if( grid == NULL ) return -1;
 
-  std::cout << "Loaded lhapdfv6..." << std::endl;
+  cout << "Loaded lhapdfv6..." << endl;
 
-  AxisKnots xs, q2s;
+  vector<double> xs, q2s;
   xs = grid->getXKnots();
   q2s = grid->getQ2Knots();
 
-  std::cout << "SIZE: " << xs.size() << " " << q2s.size() << std::endl;
+  cout << "SIZE: " << xs.size() << " " << q2s.size() << endl;
 
   //BilinearInterpolator bil;
   //grid->setInterpolator( &bil );
@@ -45,13 +46,13 @@ int main(int argc, const char * argv[]) {
   ErrExtrapolator extra;
   grid->setExtrapolator( &extra );
 
-  std::cout << "Starting..." << std::endl;
+  cout << "Starting..." << endl;
 
   const PIDdata data = grid->getPIDData( 1 );
-  std::cout << "data" << std::endl;
+  cout << "data" << endl;
 
   /*for( unsigned int idx = 0; idx < xs.size() * q2s.size(); ++idx ) {
-    std::cout << data[idx] << std::endl;
+    cout << data[idx] << endl;
     }*/
 
   //Accuracy
@@ -92,7 +93,7 @@ int main(int argc, const char * argv[]) {
       //}
     }
 
-    std::cout << std::endl;
+    cout << endl;
   }
 
   /*double x = 0.75;
@@ -149,7 +150,7 @@ int main(int argc, const char * argv[]) {
     printf( "@x %10e | @q2 %10e | %% %12f\n", x, q2, p );
     }
 
-    std::cout << std::endl;
+    cout << endl;
     }*/
 
   /*srand( 123456 );

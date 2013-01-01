@@ -17,17 +17,17 @@ namespace LHAPDF {
     // Decide whether to use interpolation or extrapolation... the sanity checks
     // are done in the public PDF::xfxQ2 function.
     if (inRangeXQ2(x, q2)) {
-      if (interpolator() == 0) throw runtime_error("Undefined interpolator");
-      return interpolator()->interpolateXQ2(*this, id, x, q2);
+      if (interpolator() == 0) throw GridError("Undefined interpolator");
+      return interpolator()->interpolateXQ2(id, x, q2);
     } else {
-      if (extrapolator() == 0) throw runtime_error("Undefined extrapolator");
-      return extrapolator()->extrapolateXQ2(*this, id, x, q2);
+      if (extrapolator() == 0) throw GridError("Undefined extrapolator");
+      return extrapolator()->extrapolateXQ2(id, x, q2);
     }
   }
 
 
 
-  inline void tokenize(const string& line, AxisKnots& knots) {
+  inline void tokenize(const string& line, vector<double>& knots) {
     size_t start = 0;
     size_t pos = 0;
     do {
@@ -38,15 +38,17 @@ namespace LHAPDF {
   }
 
 
-  PDFGrid* PDFGrid::load( PDFGrid* grid, const YAML::Node& head, ifstream& file ) {
+
+  /// @todo Should just be a filename as argument: why expose YAML or pass a PDFGrid?
+  PDFGrid* PDFGrid::load( PDFGrid* grid, const YAML::Node& head, ifstream& file) {
     // Parse grid knots
-    /// @todo Replace with a special vector<double> specialisation of PDF::metadata()
+    /// @todo Replace with a special vector<double> specialisation of PDF::metadata()?
     for (YAML::Iterator xsit = head["Xs"].begin(); xsit != head["Xs"].end(); ++xsit) {
       double x;
       (*xsit) >> x;
       grid->_xknots.push_back(x);
     }
-    /// @todo Replace with a special vector<double> specialisation of PDF::metadata()
+    /// @todo Replace with a special vector<double> specialisation of PDF::metadata()?
     for (YAML::Iterator q2sit = head["Q2s"].begin(); q2sit != head["Q2s"].end(); ++q2sit) {
       double q2;
       (*q2sit) >> q2;
@@ -54,7 +56,7 @@ namespace LHAPDF {
     }
 
     // Parse grid data
-    // Allocate function point arrays
+    // Allocate knot arrays
 
     for (vector<PID_t>::const_iterator fl = grid->flavors().begin(); fl != grid->flavors().end(); ++fl) {
       /// @todo Remember to call delete[] when destructing...
@@ -68,33 +70,34 @@ namespace LHAPDF {
       if (!file.good()) {
         stringstream error;
         error << "ifstream ran out of data @ " << cline;
-        throw runtime_error(error.str());
+        throw ReadError(error.str());
       }
       string line;
       getline(file, line);
 
       // Parsing individual grid line
       const char* cstr = line.c_str();
-      char str[line.size()+1];  /// @todo Not ISO C++
+      char str[line.size()+1];  /// @todo Not ISO C++. Fix!
       memcpy( str, cstr, (line.size()+1)*sizeof(char) );
 
       char *token, *prog;
-      unsigned int flavor=0;
+      unsigned int flavor = 0;
       token = strtok_r( str, " ", &prog );
-      while( token != NULL ) {
+      while (token != NULL) {
         // Process token
-        grid->_ptdata[grid->_set->flavors()[flavor]][cline] = atof( token );
-        token = strtok_r( NULL, " ", &prog );
+        /// @todo Massively fix and improve...
+        // AB tmp disable: grid->_ptdata[grid->_set->flavors()[flavor]][cline] = atof( token );
+        token = strtok_r(NULL, " ", &prog);
         ++flavor;
       }
     }
 
-    // Set default inter/extra/polators
-    /// @todo What if these keys aren't defined? Require that they are and throw helpfully
-    const string ipolname = metadata("Interpolator");
-    grid->setInterpolator(ipolname);
-    const string xpolname = metadata("Extrapolator");
-    grid->setExtrapolator(xpolname);
+    // Set default inter/extrapolators
+    /// @todo Re-enable when the info system is sorted out
+    // const string ipolname = metadata("Interpolator");
+    // grid->setInterpolator(ipolname);
+    // const string xpolname = metadata("Extrapolator");
+    // grid->setExtrapolator(xpolname);
 
     return grid;
   }

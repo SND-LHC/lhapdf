@@ -26,9 +26,8 @@ namespace LHAPDF {
 
 
     /// Constructor
-    PDFGrid(PDFSet* setp = 0)
-      : //_set(setp), /// @todo Why didn't this work?!
-        _interpolator(0) _extrapolator(0)
+    PDFGrid()
+      : _interpolator(0), _extrapolator(0)
     {
       /// @todo Parse metadata file, create set if needed, set up alpha_s object, etc.
     }
@@ -40,10 +39,6 @@ namespace LHAPDF {
       delete _interpolator;
       delete _extrapolator;
     }
-
-
-    /// @brief PDF xf(x,Q2) value
-    double xfxQ2( PID_t, double x, double q2 ) const;
 
 
     /// Metadata
@@ -84,7 +79,7 @@ namespace LHAPDF {
     /// The passed value must be a concrete instantiation of the Interpolator
     /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
     template <typename INTERPOLATOR>
-    void PDFGrid::setInterpolator(INTERPOLATOR ipol) {
+    void setInterpolator(INTERPOLATOR ipol) {
       _interpolator = new INTERPOLATOR(ipol);
       _interpolator->bind(this);
     }
@@ -121,7 +116,7 @@ namespace LHAPDF {
     /// The passed value must be a concrete instantiation of the Extrapolator
     /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
     template <typename EXTRAPOLATOR>
-    void PDFGrid::setExtrapolator(EXTRAPOLATOR xpol) {
+    void setExtrapolator(EXTRAPOLATOR xpol) {
       _extrapolator = new EXTRAPOLATOR(xpol);
       _extrapolator->bind(this);
     }
@@ -165,12 +160,12 @@ namespace LHAPDF {
     //@{
 
     /// Return knot values in x
-    const AxisKnots& xKnots() const {
+    const std::vector<double>& xKnots() const {
       return _xknots;
     }
 
     /// Return knot values in Q2
-    const AxisKnots& q2Knots() const {
+    const std::vector<double>& q2Knots() const {
       return _q2knots;
     }
 
@@ -191,30 +186,37 @@ namespace LHAPDF {
 
     /// Get the raw xf(x,Q2) data points
     const double* ptdata(PID_t id) const {
-      if (!hasPID(id)) {
+      if (!hasFlavor(id)) {
         std::stringstream error;
         error << "Undefined particle ID requested: " << id;
-        throw std::runtime_error(error.str());
+        throw FlavorError(error.str());
       }
       return _ptdata.find(id)->second;
     }
 
     /// @brief Transform a (ix, iQ2) pair into a 1D "raw" index
     size_t ptindex(size_t ix, size_t iq2) const {
-      if (ix >= xKnots().size()) throw std::runtime_error("Invalid x index");
-      if (iq2 >= q2Knots().size()) throw std::runtime_error("Invalid Q2 index");
+      if (ix >= xKnots().size()) throw GridError("Invalid x index");
+      if (iq2 >= q2Knots().size()) throw GridError("Invalid Q2 index");
       return ix + iq2 * xKnots().size();
     }
 
     //@}
 
 
+  protected:
+
+    /// @brief Get PDF xf(x,Q2) value
+    double _xfxQ2(PID_t, double x, double q2) const;
+
+
   private:
 
     /// Interpolation grid anchor point lists in x and Q2
-    AxisKnots _xknots, _q2knots;
+    std::vector<double> _xknots, _q2knots;
 
     /// Raw data grids, indexed by flavour
+    /// @todo Need an intermediate type for the subgrids
     std::map<PID_t, double*> _ptdata;
 
     /// Associated interpolator

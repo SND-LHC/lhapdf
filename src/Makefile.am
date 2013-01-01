@@ -3,10 +3,11 @@ lib_LTLIBRARIES = libLHAPDF.la
 # PATHFINDCODE = getdatapath.cc binreloc.c
 
 libLHAPDF_la_SOURCES = \
-  PDFGrid.cc PDFSet.cc \
-  BicubicInterpolator.cc BilinearInterpolator.cc \
-  NearestPointExtrapolator.cc \
-  AlphaS.cc
+  PDFGrid.cc \
+  BicubicInterpolator.cc BilinearInterpolator.cc
+# AlphaS.cc
+# NearestPointExtrapolator.cc
+#PDFSet.cc
 
 # if ENABLE_LHAGLUE
 # libLHAPDFCore_la_SOURCES += LHAGlue.cc

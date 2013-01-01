@@ -55,7 +55,7 @@ namespace LHAPDF {
       // Give back human error
       std::stringstream error;
       error << "Failed to open: " << info.str();
-      throw std::runtime_error( error.str() );
+      throw ReadError( error.str() );
     }
 
     std::cout << "YAML start set" << std::endl;

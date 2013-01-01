@@ -17,18 +17,20 @@ namespace LHAPDF {
     virtual ~Interpolator() { }
 
     /// Bind to a PDFGrid.
-    void bind(const PDFGrid* pdf) {
-      _pdf = pdf;
-    }
+    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    void bind(const PDFGrid* pdf) { _pdf = pdf; }
 
     /// Unbind from PDFGrid.
-    void unbind() {
-      _pdf = 0;
-    }
+    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    void unbind() { _pdf = 0; }
+
+    /// Get the associated PDFGrid.
+    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    const PDFGrid* pdf() const { return _pdf; }
 
     /// Interpolate a single-point in (x,Q).
     virtual double interpolateXQ(PID_t id, double x, double q) const {
-      return interpolateQ2(_pdf, id, x, q*q);
+      return interpolateXQ2(id, x, q*q);
     }
 
     /// Interpolate single-point in Q2.

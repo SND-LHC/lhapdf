@@ -16,40 +16,32 @@ namespace LHAPDF {
     /// Destructor to allow inheritance
     virtual ~Extrapolator() { }
 
-
-    /// Bind to PDFGrid.
-    ///
-    /// \param pdf the PDFGrid to bind
-    virtual void bind(const PDFGrid& pdf) { }
-
+    /// Bind to a PDFGrid.
+    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    void bind(const PDFGrid* pdf) { _pdf = pdf; }
 
     /// Unbind from PDFGrid.
-    ///
-    /// \param pdf the PDFGrid to unbind
-    virtual void unbind( const PDFGrid& pdf) { }
+    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    void unbind() { _pdf = 0; }
 
+    /// Get the associated PDFGrid.
+    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    const PDFGrid* pdf() const { return _pdf; }
 
     /// Extrapolate a single-point in (x,Q).
-    ///
-    /// \param Grid the PDFGrid to extrapolate
-    /// \param ID the MC Parton ID
-    /// \param X the momentum fraction
-    /// \param Q the energy scale
-    /// \return
-    double extrapolateQ(const PDFGrid& pdf, PID_t id, double x, double q) const {
-      return extrapolateQ2( pdf, id, x, q*q );
+    double extrapolateXQ(PID_t id, double x, double q) const {
+      return extrapolateXQ2(id, x, q*q );
     }
 
     /// Extrapolate a single-point in (x,Q2).
-    ///
-    /// \param Grid the PDFGrid to extrapolate
-    /// \param ID the MC Parton ID
-    /// \param X the momentum fraction
-    /// \param Q2 the squared energy scale
-    /// \return
-    virtual double extrapolateQ2( const PDFGrid&, PID_t, double x, double q2 ) const = 0;
+    virtual double extrapolateXQ2(PID_t, double x, double q2) const = 0;
 
     /// @todo The all-PID version of extrapolateQ and Q2
+
+
+  private:
+
+    const PDFGrid* _pdf;
 
   };
 

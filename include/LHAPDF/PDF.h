@@ -11,10 +11,6 @@
 namespace LHAPDF {
 
 
-  // Forward declaration
-  class PDFSet;
-
-
   /// @brief PDF is the general interface for access to parton density information.
   ///
   /// The PDF interface declares the general form of all PDF types, such as Grid based or analytic.
@@ -23,11 +19,6 @@ namespace LHAPDF {
 
     /// Virtual destructor, to allow inheritance
     virtual ~PDF() { }
-
-    /// Access the PDFSet
-    const PDFSet* pdfSet() const {
-      return _set;
-    }
 
 
     /// @name
@@ -47,17 +38,17 @@ namespace LHAPDF {
       // Physical x range check
       if (!inPhysicalRangeX(x)) {
         std::string err = "Unphysical x given: " + boost::lexical_cast<std::string>(x);
-        throw runtime_error(err);
+        throw RangeError(err);
       }
       // Physical Q2 range check
       if (!inPhysicalRangeQ2(q2)) {
         std::string err = "Unphysical Q2 given: " + boost::lexical_cast<std::string>(q2);
-        throw runtime_error(err);
+        throw RangeError(err);
       }
       // Undefined PIDs
       if (!hasFlavor(id)) {
         std::string err = "Undefined flavour requested: " + boost::lexical_cast<std::string>(id);
-        throw runtime_error(err);
+        throw FlavorError(err);
       }
       // Call the delegated method in the concrete PDF object to calculate the in-range value
       return _xfxQ2(id, x, q2);
@@ -237,58 +228,57 @@ namespace LHAPDF {
       return _metadict;
     }
 
-    /// Get a specific metadata key as a string
-    std::string metadata(const std::string& key) const {
-      std::map<std::string, std::string>::const_iterator data = _metadict.find(key);
-      if (data != _metadict.end()) {
-        /// @todo If metadata not found on the PDF, try the parent PDFSet before giving up
-        data = pdfSet().metadata(key);
-        // throw std::runtime_error("Metadata for key: " + key + " not found.");
-      }
-      return data->second;
-    }
+    /// @todo Move this metadata stuff to being handled only by the Info system (but cascading)
+    // /// Get a specific metadata key as a string
+    // std::string metadata(const std::string& key) const {
+    //   std::map<std::string, std::string>::const_iterator data = _metadict.find(key);
+    //   if (data != _metadict.end()) {
+    //     /// @todo If metadata not found on the PDF, try the parent PDFSet before giving up
+    //     data = pdfSet().metadata(key);
+    //     // throw std::MetadataError("Metadata for key: " + key + " not found.");
+    //   }
+    //   return data->second;
+    // }
+    //
+    // /// Get a specific metadata key, with automatic type conversion
+    // template <typename T>
+    // T metadata(const std::string& key) const {
+    //   std::string s = metadata(key);
+    //   return boost::lexical_cast<T>(s);
+    // }
 
-    /// Get a specific metadata key, with automatic type conversion
-    template <typename T>
-    T metadata(const std::string& key) const {
-      std::string s = metadata(key);
-      return boost::lexical_cast<T>(s);
-    }
+    // /// Get the name of this PDF member
+    // std::string name() const {
+    //   return metadata("Name");
+    // }
 
-    /// Get the name of this PDF set member
-    std::string name() const {
-      return metadata("Name");
-    }
+    // /// Get the ID code of this PDF member
+    // size_t memberID() const {
+    //   return metadata<size_t>("ID");
+    // }
 
-    /// Get the ID code of this PDF set member
-    size_t memberID() const {
-      return metadata<size_t>("ID");
-    }
+    // /// Get the type of PDF (LO, NLO, etc.)
+    // int qcdOrder() const {
+    //   return metadata<int>("QCDOrder");
+    // }
 
-    /// Get the type of PDF (LO, NLO, etc.)
-    int qcdOrder() const {
-      return metadata<int>("QCDOrder");
-    }
-
-    /// Get the type of PDF error set (Hessian, replicas, etc.)
-    std::string errorType() const {
-      return metadata("ErrorType");
-    }
+    // /// Get the type of PDF error set (Hessian, replicas, etc.)
+    // std::string errorType() const {
+    //   return metadata("ErrorType");
+    // }
 
     //@}
 
 
     // /// Load PDF
     // /// @todo What?
-    // static PDF* load(const PDFSet*, const std::string& );
+    // static PDF* load(const std::string& );
 
 
   protected:
 
-    /// Pointer back to the containing set
-    PDFSet* _set;
-
     /// Metadata dictionary
+    /// @todo Replace with a PDFInfo/Info pointer
     std::map<std::string, std::string> _metadict;
 
   };
