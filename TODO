@@ -3,7 +3,9 @@ LHAPDF6 TODO list
 
 NOW
 
-* Rename "knots" to "points" or "anchors"
+* Sort out info system and relationship to PDFs.
+
+* Update grid parsing and format.
 
 * Replace set/PDF allocation nightmare with shared_ptrs, etc.
 
@@ -14,6 +16,8 @@ NOW
 
 
 FOR BETA 1
+
+* Add PDF factory
 
 * Design & implement sub-grid "patch" system
    Implement in 1D first, then integrate into (x,Q) interpolation. Subgrids
