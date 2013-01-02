@@ -19,3 +19,6 @@ pkginclude_HEADERS = \
   BilinearInterpolator.h \
   ErrExtrapolator.h
 #  PDFSet.h
+
+noinst_HEADERS = \
+  PDFInfo.h

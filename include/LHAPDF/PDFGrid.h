@@ -4,13 +4,17 @@
 #include "LHAPDF/PDFSet.h"
 #include "LHAPDF/Types.h"
 #include "LHAPDF/Factories.h"
+#include "boost/multi_array.hpp"
+#include "yaml-cpp/yaml.h" //< @todo Move to info header
+/// @todo Are the following not already indirectly included?
 #include <vector>
-#include <algorithm>
 #include <map>
+#include <cassert>
+/// @todo Are the following needed in this header?
+#include <algorithm>
 #include <cstdlib>
 #include <exception>
 #include <fstream>
-#include "yaml-cpp/yaml.h"
 
 namespace LHAPDF {
 
@@ -23,7 +27,6 @@ namespace LHAPDF {
   /// @brief A PDF defined via an interpolation grid
   class PDFGrid : public PDF {
   public:
-
 
     /// Constructor
     PDFGrid()
@@ -151,9 +154,10 @@ namespace LHAPDF {
 
 
     /// Loads the given member by path to the member grid file.
-    /// @todo Also need loading by filename, and by set name + member ID
-    static PDFGrid* load(PDFGrid*, const YAML::Node&, std::ifstream&);
-
+    /// @todo Also need loading by set name + member ID
+    /// @todo Clarify the ownership of the returned pointer
+    static PDFGrid load(const std::string& filepath);
+    static PDFGrid load(std::istream& file);
 
 
     /// @name Info about the grid, and access to the raw data points
@@ -210,6 +214,51 @@ namespace LHAPDF {
     double _xfxQ2(PID_t, double x, double q2) const;
 
 
+    /// @name Internal storage
+    //@{
+
+    /// We use "array" to refer to the "raw" knot grid, while "grid" means a grid-based PDF.
+    /// The "1F" means that this is a single-flavour array
+    class KnotArray1F {
+    public:
+      // Use the Boost multi_array for efficiency and ease of indexing
+      typedef boost::multi_array<double, 2> valarray;
+
+      KnotArray1F() {} //< for std::map insertability
+
+      KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots, const valarray& xfs)
+        : _xs(xknots), _q2s(q2knots), _xfs(xfs)
+      { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
+
+      KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots)
+        : _xs(xknots), _q2s(q2knots), _xfs(boost::extents[xknots.size()][q2knots.size()])
+      { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
+
+      const std::vector<double>& xs() const { return _xs; }
+      void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
+      const std::vector<double>& q2s() const { return _q2s; }
+      void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
+      const valarray& xfs() const { return _xfs; }
+      valarray& xfs() { return _xfs; }
+      void setxfs(const valarray& xfs) { _xfs = xfs; }
+
+      /// @todo Add index converter and finder methods
+
+    private:
+      std::vector<double> _xs, _q2s;
+      valarray _xfs;
+    };
+
+
+    /// Typedef for a collection of KnotArray1F accessed by PID code
+    /// The "NF" means "> 1 flavour", cf. the KnotArray1F name for a single flavour data array.
+    typedef std::map<PID_t, KnotArray1F> KnotArrayNF;
+
+    //@}
+
+
   private:
 
     /// Interpolation grid anchor point lists in x and Q2
@@ -218,6 +267,9 @@ namespace LHAPDF {
     /// Raw data grids, indexed by flavour
     /// @todo Need an intermediate type for the subgrids
     std::map<PID_t, double*> _ptdata;
+
+    /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
+    std::map<double, KnotArrayNF> _knotarrays;
 
     /// Associated interpolator
     Interpolator* _interpolator;

@@ -1,3 +1,11 @@
+2013-01-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding some of the necessary infrastructure for subgrids, and
+	rewriting the grid format parser to handle separated subgrid
+	blocks. Boost.MultiArray being used for the internal storage in
+	place of the dynamically allocated C arrays. Metadata methods are
+	currently disabled for porting to the cascading Info system.
+
 2013-01-01  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Major restructuring of the API: lots of subtle problems with the

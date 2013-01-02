@@ -4,6 +4,22 @@ LHAPDF6 DESIGN
 The core element of the API is the PDF interface, representing a single set member
 for several flavours.
 
+Note that the historical/community terminology for levels of "PDF" is rather
+vague, leading to frequent confusion. The term "PDF" may, depending on the
+speaker, mean any of the following:
+ - a single parton density function for one parton flavour;
+ - a PDF set member, consisting of a correlated group of parton densities, one for each parton flavour;
+ - a set of PDF members, usually reflecting uncertainties encountered in PDF construction.
+The second of these, the "member", is the most commonly used PDF object as it
+is usual to choose a point in (x,Q2) space and then use the parton density values
+for each parton flavour to determine the outcome of a Markovian process step.
+  However, the name "member" is not in active usage for this concept. Hence in
+this version of LHAPDF we use the term "PDF" to mean a member, and "PDF set" to
+mean a collection of these. No explicit term is defined for a single-flavour PDF
+but we tentatively reserve the terms 1FPDF and PDF1F (the latter for C/C++ validity)
+for this purpose.
+  * Review this situation: should we rename LHAPDF::PDF -> LHAPDF::Member?
+
 PDF objects are allocated dynamically (either locally or on the heap). None of the
 static memory issues from Fortran LHAPDF. Potential for use of singleton
 allocation based on unique data paths.
@@ -14,6 +30,10 @@ addition of new handling code, nor even a new release of LHAPDF.
 
 Flavours are identified by standard PDG ID codes. A PDF can contain arbitrarily
 many flavours.
+
+There is (in the current envisioning) no explicit type specified for a PDF set,
+but the class name LHAPDF::PDFSet is reserved for possible future use.
+  * TODO: Explicitly add this type to the API to block user attempts to define it?
 
 Allow use of a "return zero" treatment for unsupported flavours, based on
 global, set-level, or member-level configuration.
@@ -41,8 +61,10 @@ this section ends with a sequence of three dashes (---) on a line of their own.
 The following file content is in a grid format uniform to all PDF families: subgrids
 are delimited by more (---) line separators, and within each subgrid the first two
 lines are lists of the x and Q2 anchor values respectively used in that grid. The
-following lines are the values of the PDFs for each supported flavour. The flavours
-are specified as set (or member) metadata.
+following lines are the xf values of the PDFs for each supported flavour. The flavours
+are specified as set (or member) metadata, and the xf values are listed in increasing
+order of PDG ID code (e.g. usually -5..5, 21 or -6..6, 21 for the standard 5 or 6
+quark-flavour PDF).
   * TODO: Alternatively, format as "x Q2 f1 f2 f3 f4 ..."?
 Set-level metadata to be stored in a <setname>/meta.info file.
   * TODO: Or <setname>/<setname>.info?
