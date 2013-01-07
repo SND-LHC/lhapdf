@@ -11,10 +11,9 @@ namespace LHAPDF {
 
   /// Metadata base class for PDFs, PDF sets, or global configuration
   class Info {
-  protected:
-    Info() { }
-
   public:
+
+    Info() { }
 
     virtual ~Info() { }
 
@@ -49,15 +48,33 @@ namespace LHAPDF {
     }
 
 
-    /// Retrieve general metadata
-    const std::string& metadata(const std::string& key) const {
-      map<string, string>::const_iterator data = _metadata.find(key);
-      if (data == _metadata.end())
-        throw MetadataError("Metadata for key: " + key + " not found.");
-      return data->second;
+    static Info& config() {
+      static Info _cfg;
+      /// Read from $prefix/lhapdf.conf if it exists
+      string confpath = findFile("lhapdf.conf").native();
+      if (!confpath.empty()) _cfg.load(confpath);
+      return _cfg;
     }
 
-    /// Retrieve general metadata, with inline cast
+
+    /// Can this Info object return a value for the given key? (it may be defined non-locally)
+    bool has_key(const std::string& key) const {
+      return has_key_local(key) || Info::config().has_key_local(key);
+    }
+    /// Is a value defined for the given key on this specific object?
+    bool has_key_local(const std::string& key) const {
+      return _metadata.find(key) != _metadata.end();
+    }
+
+
+    /// Retrieve a metadata string by key name
+    const std::string& metadata(const std::string& key) const {
+      if (has_key_local(key)) return _metadata.find(key)->second; //< value is defined locally -- return that
+      if (this != &Info::config()) return Info::config().metadata(key); //< if this isn't the global Config, ask that
+      throw MetadataError("Metadata for key: " + key + " not found."); //< this is the global Config and key is still not known
+    }
+
+    /// Retrieve a metadata string by key name, with an inline type cast
     ///
     /// Specialisations are defined for unpacking of comma-separated lists of strings, ints, and doubles
     template <typename T>
@@ -66,13 +83,21 @@ namespace LHAPDF {
       return lexical_cast<T>(s);
     }
 
+    /// Set a keyed value entry
+    template <typename T>
+    void setMetadata(const std::string& key, const T& val) {
+      _metadata[key] = to_str(val);
+    }
+
+
   private:
 
     std::map<std::string, std::string> _metadata;
 
   };
 
-  /// @name Metadata function template specialisations
+
+  /// @name Info::metadata function template specialisations
   //@{
 
   template <>
@@ -104,12 +129,11 @@ namespace LHAPDF {
   //@}
 
 
-
   /// Global LHAPDF config
   class Config : public Info {
   public:
 
-    static Config& make() {
+    static Info& make() {
       static Config _cfg;
       /// Read from $prefix/lhapdf.conf if it exists
       string confpath = findFile("lhapdf.conf").native();
@@ -160,9 +184,11 @@ namespace LHAPDF {
 // Example program
 int main() {
   using namespace std;
-  const LHAPDF::Config& cfg = LHAPDF::Config::make();
+  const LHAPDF::Info& cfg = LHAPDF::Info::config();
   cout << cfg.metadata("Foo") << endl;
   cout << cfg.metadata("Flavors") << endl;
-  foreach (int f, cfg.metadata< vector<int> >("Flavors")) cout << f << endl;
+  vector<int> pids = cfg.metadata< vector<int> >("Flavors");
+  foreach (int f, pids) cout << f << endl;
+  cout << LHAPDF::to_str(pids) << endl;
   return 0;
 }

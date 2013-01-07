@@ -1,5 +1,8 @@
 2013-01-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding to_str variants for both single objects and for vectors
+	of objects which are convertible to string via lexical_cast.
+
 	* Adding the YAML parser operation to the Info class (and its subclasses).
 
 	* Removing Types.h in favour of split Utils.h and Exceptions.h
