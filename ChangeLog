@@ -1,3 +1,7 @@
+2013-01-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* include/LHAPDF/Paths.h: Adding path searching machinery (using Boost.Filesystem).
+
 2013-01-02  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding some of the necessary infrastructure for subgrids, and
