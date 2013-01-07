@@ -129,25 +129,25 @@ namespace LHAPDF {
   //@}
 
 
-  /// Global LHAPDF config
-  class Config : public Info {
-  public:
+  // /// Global LHAPDF config
+  // class Config : public Info {
+  // public:
 
-    static Info& make() {
-      static Config _cfg;
-      /// Read from $prefix/lhapdf.conf if it exists
-      string confpath = findFile("lhapdf.conf").native();
-      if (!confpath.empty()) _cfg.load(confpath);
-      return _cfg;
-    }
+  //   static Info& make() {
+  //     static Config _cfg;
+  //     /// Read from $prefix/lhapdf.conf if it exists
+  //     string confpath = findFile("lhapdf.conf").native();
+  //     if (!confpath.empty()) _cfg.load(confpath);
+  //     return _cfg;
+  //   }
 
-  };
+  // };
 
 
-  /// Metadata for PDF sets
-  class SetInfo : public Info {
-  public:
-  };
+  // /// Metadata for PDF sets
+  // class SetInfo : public Info {
+  // public:
+  // };
 
 
   /// Metadata for PDF members
@@ -181,14 +181,14 @@ namespace LHAPDF {
 }
 
 
-// Example program
-int main() {
-  using namespace std;
-  const LHAPDF::Info& cfg = LHAPDF::Info::config();
-  cout << cfg.metadata("Foo") << endl;
-  cout << cfg.metadata("Flavors") << endl;
-  vector<int> pids = cfg.metadata< vector<int> >("Flavors");
-  foreach (int f, pids) cout << f << endl;
-  cout << LHAPDF::to_str(pids) << endl;
-  return 0;
-}
+// // Example program
+// int main() {
+//   using namespace std;
+//   const LHAPDF::Info& cfg = LHAPDF::Info::config();
+//   cout << cfg.metadata("Foo") << endl;
+//   cout << cfg.metadata("Flavors") << endl;
+//   vector<int> pids = cfg.metadata< vector<int> >("Flavors");
+//   foreach (int f, pids) cout << f << endl;
+//   cout << LHAPDF::to_str(pids) << endl;
+//   return 0;
+// }
