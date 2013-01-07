@@ -58,43 +58,51 @@ namespace LHAPDF {
     }
 
     /// Retrieve general metadata, with inline cast
+    ///
+    /// Specialisations are defined for unpacking of comma-separated lists of strings, ints, and doubles
     template <typename T>
     T metadata(const std::string& key) const {
       const string& s = metadata(key);
       return lexical_cast<T>(s);
     }
-    template <>
-    std::vector<std::string> metadata(const std::string& key) const {
-      const string& s = metadata(key);
-      vector<string> rtn;
-      split(rtn, s, is_any_of(","), token_compress_on);
-      return rtn;
-    }
-    template <>
-    std::vector<int> metadata(const std::string& key) const {
-      const vector<string> strs = metadata< vector<string> >(key);
-      vector<int> rtn;
-      rtn.reserve(strs.size());
-      foreach (const string& s, strs) rtn.push_back( lexical_cast<int>(s) );
-      assert(rtn.size() == strs.size());
-      return rtn;
-    }
-    template <>
-    std::vector<double> metadata(const std::string& key) const {
-      const vector<string> strs = metadata< vector<string> >(key);
-      vector<double> rtn;
-      rtn.reserve(strs.size());
-      foreach (const string& s, strs) rtn.push_back( lexical_cast<double>(s) );
-      assert(rtn.size() == strs.size());
-      return rtn;
-    }
-
 
   private:
 
     std::map<std::string, std::string> _metadata;
 
   };
+
+  /// @name Metadata function template specialisations
+  //@{
+
+  template <>
+  std::vector<std::string> Info::metadata(const std::string& key) const {
+    const string& s = metadata(key);
+    vector<string> rtn;
+    split(rtn, s, is_any_of(","), token_compress_on);
+    return rtn;
+  }
+  template <>
+  std::vector<int> Info::metadata(const std::string& key) const {
+    const vector<string> strs = metadata< vector<string> >(key);
+    vector<int> rtn;
+    rtn.reserve(strs.size());
+    foreach (const string& s, strs) rtn.push_back( lexical_cast<int>(s) );
+    assert(rtn.size() == strs.size());
+    return rtn;
+  }
+  template <>
+  std::vector<double> Info::metadata(const std::string& key) const {
+    const vector<string> strs = metadata< vector<string> >(key);
+    vector<double> rtn;
+    rtn.reserve(strs.size());
+    foreach (const string& s, strs) rtn.push_back( lexical_cast<double>(s) );
+    assert(rtn.size() == strs.size());
+    return rtn;
+  }
+
+  //@}
+
 
 
   /// Global LHAPDF config
@@ -154,5 +162,7 @@ int main() {
   using namespace std;
   const LHAPDF::Config& cfg = LHAPDF::Config::make();
   cout << cfg.metadata("Foo") << endl;
+  cout << cfg.metadata("Flavors") << endl;
+  foreach (int f, cfg.metadata< vector<int> >("Flavors")) cout << f << endl;
   return 0;
 }
