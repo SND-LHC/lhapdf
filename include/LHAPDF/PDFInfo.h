@@ -50,8 +50,8 @@ namespace LHAPDF {
 
 
     /// Retrieve general metadata
-    std::string metadata( const std::string& key) const {
-      std::map<std::string, std::string>::const_iterator data = _metadata.find(key);
+    const std::string& metadata(const std::string& key) const {
+      map<string, string>::const_iterator data = _metadata.find(key);
       if (data == _metadata.end())
         throw MetadataError("Metadata for key: " + key + " not found.");
       return data->second;
@@ -59,12 +59,36 @@ namespace LHAPDF {
 
     /// Retrieve general metadata, with inline cast
     template <typename T>
-    T metadata( const std::string& key) const {
-      std::string s = metadata(key);
-      return boost::lexical_cast<T>(s);
+    T metadata(const std::string& key) const {
+      const string& s = metadata(key);
+      return lexical_cast<T>(s);
+    }
+    template <>
+    std::vector<std::string> metadata(const std::string& key) const {
+      const string& s = metadata(key);
+      vector<string> rtn;
+      split(rtn, s, is_any_of(","), token_compress_on);
+      return rtn;
+    }
+    template <>
+    std::vector<int> metadata(const std::string& key) const {
+      const vector<string> strs = metadata< vector<string> >(key);
+      vector<int> rtn;
+      rtn.reserve(strs.size());
+      foreach (const string& s, strs) rtn.push_back( lexical_cast<int>(s) );
+      assert(rtn.size() == strs.size());
+      return rtn;
+    }
+    template <>
+    std::vector<double> metadata(const std::string& key) const {
+      const vector<string> strs = metadata< vector<string> >(key);
+      vector<double> rtn;
+      rtn.reserve(strs.size());
+      foreach (const string& s, strs) rtn.push_back( lexical_cast<double>(s) );
+      assert(rtn.size() == strs.size());
+      return rtn;
     }
 
-    /// @todo Specialise the template on map and list types
 
   private:
 
