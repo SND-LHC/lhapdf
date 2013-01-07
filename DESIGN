@@ -79,6 +79,9 @@ for web, PDF (via LaTeX), etc.
   * TODO: Set-level info should be a singleton so that a change in code applies to all members.
           Singleton storage/identification by abs path rather than set name?
 
+Global config specified via the $prefix/lhapdf.conf file. Settings can be
+overridden in the code via a singleton.
+
 Use of Q2 rather than Q internally and in the API: fits with generator
 implementation where evolution variables are usually squared, hence avoiding a
 call to sqrt, and because squaring is a cheaper operation than sqrt.

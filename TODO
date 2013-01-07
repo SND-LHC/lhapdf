@@ -52,6 +52,9 @@ FOR BETA 2
    Provide a switch to distinguish the two responses. Put ID check into
    PDF::xfxQ2 function?
 
+* Printing out banner info... needed by code that greps for it :-/
+   e.g. ATLAS' Generate_trf.py ...
+
 * Interpolation in (log(x), log(Q2)) as well as (x, Q)
 
 * More Fortran API elements? On demand after first beta release
