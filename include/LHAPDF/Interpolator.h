@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LHAPDF/Types.h"
+#include "LHAPDF/Utils.h"
 
 namespace LHAPDF {
 
@@ -29,12 +29,12 @@ namespace LHAPDF {
     const PDFGrid* pdf() const { return _pdf; }
 
     /// Interpolate a single-point in (x,Q).
-    virtual double interpolateXQ(PID_t id, double x, double q) const {
+    virtual double interpolateXQ(int id, double x, double q) const {
       return interpolateXQ2(id, x, q*q);
     }
 
     /// Interpolate single-point in Q2.
-    virtual double interpolateXQ2(PID_t id, double x, double q2) const = 0;
+    virtual double interpolateXQ2(int id, double x, double q2) const = 0;
 
 
   private:

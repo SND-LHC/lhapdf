@@ -4,7 +4,7 @@
 namespace LHAPDF {
 
 
-  double NearestPointExtrapolator::extrapolateXQ2(PID_t id, double x, double q2) const {
+  double NearestPointExtrapolator::extrapolateXQ2(int id, double x, double q2) const {
     /// @todo Functionality needs to be re-added to PDFGrid... or implemented here.
     pair<size_t, size_t> idx = pdf()->lookupClosest(x, q2);
     xidx = idx.first;

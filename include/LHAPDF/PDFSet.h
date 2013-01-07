@@ -45,7 +45,7 @@ namespace LHAPDF {
     double alphaS(double q2) const;
 
     /// List of flavours defined by this PDF set.
-    const std::vector<PID_t>& flavors() const {
+    const std::vector<int>& flavors() const {
       return _flavors;
     }
 
@@ -82,7 +82,7 @@ namespace LHAPDF {
     std::map<std::string, std::string> _metadata;
 
     /// Holds all flavours defined by this set
-    std::vector<PID_t> _flavors;
+    std::vector<int> _flavors;
 
   };
 

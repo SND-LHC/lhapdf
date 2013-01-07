@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LHAPDF/Types.h"
+#include "LHAPDF/Utils.h"
 
 namespace LHAPDF {
 
@@ -29,12 +29,12 @@ namespace LHAPDF {
     const PDFGrid* pdf() const { return _pdf; }
 
     /// Extrapolate a single-point in (x,Q).
-    double extrapolateXQ(PID_t id, double x, double q) const {
+    double extrapolateXQ(int id, double x, double q) const {
       return extrapolateXQ2(id, x, q*q );
     }
 
     /// Extrapolate a single-point in (x,Q2).
-    virtual double extrapolateXQ2(PID_t, double x, double q2) const = 0;
+    virtual double extrapolateXQ2(int, double x, double q2) const = 0;
 
     /// @todo The all-PID version of extrapolateQ and Q2
 

@@ -77,7 +77,7 @@ namespace LHAPDF {
         // Treat flavours differently
         try {
           for (YAML::Iterator fit = it.second().begin(); fit != it.second().end(); ++fit) {
-            PID_t flavour;
+            int flavour;
             fit->Read( flavour );
             /// @todo ERROR: THIS MIGHT CAUSE SOME SORT OF OVERFLOW ERROR
             // When testing with negative numbers for antiparticles pids, numbers seemed to be treated wrongly?

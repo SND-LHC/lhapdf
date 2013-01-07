@@ -16,7 +16,7 @@ namespace LHAPDF {
   }
 
 
-  double BilinearInterpolator::interpolateXQ2(PID_t id, double x, double q2) const {
+  double BilinearInterpolator::interpolateXQ2(int id, double x, double q2) const {
     // Calculate interpolation along X axis
     const vector<double>& xpoints = pdf()->xKnots();
     const vector<double>& qpoints = pdf()->q2Knots();

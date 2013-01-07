@@ -1,5 +1,7 @@
 2013-01-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Removing Types.h in favour of split Utils.h and Exceptions.h
+
 	* include/LHAPDF/Paths.h: Adding path searching machinery (using Boost.Filesystem).
 
 2013-01-02  Andy Buckley  <andy.buckley@cern.ch>

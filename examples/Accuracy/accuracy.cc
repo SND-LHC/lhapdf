@@ -1,6 +1,6 @@
 #include "LHAPDF.h" //< @todo Fix this to not use both LHAPDFs at once
 
-#include "LHAPDF/Types.h"
+#include "LHAPDF/Utils.h"
 #include "LHAPDF/PDFGrid.h"
 #include "LHAPDF/ErrExtrapolator.h" //< Needed explicitly?
 

@@ -2,7 +2,7 @@
 
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/PDFSet.h"
-#include "LHAPDF/Types.h"
+#include "LHAPDF/Utils.h"
 #include "LHAPDF/Factories.h"
 #include "boost/multi_array.hpp"
 #include "yaml-cpp/yaml.h" //< @todo Move to info header
@@ -49,9 +49,9 @@ namespace LHAPDF {
 
     /// Get the list of available flavours by PDG ID code.
     /// @todo Or get the flavour list from the set?
-    std::vector<PID_t> flavors() const {
-      std::vector<PID_t> rtn;
-      for (std::map<PID_t, double*>::const_iterator i = _ptdata.begin(); i != _ptdata.end(); ++i) {
+    std::vector<int> flavors() const {
+      std::vector<int> rtn;
+      for (std::map<int, double*>::const_iterator i = _ptdata.begin(); i != _ptdata.end(); ++i) {
         rtn.push_back(i->first);
       }
       return rtn;
@@ -189,7 +189,7 @@ namespace LHAPDF {
     }
 
     /// Get the raw xf(x,Q2) data points
-    const double* ptdata(PID_t id) const {
+    const double* ptdata(int id) const {
       if (!hasFlavor(id)) {
         std::stringstream error;
         error << "Undefined particle ID requested: " << id;
@@ -211,7 +211,7 @@ namespace LHAPDF {
   protected:
 
     /// @brief Get PDF xf(x,Q2) value
-    double _xfxQ2(PID_t, double x, double q2) const;
+    double _xfxQ2(int, double x, double q2) const;
 
 
     /// @name Internal storage
@@ -254,7 +254,7 @@ namespace LHAPDF {
 
     /// Typedef for a collection of KnotArray1F accessed by PID code
     /// The "NF" means "> 1 flavour", cf. the KnotArray1F name for a single flavour data array.
-    typedef std::map<PID_t, KnotArray1F> KnotArrayNF;
+    typedef std::map<int, KnotArray1F> KnotArrayNF;
 
     //@}
 
@@ -266,7 +266,7 @@ namespace LHAPDF {
 
     /// Raw data grids, indexed by flavour
     /// @todo Need an intermediate type for the subgrids
-    std::map<PID_t, double*> _ptdata;
+    std::map<int, double*> _ptdata;
 
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
     std::map<double, KnotArrayNF> _knotarrays;

@@ -1,33 +1,9 @@
 #pragma once
 
-#include <stdint.h> // -> cstdint with C++11
-#include <cstdlib>
-#include <vector>
-#include <map>
 #include <exception>
 #include <stdexcept>
 
-#include "boost/foreach.hpp"
-#ifndef foreach
-#define foreach BOOST_FOREACH
-#endif
-
 namespace LHAPDF {
-
-
-  /// @todo Convert/merge this file with Config.h, LHAPDF.h, or similar
-
-
-  /// Safe type for PID codes (is int safe enough?)
-  /// @todo Remove?
-  typedef long PID_t;
-
-
-  /// Convenience function for squaring
-  template <typename N>
-  inline N sqr(const N& x) { return x*x; }
-
-  /// @todo Add iszero() & equals(,) functions?
 
 
   /// @name Exception classes for error handling

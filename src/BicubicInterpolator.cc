@@ -41,7 +41,7 @@ namespace LHAPDF {
   }
 
 
-  double BicubicInterpolator::interpolateXQ2(PID_t id, double x, double q2) const {
+  double BicubicInterpolator::interpolateXQ2(int id, double x, double q2) const {
     /// Move this functionality to a helper which only operates on a subgrid, with interpolateXQ2 at a higher level to identify that subgrid
 
     // Index look-up

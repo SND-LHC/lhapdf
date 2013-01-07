@@ -12,7 +12,7 @@ namespace LHAPDF {
     /// \param X the momentum fraction
     /// \param Q2 the squared energy scale
     /// \return the xfx value at (X,Q2)
-    double extrapolateQ2(const PDFGrid&, PID_t, double x, double q2) const;
+    double extrapolateQ2(const PDFGrid&, int, double x, double q2) const;
 
   };
 

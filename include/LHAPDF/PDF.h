@@ -1,12 +1,7 @@
 #pragma once
 
-#include "LHAPDF/Types.h"
-#include "boost/lexical_cast.hpp"
-#include <vector>
-#include <sstream>
-#include <stdexcept>
-#include <algorithm>
-#include <map>
+#include "LHAPDF/Utils.h"
+#include "LHAPDF/Exceptions.h"
 
 namespace LHAPDF {
 
@@ -34,7 +29,7 @@ namespace LHAPDF {
     /// @param Q2 the energy scale (squared)
     /// @return the value of xf(x,q2)
     ///
-    double xfxQ2(PID_t id, double x, double q2) const {
+    double xfxQ2(int id, double x, double q2) const {
       // Physical x range check
       if (!inPhysicalRangeX(x)) {
         std::string err = "Unphysical x given: " + boost::lexical_cast<std::string>(x);
@@ -66,7 +61,7 @@ namespace LHAPDF {
     /// @param Q the energy scale
     /// @return the value of xf(x,Q)
     ///
-    double xfxQ(PID_t id, double x, double q) const {
+    double xfxQ(int id, double x, double q) const {
       return xfxQ2(id, x, q*q);
     }
 
@@ -81,9 +76,9 @@ namespace LHAPDF {
     /// @param Q2 the energy scale (squared)
     /// @return the value of xf(x,q2)
     ///
-    std::map<PID_t, double> xfxQ2(double x, double q2) const {
-      std::map<PID_t, double> rtn;
-      foreach (PID_t id, flavors()) {
+    std::map<int, double> xfxQ2(double x, double q2) const {
+      std::map<int, double> rtn;
+      foreach (int id, flavors()) {
         rtn[id] = xfxQ2(id, x, q2);
       }
       return rtn;
@@ -99,7 +94,7 @@ namespace LHAPDF {
     /// @param Q the energy scale
     /// @return the value of xf(x,Q)
     ///
-    std::map<PID_t, double> xfxQ(double x, double q) const {
+    std::map<int, double> xfxQ(double x, double q) const {
       return xfxQ2(x, q*q);
     }
 
@@ -119,7 +114,7 @@ namespace LHAPDF {
     /// @param Q2 the energy scale (squared)
     /// @return the value of xf(x,q2)
     ///
-    virtual double _xfxQ2(PID_t id, double x, double q2) const = 0;
+    virtual double _xfxQ2(int id, double x, double q2) const = 0;
 
     //@}
 
@@ -204,11 +199,11 @@ namespace LHAPDF {
     //@{
 
     /// Get the list of particle ID codes for flavors in this PDF.
-    virtual std::vector<PID_t> flavors() const = 0;
+    virtual std::vector<int> flavors() const = 0;
 
     /// Checks whether @a id is a valid parton for this PDF.
-    bool hasFlavor(PID_t id) const {
-      std::vector<PID_t> ids = flavors();
+    bool hasFlavor(int id) const {
+      std::vector<int> ids = flavors();
       return std::find(ids.begin(), ids.end(), id) != ids.end();
     }
 

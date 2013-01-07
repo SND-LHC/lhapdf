@@ -9,7 +9,7 @@ using namespace std;
 /// Demo of an analytic/custom PDF class
 struct PDFAnalytic: public PDF {
 
-  double xfxQ2(PID_t id, double x, double q2) const {
+  double xfxQ2(int id, double x, double q2) const {
     if (abs(id) > 5) return 0;
     return 0.15 * sin(20.0*x) * sin(20.0*q2); // same for all light PIDs
   }
@@ -17,9 +17,9 @@ struct PDFAnalytic: public PDF {
   bool inRangeX(double x) const { return true; }
   bool inRangeQ2(double q2) const { return true; }
 
-  vector<PID_t> pids(double id) const {
-    vector<PID_t> rtn;
-    for (PID_t id = 1; id < 6; ++id) {
+  vector<int> pids(double id) const {
+    vector<int> rtn;
+    for (int id = 1; id < 6; ++id) {
       rtn.push_back(id);
       rtn.push_back(-id);
     }

@@ -13,7 +13,7 @@ using namespace std;
 namespace LHAPDF {
 
 
-  double PDFGrid::_xfxQ2(PID_t id, double x, double q2 ) const {
+  double PDFGrid::_xfxQ2(int id, double x, double q2 ) const {
     // Decide whether to use interpolation or extrapolation... the sanity checks
     // are done in the public PDF::xfxQ2 function.
     if (inRangeXQ2(x, q2)) {
@@ -81,7 +81,7 @@ namespace LHAPDF {
         iline = 0;
         KnotArrayNF& arraynf = rtn._knotarrays[q2s.front()]; //< Reference to newly created subgrid on the return object
         for (size_t ipid = 0; ipid < npid; ++ipid) {
-          PID_t pid = ipid; //< @todo Replace with info().flavors()[ipid]; when info() works
+          int pid = ipid; //< @todo Replace with info().flavors()[ipid]; when info() works
           arraynf[pid] = KnotArray1F(xs, q2s); // create the 2D array with the x and Q2 knot positions
           arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end()); // populate the xf array
         }
