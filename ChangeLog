@@ -1,5 +1,7 @@
 2013-01-08  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding example lhapdf.conf.
+
 	* Inlining, clean-up and other tweaks.
 
 	* Adding PDF base constructors with loading apparatus for info
