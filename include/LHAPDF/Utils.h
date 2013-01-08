@@ -32,11 +32,9 @@ namespace LHAPDF {
   }
   template <typename T>
   inline std::string to_str(const std::vector<T>& vec) {
-    string rtn;
-    for (size_t i = 0; i < vec.size(); ++i) {
-      rtn += lexical_cast<string>(vec[i]) + ((i < vec.size()-1) ? "," : "");
-    }
-    return rtn;
+    vector<string> svec; svec.reserve(vec.size());
+    foreach (const T& t, vec) svec.push_back( to_str(t) );
+    return join(svec, ",");
   }
   inline std::string to_str_zeropad(int val, size_t nchars=4) {
     stringstream ss;
