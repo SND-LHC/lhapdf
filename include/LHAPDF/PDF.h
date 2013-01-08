@@ -1,6 +1,8 @@
 #pragma once
 
+#include "LHAPDF/PDFInfo.h"
 #include "LHAPDF/Utils.h"
+#include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
 
 namespace LHAPDF {
@@ -12,9 +14,49 @@ namespace LHAPDF {
   class PDF {
   public:
 
-    /// Virtual destructor, to allow inheritance
+    /// Default constructor.
+    PDF() { }
+
+    /// Constructor from a file path.
+    ///
+    /// This constructor reads the member, set, and global metadata and is hence
+    /// most useful for being called from the constructors of derived PDF types, e.g.
+    /// PDFGrid.
+    PDF(const std::string& path) {
+      _loadInfo(path);
+    }
+
+    /// Constructor from a set name and member ID.
+    ///
+    /// This constructor reads the member, set, and global metadata and is hence
+    /// most useful for being called from the constructors of derived PDF types, e.g.
+    /// PDFGrid.
+    PDF(const std::string& setname, int member) {
+      const string memname = setname + "_" + to_str_zeropad(member);
+      path searchpath = setname / memname;
+      _loadInfo(searchpath.native());
+    }
+
+    /// Virtual destructor, to allow unfettered inheritance
     virtual ~PDF() { }
 
+
+  protected:
+
+    void _loadInfo(const std::string& mempath) {
+      const path memberdata = findFile(mempath);
+      if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath + "'");
+      const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
+      const path setdir = memberdata.parent_path();
+      const string setname = setdir.filename().native();
+      path setinfo = setdir;
+      setinfo /= setname + ".info";
+      if (exists(setinfo)) _info.load(setinfo.native());
+      _info.load(memberdata.native()); //< Override set-level info
+    }
+
+
+  public:
 
     /// @name
     //@{
@@ -202,9 +244,9 @@ namespace LHAPDF {
     virtual std::vector<int> flavors() const = 0;
 
     /// Checks whether @a id is a valid parton for this PDF.
-    bool hasFlavor(int id) const {
-      std::vector<int> ids = flavors();
-      return std::find(ids.begin(), ids.end(), id) != ids.end();
+    virtual bool hasFlavor(int id) const {
+      vector<int> ids = flavors();
+      return find(ids.begin(), ids.end(), id) != ids.end();
     }
 
     //@}
@@ -213,68 +255,19 @@ namespace LHAPDF {
     /// @name Metadata
     //@{
 
-    /// Get all metadata as a map
-    const std::map<std::string, std::string>& metadata() const {
-      return _metadict;
-    }
-
-    /// Get all metadata as a map (non-const)
-    std::map<std::string, std::string>& metadata() {
-      return _metadict;
-    }
-
-    /// @todo Move this metadata stuff to being handled only by the Info system (but cascading)
-    // /// Get a specific metadata key as a string
-    // std::string metadata(const std::string& key) const {
-    //   std::map<std::string, std::string>::const_iterator data = _metadict.find(key);
-    //   if (data != _metadict.end()) {
-    //     /// @todo If metadata not found on the PDF, try the parent PDFSet before giving up
-    //     data = pdfSet().metadata(key);
-    //     // throw std::MetadataError("Metadata for key: " + key + " not found.");
-    //   }
-    //   return data->second;
-    // }
-    //
-    // /// Get a specific metadata key, with automatic type conversion
-    // template <typename T>
-    // T metadata(const std::string& key) const {
-    //   std::string s = metadata(key);
-    //   return boost::lexical_cast<T>(s);
-    // }
-
-    // /// Get the name of this PDF member
-    // std::string name() const {
-    //   return metadata("Name");
-    // }
-
-    // /// Get the ID code of this PDF member
-    // size_t memberID() const {
-    //   return metadata<size_t>("ID");
-    // }
-
-    // /// Get the type of PDF (LO, NLO, etc.)
-    // int qcdOrder() const {
-    //   return metadata<int>("QCDOrder");
-    // }
-
-    // /// Get the type of PDF error set (Hessian, replicas, etc.)
-    // std::string errorType() const {
-    //   return metadata("ErrorType");
-    // }
 
     //@}
 
 
     // /// Load PDF
-    // /// @todo What?
+    /// @todo Needs to load the PDFInfo first to identify the PDF type
     // static PDF* load(const std::string& );
 
 
   protected:
 
-    /// Metadata dictionary
-    /// @todo Replace with a PDFInfo/Info pointer
-    std::map<std::string, std::string> _metadict;
+    /// Metadata container
+    PDFInfo _info;
 
   };
 

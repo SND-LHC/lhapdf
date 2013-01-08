@@ -17,7 +17,10 @@ namespace LHAPDF {
 
     virtual ~Info() { }
 
-    /// Populate this info object from the specified YAML file path
+    /// Populate this info object from the specified YAML file path.
+    ///
+    /// This function may be called several times to read metadata from several
+    /// YAML source files. Values for existing keys will be overwritten.
     void load(const std::string& path) {
       // Read the YAML file into the metadata map
       std::ifstream info(path.c_str());
@@ -40,7 +43,7 @@ namespace LHAPDF {
             }
           }
           //cout << key << ": " << val << endl;
-          _metadata[key] = val;
+          _metadict[key] = val;
         }
       } catch (const YAML::ParserException& ex) {
         cout << "Parse error when reading info from " << path << " :" << ex.what() << endl;
@@ -48,14 +51,30 @@ namespace LHAPDF {
     }
 
 
+    /// Get the singleton global configuration object
+    ///
+    /// The global config is populated by reading from lhapdf.conf if it is
+    /// found in the search paths.
     static Info& config() {
       static Info _cfg;
-      /// Read from $prefix/lhapdf.conf if it exists
       string confpath = findFile("lhapdf.conf").native();
       if (!confpath.empty()) _cfg.load(confpath);
       return _cfg;
     }
 
+
+    /// @name General metadata accessors
+    //@{
+
+    /// Get all metadata as a map
+    const std::map<std::string, std::string>& metadata() const {
+      return _metadict;
+    }
+
+    /// Get all metadata as a map (non-const)
+    std::map<std::string, std::string>& metadata() {
+      return _metadict;
+    }
 
     /// Can this Info object return a value for the given key? (it may be defined non-locally)
     bool has_key(const std::string& key) const {
@@ -63,13 +82,12 @@ namespace LHAPDF {
     }
     /// Is a value defined for the given key on this specific object?
     bool has_key_local(const std::string& key) const {
-      return _metadata.find(key) != _metadata.end();
+      return _metadict.find(key) != _metadict.end();
     }
-
 
     /// Retrieve a metadata string by key name
     const std::string& metadata(const std::string& key) const {
-      if (has_key_local(key)) return _metadata.find(key)->second; //< value is defined locally -- return that
+      if (has_key_local(key)) return _metadict.find(key)->second; //< value is defined locally -- return that
       if (this != &Info::config()) return Info::config().metadata(key); //< if this isn't the global Config, ask that
       throw MetadataError("Metadata for key: " + key + " not found."); //< this is the global Config and key is still not known
     }
@@ -86,13 +104,15 @@ namespace LHAPDF {
     /// Set a keyed value entry
     template <typename T>
     void setMetadata(const std::string& key, const T& val) {
-      _metadata[key] = to_str(val);
+      _metadict[key] = to_str(val);
     }
+
+    //@}
 
 
   private:
 
-    std::map<std::string, std::string> _metadata;
+    std::map<std::string, std::string> _metadict;
 
   };
 
@@ -101,14 +121,14 @@ namespace LHAPDF {
   //@{
 
   template <>
-  std::vector<std::string> Info::metadata(const std::string& key) const {
+  inline std::vector<std::string> Info::metadata(const std::string& key) const {
     const string& s = metadata(key);
     vector<string> rtn;
     split(rtn, s, is_any_of(","), token_compress_on);
     return rtn;
   }
   template <>
-  std::vector<int> Info::metadata(const std::string& key) const {
+  inline std::vector<int> Info::metadata(const std::string& key) const {
     const vector<string> strs = metadata< vector<string> >(key);
     vector<int> rtn;
     rtn.reserve(strs.size());
@@ -117,7 +137,7 @@ namespace LHAPDF {
     return rtn;
   }
   template <>
-  std::vector<double> Info::metadata(const std::string& key) const {
+  inline std::vector<double> Info::metadata(const std::string& key) const {
     const vector<string> strs = metadata< vector<string> >(key);
     vector<double> rtn;
     rtn.reserve(strs.size());
@@ -129,28 +149,16 @@ namespace LHAPDF {
   //@}
 
 
-  // /// Global LHAPDF config
-  // class Config : public Info {
-  // public:
-
-  //   static Info& make() {
-  //     static Config _cfg;
-  //     /// Read from $prefix/lhapdf.conf if it exists
-  //     string confpath = findFile("lhapdf.conf").native();
-  //     if (!confpath.empty()) _cfg.load(confpath);
-  //     return _cfg;
-  //   }
-
-  // };
-
 
   // /// Metadata for PDF sets
+  /// @todo Re-enable?
   // class SetInfo : public Info {
   // public:
   // };
 
 
   /// Metadata for PDF members
+  /// @todo Move these methods on to the PDF interface
   class PDFInfo : public Info {
   public:
 
@@ -169,11 +177,32 @@ namespace LHAPDF {
     // ///
     // /// Calculated numerically, analytically, or interpolated according to metadata.
     // ///
-    // /// @todo Intead return an alpha_s calculator bound to this PDF?
+    // /// @todo Instead return an alpha_s calculator bound to this PDF?
     // double alphaS(double q2) const;
 
     // /// List of flavours defined by this PDF set.
+    /// @todo Store these more locally to avoid unnecessary lookups... and cache on the Interpolator/Extrapolator?
     // const std::vector<int>& flavors() const;
+
+    // /// Get the name of this PDF member
+    // std::string name() const {
+    //   return metadata("Name");
+    // }
+
+    // /// Get the ID code of this PDF member
+    // size_t memberID() const {
+    //   return metadata<size_t>("ID");
+    // }
+
+    // /// Get the type of PDF (LO, NLO, etc.)
+    // int qcdOrder() const {
+    //   return metadata<int>("QCDOrder");
+    // }
+
+    // /// Get the type of PDF error set (Hessian, replicas, etc.)
+    // std::string errorType() const {
+    //   return metadata("ErrorType");
+    // }
 
   };
 

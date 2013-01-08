@@ -1,3 +1,10 @@
+2013-01-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Inlining, clean-up and other tweaks.
+
+	* Adding PDF base constructors with loading apparatus for info
+	from member files + discovery and loading of set-level info.
+
 2013-01-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding to_str variants for both single objects and for vectors

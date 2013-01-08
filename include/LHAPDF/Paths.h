@@ -2,10 +2,6 @@
 
 #include <LHAPDF/Utils.h>
 #include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
-#include <vector>
-#include <string>
-#include <cstdlib>
 
 namespace LHAPDF {
 
@@ -17,7 +13,7 @@ namespace LHAPDF {
   /// Get the ordered list of search paths, from $LHAPDF_DATA_PATH and the install location
   ///
   /// @todo Cache the vector of paths?
-  std::vector<path> paths() {
+  inline std::vector<path> paths() {
     std::vector<path> rtn;
     // Use LHAPDF_DATA_PATH for all path storage
     char* pathsvar = getenv("LHAPDF_DATA_PATH");
@@ -31,10 +27,9 @@ namespace LHAPDF {
   /// Return the first location in which a file is found
   ///
   /// If no matching file is found, return an empty path.
-  path findFile(const path& target) {
+  inline path findFile(const path& target) {
     foreach (const path& base, paths()) {
-      path p = base;
-      if (!target.is_absolute()) p /= target; else p = target;
+      path p = (!target.is_absolute()) ? base / target : target;
       if (exists(p)) return p;
     }
     return path();

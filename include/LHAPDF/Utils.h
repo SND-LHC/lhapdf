@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 // Boost includes
 #include "boost/lexical_cast.hpp"
@@ -26,16 +27,21 @@ namespace LHAPDF {
 
   // String handling
   template <typename T>
-  std::string to_str(const T& val) {
+  inline std::string to_str(const T& val) {
     return lexical_cast<string>(val);
   }
   template <typename T>
-  std::string to_str(const std::vector<T>& vec) {
+  inline std::string to_str(const std::vector<T>& vec) {
     string rtn;
     for (size_t i = 0; i < vec.size(); ++i) {
       rtn += lexical_cast<string>(vec[i]) + ((i < vec.size()-1) ? "," : "");
     }
     return rtn;
+  }
+  inline std::string to_str_zeropad(int val, size_t nchars=4) {
+    stringstream ss;
+    ss << setfill('0') << setw(nchars) << val;
+    return ss.str();
   }
 
 
