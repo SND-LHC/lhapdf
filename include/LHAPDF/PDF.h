@@ -14,6 +14,9 @@ namespace LHAPDF {
   class PDF {
   public:
 
+    /// @name Creation and deletion
+    //@{
+
     /// Default constructor.
     PDF() { }
 
@@ -23,6 +26,7 @@ namespace LHAPDF {
     /// most useful for being called from the constructors of derived PDF types, e.g.
     /// PDFGrid.
     PDF(const std::string& path) {
+      /// @todo Store the data file path (at least protected, maybe public)
       _loadInfo(path);
     }
 
@@ -34,15 +38,19 @@ namespace LHAPDF {
     PDF(const std::string& setname, int member) {
       const string memname = setname + "_" + to_str_zeropad(member);
       path searchpath = setname / memname;
+      /// @todo Store the data file path (at least protected, maybe public)
       _loadInfo(searchpath.native());
     }
 
     /// Virtual destructor, to allow unfettered inheritance
     virtual ~PDF() { }
 
+    //@}
+
 
   protected:
 
+    // void _loadInfo(const path& mempath) { _loadInfo(mempath.native()); }
     void _loadInfo(const std::string& mempath) {
       const path memberdata = findFile(mempath);
       if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath + "'");

@@ -17,21 +17,52 @@ namespace LHAPDF {
   class PDFGrid : public PDF {
   public:
 
-    /// Constructor
+    /// @name Creation and deletion
+    //@{
+
+    /// Default constructor.
     PDFGrid()
       : _interpolator(0), _extrapolator(0)
     {
       /// @todo Parse metadata file, create set if needed, set up alpha_s object, etc.
     }
 
+    /// Constructor from a file path.
+    PDFGrid(const std::string& path)
+      : PDF(path), _interpolator(0), _extrapolator(0)
+    {
+      _loadData(path);
+    }
+
+    /// Constructor from a set name and member ID.
+    PDFGrid(const std::string& setname, int member)
+      : PDF(setname, member), _interpolator(0), _extrapolator(0)
+    {
+      /// @todo Replace this with the data file path set by the PDF constructor, when available
+      const string memname = setname + "_" + to_str_zeropad(member);
+      path searchpath = setname / memname;
+      _loadData(searchpath.native());
+    }
 
     /// Destructor
     ~PDFGrid() {
-      /// @todo And delete the data grids!
       delete _interpolator;
       delete _extrapolator;
     }
 
+    //@}
+
+
+  protected:
+
+    // void _loadData(const path& mempath) { _loadData(mempath.native()); }
+    void _loadData(const std::string& mempath) {
+      ////////
+      /// @todo Populate
+    }
+
+
+  public:
 
     /// Metadata
     //@{
