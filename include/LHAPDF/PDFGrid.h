@@ -1,20 +1,9 @@
 #pragma once
 
 #include "LHAPDF/PDF.h"
-#include "LHAPDF/PDFSet.h"
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Factories.h"
 #include "boost/multi_array.hpp"
-#include "yaml-cpp/yaml.h" //< @todo Move to info header
-/// @todo Are the following not already indirectly included?
-#include <vector>
-#include <map>
-#include <cassert>
-/// @todo Are the following needed in this header?
-#include <algorithm>
-#include <cstdlib>
-#include <exception>
-#include <fstream>
 
 namespace LHAPDF {
 

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <cassert>
+#include <fstream>
 // Boost includes
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
