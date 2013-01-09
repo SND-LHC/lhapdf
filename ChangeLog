@@ -1,3 +1,7 @@
+2013-01-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding the EXAMPLEPDF directory for testing.
+
 2013-01-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding example lhapdf.conf.

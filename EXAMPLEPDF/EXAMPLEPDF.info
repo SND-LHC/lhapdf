@@ -1,0 +1,8 @@
+SetName: EXAMPLEPDF
+SetDesc: Just an example to test the parser mechanisms
+Flavors: [-5,-4,-3,-2,-1,1,2,3,4,5,21]
+OrderQcd: 2 # or better to use text cf. lo, nlo, nnlo?
+AlphaS_MZ: 0.118
+NumMembers: 1
+Format: lhagrid
+ErrorType: replica

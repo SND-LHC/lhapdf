@@ -1,0 +1,3 @@
+PdfDesc: The main PDF in the EXAMPLE set
+PdfType: main # or 'error' or 'replica'
+---
