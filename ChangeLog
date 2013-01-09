@@ -1,5 +1,8 @@
 2013-01-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* A few tweaks to the info/data loader system: PDF loading from
+	set name + member ID with cascading info/set/config levels WORKS!
+
 	* Adding more constructors for PDFGrid, calling the new ones on
 	PDF to populate the Info class.
 

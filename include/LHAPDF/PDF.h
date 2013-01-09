@@ -36,7 +36,7 @@ namespace LHAPDF {
     /// most useful for being called from the constructors of derived PDF types, e.g.
     /// PDFGrid.
     PDF(const std::string& setname, int member) {
-      const string memname = setname + "_" + to_str_zeropad(member);
+      const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
       path searchpath = setname / memname;
       /// @todo Store the data file path (at least protected, maybe public)
       _loadInfo(searchpath.native());
@@ -66,7 +66,19 @@ namespace LHAPDF {
 
   public:
 
-    /// @name
+    /// Metadata
+    //@{
+
+    /// Get the info class that actually stores and handles the metadata
+    Info& info() { return _info; }
+
+    /// Get the info class that actually stores and handles the metadata (const version)
+    const Info& info() const { return _info; }
+
+    //@}
+
+
+    /// @name PDF values
     //@{
 
     /// @brief Get the PDF xf(x) value at (x,q2) for the given PID.

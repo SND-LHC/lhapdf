@@ -52,7 +52,6 @@ POST_UNINSTALL = :
 build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
 # AlphaS.cc
-# NearestPointExtrapolator.cc
 #PDFSet.cc
 
 # if ENABLE_LHAGLUE
@@ -106,7 +105,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libLHAPDF_la_LIBADD =
 am_libLHAPDF_la_OBJECTS = PDFGrid.lo BicubicInterpolator.lo \
-	BilinearInterpolator.lo
+	BilinearInterpolator.lo NearestPointExtrapolator.lo
 libLHAPDF_la_OBJECTS = $(am_libLHAPDF_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -284,7 +283,8 @@ lib_LTLIBRARIES = libLHAPDF.la
 # PATHFINDCODE = getdatapath.cc binreloc.c
 libLHAPDF_la_SOURCES = \
   PDFGrid.cc \
-  BicubicInterpolator.cc BilinearInterpolator.cc
+  BicubicInterpolator.cc BilinearInterpolator.cc \
+  NearestPointExtrapolator.cc
 
 all: all-am
 
@@ -363,6 +363,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/BicubicInterpolator.Plo
 include ./$(DEPDIR)/BilinearInterpolator.Plo
+include ./$(DEPDIR)/NearestPointExtrapolator.Plo
 include ./$(DEPDIR)/PDFGrid.Plo
 
 .cc.o:

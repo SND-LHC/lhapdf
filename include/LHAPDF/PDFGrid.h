@@ -39,7 +39,7 @@ namespace LHAPDF {
       : PDF(setname, member), _interpolator(0), _extrapolator(0)
     {
       /// @todo Replace this with the data file path set by the PDF constructor, when available
-      const string memname = setname + "_" + to_str_zeropad(member);
+      const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
       path searchpath = setname / memname;
       _loadData(searchpath.native());
     }
