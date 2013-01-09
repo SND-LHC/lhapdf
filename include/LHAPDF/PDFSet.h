@@ -27,7 +27,7 @@ namespace LHAPDF {
     template <typename T>
     T metadata( const std::string& key) const {
       std::string s = metadata(key);
-      return boost::lexical_cast<T>(s);
+      return lexical_cast<T>(s);
     }
 
     /// Set name

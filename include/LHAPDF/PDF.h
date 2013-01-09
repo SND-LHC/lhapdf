@@ -74,17 +74,17 @@ namespace LHAPDF {
     double xfxQ2(int id, double x, double q2) const {
       // Physical x range check
       if (!inPhysicalRangeX(x)) {
-        std::string err = "Unphysical x given: " + boost::lexical_cast<std::string>(x);
+        std::string err = "Unphysical x given: " + to_str(x);
         throw RangeError(err);
       }
       // Physical Q2 range check
       if (!inPhysicalRangeQ2(q2)) {
-        std::string err = "Unphysical Q2 given: " + boost::lexical_cast<std::string>(q2);
+        std::string err = "Unphysical Q2 given: " + to_str(q2);
         throw RangeError(err);
       }
       // Undefined PIDs
       if (!hasFlavor(id)) {
-        std::string err = "Undefined flavour requested: " + boost::lexical_cast<std::string>(id);
+        std::string err = "Undefined flavour requested: " + to_str(id);
         throw FlavorError(err);
       }
       // Call the delegated method in the concrete PDF object to calculate the in-range value
