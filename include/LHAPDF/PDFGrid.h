@@ -1,7 +1,6 @@
 #pragma once
 
 #include "LHAPDF/PDF.h"
-#include "LHAPDF/Utils.h"
 #include "LHAPDF/Factories.h"
 #include "boost/multi_array.hpp"
 
@@ -56,10 +55,7 @@ namespace LHAPDF {
   protected:
 
     // void _loadData(const path& mempath) { _loadData(mempath.native()); }
-    void _loadData(const std::string& mempath) {
-      ////////
-      /// @todo Populate
-    }
+    void _loadData(const std::string& mempath);
 
 
   public:
@@ -170,14 +166,6 @@ namespace LHAPDF {
     }
 
     //@}
-
-
-
-    /// Loads the given member by path to the member grid file.
-    /// @todo Also need loading by set name + member ID
-    /// @todo Clarify the ownership of the returned pointer
-    static PDFGrid load(const std::string& filepath);
-    static PDFGrid load(std::istream& file);
 
 
     /// @name Info about the grid, and access to the raw data points
