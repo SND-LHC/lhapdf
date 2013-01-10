@@ -3,6 +3,7 @@
 #include "LHAPDF/PDFSet.h"
 #include "LHAPDF/BilinearInterpolator.h"
 #include "LHAPDF/BicubicInterpolator.h"
+#include "LHAPDF/ErrExtrapolator.h"
 #include "LHAPDF/NearestPointExtrapolator.h"
 #include "boost/algorithm/string.hpp"
 #include <string>
@@ -31,6 +32,8 @@ namespace LHAPDF {
     const std::string iname = boost::to_lower_copy(name);
     if (iname == "nearest")
       return new NearestPointExtrapolator();
+    else if (iname == "error")
+      return new ErrExtrapolator();
     else
       throw FactoryError("Undeclared extrapolator requested: " + name);
   }

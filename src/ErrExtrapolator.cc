@@ -1,13 +1,12 @@
-#include "LHAPDF/PDFGrid.h"
 #include "LHAPDF/ErrExtrapolator.h"
-#include <iostream>
+#include "LHAPDF/Exceptions.h"
 
 namespace LHAPDF {
 
 
-  double ErrExtrapolator::extrapolateQ2(const PDFGrid& grid, int id, double x, double q2) const {
-    std::cerr << "Extrapolation not allowed." << std::endl;
-    throw -1;
+  double ErrExtrapolator::extrapolateXQ2(int id, double x, double q2) const {
+    throw RangeError("Point x=" + to_str(x) + ", Q2=" + to_str(q2) +
+                     " is outside the PDF grid boundaries");
   }
 
 
