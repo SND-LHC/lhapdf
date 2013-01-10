@@ -1,5 +1,8 @@
 2013-01-10  Andy Buckley  <andy.buckley@cern.ch>
 
+	* More PDFGrid data loading development: improvements to the API
+	and the data parser now works.
+
 	* Adding the error extrapolator to the extrapolator factory function.
 
 2013-01-09  Andy Buckley  <andy.buckley@cern.ch>

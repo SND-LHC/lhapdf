@@ -28,24 +28,34 @@ namespace LHAPDF {
 
   void PDFGrid::_loadData(const string& mempath) {
     string line;
-    int iblock(0), iline(0);
+    int iblock(0), iblockline(0), iline(0);
     vector<double> xs, q2s;
-    const size_t npid = info().metadata< vector<int> >("Flavors").size(); //< @todo Convert to PDF::flavors().size() once it exists
+    const vector<int> flavors = info().metadata< vector<int> >("Flavors"); //< @todo Get this as a const reference from the PDF interface when added
+    const size_t npid = flavors.size(); //< @todo Convert to PDF::flavors().size() once it exists
     vector< vector<double> > ipid_xfs(npid);
 
     try {
       ifstream file(mempath.c_str());
       while (getline(file, line)) {
         iline += 1;
-        if (iblock > 0) { // Block 0 is the metadata, which we ignore here
+        iblockline += 1;
+
+        if (line != "---") { // if we are not on a block separator line...
+
+          // Block 0 is the metadata, which we ignore here
+          if (iblock == 0) continue;
+
+          /// @todo Check that there is no effect of leading spaces, etc.: itrim the lines
+
+          // Parse the data lines
           double token;
           istringstream tokens(line);
-          if (iline == 1) { // x knots line
+          if (iblockline == 1) { // x knots line
             while (tokens >> token) xs.push_back(token);
-          } if (iline == 2) { // Q2 knots line
+          } if (iblockline == 2) { // Q2 knots line
             while (tokens >> token) q2s.push_back(token);
           } else {
-            if (iline == 3) { // on the first line of the xf block, resize the arrays
+            if (iblockline == 3) { // on the first line of the xf block, resize the arrays
               for (size_t ipid = 0; ipid < npid; ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
             }
             int ipid = 0;
@@ -54,18 +64,49 @@ namespace LHAPDF {
               ipid += 1;
             }
           }
-        } else if (line == "---") { // This is the block divider line
+
+          /// @todo Check that each line has many tokens as there should be flavours
+
+        } else { // we *are* on a block separator line
+
+          // Check that the expected number of data lines were seen in the last block
+          if (iblock > 0 && iblockline - 1 != int(xs.size()*q2s.size()) + 2)
+            throw ReadError("PDF grid data error on line " + to_str(iline) + ": " +
+                            to_str(iblockline-1) + " data lines were seen in block " + to_str(iblock-1) +
+                            " but " + to_str(xs.size()*q2s.size() + 2) + " were expected");
+
+          // Increment/reset the block and line counters
           iblock += 1;
-          iline = 0;
-          KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid on the return object
+          iblockline = 0;
+
+          // Escape here if we've just finished reading the 0th (metadata) block
+          if (iblock == 1) continue;
+
+          // Die with an assert if the block was of zero size
+          /// @todo Convert to throwing some exception? Is this ever allowable?
+          assert(xs.size() > 0);
+          assert(q2s.size() > 0);
+          assert(ipid_xfs.size() > 0);
+
+          /// @todo Define the ordering of the values in x and Q2 indexing
+
+          // Register data from the previous (>0th) block into the PDFGrid data structure
+          // KnotArrayNF arraynf;
+          KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
           for (size_t ipid = 0; ipid < npid; ++ipid) {
-            int pid = ipid; //< @todo Replace with info().flavors()[ipid]; when info() works
+            int pid = flavors[ipid]; //< @todo Replace with flavors()[ipid] when possible
             arraynf[pid] = KnotArray1F(xs, q2s); // create the 2D array with the x and Q2 knot positions
             arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end()); // populate the xf array
           }
+          cout << q2s.size() << endl;
+          cout << q2s.front() << endl;
+          // _knotarrays[q2s.front()] = arraynf; //< @todo Prefer getting the reference as above, to avoid re-copying a big data array
           xs.clear(); q2s.clear(); ipid_xfs.clear();
+
         }
       }
+    } catch (Exception& e) {
+      throw;
     } catch (std::exception& e) {
       throw ReadError("Read error while parsing " + mempath + " as a PDFGrid data file");
     }
