@@ -11,7 +11,7 @@ namespace LHAPDF {
   std::map<int, std::string>& getPDFIndex() {
     static map<int, string> _lhaindex;
     if (_lhaindex.empty()) { // The map needs to be populated first
-      string indexpath = findFile("pdfsets.index");
+      path indexpath = findFile("pdfsets.index");
       if (indexpath.empty()) throw ReadError("Could not find a pdfsets.index file");
       try {
         ifstream file(indexpath.c_str());
@@ -21,10 +21,11 @@ namespace LHAPDF {
           int id; string setname;
           tokens >> id;
           tokens >> setname;
+          // cout << id << " -> " << _lhaindex[id] << endl;
           _lhaindex[id] = setname;
         }
       } catch (const std::exception& ex) {
-        throw ReadError("Trouble when reading " + path + " :" + ex.what());
+        throw ReadError("Trouble when reading " + indexpath.native() + ": " + ex.what());
       }
     }
     return _lhaindex;
@@ -36,11 +37,12 @@ namespace LHAPDF {
   /// The set name and member ID are returned as an std::pair.
   /// If lookup fails, a pair ("", -1) is returned.
   inline pair<std::string, int> lookupPDF(int lhaid) {
-    map<int, string>::const_iterator it = getPDFIndex().lower_bound(lhaid);
+    map<int, string>::iterator it = getPDFIndex().upper_bound(lhaid);
     string rtnname = "";
-    int rtnmem = "-1";
-    if (it != getPDFIndex().end()) {
-      rtnname = it->second; //
+    int rtnmem = -1;
+    if (it != getPDFIndex().begin()) {
+      --it; // upper_bound (and lower_bound) return the entry *above* lhaid: we need to step back
+      rtnname = it->second; // name of the set that contains this ID
       rtnmem = lhaid - it->first; // the member ID is the offset from the lookup ID
     }
     return make_pair(rtnname, rtnmem);
