@@ -1,4 +1,4 @@
-#include "LHAPDF/PDFInfo.h"
+#include "LHAPDF/Info.h"
 #include "yaml-cpp/yaml.h"
 
 namespace LHAPDF {

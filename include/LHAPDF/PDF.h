@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LHAPDF/PDFInfo.h"
+#include "LHAPDF/Info.h"
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"

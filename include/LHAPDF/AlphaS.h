@@ -11,7 +11,7 @@ namespace LHAPDF {
   /// @todo Rewrite as inheritance from AlphaS base class
   ///
   /// The design of the AlphaS classes is that they are substitutible
-  /// (cf. polymorphism) and are entirely non-dependent on the PDF and PDFInfo
+  /// (cf. polymorphism) and are entirely non-dependent on the PDF and Info
   /// objects: hence they can be used by external code that actually doesn't
   /// want to do anything at all with PDFs, but which just wants to do some
   /// alpha_s interpolation.
