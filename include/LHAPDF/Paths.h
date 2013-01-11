@@ -39,6 +39,13 @@ namespace LHAPDF {
   /// @todo Add functions for pre/appending to and explicitly setting the search paths
 
 
+  inline path pdfmempath(const std::string& setname, int member) {
+    const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
+    path mempath = setname / memname;
+    return mempath;
+  }
+
+
 }
 
 

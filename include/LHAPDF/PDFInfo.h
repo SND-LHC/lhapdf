@@ -3,7 +3,6 @@
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
-#include "yaml-cpp/yaml.h"
 #include <fstream>
 
 namespace LHAPDF {
@@ -13,47 +12,78 @@ namespace LHAPDF {
   class Info {
   public:
 
+    /// @name Creation and deletion
+    //@{
+
+    /// Default constructor
     Info() { }
 
+    /// Constructor
+    Info(const std::string& mempath) {
+      loadFull(mempath);
+    }
+
+    /// Virtual destructor to allow inheritance
     virtual ~Info() { }
+
+    //@}
+
+
+    /// @name Loading info from YAML files
+    //@{
 
     /// Populate this info object from the specified YAML file path.
     ///
     /// This function may be called several times to read metadata from several
     /// YAML source files. Values for existing keys will be overwritten.
-    void load(const std::string& path) {
-      // Read the YAML file into the metadata map
-      try {
-        std::ifstream info(path.c_str());
-        YAML::Parser parser(info);
-        YAML::Node doc;
-        parser.GetNextDocument(doc);
-        for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
-          string key, val;
-          it.first() >> key;
-          try {
-            // Assume the value is a scalar type -- it'll throw an exception if not
-            it.second() >> val;
-          } catch (const YAML::InvalidScalar& ex) {
-            // It's a list: process the entries individually into a comma-separated string
-            string subval;
-            for (size_t i = 0; i < it.second().size(); ++i) {
-              it.second()[i] >> subval;
-              val += subval + ((i < it.second().size()-1) ? "," : "");
-            }
-          }
-          //cout << key << ": " << val << endl;
-          _metadict[key] = val;
-        }
-      } catch (const YAML::ParserException& ex) {
-        throw ReadError("YAML parse error in " + path + " :" + ex.what());
-      } catch (const LHAPDF::Exception& ex) {
-        throw;
-      } catch (const std::exception& ex) {
-        throw ReadError("Trouble when reading " + path + " :" + ex.what());
-      }
+    void load(const path& filepath);//  {
+    //   // Read the YAML file into the metadata map
+    //   try {
+    //     std::ifstream info(path.c_str());
+    //     YAML::Parser parser(info);
+    //     YAML::Node doc;
+    //     parser.GetNextDocument(doc);
+    //     for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
+    //       string key, val;
+    //       it.first() >> key;
+    //       try {
+    //         // Assume the value is a scalar type -- it'll throw an exception if not
+    //         it.second() >> val;
+    //       } catch (const YAML::InvalidScalar& ex) {
+    //         // It's a list: process the entries individually into a comma-separated string
+    //         string subval;
+    //         for (size_t i = 0; i < it.second().size(); ++i) {
+    //           it.second()[i] >> subval;
+    //           val += subval + ((i < it.second().size()-1) ? "," : "");
+    //         }
+    //       }
+    //       //cout << key << ": " << val << endl;
+    //       _metadict[key] = val;
+    //     }
+    //   } catch (const YAML::ParserException& ex) {
+    //     throw ReadError("YAML parse error in " + path + " :" + ex.what());
+    //   } catch (const LHAPDF::Exception& ex) {
+    //     throw;
+    //   } catch (const std::exception& ex) {
+    //     throw ReadError("Trouble when reading " + path + " :" + ex.what());
+    //   }
 
-    }
+    // }
+
+
+    /// Load properly cascaded info for a PDF member, including fallback to the set info if it exists
+    void loadFull(const path& mempath);//  { //< @todo Need a better method name!
+    //   const path memberdata = findFile(mempath);
+    //   if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath + "'");
+    //   const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
+    //   const path setdir = memberdata.parent_path();
+    //   const string setname = setdir.filename().native();
+    //   path setinfo = setdir / setname + ".info";
+    //   if (exists(setinfo)) load(setinfo.native());
+    //   load(memberdata.native()); //< Override set-level info
+    // }
+
+    //@}
 
 
     /// Get the singleton global configuration object
@@ -117,7 +147,8 @@ namespace LHAPDF {
 
   private:
 
-    std::map<std::string, std::string> _metadict;
+    /// The string -> string native metadata storage container
+    map<string, string> _metadict;
 
   };
 
@@ -162,54 +193,11 @@ namespace LHAPDF {
   // };
 
 
-  /// Metadata for PDF members
-  /// @todo Move these methods on to the PDF interface
-  class PDFInfo : public Info {
-  public:
-
-    /// @todo Need a constructor from a filename (and a default one)
-
-    // /// Set name
-    // std::string name() const;
-
-    // /// Description of the set
-    // std::string description() const;
-
-    // /// Order of QCD at which this PDF has been constructed
-    // int qcdOrder() const;
-
-    // /// @brief Value of alpha_s(Q2) used by this PDF set.
-    // ///
-    // /// Calculated numerically, analytically, or interpolated according to metadata.
-    // ///
-    // /// @todo Instead return an alpha_s calculator bound to this PDF?
-    // double alphaS(double q2) const;
-
-    // /// List of flavours defined by this PDF set.
-    /// @todo Store these more locally to avoid unnecessary lookups... and cache on the Interpolator/Extrapolator?
-    // const std::vector<int>& flavors() const;
-
-    // /// Get the name of this PDF member
-    // std::string name() const {
-    //   return metadata("Name");
-    // }
-
-    // /// Get the ID code of this PDF member
-    // size_t memberID() const {
-    //   return metadata<size_t>("ID");
-    // }
-
-    // /// Get the type of PDF (LO, NLO, etc.)
-    // int qcdOrder() const {
-    //   return metadata<int>("QCDOrder");
-    // }
-
-    // /// Get the type of PDF error set (Hessian, replicas, etc.)
-    // std::string errorType() const {
-    //   return metadata("ErrorType");
-    // }
-
-  };
+  // /// Metadata for PDF members
+  /// @todo Re-enable?
+  // class PDFInfo : public Info {
+  // public:
+  // };
 
 
 }

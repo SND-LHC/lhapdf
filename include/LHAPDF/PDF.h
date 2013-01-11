@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LHAPDF/PDFInfo.h"
+#include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
@@ -12,10 +13,12 @@ namespace LHAPDF {
   ///
   /// The PDF interface declares the general form of all PDF types, such as Grid based or analytic.
   class PDF {
-  public:
+  // public:
+  protected:
 
     /// @name Creation and deletion
     //@{
+
 
     /// Default constructor.
     PDF() { }
@@ -26,7 +29,6 @@ namespace LHAPDF {
     /// most useful for being called from the constructors of derived PDF types, e.g.
     /// PDFGrid.
     PDF(const std::string& path) {
-      /// @todo Store the data file path (at least protected, maybe public)
       _loadInfo(path);
     }
 
@@ -36,9 +38,20 @@ namespace LHAPDF {
     /// most useful for being called from the constructors of derived PDF types, e.g.
     /// PDFGrid.
     PDF(const std::string& setname, int member) {
-      const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
-      path searchpath = setname / memname;
-      /// @todo Store the data file path (at least protected, maybe public)
+      path searchpath = findFile(pdfmempath(setname, member));
+      _loadInfo(searchpath.native());
+    }
+
+    /// Constructor from an LHAPDF ID code.
+    ///
+    /// This constructor reads the member, set, and global metadata and is hence
+    /// most useful for being called from the constructors of derived PDF types, e.g.
+    /// PDFGrid.
+    PDF(int lhaid) {
+      const pair<string,int> setname_memid = lookupPDF(lhaid);
+      if (setname_memid.second == -1)
+        throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
+      path searchpath = pdfmempath(setname_memid.first, setname_memid.second);
       _loadInfo(searchpath.native());
     }
 
@@ -50,17 +63,18 @@ namespace LHAPDF {
 
   protected:
 
-    // void _loadInfo(const path& mempath) { _loadInfo(mempath.native()); }
-    void _loadInfo(const std::string& mempath) {
-      const path memberdata = findFile(mempath);
-      if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath + "'");
-      const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
-      const path setdir = memberdata.parent_path();
-      const string setname = setdir.filename().native();
-      path setinfo = setdir;
-      setinfo /= setname + ".info";
-      if (exists(setinfo)) _info.load(setinfo.native());
-      _info.load(memberdata.native()); //< Override set-level info
+    void _loadInfo(const path& mempath) {
+      _mempath = findFile(mempath);
+      _info.loadFull(mempath);
+      // const path memberdata = findFile(mempath);
+      // if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath + "'");
+      // const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
+      // const path setdir = memberdata.parent_path();
+      // const string setname = setdir.filename().native();
+      // path setinfo = setdir;
+      // setinfo /= setname + ".info";
+      // if (exists(setinfo)) _info.load(setinfo.native());
+      // _info.load(memberdata.native()); //< Override set-level info
     }
 
 
@@ -94,18 +108,15 @@ namespace LHAPDF {
     double xfxQ2(int id, double x, double q2) const {
       // Physical x range check
       if (!inPhysicalRangeX(x)) {
-        std::string err = "Unphysical x given: " + to_str(x);
-        throw RangeError(err);
+        throw RangeError("Unphysical x given: " + to_str(x));
       }
       // Physical Q2 range check
       if (!inPhysicalRangeQ2(q2)) {
-        std::string err = "Unphysical Q2 given: " + to_str(q2);
-        throw RangeError(err);
+        throw RangeError("Unphysical Q2 given: " + to_str(q2));
       }
       // Undefined PIDs
       if (!hasFlavor(id)) {
-        std::string err = "Undefined flavour requested: " + to_str(id);
-        throw FlavorError(err);
+        throw FlavorError("Undefined flavour requested: " + to_str(id));
       }
       // Call the delegated method in the concrete PDF object to calculate the in-range value
       return _xfxQ2(id, x, q2);
@@ -275,19 +286,56 @@ namespace LHAPDF {
     /// @name Metadata
     //@{
 
+    // /// Set name
+    // std::string name() const;
+
+    // /// Description of the set
+    // std::string description() const;
+
+    // /// Order of QCD at which this PDF has been constructed
+    // int qcdOrder() const;
+
+    // /// @brief Value of alpha_s(Q2) used by this PDF set.
+    // ///
+    // /// Calculated numerically, analytically, or interpolated according to metadata.
+    // ///
+    // /// @todo Instead return an alpha_s calculator bound to this PDF?
+    // double alphaS(double q2) const;
+
+    // /// List of flavours defined by this PDF set.
+    /// @todo Store these more locally to avoid unnecessary lookups... and cache on the Interpolator/Extrapolator?
+    // const std::vector<int>& flavors() const;
+
+    // /// Get the name of this PDF member
+    // std::string name() const {
+    //   return metadata("Name");
+    // }
+
+    // /// Get the ID code of this PDF member
+    // size_t memberID() const {
+    //   return metadata<size_t>("ID");
+    // }
+
+    // /// Get the type of PDF (LO, NLO, etc.)
+    // int qcdOrder() const {
+    //   return metadata<int>("QCDOrder");
+    // }
+
+    // /// Get the type of PDF error set (Hessian, replicas, etc.)
+    // std::string errorType() const {
+    //   return metadata("ErrorType");
+    // }
 
     //@}
 
 
-    // /// Load PDF
-    /// @todo Needs to load the PDFInfo first to identify the PDF type
-    // static PDF* load(const std::string& );
-
-
   protected:
 
+    /// Member data file path
+    path _mempath;
+
     /// Metadata container
-    PDFInfo _info;
+    Info _info;
 
   };
 

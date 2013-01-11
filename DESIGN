@@ -151,3 +151,17 @@ xf = 0.1% or abs xf = 10^-5, whichever is larger (i.e. a > 0.1% deviation will b
 tolerated in regions where the PDF's xf value is anyway so small that it is of no
 physical importance.
   * TODO: choose better-motivated thresholds!
+
+Index file pdfsets.index. Just two columns: a positive integer "LHAPDF ID" and
+the name of the PDF set whose first member starts at that ID. Used for lookup of
+PDF set names by LHAPDF ID, to avoid need for code modification to use this
+system. In general any ID will be associated with the set whose listed first ID
+is effectively the integer <= bin edge containing the arbitrary ID, to avoid
+having to list *all* PDF members' ID codes. The LHAPDF ID is the natural
+successor of the PDFLIB numbering scheme and will remain backward compatible
+with it, i.e. CTEQ6L1 will remain with ID 10042, CT10 with ID 10800, etc.
+
+Flavor: the word is spelt the American way in the code for definiteness and
+consistency!  It's just a convention, don't take it personally ;-)
+
+Use of explicit xfxQ and xfxQ2 names.

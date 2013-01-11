@@ -8,7 +8,7 @@ namespace LHAPDF {
 
 
   /// Get the singleton LHAPDF set ID -> PDF index map
-  std::map<int, std::string>& getPDFIndex() {
+  inline std::map<int, std::string>& getPDFIndex() {
     static map<int, string> _lhaindex;
     if (_lhaindex.empty()) { // The map needs to be populated first
       path indexpath = findFile("pdfsets.index");

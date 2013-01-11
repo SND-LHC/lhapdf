@@ -1,5 +1,7 @@
 #pragma once
-#include <vector>
+
+#include <LHAPDF/Utils.h>
+#include <LHAPDF/Exceptions.h>
 
 namespace LHAPDF {
 
@@ -7,29 +9,40 @@ namespace LHAPDF {
   /// Contains different schemes for calculating alpha_s
   ///
   /// @todo Rewrite as inheritance from AlphaS base class
+  ///
+  /// The design of the AlphaS classes is that they are substitutible
+  /// (cf. polymorphism) and are entirely non-dependent on the PDF and PDFInfo
+  /// objects: hence they can be used by external code that actually doesn't
+  /// want to do anything at all with PDFs, but which just wants to do some
+  /// alpha_s interpolation.
   class AlphaS {
   public:
+
     /// Takes alphaS from metadata
-    static double meta(double Q2);
+    double meta(double q2);
 
-    /// Calculates alphaS using approximate analytical solution to differential equation
-    static double analytic(double Q2);
+    /// Calculate alphaS using approximate analytical solution to differential equation
+    double analytic(double q2);
 
-    /// Calculates alphaS using an implementation of RK4 in order to solve differential equation
+    /// Calculate alphaS using an implementation of RK4 in order to solve differential equation
     /// numerically
-    static double numerical(double Q2);
+    double numerical(double q2);
 
+  protected:
+
+    double _lambda4, _lambda5;
+    int _order;
 
   private:
 
     /// Calculates the number of active flavours at energy scale Q2
-    static int getNfAtQ2(double Q2);
+    int getNfAtQ2(double q2);
 
     /// Calculates the first order derivative, dAlphaS/dQ2, as it appears in differential equation
-    static double derivative(double t, double y, std::vector<double> beta);
+    double derivative(double t, double y, std::vector<double> beta);
 
     /// Calculates beta functions given the number of active flavours
-    static std::vector<double> getBetas(int nf);
+    std::vector<double> getBetas(int nf);
 
   };
 

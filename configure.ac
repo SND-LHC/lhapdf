@@ -16,6 +16,7 @@ VERSIONFLAGS="-version-info 2:0:0" ## for 6.0.0
 AC_SUBST(VERSIONFLAGS)
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION, "$PACKAGE_VERSION", "LHAPDF version string")
 
+
 ## Mac OS X compatibility
 AC_CHECK_TOOL(SWVERS, sw_vers)
 if test x$SWVERS != x; then
@@ -32,44 +33,18 @@ fi
 
 ## Checks and config headers
 AC_LANG(C++)
-AC_CONFIG_SRCDIR([src/PDFSet.cc])
-AC_CONFIG_HEADERS([config/config.h include/LHAPDF/LHAPDFConfig.h])
-
-
-## Set Fortran compiler behaviour
-if test "x$FCFLAGS" == "x"; then
-  FCFLAGS="-O2"
-fi
-## Try to respect users' Fortran compiler variables
-if test "x$FC" == "x"; then
-  if test "x$F77" == "x"; then
-    FC="$GFORTRAN"
-  else
-    FC="$F77"
-  fi
-fi
-#AC_LANG_PUSH(Fortran)
-AC_PROG_FC
-#AC_FC_SRCEXT(f90)
-AC_FC_LIBRARY_LDFLAGS
-AC_FC_WRAPPERS
-AC_FC_FREEFORM
-#AC_LANG_POP(Fortran)
-
+AC_CONFIG_SRCDIR([src/PDFGrid.cc])
+AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Config.h])
 
 ## Checks for programs
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
-
-
-## Enable binreloc
-AM_BINRELOC
-
-
-AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
+
+dnl ## Enable binreloc
+dnl AM_BINRELOC
 
 
 ## Enable debugging symbols.
@@ -81,9 +56,9 @@ if test x$enable_debug == xyes; then
 fi
 
 
-## Enable LHAGLUE compatibility fns for PDFLIB
+## Enable LHAGLUE compatibility fns for Fortran
 AC_ARG_ENABLE([lhaglue],
-  [AC_HELP_STRING(--disable-lhaglue, [build without PDFLIB compatibility routines])],
+  [AC_HELP_STRING(--disable-lhaglue, [build without PDFLIB/LHAPDF5 compatibility routines])],
   [], [enable_lhaglue=yes])
 if test x$enable_lhaglue == xyes; then
    AC_MSG_NOTICE(Building LHAGLUE wrappers)
@@ -103,55 +78,55 @@ fi
 AM_CONDITIONAL(WITH_DOXYGEN, [test x$DOXYGEN != x])
 
 
-## Python extension
-AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
-  [don't build Python module (default=build)])],
-  [], [enable_pyext=yes])
-if test x$enable_ccwrap != xyes; then
-   AC_MSG_WARN([Can't build Python extension since the C++ wrapper is not being built])
-   enable_pyext=no
-fi
-AZ_PYTHON_DEFAULT
-## Basic Python checks
-if test x$enable_pyext == xyes; then
-  AZ_PYTHON_PATH
-  AZ_PYTHON_VERSION_ENSURE([2.3])
-  ## Test for Python header
-  if test -x "$PYTHON"; then
-    AC_MSG_CHECKING([for Python include path])
-    python_incpath=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"`
-    AC_MSG_RESULT([$python_incpath])
-    python_header="$python_incpath/Python.h"
-    if test -z "$python_incpath"; then
-      AC_MSG_WARN([Can't build Python extension since include directory cannot be determined from distutils])
-      enable_pyext=no
-    elif test ! -e "$python_header"; then
-      AC_MSG_WARN([Can't build Python extension since header file $python_header cannot be found])
-      enable_pyext=no
-    fi
-  fi
-fi
-## SWIG version checks
-if test x$enable_pyext == xyes -a ! -e pyext/lhapdf_wrap.cc; then
-  AC_PATH_PROG(SWIG, swig)
-  if test -x "$SWIG"; then
-    swig_version=`$SWIG -version 2>&1 | grep Version | cut -f3 -d" "`
-    swig_major=`echo $swig_version | cut -f1 -d.`
-    swig_minor=`echo $swig_version | cut -f2 -d.`
-    swig_micro=`echo $swig_version | cut -f3 -d.`
-    let swig_version_num="1000*$swig_major+100*$swig_minor+$swig_micro"
-    if test "$swig_version_num" -lt 1333; then
-    #if test "$swig_major" -eq 1 -a "$swig_minor" -eq 3 -a "$swig_micro" -lt 33; then
-      AC_MSG_WARN([Can't build Python extension since SWIG version is too old to build wrapper files: please use a tarball release])
-      enable_pyext=no
-    fi
-  fi
-fi
-## Finish
-AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
-if test x$enable_pyext == xyes; then
-  AC_MSG_NOTICE([All Python build checks successful: 'lhapdf' Python extension will be built])
-fi
+dnl ## Python extension
+dnl AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
+dnl   [don't build Python module (default=build)])],
+dnl   [], [enable_pyext=yes])
+dnl if test x$enable_ccwrap != xyes; then
+dnl    AC_MSG_WARN([Can't build Python extension since the C++ wrapper is not being built])
+dnl    enable_pyext=no
+dnl fi
+dnl AZ_PYTHON_DEFAULT
+dnl ## Basic Python checks
+dnl if test x$enable_pyext == xyes; then
+dnl   AZ_PYTHON_PATH
+dnl   AZ_PYTHON_VERSION_ENSURE([2.3])
+dnl   ## Test for Python header
+dnl   if test -x "$PYTHON"; then
+dnl     AC_MSG_CHECKING([for Python include path])
+dnl     python_incpath=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"`
+dnl     AC_MSG_RESULT([$python_incpath])
+dnl     python_header="$python_incpath/Python.h"
+dnl     if test -z "$python_incpath"; then
+dnl       AC_MSG_WARN([Can't build Python extension since include directory cannot be determined from distutils])
+dnl       enable_pyext=no
+dnl     elif test ! -e "$python_header"; then
+dnl       AC_MSG_WARN([Can't build Python extension since header file $python_header cannot be found])
+dnl       enable_pyext=no
+dnl     fi
+dnl   fi
+dnl fi
+dnl ## SWIG version checks
+dnl if test x$enable_pyext == xyes -a ! -e pyext/lhapdf_wrap.cc; then
+dnl   AC_PATH_PROG(SWIG, swig)
+dnl   if test -x "$SWIG"; then
+dnl     swig_version=`$SWIG -version 2>&1 | grep Version | cut -f3 -d" "`
+dnl     swig_major=`echo $swig_version | cut -f1 -d.`
+dnl     swig_minor=`echo $swig_version | cut -f2 -d.`
+dnl     swig_micro=`echo $swig_version | cut -f3 -d.`
+dnl     let swig_version_num="1000*$swig_major+100*$swig_minor+$swig_micro"
+dnl     if test "$swig_version_num" -lt 1333; then
+dnl     #if test "$swig_major" -eq 1 -a "$swig_minor" -eq 3 -a "$swig_micro" -lt 33; then
+dnl       AC_MSG_WARN([Can't build Python extension since SWIG version is too old to build wrapper files: please use a tarball release])
+dnl       enable_pyext=no
+dnl     fi
+dnl   fi
+dnl fi
+dnl ## Finish
+dnl AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
+dnl if test x$enable_pyext == xyes; then
+dnl   AC_MSG_NOTICE([All Python build checks successful: 'lhapdf' Python extension will be built])
+dnl fi
 
 
 dnl ## Build Octave interface if possible
@@ -165,15 +140,19 @@ dnl fi
 dnl AM_CONDITIONAL(WITH_OCTAVE, [test x$OCTAVE != x && test x$MKOCTFILE != x])
 
 
-## Make a flag to detect if this build is on Windows
-AC_MSG_CHECKING(if the target platform is Windows)
-on_win32=no
-if `echo "$target" | grep win32`; then on_win32=yes; fi
-AC_MSG_RESULT([$on_win32])
-AM_CONDITIONAL(USING_WIN32, [test x$on_win32 == xyes])
+dnl ## Make a flag to detect if this build is on Windows
+dnl AC_MSG_CHECKING(if the target platform is Windows)
+dnl on_win32=no
+dnl if `echo "$target" | grep win32`; then on_win32=yes; fi
+dnl AC_MSG_RESULT([$on_win32])
+dnl AM_CONDITIONAL(USING_WIN32, [test x$on_win32 == xyes])
 
 
-## Set final FCFLAGS, CXXFLAGS and CPPFLAGS
+# TODO: find Boost
+# TODO: find yaml-cpp
+
+
+## Set final compiler flags
 AM_CPPFLAGS="$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(top_builddir)/include -I\$(prefix)/include"
 AM_CPPFLAGS=["$AM_CPPFLAGS -DDEFAULTPREFIXPATH=\\\"$prefix\\\" -DDEFAULTLHAPATH=\\\"$datadir\\\" "]
 AC_SUBST(AM_CPPFLAGS)

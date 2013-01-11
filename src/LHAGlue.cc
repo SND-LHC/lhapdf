@@ -1,104 +1,154 @@
+#include "LHAPDF/Config.h"
 #include "LHAPDF/Factories.h"
-#include <sstream>
-#include <iostream>
 
 using namespace std;
 
-namespace {
-  static const int nPartons = 13;
-  static int pid [nPartons] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
+namespace { //< Unnamed namespace to restrict visibility to this file
 
+  /// A struct for handling the active PDFs for the Fortran interface.
+  ///
+  /// We operate in a string-based way, since maybe there will be sets with names, but no
+  /// index entry in pdfsets.index.
+  ///
+  /// @todo Can we avoid the strings and just work via the LHAPDF ID and factory construction?
+  ///
+  /// Smart pointers are used in the native map used for PDF member storage so
+  /// that they auto-delete if the PDFSetHandler that holds them goes out of
+  /// scope (i.e. is overwritten).
   struct PDFSetHandler {
+    // typedef auto_ptr<LHAPDF::PDF> PDFPtr;
+    typedef LHAPDF::PDF* PDFPtr;
+
+    PDFSetHandler() { } //< It is stored in a map so we need one of these...
+
     PDFSetHandler(const string& name)
-      : setname(setname)
+      : currentmem(-1), setname(setname)
     {    }
+
+    PDFSetHandler(int lhaid) {
+      pair<string,int> set_mem = LHAPDF::lookupPDF(lhaid);
+      setname = set_mem.first;
+      loadMember(set_mem.second);
+    }
 
     /// Load a new PDF member
     void loadMember(int mem) {
-      members[mem] = LHAPDF::loadPDF(setname, mem);
+      /// @todo What if it's already loaded? Don't leak memory
+      members[mem] = LHAPDF::mkPDF(setname, mem);
+      currentmem = mem;
     }
 
     /// Actively delete a PDF member to save memory
     void unloadMember(int mem) {
       members.erase(mem);
+      currentmem = -1;
     }
 
-    /// Use smart pointers in the map to auto-delete
-    typedef auto_ptr<PDF> PDFPtr;
+    /// Get a PDF member
+    const PDFPtr member(int mem) {
+      return members[mem];
+    }
+
+    /// Get the currently active PDF member
+    const PDFPtr activemember() {
+      return members[currentmem];
+    }
+
+    /// The currently active member in this set
+    int currentmem;
+
+    /// Name of this set
+    string setname;
+
+    /// Map of pointers to selected member PDFs
     map<int, PDFPtr > members;
   };
 
-  static map<string, PDFSetHandler> activesets;
+  static const int PIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
+  static map<int, PDFSetHandler> ACTIVESETS;
+  // static int ACTIVESET, ACTIVEMEM;
+
 }
 
 
 extern "C" {
 
+
   /// LHAPDF version
   void getlhapdfversion_(char *s, size_t len) {
-    LHAPDF::getVersion(len, s);
+    /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
+    strncpy(s, LHAPDF_VERSION, len);
   }
 
+
   /// Load a PDF set
+  ///
+  /// @todo Does this version actually take a *path*? What to do?
   void initpdfsetm_(int& nset, const char* setpath, int setpathlength) {
     /// @todo Strip file extension for backward compatibility
-    if (wrapmap.find(nset) == wrapmap.end()) {
-      /// @todo Adapt for lack of PDFSet layer... or reintroduce?
-      wrapmap[nset].set = LHAPDF::PDFSet::load(setpath);
-    }
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      ACTIVESETS[nset] = PDFSetHandler(setpath); //< @todo Will be wrong if a structured path is given
+    // ACTIVESET = nset
+    // ACTIVEMEM = 0
   }
+
 
   /// Load a PDF set by name
   void initpdfsetbynamem_(int& nset, const char* name, int namelength) {
     /// @todo Strip file extension for backward compatibility
-    if (wrapmap.find(nset) == wrapmap.end()) {
-      /// @todo Actually map the name
-      wrapmap[nset].set = LHAPDF::PDFSet::loadByName("MSTW2008lo90cl");
-    }
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      ACTIVESETS[nset] = PDFSetHandler(name);
+    // ACTIVESET = nset
+    // ACTIVEMEM = 0
   }
+
 
   /// Load a PDF in current set.
   void initpdfm_(int& nset, int& nmember) {
-    std::map<int, PDFSetWrap>::iterator bundle = wrapmap.find(nset);
-    if (bundle != wrapmap.end()) {
-      bundle->second.pdf = &bundle->second.set->getMember(nmember);
-    } else {
-      throw UserError(nset);
-    }
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    ACTIVESETS[nset].loadMember(nmember);
+    // ACTIVESET = nset;
+    // ACTIVEMEM = nmember;
   }
+
 
   /// Get xf(x) values for common partons from current PDF.
   void evolvepdfm_(int& nset, double& x, double& q , double* fxq) {
-    std::map<int, PDFSetWrap>::const_iterator bundle = wrapmap.find(nset);
-    // Check that set exists
-    if ( bundle != wrapmap.end() ) {
-      // Evaluate LHAPDF standard partons
-      for (int i = 0; i < nPartons; i++) {
-        try {
-          fxq[i] = wrapmap[nset][nmem]->xfxQ2( pid[i], x, q*q );
-        } catch ( std::exception e ) {
-          fxq[i] = 0;
-        }
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // Evaluate for the LHAPDF5 standard partons
+    for (size_t i = 0; i < 13; ++i) {
+      try {
+        fxq[i] = ACTIVESETS[nset].activemember()->xfxQ2(PIDS[i], x, q*q);
+      } catch (const std::exception& e) {
+        fxq[i] = 0;
       }
     }
   }
 
+
   /// Get photon PID xfx value from current PDF.
   void evolvepdfphotonm_(int& nset, double& x, double& q, double& fxq, double& photonparam) {
-    std::map<int, PDFSetWrap>::const_iterator bundle = wrapmap.find( nset );
-    // Check that set exists
-    if ( bundle != wrapmap.end() ) {
-      fxq = bundle->second.pdf->xfxQ2( 22, x, q*q );
-    } else {
-      throw PDFSetNotLoadedException( nset );
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // Evaluate for the MRST2004QED photon flavor
+    try {
+      fxq = ACTIVESETS[nset].activemember()->xfxQ2(22, x, q*q);
+    } catch (const std::exception& e) {
+      fxq = 0;
     }
   }
 
-  ///
+
+  /// Set LHAPDF parameters
   void setlhaparm_(const char* par, int parlength) {
-    std::cout << "ERR: " << par << " SETLHAPARM" << std::endl;
+    // Do nothing for now
+    /// @todo Can any Fortran LHAPDF params be usefully mapped?
   }
 
+
   /// @todo Add mapping of the xfx_ etc. functions for PYTHIA6 and friends
+
 
 }

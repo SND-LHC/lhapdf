@@ -26,7 +26,7 @@ namespace LHAPDF {
   }
 
 
-  void PDFGrid::_loadData(const string& mempath) {
+  void PDFGrid::_loadData(const path& mempath) {
     string line;
     int iblock(0), iblockline(0), iline(0);
     vector<double> xs, q2s;
@@ -58,14 +58,16 @@ namespace LHAPDF {
             if (iblockline == 3) { // on the first line of the xf block, resize the arrays
               for (size_t ipid = 0; ipid < npid; ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
             }
-            int ipid = 0;
+            size_t ipid = 0;
             while (tokens >> token) {
               ipid_xfs[ipid].push_back(token);
               ipid += 1;
             }
+            // Check that each line has many tokens as there should be flavours
+            if (ipid != flavors.size()) //< @todo Convert to flavors()
+              throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
+                              " flavor entries seen but " + to_str(flavors.size()) + " were expected");
           }
-
-          /// @todo Check that each line has many tokens as there should be flavours
 
         } else { // we *are* on a block separator line
 
@@ -108,14 +110,30 @@ namespace LHAPDF {
     } catch (Exception& e) {
       throw;
     } catch (std::exception& e) {
-      throw ReadError("Read error while parsing " + mempath + " as a PDFGrid data file");
+      throw ReadError("Read error while parsing " + mempath.native() + " as a PDFGrid data file");
     }
 
+  }
+
+
+  void PDFGrid::_init() {
     // Set default inter/extrapolators
     const string ipolname = info().metadata("Interpolator");
     setInterpolator(ipolname);
     const string xpolname = info().metadata("Extrapolator");
     setExtrapolator(xpolname);
+  }
+
+
+  // Defined here to avoid circular dependencies in the headers
+  void PDFGrid::setInterpolator(const std::string& ipolname) {
+    setInterpolator(mkInterpolator(ipolname));
+  }
+
+
+  // Defined here to avoid circular dependencies in the headers
+  void PDFGrid::setExtrapolator(const std::string& xpolname) {
+    setExtrapolator(mkExtrapolator(xpolname));
   }
 
 

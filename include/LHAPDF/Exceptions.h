@@ -67,6 +67,13 @@ namespace LHAPDF {
   };
 
 
+  /// @brief Error to be raised when a LHAPDF ID indexing fails
+  class IndexError : public Exception {
+  public:
+    IndexError(const std::string& what) : Exception(what) {}
+  };
+
+
   /// Problem exists between keyboard and chair.
   class UserError : public Exception {
   public:

@@ -1,20 +1,51 @@
 #pragma once
 
-#include "LHAPDF/PDFSet.h"
+#include "LHAPDF/PDFGrid.h"
 #include "LHAPDF/BilinearInterpolator.h"
 #include "LHAPDF/BicubicInterpolator.h"
 #include "LHAPDF/ErrExtrapolator.h"
 #include "LHAPDF/NearestPointExtrapolator.h"
-#include "boost/algorithm/string.hpp"
-#include <string>
-#include <sstream>
-#include <stdexcept>
 
 namespace LHAPDF {
 
 
+  /// Create a new PDF from the given data file path.
+  ///
+  /// Returns a 'new'ed PDF by pointer.
+  /// The caller is responsible for deletion of the created object.
+  inline PDF* mkPDF(const std::string& path) {
+    // First create an Info object to work out what format of PDF this is:
+    LHAPDF::Info info(path);
+    const string fmt = info.metadata("Format");
+    // Then use the format information to call the appropriate concrete PDF constructor:
+    if (fmt == "lhagrid") return new PDFGrid(path);
+    throw FactoryError("No LHAPDF factory defined for format type '" + fmt + "'");
+  }
+
+  /// Create a new PDF with the given PDF set name and member ID.
+  ///
+  /// Returns a 'new'ed PDF by pointer.
+  /// The caller is responsible for deletion of the created object.
+  inline PDF* mkPDF(const std::string& setname, int member) {
+    path mempath = findFile(pdfmempath(setname, member));
+    return mkPDF(mempath.native());
+  }
+
+  /// Create a new PDF with the given LHAPDF ID code.
+  ///
+  /// Returns a 'new'ed PDF by pointer.
+  /// The caller is responsible for deletion of the created object.
+  inline PDF* mkPDF(int lhaid) {
+    const pair<string,int> setname_memid = lookupPDF(lhaid);
+    return mkPDF(setname_memid.first, setname_memid.second);
+  }
+
+
   /// Interpolator factory
-  inline Interpolator* createInterpolator(const std::string& name) {
+  ///
+  /// Returns a 'new'ed Interpolator by pointer. Unless passed to a PDFGrid,
+  /// the caller is responsible for deletion of the created object.
+  inline Interpolator* mkInterpolator(const std::string& name) {
     // Convert name to lower case for comparisons
     const std::string iname = boost::to_lower_copy(name);
     if (iname == "linear")
@@ -27,7 +58,10 @@ namespace LHAPDF {
 
 
   /// Extrapolator factory
-  inline Extrapolator* createExtrapolator(const std::string& name) {
+  ///
+  /// Returns a 'new'ed Extrapolator by pointer. Unless passed to a PDFGrid,
+  /// the caller is responsible for deletion of the created object.
+  inline Extrapolator* mkExtrapolator(const std::string& name) {
     // Convert name to lower case for comparisons
     const std::string iname = boost::to_lower_copy(name);
     if (iname == "nearest")

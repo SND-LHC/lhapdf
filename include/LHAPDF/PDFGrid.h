@@ -1,15 +1,11 @@
 #pragma once
 
 #include "LHAPDF/PDF.h"
-#include "LHAPDF/Factories.h"
+#include "LHAPDF/Interpolator.h"
+#include "LHAPDF/Extrapolator.h"
 #include "boost/multi_array.hpp"
 
 namespace LHAPDF {
-
-
-  // Forward declarations
-  class Interpolator;
-  class Extrapolator;
 
 
   /// @brief A PDF defined via an interpolation grid
@@ -19,28 +15,33 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
-    /// Default constructor.
-    PDFGrid()
-      : _interpolator(0), _extrapolator(0)
-    {
-      /// @todo Parse metadata file, create set if needed, set up alpha_s object, etc.
-    }
+    // /// Default constructor.
+    // PDFGrid()
+    //   : _interpolator(0), _extrapolator(0)
+    // {    }
 
     /// Constructor from a file path.
     PDFGrid(const std::string& path)
       : PDF(path), _interpolator(0), _extrapolator(0)
     {
-      _loadData(path);
+      _loadData(_mempath);
+      _init();
     }
 
     /// Constructor from a set name and member ID.
     PDFGrid(const std::string& setname, int member)
       : PDF(setname, member), _interpolator(0), _extrapolator(0)
     {
-      /// @todo Replace this with the data file path set by the PDF constructor, when available
-      const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
-      path searchpath = setname / memname;
-      _loadData(searchpath.native());
+      _loadData(_mempath);
+      _init();
+    }
+
+    /// Constructor from a set name and member ID.
+    PDFGrid(int lhaid)
+      : PDF(lhaid), _interpolator(0), _extrapolator(0)
+    {
+      _loadData(_mempath);
+      _init();
     }
 
     /// Destructor
@@ -54,8 +55,9 @@ namespace LHAPDF {
 
   protected:
 
-    // void _loadData(const path& mempath) { _loadData(mempath.native()); }
-    void _loadData(const std::string& mempath);
+    void _loadData(const path& mempath);
+
+    void _init();
 
 
   public:
@@ -119,9 +121,7 @@ namespace LHAPDF {
     ///
     /// Use the interpolator specified by the given name, as passed to the
     /// createInterpolator factory function.
-    void setInterpolator(const std::string& ipolname) {
-      setInterpolator(createInterpolator(ipolname));
-    }
+    void setInterpolator(const std::string& ipolname);
 
     /// Get the current interpolator (ownership remains with the PDFGrid).
     const Interpolator* interpolator() const {
@@ -156,9 +156,7 @@ namespace LHAPDF {
     ///
     /// Use the extrapolator specified by the given name, as passed to the
     /// createExtrapolator factory function.
-    void setExtrapolator(const std::string& xpolname) {
-      setExtrapolator(createExtrapolator(xpolname));
-    }
+    void setExtrapolator(const std::string& xpolname);
 
     /// Get the current extrapolator (ownership remains with the PDFGrid).
     const Extrapolator* extrapolator() const {

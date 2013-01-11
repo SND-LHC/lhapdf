@@ -1,5 +1,17 @@
 2013-01-11  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Renaming LHAPDFConfig.h -> Config.h
+
+	* DESIGN doc updates.
+
+	* Factory renaming and adding factory functions for PDF construction.
+
+	* PDF and PDFInfo extra constructors from LHAPDF ID code.
+
+	* Moving PDFInfo YAML reading into a new PDFInfo.cc to avoid an API header dependency.
+
+	* Refactoring PDF filename construction etc. to minimise code duplication.
+
 	* Adding the PDFIndex.h header and index lookup functions.
 
 	* Adding the start of the LHA Fortran wrapper, based on the Py8
