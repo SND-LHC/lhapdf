@@ -165,3 +165,6 @@ Flavor: the word is spelt the American way in the code for definiteness and
 consistency!  It's just a convention, don't take it personally ;-)
 
 Use of explicit xfxQ and xfxQ2 names.
+
+Fix of the historic CTEQ6L1 "CTEQ6ll" naming typo, with backward compatibility
+in LHAGLUE.

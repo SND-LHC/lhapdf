@@ -3,37 +3,26 @@ LHAPDF6 TODO list
 
 NOW
 
-* Sort out info system and relationship to PDFs.
+* Fix multi_array reshaping in PDFGrid loading
 
-* Update grid parsing and format.
+* Use auto_ptr in LHAGlue
 
-* Replace set/PDF allocation nightmare with shared_ptrs, etc.
+* Adapt interpolators and extrapolators to use new grid format.
+   Slight rename to e.g. GridInterpolator to make the grid part specific?
 
 * Interpolation attachment to PDFGrid in both directions
    Means that e.g. Extrapolator can make use of the current interpolator
 
-* Get values for all flavours at once, since all will usually be needed? Caching
-
-
-FOR BETA 1
-
-* Add PDF factory
-
-* Design & implement sub-grid "patch" system
-   Implement in 1D first, then integrate into (x,Q) interpolation. Subgrids
-   should only be necessary in Q... and also needed for alpha_s ipol.
-
-* Set search paths (default and LHAPDF_SET_PATH) and version string access
+* Caching of grid indices in Interpolator and Extrapolator interfaces
 
 * Implement numerical alpha_s running with several options, and also support
    interpolation of tablulated alpha_s values (with 1D subgrids).
 
+
+FOR BETA 1
+
 * Only expose headers with the public interface
    Internalise headers used for implementation components only.
-
-* Add "proper" LHAPDF exception classes
-
-* LHAGLUE interface, including number -> set name mappings
 
 * Validation system and plotting
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
@@ -41,12 +30,10 @@ FOR BETA 1
    old and new LHAPDF, and finally compare the files line-by-line, with
    pulls/ratios to the "old" LHAPDF as the reference.
 
-* Deal specially with CTEQ6L1
+* Deal specially with CTEQ6L1 in LHAGLUE
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
-   compatibility at the same time as sorting out the misnaming.
-
-
-FOR BETA 2
+   compatibility at the same time as sorting out the misnaming. Only in the
+   Fortran interface?
 
 * Treating missing flavours with error vs. return 0
    Provide a switch to distinguish the two responses. Put ID check into
@@ -54,6 +41,12 @@ FOR BETA 2
 
 * Printing out banner info... needed by code that greps for it :-/
    e.g. ATLAS' Generate_trf.py ...
+
+* Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
+   Both should just use nset = 0 all the time.
+
+
+FOR BETA 2
 
 * Interpolation in (log(x), log(Q2)) as well as (x, Q)
 
