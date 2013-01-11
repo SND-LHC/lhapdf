@@ -168,3 +168,11 @@ Use of explicit xfxQ and xfxQ2 names.
 
 Fix of the historic CTEQ6L1 "CTEQ6ll" naming typo, with backward compatibility
 in LHAGLUE.
+
+Define to what extent set-level metadata can be set programmatically at runtime.
+Current answer = it can't, because set-level info is duplicated between all the
+members of that set and doesn't have an independent existence. Which is fine,
+but we should be clear about it in the docs. Should we store global set-level
+info in future to allow runtime set-level info setting? (Performance penalty?
+Probably not as long as the flavors() vector is stored locally on the PDF
+object.)

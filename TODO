@@ -7,6 +7,9 @@ NOW
 
 * Use auto_ptr in LHAGlue
 
+* Add nice (correctly typed, syntactically sugared) metadata methods to PDF
+   ... and more specific ones on PDFGrid? Probably.
+
 * Adapt interpolators and extrapolators to use new grid format.
    Slight rename to e.g. GridInterpolator to make the grid part specific?
 
@@ -15,8 +18,12 @@ NOW
 
 * Caching of grid indices in Interpolator and Extrapolator interfaces
 
-* Implement numerical alpha_s running with several options, and also support
-   interpolation of tablulated alpha_s values (with 1D subgrids).
+* Refactor and test alpha_s running
+   Break into several polymorphic implementers of AlphaS for analystic
+   approximations, numerical RGE solving, and interpolation. Set params on
+   AlphaS (and subclasses) directly, with sensible defaults for many, to be set
+   by PDFs based on their Info/metadata values. That way the AlphaS part will be
+   only minimally coupled to the PDF system.
 
 
 FOR BETA 1
