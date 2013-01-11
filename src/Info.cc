@@ -39,14 +39,14 @@ namespace LHAPDF {
   }
 
 
-  /// Load properly cascaded info for a PDF member, including fallback to the set info if it exists
+  /// @todo Only support loading via PDF set name and member ID, not paths?
   void Info::loadFull(const path& mempath) { //< @todo Need a better method name!
     const path memberdata = findFile(mempath);
     if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath.native() + "'");
     const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
     const path setdir = memberdata.parent_path();
     const string setname = setdir.filename().native();
-    path setinfo = setdir / (setname + ".info");
+    path setinfo = findpdfsetinfopath(setname);
     if (exists(setinfo)) load(setinfo.native());
     load(memberdata.native()); //< Override set-level info
   }

@@ -39,24 +39,31 @@ namespace LHAPDF {
   /// @todo Add functions for pre/appending to and explicitly setting the search paths
 
 
+  /// @name Functions for handling standard LHAPDF filename structures
+  //@{
+
   inline path pdfmempath(const std::string& setname, int member) {
     const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
     path mempath = setname / memname;
-    return mempath;
+    return findFile(mempath);
   }
+
+  inline path findpdfmempath(const std::string& setname, int member) {
+    return findFile(pdfmempath(setname, member));
+  }
+
+  inline path pdfsetinfopath(const std::string& setname) {
+    const string infoname = setname + ".info";
+    path setinfo = setname / infoname;
+    return setinfo;
+  }
+
+  /// @todo Check that set info and mem=0 file are in same dir?
+  inline path findpdfsetinfopath(const std::string& setname) {
+    return findFile(pdfsetinfopath(setname));
+  }
+
+  //@}
 
 
 }
-
-
-// Test program:
-// #include <iostream>
-// int main() {
-//   std::cout << 1 << std::endl;
-//   foreach (const boost::filesystem::path& p, LHAPDF::paths()) {
-//     std::cout << p << std::endl;
-//   }
-//   std::cout << 2 << std::endl;
-//   std::cout << "@" << LHAPDF::findFile("passwd") << "@" << std::endl;
-//   return 0;
-// }

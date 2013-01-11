@@ -176,3 +176,11 @@ but we should be clear about it in the docs. Should we store global set-level
 info in future to allow runtime set-level info setting? (Performance penalty?
 Probably not as long as the flavors() vector is stored locally on the PDF
 object.)
+
+* TODO: Origin/priority of PDF set naming and member numbers: taken from
+  filename, the containing directory name (require consistency with the
+  filenames?), and/or the metadata system? Suggest NOT allowing a metadata
+  source for naming and member IDs, since it would just lead to maximal
+  confusion if they got out of sync with the file/dir names. What if the dir and
+  file names are in contradiction? Answer: throw an exception or fail with an
+  assert rather than try to be "softer".

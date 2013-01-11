@@ -1,5 +1,9 @@
 2013-01-11  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Start of the AlphaS refactoring.
+
+	* Metadata methods and flavour list caching added to PDF.
+
 	* Renaming PDFInfo.h/.cc to just Info.h/.cc
 
 	* Renaming LHAPDFConfig.h -> Config.h

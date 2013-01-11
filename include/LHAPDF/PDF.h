@@ -64,24 +64,14 @@ namespace LHAPDF {
   protected:
 
     void _loadInfo(const path& mempath) {
+      /// @todo Set the set name member data somewhere near here
+      /// @todo Set the set member number, too
       _mempath = findFile(mempath);
       _info.loadFull(mempath);
     }
 
 
   public:
-
-    /// Metadata
-    //@{
-
-    /// Get the info class that actually stores and handles the metadata
-    Info& info() { return _info; }
-
-    /// Get the info class that actually stores and handles the metadata (const version)
-    const Info& info() const { return _info; }
-
-    //@}
-
 
     /// @name PDF values
     //@{
@@ -259,63 +249,76 @@ namespace LHAPDF {
     //@}
 
 
-    /// @name Parton content
+    /// @name Generic metadata
     //@{
 
-    /// Get the list of particle ID codes for flavors in this PDF.
-    virtual std::vector<int> flavors() const = 0;
+    /// Get the info class that actually stores and handles the metadata
+    Info& info() { return _info; }
 
-    /// Checks whether @a id is a valid parton for this PDF.
-    virtual bool hasFlavor(int id) const {
-      vector<int> ids = flavors();
-      return find(ids.begin(), ids.end(), id) != ids.end();
+    /// Get the info class that actually stores and handles the metadata (const version)
+    const Info& info() const { return _info; }
+
+    /// @todo Set name should be set by the constructor, not the metadata system
+    // /// PDF set name
+    // std::string setname() const {
+    //   return _setname;
+    // }
+
+    /// @todo Member ID should be set by the constructor, not the metadata system
+    // /// PDF member ID number
+    // int memberid() const {
+    //   return _memberid;
+    // }
+
+    /// Description of the set
+    std::string description() const {
+      return info().metadata("SetDesc");
+    }
+
+    /// Get the type of PDF error set (Hessian, replicas, etc.)
+    std::string errorType() const {
+      return to_lower_copy(info().metadata("ErrorType"));
     }
 
     //@}
 
 
-    /// @name Metadata
+    /// @name Parton content and QCD parameters
     //@{
 
-    // /// Set name
-    // std::string name() const;
+    /// List of flavours defined by this PDF set.
+    ///
+    /// This list is stored locally after its initial read from the Info object
+    /// to avoid unnecessary lookups and string decoding, since e.g. it is
+    /// looked at by every call to the PDFGrid's Interpolator and Extrapolator
+    /// classes.
+    const std::vector<int>& flavors() const {
+      if (_flavors.empty())
+        _flavors = info().metadata< vector<int> >("Flavors");
+      return _flavors;
+    }
 
-    // /// Description of the set
-    // std::string description() const;
+    /// Checks whether @a id is a valid parton for this PDF.
+    virtual bool hasFlavor(int id) const {
+      const vector<int>& ids = flavors();
+      return find(ids.begin(), ids.end(), id) != ids.end();
+    }
 
-    // /// Order of QCD at which this PDF has been constructed
-    // int qcdOrder() const;
+    /// Order of QCD at which this PDF has been constructed
+    ///
+    /// "Order" is defined here and throughout LHAPDF as the maximum number of
+    /// loops included in the matrix elements, in order to have an integer value
+    /// for easy use in comparisons, as opposed to "LO", "NLO", etc. strings.
+    int qcdOrder() const {
+      return info().metadata<int>("QcdOrder");
+    }
 
+    /// @todo Enable this, when the various AlphaS classes exist and the alpha_s factory is re-enabled
     // /// @brief Value of alpha_s(Q2) used by this PDF set.
     // ///
-    // /// Calculated numerically, analytically, or interpolated according to metadata.
-    // ///
-    // /// @todo Instead return an alpha_s calculator bound to this PDF?
+    // /// Calculated numerically, analytically, or interpolated according to
+    // /// metadata, using the AlphaS classes.
     // double alphaS(double q2) const;
-
-    // /// List of flavours defined by this PDF set.
-    /// @todo Store these more locally to avoid unnecessary lookups... and cache on the Interpolator/Extrapolator?
-    // const std::vector<int>& flavors() const;
-
-    // /// Get the name of this PDF member
-    // std::string name() const {
-    //   return metadata("Name");
-    // }
-
-    // /// Get the ID code of this PDF member
-    // size_t memberID() const {
-    //   return metadata<size_t>("ID");
-    // }
-
-    // /// Get the type of PDF (LO, NLO, etc.)
-    // int qcdOrder() const {
-    //   return metadata<int>("QCDOrder");
-    // }
-
-    // /// Get the type of PDF error set (Hessian, replicas, etc.)
-    // std::string errorType() const {
-    //   return metadata("ErrorType");
-    // }
 
     //@}
 
@@ -327,6 +330,9 @@ namespace LHAPDF {
 
     /// Metadata container
     Info _info;
+
+    /// Locally cached list of supported PIDs
+    mutable vector<int> _flavors;
 
   };
 

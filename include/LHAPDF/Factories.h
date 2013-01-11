@@ -47,7 +47,7 @@ namespace LHAPDF {
   /// the caller is responsible for deletion of the created object.
   inline Interpolator* mkInterpolator(const std::string& name) {
     // Convert name to lower case for comparisons
-    const std::string iname = boost::to_lower_copy(name);
+    const std::string iname = to_lower_copy(name);
     if (iname == "linear")
       return new BilinearInterpolator();
     else if (iname == "cubic")
@@ -63,7 +63,7 @@ namespace LHAPDF {
   /// the caller is responsible for deletion of the created object.
   inline Extrapolator* mkExtrapolator(const std::string& name) {
     // Convert name to lower case for comparisons
-    const std::string iname = boost::to_lower_copy(name);
+    const std::string iname = to_lower_copy(name);
     if (iname == "nearest")
       return new NearestPointExtrapolator();
     else if (iname == "error")
@@ -71,6 +71,24 @@ namespace LHAPDF {
     else
       throw FactoryError("Undeclared extrapolator requested: " + name);
   }
+
+
+  // /// AlphaS factory
+  // ///
+  // /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
+  // /// the caller is responsible for deletion of the created object.
+  // inline AlphaS* mkAlphaS(const std::string& name) {
+  //   // Convert name to lower case for comparisons
+  //   const std::string iname = to_lower_copy(name);
+  //   if (iname == "analytic") //< Need a better name (and class name) if we implement more than one analytic approximation
+  //     return new AlphaS_Analytic();
+  //   else if (iname == "ode")
+  //     return new AlphaS_ODE();
+  //   else if (iname == "ipol")
+  //     return new AlphaS_Ipol();
+  //   else
+  //     throw FactoryError("Undeclared AlphaS requested: " + name);
+  // }
 
 
 }

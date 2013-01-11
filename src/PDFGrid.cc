@@ -30,8 +30,7 @@ namespace LHAPDF {
     string line;
     int iblock(0), iblockline(0), iline(0);
     vector<double> xs, q2s;
-    const vector<int> flavors = info().metadata< vector<int> >("Flavors"); //< @todo Get this as a const reference from the PDF interface when added
-    const size_t npid = flavors.size(); //< @todo Convert to PDF::flavors().size() once it exists
+    const size_t npid = flavors().size();
     vector< vector<double> > ipid_xfs(npid);
 
     try {
@@ -64,9 +63,9 @@ namespace LHAPDF {
               ipid += 1;
             }
             // Check that each line has many tokens as there should be flavours
-            if (ipid != flavors.size()) //< @todo Convert to flavors()
+            if (ipid != flavors().size())
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
-                              " flavor entries seen but " + to_str(flavors.size()) + " were expected");
+                              " flavor entries seen but " + to_str(flavors().size()) + " were expected");
           }
 
         } else { // we *are* on a block separator line
@@ -96,7 +95,7 @@ namespace LHAPDF {
           // KnotArrayNF arraynf;
           KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
           for (size_t ipid = 0; ipid < npid; ++ipid) {
-            int pid = flavors[ipid]; //< @todo Replace with flavors()[ipid] when possible
+            int pid = flavors()[ipid];
             arraynf[pid] = KnotArray1F(xs, q2s); // create the 2D array with the x and Q2 knot positions
             arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end()); // populate the xf array
           }
