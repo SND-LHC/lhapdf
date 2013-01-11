@@ -66,15 +66,6 @@ namespace LHAPDF {
     void _loadInfo(const path& mempath) {
       _mempath = findFile(mempath);
       _info.loadFull(mempath);
-      // const path memberdata = findFile(mempath);
-      // if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath + "'");
-      // const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
-      // const path setdir = memberdata.parent_path();
-      // const string setname = setdir.filename().native();
-      // path setinfo = setdir;
-      // setinfo /= setname + ".info";
-      // if (exists(setinfo)) _info.load(setinfo.native());
-      // _info.load(memberdata.native()); //< Override set-level info
     }
 
 

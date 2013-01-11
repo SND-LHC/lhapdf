@@ -36,52 +36,10 @@ namespace LHAPDF {
     ///
     /// This function may be called several times to read metadata from several
     /// YAML source files. Values for existing keys will be overwritten.
-    void load(const path& filepath);//  {
-    //   // Read the YAML file into the metadata map
-    //   try {
-    //     std::ifstream info(path.c_str());
-    //     YAML::Parser parser(info);
-    //     YAML::Node doc;
-    //     parser.GetNextDocument(doc);
-    //     for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
-    //       string key, val;
-    //       it.first() >> key;
-    //       try {
-    //         // Assume the value is a scalar type -- it'll throw an exception if not
-    //         it.second() >> val;
-    //       } catch (const YAML::InvalidScalar& ex) {
-    //         // It's a list: process the entries individually into a comma-separated string
-    //         string subval;
-    //         for (size_t i = 0; i < it.second().size(); ++i) {
-    //           it.second()[i] >> subval;
-    //           val += subval + ((i < it.second().size()-1) ? "," : "");
-    //         }
-    //       }
-    //       //cout << key << ": " << val << endl;
-    //       _metadict[key] = val;
-    //     }
-    //   } catch (const YAML::ParserException& ex) {
-    //     throw ReadError("YAML parse error in " + path + " :" + ex.what());
-    //   } catch (const LHAPDF::Exception& ex) {
-    //     throw;
-    //   } catch (const std::exception& ex) {
-    //     throw ReadError("Trouble when reading " + path + " :" + ex.what());
-    //   }
-
-    // }
-
+    void load(const path& filepath);
 
     /// Load properly cascaded info for a PDF member, including fallback to the set info if it exists
-    void loadFull(const path& mempath);//  { //< @todo Need a better method name!
-    //   const path memberdata = findFile(mempath);
-    //   if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath + "'");
-    //   const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
-    //   const path setdir = memberdata.parent_path();
-    //   const string setname = setdir.filename().native();
-    //   path setinfo = setdir / setname + ".info";
-    //   if (exists(setinfo)) load(setinfo.native());
-    //   load(memberdata.native()); //< Override set-level info
-    // }
+    void loadFull(const path& mempath);
 
     //@}
 
@@ -185,32 +143,4 @@ namespace LHAPDF {
   //@}
 
 
-
-  // /// Metadata for PDF sets
-  /// @todo Re-enable?
-  // class SetInfo : public Info {
-  // public:
-  // };
-
-
-  // /// Metadata for PDF members
-  /// @todo Re-enable?
-  // class PDFInfo : public Info {
-  // public:
-  // };
-
-
 }
-
-
-// // Example program
-// int main() {
-//   using namespace std;
-//   const LHAPDF::Info& cfg = LHAPDF::Info::config();
-//   cout << cfg.metadata("Foo") << endl;
-//   cout << cfg.metadata("Flavors") << endl;
-//   vector<int> pids = cfg.metadata< vector<int> >("Flavors");
-//   foreach (int f, pids) cout << f << endl;
-//   cout << LHAPDF::to_str(pids) << endl;
-//   return 0;
-// }
