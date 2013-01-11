@@ -23,10 +23,10 @@ namespace LHAPDF {
     /// YAML source files. Values for existing keys will be overwritten.
     void load(const std::string& path) {
       // Read the YAML file into the metadata map
-      std::ifstream info(path.c_str());
-      YAML::Parser parser(info);
-      YAML::Node doc;
       try {
+        std::ifstream info(path.c_str());
+        YAML::Parser parser(info);
+        YAML::Node doc;
         parser.GetNextDocument(doc);
         for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
           string key, val;
@@ -46,8 +46,13 @@ namespace LHAPDF {
           _metadict[key] = val;
         }
       } catch (const YAML::ParserException& ex) {
-        cout << "Parse error when reading info from " << path << " :" << ex.what() << endl;
+        throw ReadError("YAML parse error in " + path + " :" + ex.what());
+      } catch (const LHAPDF::Exception& ex) {
+        throw;
+      } catch (const std::exception& ex) {
+        throw ReadError("Trouble when reading " + path + " :" + ex.what());
       }
+
     }
 
 

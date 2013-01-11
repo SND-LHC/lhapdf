@@ -14,7 +14,7 @@ namespace LHAPDF {
 
 
   /// Interpolator factory
-  static Interpolator* createInterpolator(const std::string& name) {
+  inline Interpolator* createInterpolator(const std::string& name) {
     // Convert name to lower case for comparisons
     const std::string iname = boost::to_lower_copy(name);
     if (iname == "linear")
@@ -27,7 +27,7 @@ namespace LHAPDF {
 
 
   /// Extrapolator factory
-  static Extrapolator* createExtrapolator(const std::string& name) {
+  inline Extrapolator* createExtrapolator(const std::string& name) {
     // Convert name to lower case for comparisons
     const std::string iname = boost::to_lower_copy(name);
     if (iname == "nearest")

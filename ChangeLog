@@ -1,5 +1,7 @@
 2013-01-11  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding the PDFIndex.h header and index lookup functions.
+
 	* Adding the start of the LHA Fortran wrapper, based on the Py8
 	wrapper by Steve and Martin.
 
