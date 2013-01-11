@@ -1,6 +1,5 @@
-#include "LHAPDF/PDFSet.h"
 #include "LHAPDF/PDFGrid.h"
-#include "LHAPDF/Version.h"
+#include "LHAPDF/Exceptions.h"
 #include <sstream>
 #include <exception>
 #include <iostream>
@@ -9,7 +8,7 @@ using namespace LHAPDF;
 
 
 /// PDFSetNotLoadedException is thrown from the Pythia8 wrapper when the selected PDFSet is not loaded.
-class PDFSetNotLoadedException: public std::exception {
+class PDFSetNotLoadedException : public Exception {
 public:
   PDFSetNotLoadedException( const int Set )
     : set(Set) {}
@@ -25,7 +24,7 @@ private:
 };
 
 
-/// A structure that is required to set a current pdf member similar to the original
+/// A structure that is required to set a current PDF member similar to the original
 /// LHAPDF interface.
 struct PDFSetWrap {
   PDFSet* set;

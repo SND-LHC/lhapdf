@@ -2,28 +2,27 @@
 #include <cmath>
 #include <iostream>
 
-using namespace LHAPDF;
 using namespace std;
 
 
 /// Demo of an analytic/custom PDF class
-struct PDFAnalytic: public PDF {
+struct PDFAnalytic : public LHAPDF::PDF {
 
-  double xfxQ2(int id, double x, double q2) const {
+  double _xfxQ2(int id, double x, double q2) const {
     if (abs(id) > 5) return 0;
-    return 0.15 * sin(20.0*x) * sin(20.0*q2); // same for all light PIDs
+    return 0.15 * sin(20.0*x) * sin(20.0*q2); // same for all light flavors
   }
 
   bool inRangeX(double x) const { return true; }
   bool inRangeQ2(double q2) const { return true; }
 
-  vector<int> pids(double id) const {
+  vector<int> flavors(double id) const {
     vector<int> rtn;
     for (int id = 1; id < 6; ++id) {
       rtn.push_back(id);
       rtn.push_back(-id);
     }
-    //sort(rtn.begin(), rtn.end());
+    sort(rtn.begin(), rtn.end());
     return rtn;
   }
 
