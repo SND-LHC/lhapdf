@@ -8,8 +8,6 @@ namespace LHAPDF {
 
   /// Contains different schemes for calculating alpha_s
   ///
-  /// @todo Rewrite as inheritance from AlphaS base class
-  ///
   /// The design of the AlphaS classes is that they are substitutible
   /// (cf. polymorphism) and are entirely non-dependent on the PDF and Info
   /// objects: hence they can be used by external code that actually doesn't
@@ -18,31 +16,56 @@ namespace LHAPDF {
   class AlphaS {
   public:
 
-    /// Takes alphaS from metadata
-    double meta(double q2);
-
-    /// Calculate alphaS using approximate analytical solution to differential equation
-    double analytic(double q2);
-
-    /// Calculate alphaS using an implementation of RK4 in order to solve differential equation
-    /// numerically
-    double numerical(double q2);
+    double alphaS_Q(double q) { return alphaS_Q2(q*q); }
+    virtual double alphaS_Q2(double q2) = 0;
 
   protected:
 
+    /// Calculate the number of active flavours at energy scale Q2
+    int _nf_Q2(double q2);
+
+    /// Calculate beta functions given the number of active flavours
+    ///
+    /// Avoid copying the vector: return by const ref, or just return individual
+    /// doubles with an extra index argument?
+    std::vector<double> betas(int nf);
+
+    double _mz,_alphas_mz;
     double _lambda4, _lambda5;
     int _order;
 
+  };
+
+
+
+  class AlphaS_Analytic : public AlphaS {
+  public:
+
+    double alphaS_Q2(double q2);
+
+  };
+
+
+
+  class AlphaS_ODE : public AlphaS {
+  public:
+
+    double alphaS_Q2(double q2);
+
   private:
 
-    /// Calculates the number of active flavours at energy scale Q2
-    int getNfAtQ2(double q2);
+    /// Calculate the first order derivative, dAlphaS/dQ2, as it appears in differential equation
+    double _derivative(double t, double y, const std::vector<double>& beta);
 
-    /// Calculates the first order derivative, dAlphaS/dQ2, as it appears in differential equation
-    double derivative(double t, double y, std::vector<double> beta);
+  };
 
-    /// Calculates beta functions given the number of active flavours
-    std::vector<double> getBetas(int nf);
+
+
+  /// Interpolate alpha_s from points in Q2
+  class AlphaS_Ipol : public AlphaS {
+  public:
+
+    double alphaS_Q2(double q2);
 
   };
 
