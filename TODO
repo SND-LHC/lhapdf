@@ -41,6 +41,8 @@ FOR BETA 1
 
 * Throw/assert if dir name and file name are inconsistent
 
+* Document config flags in txt and Doxygen
+
 * Include installation dir in search list
 
 * lhapdf-config build assistant script
@@ -73,6 +75,8 @@ FOR BETA 1
 FOR BETA 2
 
 * Interpolation in (log(x), log(Q2)) as well as (x, Q)
+
+* Add interpolation/metadata implementation of AlphaS
 
 * More Fortran API elements
    On demand after first beta release.
