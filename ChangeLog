@@ -1,5 +1,9 @@
 2013-01-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Using boost::shared_ptr to implement the memory handling in
+	LHAGLUE. NB. not std::auto_ptr, or boost::scoped_ptr, and although
+	std::unique_ptr would be ideal it requires C++11.
+
 	* Adding alpha_s(Q2) calculation mechanism to the PDF
 	interface. AlphaS calculation is not yet properly implemented and
 	tested, though, cf. grid interpolation!

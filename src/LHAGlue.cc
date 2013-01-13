@@ -19,15 +19,23 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   /// that they auto-delete if the PDFSetHandler that holds them goes out of
   /// scope (i.e. is overwritten).
   struct PDFSetHandler {
-    // typedef auto_ptr<LHAPDF::PDF> PDFPtr;
-    typedef LHAPDF::PDF* PDFPtr;
 
+    /// Internal storage is a smart pointer to ensure deletion of created PDFs
+    ///
+    /// NB. std::auto_ptr cannot be stored in STL containers, hence we use
+    /// boost::shared_ptr. std::unique_ptr is the nature replacement when C++11
+    /// is globally available.
+    typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
+
+    /// Default constructor
     PDFSetHandler() { } //< It is stored in a map so we need one of these...
 
+    /// Constructor from a PDF set name
     PDFSetHandler(const string& name)
       : currentmem(-1), setname(setname)
     {    }
 
+    /// Constructor from a PDF set's LHAPDF ID code
     PDFSetHandler(int lhaid) {
       pair<string,int> set_mem = LHAPDF::lookupPDF(lhaid);
       setname = set_mem.first;
@@ -35,9 +43,12 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     }
 
     /// Load a new PDF member
+    ///
+    /// If it's already loaded, the existing object will be deleted and
+    /// recreated. Due to the underlying auto_ptr mechanism no memory should be
+    /// leaked as a result.
     void loadMember(int mem) {
-      /// @todo What if it's already loaded? Don't leak memory
-      members[mem] = LHAPDF::mkPDF(setname, mem);
+      members[mem] = PDFPtr(LHAPDF::mkPDF(setname, mem));
       currentmem = mem;
     }
 
@@ -48,13 +59,15 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     }
 
     /// Get a PDF member
-    const PDFPtr member(int mem) {
-      return members[mem];
+    const PDFPtr member(int mem) const {
+      // if (members.find(mem) == members.end())
+      //   loadMember(mem);
+      return members.find(mem)->second;
     }
 
     /// Get the currently active PDF member
-    const PDFPtr activemember() {
-      return members[currentmem];
+    const PDFPtr activemember() const {
+      return members.find(currentmem)->second;
     }
 
     /// The currently active member in this set
@@ -64,12 +77,15 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     string setname;
 
     /// Map of pointers to selected member PDFs
-    map<int, PDFPtr > members;
+    ///
+    // /// It's mutable so that a "const" member-getting operation can implicitly
+    // /// load a new PDF object. Good idea / bad idea? Disabled for now.
+    // mutable map<int, PDFPtr> members;
+    map<int, PDFPtr> members;
   };
 
   static const int PIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
   static map<int, PDFSetHandler> ACTIVESETS;
-  // static int ACTIVESET, ACTIVEMEM;
 
 }
 
@@ -91,8 +107,6 @@ extern "C" {
     /// @todo Strip file extension for backward compatibility
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       ACTIVESETS[nset] = PDFSetHandler(setpath); //< @todo Will be wrong if a structured path is given
-    // ACTIVESET = nset
-    // ACTIVEMEM = 0
   }
 
 
@@ -101,8 +115,6 @@ extern "C" {
     /// @todo Strip file extension for backward compatibility
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       ACTIVESETS[nset] = PDFSetHandler(name);
-    // ACTIVESET = nset
-    // ACTIVEMEM = 0
   }
 
 
@@ -111,8 +123,6 @@ extern "C" {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     ACTIVESETS[nset].loadMember(nmember);
-    // ACTIVESET = nset;
-    // ACTIVEMEM = nmember;
   }
 
 
@@ -151,7 +161,7 @@ extern "C" {
   }
 
 
-  /// @todo Add mapping of the xfx_ etc. functions for PYTHIA6 and friends
+  /// @todo Add mapping of the xfx_ etc. functions for PYTHIA6 and friends. Use of LHAGLUE PDFLIB codes?
 
 
 }

@@ -12,8 +12,6 @@ namespace LHAPDF {
 
 
   /// Get the ordered list of search paths, from $LHAPDF_DATA_PATH and the install location
-  ///
-  /// @todo Cache the vector of paths?
   std::vector<path> paths();
 
 

@@ -15,8 +15,7 @@ namespace LHAPDF {
   ///
   /// The PDF interface declares the general form of all PDF types, such as Grid based or analytic.
   class PDF {
-  // public:
-  protected:
+  protected: //< These constructors should only be called by subclasses
 
     /// Internal convenience typedef for the AlphaS object handle
     // typedef AlphaS* AlphaSPtr;
@@ -60,6 +59,9 @@ namespace LHAPDF {
       path searchpath = pdfmempath(setname_memid.first, setname_memid.second);
       _loadInfo(searchpath.native());
     }
+
+
+  public:
 
     /// Virtual destructor, to allow unfettered inheritance
     virtual ~PDF() { }
