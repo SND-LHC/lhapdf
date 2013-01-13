@@ -1,5 +1,8 @@
 2013-01-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding src/Factories.cc to hide the implementation details /
+	dependencies for factory users.
+
 	* Added Info::metadata<bool> template specialisation to handle
 	true/false/on/off/yes/no as well as 0/1 strings.
 

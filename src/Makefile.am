@@ -4,7 +4,7 @@ libLHAPDF_la_SOURCES = \
   PDFGrid.cc Info.cc Paths.cc \
   BicubicInterpolator.cc BilinearInterpolator.cc \
   ErrExtrapolator.cc NearestPointExtrapolator.cc \
-  AlphaS.cc
+  AlphaS.cc Factories.cc
 
 if ENABLE_LHAGLUE
   libLHAPDF_la_SOURCES += LHAGlue.cc
