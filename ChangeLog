@@ -1,5 +1,9 @@
 2013-01-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Using std::auto_ptr to handle Interpolator/Extrapolator
+	assignment to PDFGrid, and cleaning up the interface and
+	implementation a bit.
+
 	* Using boost::shared_ptr to implement the memory handling in
 	LHAGLUE. NB. not std::auto_ptr, or boost::scoped_ptr, and although
 	std::unique_ptr would be ideal it requires C++11.

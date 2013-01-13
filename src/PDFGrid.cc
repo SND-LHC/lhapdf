@@ -17,11 +17,9 @@ namespace LHAPDF {
     // Decide whether to use interpolation or extrapolation... the sanity checks
     // are done in the public PDF::xfxQ2 function.
     if (inRangeXQ2(x, q2)) {
-      if (interpolator() == 0) throw GridError("Undefined interpolator");
-      return interpolator()->interpolateXQ2(id, x, q2);
+      return interpolator().interpolateXQ2(id, x, q2);
     } else {
-      if (extrapolator() == 0) throw GridError("Undefined extrapolator");
-      return extrapolator()->extrapolateXQ2(id, x, q2);
+      return extrapolator().extrapolateXQ2(id, x, q2);
     }
   }
 
@@ -121,18 +119,6 @@ namespace LHAPDF {
     setInterpolator(ipolname);
     const string xpolname = info().metadata("Extrapolator");
     setExtrapolator(xpolname);
-  }
-
-
-  // Defined here to avoid circular dependencies in the headers
-  void PDFGrid::setInterpolator(const std::string& ipolname) {
-    setInterpolator(mkInterpolator(ipolname));
-  }
-
-
-  // Defined here to avoid circular dependencies in the headers
-  void PDFGrid::setExtrapolator(const std::string& xpolname) {
-    setExtrapolator(mkExtrapolator(xpolname));
   }
 
 

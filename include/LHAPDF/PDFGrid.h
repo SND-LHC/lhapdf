@@ -22,7 +22,7 @@ namespace LHAPDF {
 
     /// Constructor from a file path.
     PDFGrid(const std::string& path)
-      : PDF(path), _interpolator(0), _extrapolator(0)
+      : PDF(path)
     {
       _loadData(_mempath);
       _init();
@@ -30,7 +30,7 @@ namespace LHAPDF {
 
     /// Constructor from a set name and member ID.
     PDFGrid(const std::string& setname, int member)
-      : PDF(setname, member), _interpolator(0), _extrapolator(0)
+      : PDF(setname, member)
     {
       _loadData(_mempath);
       _init();
@@ -38,25 +38,24 @@ namespace LHAPDF {
 
     /// Constructor from a set name and member ID.
     PDFGrid(int lhaid)
-      : PDF(lhaid), _interpolator(0), _extrapolator(0)
+      : PDF(lhaid)
     {
       _loadData(_mempath);
       _init();
     }
 
-    /// Destructor
-    ~PDFGrid() {
-      delete _interpolator;
-      delete _extrapolator;
-    }
+    /// Virtual destructor to allow inheritance.
+    virtual ~PDFGrid() { }
 
     //@}
 
 
   protected:
 
+    /// Load the PDF grid data block (not the metadata) from the given PDF member file
     void _loadData(const path& mempath);
 
+    /// Set default inter/extrapolators, etc.
     void _init();
 
 
@@ -95,40 +94,56 @@ namespace LHAPDF {
     /// @name Interpolators and extrapolators
     //@{
 
+    /// @brief Set the interpolator by pointer
+    ///
+    /// The provided Interpolator must have been new'd, as it will not be copied
+    /// and ownership passes to this PDFGrid: delete will be called on this ptr
+    /// when this PDFGrid goes out of scope or another setInterpolator call is made.
+    void setInterpolator(Interpolator* ipol) {
+      _interpolator.reset(ipol);
+      _interpolator->bind(this);
+    }
+
     /// @brief Set the interpolator by value
     ///
     /// The passed value must be a concrete instantiation of the Interpolator
     /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
     template <typename INTERPOLATOR>
     void setInterpolator(INTERPOLATOR ipol) {
-      _interpolator = new INTERPOLATOR(ipol);
-      _interpolator->bind(this);
-    }
-
-    /// @brief Set the interpolator by pointer
-    ///
-    /// This interpolator argument is exactly the one that will be used by this
-    /// PDFGrid: it will not be copied and the PDF takes ownership of the
-    /// pointer and will delete the interpolator when the PDF goes out of scope.
-    ///
-    /// @todo Use smart pointers?
-    void setInterpolator(Interpolator* ipol) {
-      _interpolator = ipol;
-      _interpolator->bind(this);
+      setInterpolator(new INTERPOLATOR(ipol));
     }
 
     /// @brief Set the interpolator by name
     ///
     /// Use the interpolator specified by the given name, as passed to the
     /// createInterpolator factory function.
-    void setInterpolator(const std::string& ipolname);
+    void setInterpolator(const std::string& ipolname) {
+      setInterpolator(mkInterpolator(ipolname));
+    }
 
-    /// Get the current interpolator (ownership remains with the PDFGrid).
-    const Interpolator* interpolator() const {
-      return _interpolator;
+    /// Find whether an extrapolator has been set on this PDF
+    bool hasInterpolator() const {
+      return _interpolator.get() != 0;
+    }
+
+    /// Get the current interpolator
+    const Interpolator& interpolator() const {
+      if (_interpolator.get() == 0)
+        throw GridError("No interpolator has been set on this PDFGrid");
+      return *_interpolator;
     }
 
 
+
+    /// @brief Set the extrapolator by pointer
+    ///
+    /// The provided Extrapolator must have been new'd, as it will not be copied
+    /// and ownership passes to this PDFGrid: delete will be called on this ptr
+    /// when this PDFGrid goes out of scope or another setExtrapolator call is made.
+    void setExtrapolator(Extrapolator* xpol) {
+      _extrapolator.reset(xpol);
+      _extrapolator->bind(this);
+    }
 
     /// @brief Set the extrapolator by value
     ///
@@ -136,31 +151,27 @@ namespace LHAPDF {
     /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
     template <typename EXTRAPOLATOR>
     void setExtrapolator(EXTRAPOLATOR xpol) {
-      _extrapolator = new EXTRAPOLATOR(xpol);
-      _extrapolator->bind(this);
-    }
-
-    /// @brief Set the extrapolator by pointer
-    ///
-    /// This extrapolator argument is exactly the one that will be used by this
-    /// PDFGrid: it will not be copied and the PDF takes ownership of the
-    /// pointer and will delete the extrapolator when the PDF goes out of scope.
-    ///
-    /// @todo Use smart pointers?
-    void setExtrapolator(Extrapolator* xpol) {
-      _extrapolator = xpol;
-      _extrapolator->bind(this);
+      setExtrapolator(new EXTRAPOLATOR(xpol));
     }
 
     /// @brief Set the extrapolator by name
     ///
     /// Use the extrapolator specified by the given name, as passed to the
     /// createExtrapolator factory function.
-    void setExtrapolator(const std::string& xpolname);
+    void setExtrapolator(const std::string& xpolname) {
+      setExtrapolator(mkExtrapolator(xpolname));
+    }
 
-    /// Get the current extrapolator (ownership remains with the PDFGrid).
-    const Extrapolator* extrapolator() const {
-      return _extrapolator;
+    /// Find whether an extrapolator has been set on this PDF
+    bool hasExtrapolator() const {
+      return _extrapolator.get() != 0;
+    }
+
+    /// Get the current extrapolator
+    const Extrapolator& extrapolator() const {
+      if (_extrapolator.get() == 0)
+        throw GridError("No extrapolator has been set on this PDFGrid");
+      return *_extrapolator;
     }
 
     //@}
@@ -277,11 +288,15 @@ namespace LHAPDF {
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
     std::map<double, KnotArrayNF> _knotarrays;
 
+    /// Typedefs of smart pointer types for ipol/xpol memory handling
+    typedef auto_ptr<Interpolator> InterpolatorPtr;
+    typedef auto_ptr<Extrapolator> ExtrapolatorPtr;
+
     /// Associated interpolator
-    Interpolator* _interpolator;
+    InterpolatorPtr _interpolator;
 
     /// Associated extrapolator
-    Extrapolator* _extrapolator;
+    ExtrapolatorPtr _extrapolator;
 
   };
 
