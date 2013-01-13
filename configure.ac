@@ -154,7 +154,8 @@ dnl AM_CONDITIONAL(USING_WIN32, [test x$on_win32 == xyes])
 
 ## Set final compiler flags
 AM_CPPFLAGS="$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(top_builddir)/include -I\$(prefix)/include"
-AM_CPPFLAGS=["$AM_CPPFLAGS -DDEFAULTPREFIXPATH=\\\"$prefix\\\" -DDEFAULTLHAPATH=\\\"$datadir\\\" "]
+AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
+
 AC_SUBST(AM_CPPFLAGS)
 #
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])

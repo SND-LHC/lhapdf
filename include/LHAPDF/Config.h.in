@@ -4,10 +4,7 @@
 /* LHAPDF version string */
 #undef LHAPDF_VERSION
 
-/* Installation prefix */
-#undef prefix
-
-/// @todo Add functions for version querying?
+/// @todo Add functions for version getting / querying?
 
 /// @todo Other functions?
 

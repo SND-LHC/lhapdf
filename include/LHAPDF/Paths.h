@@ -1,5 +1,6 @@
 #pragma once
 
+#include <LHAPDF/Config.h>
 #include <LHAPDF/Utils.h>
 #include <boost/filesystem.hpp>
 
@@ -13,15 +14,7 @@ namespace LHAPDF {
   /// Get the ordered list of search paths, from $LHAPDF_DATA_PATH and the install location
   ///
   /// @todo Cache the vector of paths?
-  inline std::vector<path> paths() {
-    std::vector<path> rtn;
-    // Use LHAPDF_DATA_PATH for all path storage
-    char* pathsvar = getenv("LHAPDF_DATA_PATH");
-    if (pathsvar != 0) split(rtn, pathsvar, is_any_of(":"), token_compress_on);
-    /// @todo Fall back to install prefix
-    //pathsvec.push_front(....);
-    return rtn;
-  }
+  std::vector<path> paths();
 
 
   /// Return the first location in which a file is found

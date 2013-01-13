@@ -46,6 +46,8 @@ namespace LHAPDF {
 
     /// Get the singleton global configuration object
     ///
+    /// @todo Move this to somewhere else -- out of Info?
+    ///
     /// The global config is populated by reading from lhapdf.conf if it is
     /// found in the search paths.
     static Info& config() {
@@ -87,7 +89,8 @@ namespace LHAPDF {
 
     /// Retrieve a metadata string by key name, with an inline type cast
     ///
-    /// Specialisations are defined for unpacking of comma-separated lists of strings, ints, and doubles
+    /// Specialisations are defined below for unpacking of comma-separated lists
+    /// of strings, ints, and doubles.
     template <typename T>
     T metadata(const std::string& key) const {
       const string& s = metadata(key);
@@ -114,6 +117,18 @@ namespace LHAPDF {
   /// @name Info::metadata function template specialisations
   //@{
 
+  template <>
+  inline bool Info::metadata(const std::string& key) const {
+    const string& s = metadata(key);
+    try {
+      bool rtn = lexical_cast<bool>(s);
+      return rtn;
+    } catch (...) {
+      if (s == "true" || s == "on" || s == "yes") return true;
+      if (s == "false" || s == "off" || s == "no") return false;
+    }
+    throw MetadataError("'" + s + "' is not a valid string for conversion to bool type");
+  }
   template <>
   inline std::vector<std::string> Info::metadata(const std::string& key) const {
     const string& s = metadata(key);
