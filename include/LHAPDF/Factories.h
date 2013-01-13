@@ -1,11 +1,13 @@
 #pragma once
 
-#include "LHAPDF/PDF.h"
-#include "LHAPDF/Interpolator.h"
-#include "LHAPDF/Extrapolator.h"
-#include "LHAPDF/AlphaS.h"
-
 namespace LHAPDF {
+
+
+  // Forward declarations to avoid circular dependencies
+  class PDF;
+  class Interpolator;
+  class Extrapolator;
+  class AlphaS;
 
 
   /// Create a new PDF from the given data file path.

@@ -1,5 +1,8 @@
-#include "LHAPDF/Config.h"
+#include "LHAPDF/PDF.h"
+#include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Factories.h"
+#include "LHAPDF/Config.h"
+#include "LHAPDF/Utils.h"
 
 using namespace std;
 

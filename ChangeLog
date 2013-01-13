@@ -1,5 +1,9 @@
 2013-01-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding alpha_s(Q2) calculation mechanism to the PDF
+	interface. AlphaS calculation is not yet properly implemented and
+	tested, though, cf. grid interpolation!
+
 	* Adding src/Factories.cc to hide the implementation details /
 	dependencies for factory users.
 

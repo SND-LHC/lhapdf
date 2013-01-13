@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <memory>
 #include <iostream>
 #include <iomanip>
 #include <sstream>

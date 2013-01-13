@@ -2,6 +2,8 @@
 
 #include "LHAPDF/Info.h"
 #include "LHAPDF/PDFIndex.h"
+#include "LHAPDF/Factories.h"
+#include "LHAPDF/AlphaS.h"
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
@@ -15,6 +17,10 @@ namespace LHAPDF {
   class PDF {
   // public:
   protected:
+
+    /// Internal convenience typedef for the AlphaS object handle
+    // typedef AlphaS* AlphaSPtr;
+    typedef auto_ptr<AlphaS> AlphaSPtr;
 
     /// @name Creation and deletion
     //@{
@@ -313,12 +319,19 @@ namespace LHAPDF {
       return info().metadata<int>("QcdOrder");
     }
 
-    /// @todo Enable this, when the various AlphaS classes exist and the alpha_s factory is re-enabled
-    // /// @brief Value of alpha_s(Q2) used by this PDF set.
-    // ///
-    // /// Calculated numerically, analytically, or interpolated according to
-    // /// metadata, using the AlphaS classes.
-    // double alphaS(double q2) const;
+    /// @brief Value of alpha_s(Q2) used by this PDF set.
+    ///
+    /// Calculated numerically, analytically, or interpolated according to
+    /// metadata, using the AlphaS classes.
+    double alphaS(double q2) const {
+      if (_alphas.get() == 0) {
+        AlphaS* as = mkAlphaS(info().metadata("AlphaS_Type"));
+        /// @todo Configure the QCD params on this AlphaS
+        /// @todo Throw an error if the QCD params are changed after a first alpha_s query? How?
+        _alphas.reset(as);
+      }
+      return _alphas->alphaS_Q2(q2);
+    }
 
     //@}
 
@@ -333,6 +346,9 @@ namespace LHAPDF {
 
     /// Locally cached list of supported PIDs
     mutable vector<int> _flavors;
+
+    /// Optionally loaded AlphaS object
+    mutable AlphaSPtr _alphas;
 
   };
 
