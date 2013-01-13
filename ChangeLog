@@ -1,8 +1,12 @@
 2013-01-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Added Info::metadata<bool> template specialisation to handle
+	true/false/on/off/yes/no as well as 0/1 strings.
+
 	* Add src/Paths.cc to avoid circular header dependencies.
 
-	* Add LHAPDF_{INSTALL,DATA}_PREFIX variables and PwdInSearchPath config flag, and use them in search path determination.
+	* Add LHAPDF_{INSTALL,DATA}_PREFIX variables and PwdInSearchPath
+	config flag, and use them in search path determination.
 
 2013-01-11  Andy Buckley  <andy.buckley@cern.ch>
 
