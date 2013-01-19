@@ -32,7 +32,7 @@ namespace LHAPDF {
     ///
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
-    /// PDFGrid.
+    /// GridPDF.
     PDF(const std::string& path) {
       _loadInfo(path);
     }
@@ -41,7 +41,7 @@ namespace LHAPDF {
     ///
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
-    /// PDFGrid.
+    /// GridPDF.
     PDF(const std::string& setname, int member) {
       path searchpath = findFile(pdfmempath(setname, member));
       _loadInfo(searchpath.native());
@@ -51,7 +51,7 @@ namespace LHAPDF {
     ///
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
-    /// PDFGrid.
+    /// GridPDF.
     PDF(int lhaid) {
       const pair<string,int> setname_memid = lookupPDF(lhaid);
       if (setname_memid.second == -1)
@@ -298,7 +298,7 @@ namespace LHAPDF {
     ///
     /// This list is stored locally after its initial read from the Info object
     /// to avoid unnecessary lookups and string decoding, since e.g. it is
-    /// looked at by every call to the PDFGrid's Interpolator and Extrapolator
+    /// looked at by every call to the GridPDF's Interpolator and Extrapolator
     /// classes.
     const std::vector<int>& flavors() const {
       if (_flavors.empty())

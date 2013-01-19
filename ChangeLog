@@ -1,3 +1,7 @@
+2013-01-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Renaming PDFGrid -> GridPDF.
+
 2013-01-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Using std::auto_ptr to handle Interpolator/Extrapolator

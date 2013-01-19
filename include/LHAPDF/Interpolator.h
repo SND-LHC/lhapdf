@@ -6,7 +6,7 @@ namespace LHAPDF {
 
 
   // Forward declaration
-  class PDFGrid;
+  class GridPDF;
 
 
   /// The general interface for interpolating between grid points.
@@ -16,17 +16,17 @@ namespace LHAPDF {
     /// Destructor to allow inheritance
     virtual ~Interpolator() { }
 
-    /// Bind to a PDFGrid.
+    /// Bind to a GridPDF.
     /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
-    void bind(const PDFGrid* pdf) { _pdf = pdf; }
+    void bind(const GridPDF* pdf) { _pdf = pdf; }
 
-    /// Unbind from PDFGrid.
+    /// Unbind from GridPDF.
     /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
     void unbind() { _pdf = 0; }
 
-    /// Get the associated PDFGrid.
+    /// Get the associated GridPDF.
     /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
-    const PDFGrid* pdf() const { return _pdf; }
+    const GridPDF* pdf() const { return _pdf; }
 
     /// Interpolate a single-point in (x,Q).
     virtual double interpolateXQ(int id, double x, double q) const {
@@ -39,7 +39,7 @@ namespace LHAPDF {
 
   private:
 
-    const PDFGrid* _pdf;
+    const GridPDF* _pdf;
 
   };
 

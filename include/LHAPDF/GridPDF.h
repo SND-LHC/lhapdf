@@ -9,19 +9,19 @@ namespace LHAPDF {
 
 
   /// @brief A PDF defined via an interpolation grid
-  class PDFGrid : public PDF {
+  class GridPDF : public PDF {
   public:
 
     /// @name Creation and deletion
     //@{
 
     // /// Default constructor.
-    // PDFGrid()
+    // GridPDF()
     //   : _interpolator(0), _extrapolator(0)
     // {    }
 
     /// Constructor from a file path.
-    PDFGrid(const std::string& path)
+    GridPDF(const std::string& path)
       : PDF(path)
     {
       _loadData(_mempath);
@@ -29,7 +29,7 @@ namespace LHAPDF {
     }
 
     /// Constructor from a set name and member ID.
-    PDFGrid(const std::string& setname, int member)
+    GridPDF(const std::string& setname, int member)
       : PDF(setname, member)
     {
       _loadData(_mempath);
@@ -37,7 +37,7 @@ namespace LHAPDF {
     }
 
     /// Constructor from a set name and member ID.
-    PDFGrid(int lhaid)
+    GridPDF(int lhaid)
       : PDF(lhaid)
     {
       _loadData(_mempath);
@@ -45,7 +45,7 @@ namespace LHAPDF {
     }
 
     /// Virtual destructor to allow inheritance.
-    virtual ~PDFGrid() { }
+    virtual ~GridPDF() { }
 
     //@}
 
@@ -97,8 +97,8 @@ namespace LHAPDF {
     /// @brief Set the interpolator by pointer
     ///
     /// The provided Interpolator must have been new'd, as it will not be copied
-    /// and ownership passes to this PDFGrid: delete will be called on this ptr
-    /// when this PDFGrid goes out of scope or another setInterpolator call is made.
+    /// and ownership passes to this GridPDF: delete will be called on this ptr
+    /// when this GridPDF goes out of scope or another setInterpolator call is made.
     void setInterpolator(Interpolator* ipol) {
       _interpolator.reset(ipol);
       _interpolator->bind(this);
@@ -107,7 +107,7 @@ namespace LHAPDF {
     /// @brief Set the interpolator by value
     ///
     /// The passed value must be a concrete instantiation of the Interpolator
-    /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
+    /// interface. It will be copied and heap-assigned for use inside this GridPDF.
     template <typename INTERPOLATOR>
     void setInterpolator(INTERPOLATOR ipol) {
       setInterpolator(new INTERPOLATOR(ipol));
@@ -129,7 +129,7 @@ namespace LHAPDF {
     /// Get the current interpolator
     const Interpolator& interpolator() const {
       if (_interpolator.get() == 0)
-        throw GridError("No interpolator has been set on this PDFGrid");
+        throw GridError("No interpolator has been set on this GridPDF");
       return *_interpolator;
     }
 
@@ -138,8 +138,8 @@ namespace LHAPDF {
     /// @brief Set the extrapolator by pointer
     ///
     /// The provided Extrapolator must have been new'd, as it will not be copied
-    /// and ownership passes to this PDFGrid: delete will be called on this ptr
-    /// when this PDFGrid goes out of scope or another setExtrapolator call is made.
+    /// and ownership passes to this GridPDF: delete will be called on this ptr
+    /// when this GridPDF goes out of scope or another setExtrapolator call is made.
     void setExtrapolator(Extrapolator* xpol) {
       _extrapolator.reset(xpol);
       _extrapolator->bind(this);
@@ -148,7 +148,7 @@ namespace LHAPDF {
     /// @brief Set the extrapolator by value
     ///
     /// The passed value must be a concrete instantiation of the Extrapolator
-    /// interface. It will be copied and heap-assigned for use inside this PDFGrid.
+    /// interface. It will be copied and heap-assigned for use inside this GridPDF.
     template <typename EXTRAPOLATOR>
     void setExtrapolator(EXTRAPOLATOR xpol) {
       setExtrapolator(new EXTRAPOLATOR(xpol));
@@ -170,7 +170,7 @@ namespace LHAPDF {
     /// Get the current extrapolator
     const Extrapolator& extrapolator() const {
       if (_extrapolator.get() == 0)
-        throw GridError("No extrapolator has been set on this PDFGrid");
+        throw GridError("No extrapolator has been set on this GridPDF");
       return *_extrapolator;
     }
 

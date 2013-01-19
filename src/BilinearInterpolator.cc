@@ -1,4 +1,4 @@
-#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/GridPDF.h"
 #include "LHAPDF/BilinearInterpolator.h"
 #include <algorithm>
 #include <cassert>

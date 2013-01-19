@@ -1,4 +1,4 @@
-#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/GridPDF.h"
 #include "LHAPDF/Interpolator.h"
 #include "LHAPDF/Factories.h"
 #include <iostream>
@@ -13,7 +13,7 @@ using namespace std;
 namespace LHAPDF {
 
 
-  double PDFGrid::_xfxQ2(int id, double x, double q2 ) const {
+  double GridPDF::_xfxQ2(int id, double x, double q2 ) const {
     // Decide whether to use interpolation or extrapolation... the sanity checks
     // are done in the public PDF::xfxQ2 function.
     if (inRangeXQ2(x, q2)) {
@@ -24,7 +24,7 @@ namespace LHAPDF {
   }
 
 
-  void PDFGrid::_loadData(const path& mempath) {
+  void GridPDF::_loadData(const path& mempath) {
     string line;
     int iblock(0), iblockline(0), iline(0);
     vector<double> xs, q2s;
@@ -89,7 +89,7 @@ namespace LHAPDF {
 
           /// @todo Define the ordering of the values in x and Q2 indexing
 
-          // Register data from the previous (>0th) block into the PDFGrid data structure
+          // Register data from the previous (>0th) block into the GridPDF data structure
           // KnotArrayNF arraynf;
           KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
           for (size_t ipid = 0; ipid < npid; ++ipid) {
@@ -107,13 +107,13 @@ namespace LHAPDF {
     } catch (Exception& e) {
       throw;
     } catch (std::exception& e) {
-      throw ReadError("Read error while parsing " + mempath.native() + " as a PDFGrid data file");
+      throw ReadError("Read error while parsing " + mempath.native() + " as a GridPDF data file");
     }
 
   }
 
 
-  void PDFGrid::_init() {
+  void GridPDF::_init() {
     // Set default inter/extrapolators
     const string ipolname = info().metadata("Interpolator");
     setInterpolator(ipolname);

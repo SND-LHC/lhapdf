@@ -33,7 +33,7 @@ fi
 
 ## Checks and config headers
 AC_LANG(C++)
-AC_CONFIG_SRCDIR([src/PDFGrid.cc])
+AC_CONFIG_SRCDIR([src/GridPDF.cc])
 AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Config.h])
 
 ## Checks for programs

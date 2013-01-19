@@ -1,7 +1,7 @@
 #include "LHAPDF.h" //< @todo Fix this to not use both LHAPDFs at once
 
 #include "LHAPDF/Utils.h"
-#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/GridPDF.h"
 #include "LHAPDF/ErrExtrapolator.h" //< Needed explicitly?
 
 #include <cstdio>
@@ -29,7 +29,7 @@ int main(int argc, const char * argv[]) {
   cout << "Loaded set" << endl;
   PDF& pdf = set->getMember( 0 );
 
-  PDFGrid* grid = dynamic_cast<PDFGrid*>(&pdf);
+  GridPDF* grid = dynamic_cast<GridPDF*>(&pdf);
   if( grid == NULL ) return -1;
 
   cout << "Loaded lhapdfv6..." << endl;

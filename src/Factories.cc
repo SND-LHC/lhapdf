@@ -1,4 +1,4 @@
-#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/GridPDF.h"
 #include "LHAPDF/BilinearInterpolator.h"
 #include "LHAPDF/BicubicInterpolator.h"
 #include "LHAPDF/ErrExtrapolator.h"
@@ -17,7 +17,7 @@ namespace LHAPDF {
     LHAPDF::Info info(path);
     const string fmt = info.metadata("Format");
     // Then use the format information to call the appropriate concrete PDF constructor:
-    if (fmt == "lhagrid") return new PDFGrid(path);
+    if (fmt == "lhagrid") return new GridPDF(path);
     throw FactoryError("No LHAPDF factory defined for format type '" + fmt + "'");
   }
 
@@ -42,7 +42,7 @@ namespace LHAPDF {
 
   /// Interpolator factory
   ///
-  /// Returns a 'new'ed Interpolator by pointer. Unless passed to a PDFGrid,
+  /// Returns a 'new'ed Interpolator by pointer. Unless passed to a GridPDF,
   /// the caller is responsible for deletion of the created object.
   Interpolator* mkInterpolator(const std::string& name) {
     // Convert name to lower case for comparisons
@@ -58,7 +58,7 @@ namespace LHAPDF {
 
   /// Extrapolator factory
   ///
-  /// Returns a 'new'ed Extrapolator by pointer. Unless passed to a PDFGrid,
+  /// Returns a 'new'ed Extrapolator by pointer. Unless passed to a GridPDF,
   /// the caller is responsible for deletion of the created object.
   Extrapolator* mkExtrapolator(const std::string& name) {
     // Convert name to lower case for comparisons

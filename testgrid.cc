@@ -1,12 +1,12 @@
 // Example program to test PDF grid format reading and interpolation
 
-#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/GridPDF.h"
 #include <iostream>
 using namespace LHAPDF;
 using namespace std;
 
 int main() {
-  const PDFGrid pdf("EXAMPLEPDF", 0);
+  const GridPDF pdf("EXAMPLEPDF", 0);
 
   // cout << pdf.info().metadata("Foo") << endl;
   cout << pdf.info().metadata("Verbosity") << endl;

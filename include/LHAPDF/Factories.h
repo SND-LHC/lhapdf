@@ -31,14 +31,14 @@ namespace LHAPDF {
 
   /// Interpolator factory
   ///
-  /// Returns a 'new'ed Interpolator by pointer. Unless passed to a PDFGrid,
+  /// Returns a 'new'ed Interpolator by pointer. Unless passed to a GridPDF,
   /// the caller is responsible for deletion of the created object.
   Interpolator* mkInterpolator(const std::string& name);
 
 
   /// Extrapolator factory
   ///
-  /// Returns a 'new'ed Extrapolator by pointer. Unless passed to a PDFGrid,
+  /// Returns a 'new'ed Extrapolator by pointer. Unless passed to a GridPDF,
   /// the caller is responsible for deletion of the created object.
   Extrapolator* mkExtrapolator(const std::string& name);
 

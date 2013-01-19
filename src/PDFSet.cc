@@ -1,5 +1,5 @@
 #include "LHAPDF/PDFSet.h"
-#include "LHAPDF/PDFGrid.h"
+#include "LHAPDF/GridPDF.h"
 #include "LHAPDF/AlphaS.h"
 
 #include <sstream>
