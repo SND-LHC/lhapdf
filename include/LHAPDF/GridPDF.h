@@ -15,17 +15,11 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
-    // /// Default constructor.
-    // GridPDF()
-    //   : _interpolator(0), _extrapolator(0)
-    // {    }
-
     /// Constructor from a file path.
     GridPDF(const std::string& path)
       : PDF(path)
     {
       _loadData(_mempath);
-      _init();
     }
 
     /// Constructor from a set name and member ID.
@@ -33,7 +27,6 @@ namespace LHAPDF {
       : PDF(setname, member)
     {
       _loadData(_mempath);
-      _init();
     }
 
     /// Constructor from a set name and member ID.
@@ -41,7 +34,6 @@ namespace LHAPDF {
       : PDF(lhaid)
     {
       _loadData(_mempath);
-      _init();
     }
 
     /// Virtual destructor to allow inheritance.
@@ -128,8 +120,13 @@ namespace LHAPDF {
 
     /// Get the current interpolator
     const Interpolator& interpolator() const {
-      if (_interpolator.get() == 0)
-        throw GridError("No interpolator has been set on this GridPDF");
+      if (_interpolator.get() == 0) { // Load the default interpolator lazily
+        // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
+        const string ipolname = info().metadata("Interpolator");
+        Interpolator* ipol = mkInterpolator(ipolname);
+        _interpolator.reset(ipol);
+        _interpolator->bind(this);
+      }
       return *_interpolator;
     }
 
@@ -169,8 +166,13 @@ namespace LHAPDF {
 
     /// Get the current extrapolator
     const Extrapolator& extrapolator() const {
-      if (_extrapolator.get() == 0)
-        throw GridError("No extrapolator has been set on this GridPDF");
+      if (_extrapolator.get() == 0) { // Load the default extrapolator lazily
+        // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
+        const string xpolname = info().metadata("Extrapolator");
+        Extrapolator* xpol = mkExtrapolator(xpolname);
+        _extrapolator.reset(xpol);
+        _extrapolator->bind(this);
+      }
       return *_extrapolator;
     }
 
@@ -292,11 +294,11 @@ namespace LHAPDF {
     typedef auto_ptr<Interpolator> InterpolatorPtr;
     typedef auto_ptr<Extrapolator> ExtrapolatorPtr;
 
-    /// Associated interpolator
-    InterpolatorPtr _interpolator;
+    /// Associated interpolator (mutable to allow laziness)
+    mutable InterpolatorPtr _interpolator;
 
-    /// Associated extrapolator
-    ExtrapolatorPtr _extrapolator;
+    /// Associated extrapolator (mutable to allow laziness)
+    mutable ExtrapolatorPtr _extrapolator;
 
   };
 

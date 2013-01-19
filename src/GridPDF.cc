@@ -113,13 +113,4 @@ namespace LHAPDF {
   }
 
 
-  void GridPDF::_init() {
-    // Set default inter/extrapolators
-    const string ipolname = info().metadata("Interpolator");
-    setInterpolator(ipolname);
-    const string xpolname = info().metadata("Extrapolator");
-    setExtrapolator(xpolname);
-  }
-
-
 }

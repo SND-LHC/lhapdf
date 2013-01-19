@@ -1,5 +1,7 @@
 2013-01-19  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Making inter/extrapolator loading lazy (and neater as a consequence!)
+
 	* Renaming PDFGrid -> GridPDF.
 
 2013-01-13  Andy Buckley  <andy.buckley@cern.ch>
