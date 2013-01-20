@@ -83,8 +83,9 @@ namespace LHAPDF {
       return new AlphaS_Analytic();
     else if (iname == "ode")
       return new AlphaS_ODE();
-    else if (iname == "ipol")
-      return new AlphaS_Ipol();
+    /// @todo Reinstate
+    // else if (iname == "ipol")
+    //   return new AlphaS_Ipol();
     else
       throw FactoryError("Undeclared AlphaS requested: " + name);
   }

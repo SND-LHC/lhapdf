@@ -1,3 +1,7 @@
+2013-01-20  Andy Buckley  <andy.buckley@cern.ch>
+
+	* More alpha_s calculator evolution, mainly file splitting and adding more data members.
+
 2013-01-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Making inter/extrapolator loading lazy (and neater as a consequence!)
