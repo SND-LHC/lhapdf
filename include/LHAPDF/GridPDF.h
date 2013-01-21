@@ -149,7 +149,7 @@ namespace LHAPDF {
   protected:
 
     /// @brief Get PDF xf(x,Q2) value (via grid inter/extrapolators)
-    double _xfxQ2(int, double x, double q2) const;
+    double _xfxQ2(int id, double x, double q2) const;
 
 
   public:

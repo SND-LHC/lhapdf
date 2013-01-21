@@ -36,7 +36,7 @@ namespace LHAPDF {
     /// Interpolate single-point in Q2
     virtual double interpolateXQ2(int id, double x, double q2) const = 0;
 
-    /// @todo The all-PID version of extrapolateQ and Q2
+    /// @todo The all-PID version of interpolateQ and Q2
 
 
   private:

@@ -23,7 +23,7 @@ namespace LHAPDF {
   double BilinearInterpolator::interpolateXQ2(int id, double x, double q2) const {
     /// @todo Move the following to the Interpolator interface and implement caching
     // Subgrid and index lookup
-    const GridPDF::KnotArray1F& subgrid = pdf().subgrid(q2, id);
+    const GridPDF::KnotArray1F& subgrid = pdf().subgrid(id, q2);
     const size_t ix = subgrid.xlow(x);
     const size_t iq2 = subgrid.q2low(q2);
 

@@ -86,7 +86,7 @@ namespace LHAPDF {
 
     /// @brief Get the PDF xf(x) value at (x,q2) for the given PID.
     ///
-    /// All grids are defined in q2 rather than q since the natural value
+    /// All grids are defined in Q2 rather than Q since the natural value
     /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
     ///
     /// @param id the parton ID in the PDG scheme
@@ -132,7 +132,6 @@ namespace LHAPDF {
     ///
     /// All grids are defined in q2 rather than q since the natural value
     /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
-    /// This is the key function to be overridden in concrete PDF types.
     ///
     /// @param x the momentum fraction
     /// @param Q2 the energy scale (squared)

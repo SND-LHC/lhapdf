@@ -8,6 +8,7 @@ pkginclude_HEADERS = \
   Paths.h \
   Exceptions.h \
   Factories.h \
+  PDFIndex.h \
   GridPDF.h \
   Interpolator.h \
   Extrapolator.h \

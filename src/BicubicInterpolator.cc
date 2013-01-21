@@ -99,7 +99,7 @@ namespace LHAPDF {
     // Subgrid lookup
     /// @todo Do this in two stages to cache the KnotArrayNF
     /// @todo Flavour error checking
-    const GridPDF::KnotArray1F& subgrid = pdf().subgrid(q2, id);
+    const GridPDF::KnotArray1F& subgrid = pdf().subgrid(id, q2);
     // Index look-up
     /// @todo Cache this lookup
     const size_t ix = subgrid.xlow(x);

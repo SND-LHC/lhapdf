@@ -3,26 +3,20 @@ LHAPDF6 TODO list
 
 NOW
 
-* Adapt interpolators and extrapolators to use new grid format.
-   Plus a slight rename to e.g. GridInterpolator?
-
-* Interpolator/Extrapolator attachment to PDFGrid in both directions
-   Means that e.g. Extrapolator can make use of the current interpolator.
-
 * Caching of grid indices in Interpolator and Extrapolator interfaces
 
 * Fix and test numerical and analytic alpha_s running
    Define params on AlphaS and subclasses, and set them in the PDF interface
    creation method.
 
+* Enable Doxygen building
+   And put the DESIGN and CONFIGFLAGS documents into the Doxy output
+
 
 NEXT
 
 * Add Boost and yaml-cpp detection and path-passing to build system
    Can yaml-cpp be kept completely internal and bundled?
-
-* Enable Doxygen building
-   And put the DESIGN and CONFIGFLAGS documents into the Doxy output
 
 * Strip file extensions and deal specially with CTEQ6L1 in LHAGLUE
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
@@ -33,10 +27,6 @@ NEXT
    Provide a switch to distinguish the two responses. Put ID check into
    PDF::xfxQ2 function?
 
-* Find a way to specify whether PWD is to be searched, if possible
-   The Config mechanism can't be used as it uses the path searching in its
-   initialisation: an infinite loop results.
-
 * Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
    Both should just use nset = 0 all the time.
 
@@ -44,12 +34,14 @@ NEXT
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes)
    Same set of constructors for PDF (and derivatives) and Info?
 
-* Add more metadata methods to PDF and PDFGrid as needed
-
 
 FOR BETA 1
 
 * lhapdf-config build assistant script
+
+* Find a way to specify whether PWD is to be searched, if possible
+   The Config mechanism can't be used as it uses the path searching in its
+   initialisation: an infinite loop results.
 
 * Validation system and plotting
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
@@ -87,6 +79,8 @@ FOR STABLE 6.0.0 RELEASE
 
 
 AS AND WHEN
+
+* Add more metadata methods to PDF and PDFGrid as needed
 
 * Read zipped/tarred PDFs
    With standard directory structure internally.

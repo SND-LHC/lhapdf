@@ -1,5 +1,7 @@
 2013-01-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* First PDF interpolation test added to testgrid.cc. Looks like it works!
+
 	* Refactoring of the bicubic interpolator.
 
 	* Fixed multi_array reshaping in PDFGrid loading.
