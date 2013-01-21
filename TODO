@@ -34,6 +34,7 @@ NEXT
 
 * Forbid PDF construction from a direct path to the data file?
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes)
+   Same set of constructors for PDF (and derivatives) and Info?
 
 * Add more metadata methods to PDF and PDFGrid as needed
 
