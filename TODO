@@ -39,10 +39,6 @@ FOR BETA 1
 
 * lhapdf-config build assistant script
 
-* Find a way to specify whether PWD is to be searched, if possible
-   The Config mechanism can't be used as it uses the path searching in its
-   initialisation: an infinite loop results.
-
 * Validation system and plotting
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
@@ -52,12 +48,16 @@ FOR BETA 1
 * Printing out banner info... needed by code that greps for it :-/
    e.g. ATLAS' Generate_trf.py ...
 
+* Implement PDF::pdfsetname and memberID
+
 * Throw/assert if dir name and file name are inconsistent
 
 
 FOR BETA 2
 
-* Interpolation in (log(x), log(Q2)) as well as (x, Q)
+* Find a way to specify whether PWD is to be searched, if possible
+   The Config mechanism can't be used as it uses the path searching in its
+   initialisation: an infinite loop results.
 
 * Add interpolation-from-metadata implementation of AlphaS
 
@@ -66,8 +66,16 @@ FOR BETA 2
 
 * Updated lhapdf-getdata, downloading PDFs as tarballs
 
+* Re-introduce set-level Info singletons
+   Will allow set-level configs to propagate to all members.
+   Define the "lock time", for things like ipol/xpol/alphaS.
+
 
 FOR STABLE 6.0.0 RELEASE
+
+* Write-up
+
+* Interpolation in (log(x), log(Q2)) as well as (x, Q)
 
 * Versioning scheme for PDF data
    In metadata and tarball filenames.
@@ -88,3 +96,5 @@ AS AND WHEN
 * Separate x and Q2 extrapolators?
 
 * Updated Octave wrapper
+
+* Use Autoconf's more robust FC_* Fortran function name macros

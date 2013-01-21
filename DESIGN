@@ -48,26 +48,45 @@ specified in the set/member metadata.
   * TODO: allow the interpolator to have access to multiple subgrids such that
     interpolation on a boundary will use the average of both grid interpolations?
 
+There is no current concept of a PDF set enshrined in the LHAPDF6 code design but
+the name LHAPDF::PDFSet is reserved for future use.
+
 Data format: each PDF set is defined by a directory (conceivably support could
 later be added for zip or tar archives whose *contents* have a directory
-structure) containing data files. In general these data files could be in
-different formats for different types of PDF implementation, but we initially
-focus almost exclusively on the grid PDFs. These are stored in text files with
+structure) containing data files. Each PDF member is stored in a text file with
 the name of the set followed by an underscore and a four digit number (including
 leading zeros if needed) and the extension .lha, e.g. <setname>/<setname>_0031.lha
   * TODO: better suggestions than .lha?
 The head of the file is reserved for member-level metadata in the YAML format:
-this section ends with a sequence of three dashes (---) on a line of their own.
-The following file content is in a grid format uniform to all PDF families: subgrids
-are delimited by more (---) line separators, and within each subgrid the first two
-lines are lists of the x and Q2 anchor values respectively used in that grid. The
-following lines are the xf values of the PDFs for each supported flavour. The flavours
-are specified as set (or member) metadata, and the xf values are listed in increasing
-order of PDG ID code (e.g. usually -5..5, 21 or -6..6, 21 for the standard 5 or 6
-quark-flavour PDF).
+this section ends with a sequence of three dashes (---) on a line of their own. This
+YAML metadata section is mandatory for all PDF formats, but the format following
+the "---" divider line may vary. The type of PDF (and hence the data block format)
+must be declared via the YAML "Format" flag in the PDF member file or set info file.
+(The latter has the path form <setname>/<setname>.info and contains a single YAML
+document.)
+  Plain text rather than binary files are mandated for ease of creation, human
+readability/debuggability, and because standard compression tools are available
+for later addition to the LHAPDF system if runtime data file size is a serious
+issue. Separate files are used for data reading efficiency if only a few members
+of a large set are needed, and all files have names including the set name so that
+they retain a clear identity when removed from their containing directory, e.g. if
+exchanged as email attachments.
+
+For grid PDFs, the following file content is in a grid format uniform to all PDF
+families: subgrids are delimited by more (---) line separators, and within each
+subgrid the first two lines are lists of the x and Q2 anchor values respectively
+used in that grid. The following lines are the xf values of the PDFs for each
+supported flavour, in order. The flavours are specified as set (or member) metadata, and
+the xf values are listed in increasing order of PDG ID code (e.g. usually -5..5,
+21 or -6..6, 21 for the standard 5 or 6 quark-flavour PDF).
   * TODO: Alternatively, format as "x Q2 f1 f2 f3 f4 ..."?
-Set-level metadata to be stored in a <setname>/meta.info file.
-  * TODO: Or <setname>/<setname>.info?
+
+New PDF formats may be proposed to the LHAPDF maintainers, and will be
+considered for standardisation. Acceptance of proposals is not guaranteed, and
+modifications may be insisted upon. We do appreciate the effort, but need to
+ensure that new standard formats are kept to a maintainably small number, and
+that such formats are sufficiently clean and general that they can conceivably
+be maintained forever.
 
 Info objects for metadata and configuration handling: cascading from global
 settings down to member-level settings for flexibility. Able to be read in YAML
@@ -167,7 +186,12 @@ consistency!  It's just a convention, don't take it personally ;-)
 Use of explicit xfxQ and xfxQ2 names.
 
 Fix of the historic CTEQ6L1 "CTEQ6ll" naming typo, with backward compatibility
-in LHAGLUE.
+in LHAGLUE. A replica of the Fortran PDFLIB and LHAPDFv5 function/subroutine
+interfaces is provided under the name LHAGLUE. This should behave familiarly for
+users of the old code, although the newly native C++ interface is much more
+pleasant and powerful. Multi-set methods are provided in the LHAGLUE interface,
+with the previous restriction on the number of simultaneously loaded sets
+removed. The dynamic memory allocation and deallocation is automatic.
 
 Define to what extent set-level metadata can be set programmatically at runtime.
 Current answer = it can't, because set-level info is duplicated between all the
@@ -184,3 +208,16 @@ object.)
   confusion if they got out of sync with the file/dir names. What if the dir and
   file names are in contradiction? Answer: throw an exception or fail with an
   assert rather than try to be "softer".
+
+
+Future prospects: new interpolators (e.g. interpolation in log space or separate
+x,Q2 interpolator functions), addition of DGLAP or other numerically evolved PDF
+types based on e.g. Hoppet (these are not included by default as there has been
+a strong trend of PDFs toward purely interpolated grids during the lifetime of
+LHAPDF5.)
+
+Nuclear PDFs are not supported in LHAPDFv6.0. We hope that the new C++ interface
+will make the writing of nuclear PDF wrapper classes easy, but do not personally
+have the experience to do so optimally. Nuclear physicists interested in addition
+of nuclear PDF capabilities are encouraged to get in touch with the LHAPDF
+developers to discuss requirements, and concrete proposals are particularly encouraged.
