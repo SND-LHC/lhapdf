@@ -3,8 +3,6 @@ LHAPDF6 TODO list
 
 NOW
 
-* Fix multi_array reshaping in PDFGrid loading
-
 * Adapt interpolators and extrapolators to use new grid format.
    Plus a slight rename to e.g. GridInterpolator?
 

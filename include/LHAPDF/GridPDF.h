@@ -47,9 +47,6 @@ namespace LHAPDF {
     /// Load the PDF grid data block (not the metadata) from the given PDF member file
     void _loadData(const path& mempath);
 
-    /// Set default inter/extrapolators, etc.
-    void _init();
-
 
   public:
 
@@ -174,15 +171,19 @@ namespace LHAPDF {
 
     /// Return knot values in x
     const std::vector<double>& xKnots() const {
+      /// @todo Rework to use the multi-grid system
       return _xknots;
     }
 
     /// Return knot values in Q2
     const std::vector<double>& q2Knots() const {
+      /// @todo Rework to use the multi-grid system
       return _q2knots;
     }
 
     /// Get the index of the closest x knot row <= x
+    ///
+    /// @todo Rework to use the multi-grid system
     size_t xKnotLow(double x) const {
       /// @todo Test for x in grid range
       size_t i = lower_bound(xKnots().begin(), xKnots().end(), x) - xKnots().begin();
@@ -191,6 +192,8 @@ namespace LHAPDF {
     }
 
     /// Get the index of the closest Q2 knot column <= q2
+    ///
+    /// @todo Rework to use the multi-grid system
     size_t q2KnotLow(double q2) const {
       size_t i = lower_bound(q2Knots().begin(), q2Knots().end(), q2) - q2Knots().begin();
       if (i == q2Knots().size()-1) --i; // if last col, step back
@@ -198,6 +201,8 @@ namespace LHAPDF {
     }
 
     /// Get the raw xf(x,Q2) data points
+    ///
+    /// @todo Rework to use the multi-grid system
     const double* ptdata(int id) const {
       if (!hasFlavor(id)) {
         std::stringstream error;
@@ -208,6 +213,8 @@ namespace LHAPDF {
     }
 
     /// @brief Transform a (ix, iQ2) pair into a 1D "raw" index
+    ///
+    /// @todo Rework to use the multi-grid system
     size_t ptindex(size_t ix, size_t iq2) const {
       if (ix >= xKnots().size()) throw GridError("Invalid x index");
       if (iq2 >= q2Knots().size()) throw GridError("Invalid Q2 index");
@@ -219,7 +226,7 @@ namespace LHAPDF {
 
   protected:
 
-    /// @brief Get PDF xf(x,Q2) value
+    /// @brief Get PDF xf(x,Q2) value (via grid inter/extrapolators)
     double _xfxQ2(int, double x, double q2) const;
 
 
@@ -233,22 +240,38 @@ namespace LHAPDF {
       // Use the Boost multi_array for efficiency and ease of indexing
       typedef boost::multi_array<double, 2> valarray;
 
-      KnotArray1F() {} //< for std::map insertability
+      // Default constructor just for std::map insertability
+      KnotArray1F() {}
 
+      // Constructor from x and Q2 knot values, and an xf value grid
       KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots, const valarray& xfs)
         : _xs(xknots), _q2s(q2knots), _xfs(xfs)
       { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
 
+      // Constructor from x and Q2 knot values
       KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots)
         : _xs(xknots), _q2s(q2knots), _xfs(boost::extents[xknots.size()][q2knots.size()])
       { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
 
+      // An explicit operator= is needed due to the Boost multi_array copy semantics
+      KnotArray1F& operator=(const KnotArray1F& other) {
+        _xs = other._xs;
+        _q2s = other._q2s;
+        _xfs.resize(boost::extents[other._xfs.shape()[0]][other._xfs.shape()[1]]);
+        _xfs = other._xfs;
+        assert(_xfs.shape()[0] == _xs.size() && _xfs.shape()[1] == _q2s.size());
+        return *this;
+      }
+
+      // x knot accessors
       const std::vector<double>& xs() const { return _xs; }
       void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
+      // Q2 knot accessors
       const std::vector<double>& q2s() const { return _q2s; }
       void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
+      // xf value accessors
       const valarray& xfs() const { return _xfs; }
       valarray& xfs() { return _xfs; }
       void setxfs(const valarray& xfs) { _xfs = xfs; }

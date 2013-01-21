@@ -1,5 +1,7 @@
 2013-01-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fixed multi_array reshaping in PDFGrid loading.
+
 	* Removing PDFSet files.
 
 	* Disabling PWD searching due to infinite loop in calls to paths().
