@@ -30,6 +30,8 @@ namespace LHAPDF {
     vector<double> xs, q2s;
     const size_t npid = flavors().size();
     vector< vector<double> > ipid_xfs(npid);
+    cout << "SIZES = " << npid << ", " << ipid_xfs.size() << endl;
+    cout << "PIDs = " << info().metadata("Flavors") << endl;
 
     try {
       ifstream file(mempath.c_str());

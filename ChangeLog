@@ -1,5 +1,7 @@
 2013-01-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Removing PDFSet files.
+
 	* Disabling PWD searching due to infinite loop in calls to paths().
 
 2013-01-20  Andy Buckley  <andy.buckley@cern.ch>
