@@ -56,16 +56,6 @@ namespace LHAPDF {
     /// Metadata
     //@{
 
-    /// Get the list of available flavours by PDG ID code.
-    /// @todo Or get the flavour list from the set?
-    std::vector<int> flavors() const {
-      std::vector<int> rtn;
-      for (std::map<int, double*>::const_iterator i = _ptdata.begin(); i != _ptdata.end(); ++i) {
-        rtn.push_back(i->first);
-      }
-      return rtn;
-    }
-
     /// Check if x is in the grid range
     bool inRangeX(double x) const {
       if (x < xKnots().front()) return false;

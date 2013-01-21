@@ -30,8 +30,6 @@ namespace LHAPDF {
     vector<double> xs, q2s;
     const size_t npid = flavors().size();
     vector< vector<double> > ipid_xfs(npid);
-    cout << "SIZES = " << npid << ", " << ipid_xfs.size() << endl;
-    cout << "PIDs = " << info().metadata("Flavors") << endl;
 
     try {
       ifstream file(mempath.c_str());
@@ -39,19 +37,20 @@ namespace LHAPDF {
         iline += 1;
         iblockline += 1;
 
+        // Trim the current line to ensure that there is no effect of leading spaces, etc.
+        trim(line);
+
         if (line != "---") { // if we are not on a block separator line...
 
           // Block 0 is the metadata, which we ignore here
           if (iblock == 0) continue;
-
-          /// @todo Check that there is no effect of leading spaces, etc.: itrim the lines
 
           // Parse the data lines
           double token;
           istringstream tokens(line);
           if (iblockline == 1) { // x knots line
             while (tokens >> token) xs.push_back(token);
-          } if (iblockline == 2) { // Q2 knots line
+          } else if (iblockline == 2) { // Q2 knots line
             while (tokens >> token) q2s.push_back(token);
           } else {
             if (iblockline == 3) { // on the first line of the xf block, resize the arrays
@@ -63,9 +62,9 @@ namespace LHAPDF {
               ipid += 1;
             }
             // Check that each line has many tokens as there should be flavours
-            if (ipid != flavors().size())
+            if (ipid != npid)
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
-                              " flavor entries seen but " + to_str(flavors().size()) + " were expected");
+                              " flavor entries seen but " + to_str(npid) + " expected");
           }
 
         } else { // we *are* on a block separator line
@@ -74,7 +73,7 @@ namespace LHAPDF {
           if (iblock > 0 && iblockline - 1 != int(xs.size()*q2s.size()) + 2)
             throw ReadError("PDF grid data error on line " + to_str(iline) + ": " +
                             to_str(iblockline-1) + " data lines were seen in block " + to_str(iblock-1) +
-                            " but " + to_str(xs.size()*q2s.size() + 2) + " were expected");
+                            " but " + to_str(xs.size()*q2s.size() + 2) + " expected");
 
           // Increment/reset the block and line counters
           iblock += 1;
