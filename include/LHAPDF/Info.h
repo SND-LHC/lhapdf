@@ -23,6 +23,8 @@ namespace LHAPDF {
       loadFull(mempath);
     }
 
+    /// @todo Add constructors from set name and member, and from LHAPDF ID, cf. the PDF object
+
     /// Virtual destructor to allow inheritance
     virtual ~Info() { }
 
