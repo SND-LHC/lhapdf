@@ -12,8 +12,8 @@ namespace LHAPDF {
 
     // One-dimensional linear interpolation for y(x)
     inline double _interpolateLinear(double x, double xl, double xh, double yl, double yh)	{
-      assert(x > xl);
-      assert(xh > x);
+      assert(x >= xl);
+      assert(xh >= x);
       return yl + (x - xl) / (xh - xl) * (yh - yl);
     }
 

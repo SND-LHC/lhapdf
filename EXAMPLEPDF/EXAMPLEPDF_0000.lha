@@ -1,5 +1,6 @@
 PdfDesc: The main PDF in the EXAMPLE set
 PdfType: main # or 'error' or 'replica'
+#Interpolator: linear
 Flavors: 21
 ---
 0.0    0.5    1.0
