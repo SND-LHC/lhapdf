@@ -9,14 +9,20 @@ NOW
 * Interpolator/Extrapolator attachment to PDFGrid in both directions
    Means that e.g. Extrapolator can make use of the current interpolator.
 
-
-NEXT
-
 * Caching of grid indices in Interpolator and Extrapolator interfaces
 
 * Fix and test numerical and analytic alpha_s running
    Define params on AlphaS and subclasses, and set them in the PDF interface
    creation method.
+
+
+NEXT
+
+* Add Boost and yaml-cpp detection and path-passing to build system
+   Can yaml-cpp be kept completely internal and bundled?
+
+* Enable Doxygen building
+   And put the DESIGN and CONFIGFLAGS documents into the Doxy output
 
 * Strip file extensions and deal specially with CTEQ6L1 in LHAGLUE
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
@@ -26,6 +32,10 @@ NEXT
 * Treating missing flavours with error vs. return 0
    Provide a switch to distinguish the two responses. Put ID check into
    PDF::xfxQ2 function?
+
+* Find a way to specify whether PWD is to be searched, if possible
+   The Config mechanism can't be used as it uses the path searching in its
+   initialisation: an infinite loop results.
 
 * Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
    Both should just use nset = 0 all the time.
@@ -38,12 +48,6 @@ NEXT
 
 
 FOR BETA 1
-
-* Add Boost and yaml-cpp detection and path-passing to build system
-   Can yaml-cpp be kept completely internal and bundled?
-
-* Enable Doxygen building
-   And put the DESIGN and CONFIGFLAGS documents into the Doxy output
 
 * lhapdf-config build assistant script
 
