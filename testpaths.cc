@@ -6,11 +6,9 @@
 using namespace std;
 
 int main() {
-  cout << 1 << endl;
-  foreach (const boost::filesystem::path& p, LHAPDF::paths()) {
+  foreach (const LHAPDF::path& p, LHAPDF::paths()) {
     cout << p << endl;
   }
-  cout << 2 << endl;
   cout << "@" << LHAPDF::findFile("lhapdf.conf") << "@" << endl;
   return 0;
 }

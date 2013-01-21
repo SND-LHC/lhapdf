@@ -1,3 +1,7 @@
+2013-01-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Disabling PWD searching due to infinite loop in calls to paths().
+
 2013-01-20  Andy Buckley  <andy.buckley@cern.ch>
 
 	* More alpha_s calculator evolution, mainly file splitting and adding more data members.
