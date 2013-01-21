@@ -16,35 +16,34 @@ namespace LHAPDF {
   class AlphaS {
   public:
 
-    AlphaS() {
-      _qmasses[0] = 0.0017;
-      _qmasses[1] = 0.0041;
-      _qmasses[2] = 0.1;
-      _qmasses[3] = 1.29;
-      _qmasses[4] = 4.1;
-      _qmasses[5] = 172.5;
+    // Base class constructor for default param setup
+    AlphaS();
 
-      _mz = 91.1876;
-      _alphas_mz = 0.118;
-    }
+    // Calculate alphaS(Q)
+    double alphasQ(double q) const { return alphasQ2(q*q); }
 
-    double alphaS_Q(double q) { return alphaS_Q2(q*q); }
-    virtual double alphaS_Q2(double q2) = 0;
+    // Calculate alphaS(Q2)
+    virtual double alphasQ2(double q2) const = 0;
 
-  protected:
+    /// Calculate the number of active flavours at energy scale Q
+    int nf_Q(double q) const { return nf_Q2(q*q); }
 
     /// Calculate the number of active flavours at energy scale Q2
-    int _nf_Q2(double q2);
+    int nf_Q2(double q2) const;
 
     /// Calculate the i'th beta function given the number of active flavours
     ///
     /// Currently limited to 0 <= i <= 2.
-    double beta(int i, int nf);
+    double beta(int i, int nf) const;
 
     /// Calculate a vector of beta functions given the number of active flavours
     ///
     /// Currently returns a 3-element vector of beta0 -- beta2.
-    std::vector<double> betas(int nf);
+    std::vector<double> betas(int nf) const;
+
+    /// @todo Add get and set methods for params... or just expose the data members?
+
+  protected:
 
     /// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
     double _qmasses[6];
@@ -62,37 +61,25 @@ namespace LHAPDF {
 
 
 
+  /// Calculate alpha_s(Q2) by an analytic approximation
   class AlphaS_Analytic : public AlphaS {
   public:
-
-    double alphaS_Q2(double q2);
-
+    double alphasQ2(double q2) const;
   };
 
 
-
+  /// Solve the differential equation in alphaS using an implementation of RK4
   class AlphaS_ODE : public AlphaS {
   public:
-
-    double alphaS_Q2(double q2);
-
-  private:
-
-    /// Calculate the first order derivative, dAlphaS/dQ2, as it appears in differential equation
-    double _derivative(double t, double y, const std::vector<double>& beta);
-
+    double alphasQ2(double q2) const;
   };
 
 
-
-  /// @todo Complete and re-enable
-  // /// Interpolate alpha_s from points in Q2
-  // class AlphaS_Ipol : public AlphaS {
-  // public:
-
-  //   double alphaS_Q2(double q2);
-
-  // };
+  /// Interpolate alpha_s from tabulated points in Q2 via metadata
+  class AlphaS_Ipol : public AlphaS {
+  public:
+    double alphasQ2(double q2) const;
+  };
 
 
 }

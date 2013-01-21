@@ -1,5 +1,7 @@
 2013-01-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding an empty AlphaS_Ipol and making AlphaS_Analytic work with a smooth Lambda4/5 transition.
+
 	* First PDF interpolation test added to testgrid.cc. Looks like it works!
 
 	* Refactoring of the bicubic interpolator.

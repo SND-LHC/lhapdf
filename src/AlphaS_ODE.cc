@@ -4,18 +4,22 @@
 namespace LHAPDF {
 
 
-  // Calculates first order derivative, dy/dt, as it appears in differential equation
-  double AlphaS_ODE::_derivative(double t, double y, const std::vector<double>& beta ) {
-    const double d0 = beta[0]/(-2*M_PI);
-    const double d1 = beta[1]/(-4*M_PI*M_PI);
-    const double d2 = beta[2]/(-64*M_PI*M_PI*M_PI);
-    const double d = (d0*y*y) + (d1*y*y*y) + (d2*y*y*y*y);
-    return d / t;
+  namespace { // unnamed namespace
+
+    // Calculate first order derivative, dy/dt, as it appears in the differential equation
+    double _derivative(double t, double y, const std::vector<double>& beta ) {
+      const double d0 = beta[0]/(-2*M_PI);
+      const double d1 = beta[1]/(-4*M_PI*M_PI);
+      const double d2 = beta[2]/(-64*M_PI*M_PI*M_PI);
+      const double d = (d0*y*y) + (d1*y*y*y) + (d2*y*y*y*y);
+      return d / t;
+    }
+
   }
 
 
-  // Solves differential equation in alphaS using an implementation of RK4;
-  double AlphaS_ODE::alphaS_Q2(double q2) {
+  // Solve the differential equation in alphaS using an implementation of RK4
+  double AlphaS_ODE::alphasQ2(double q2) const {
 
     /// @todo Make these class members?
     // Step size
@@ -29,7 +33,7 @@ namespace LHAPDF {
     if (q2 < sqr(_mz)) h *= -1;
 
     // Number of active flavours used in beta function calculations
-    const double nf = _nf_Q2(q2);
+    const int nf = nf_Q2(q2);
     const vector<double> bs = betas(nf);
 
     // Run in energy using RK4 algorithm until we are within our defined threshold energy

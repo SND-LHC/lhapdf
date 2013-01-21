@@ -331,7 +331,7 @@ namespace LHAPDF {
         /// @todo Throw an error if the QCD params are changed after a first alpha_s query? How?
         _alphas.reset(as);
       }
-      return _alphas->alphaS_Q2(q2);
+      return _alphas->alphasQ2(q2);
     }
 
     //@}
