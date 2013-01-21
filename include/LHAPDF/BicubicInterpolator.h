@@ -13,10 +13,12 @@ namespace LHAPDF {
     double interpolateXQ2(int id, double x, double q2) const;
 
   private:
-    double ddx(const double* xfs, size_t xidx, size_t q2idx) const;
+    /// @todo Move to be "normal" functions
+    double interpolateXQ2(const GridPDF::KnotArray1F& subgrid, size_t ix, size_t iq2) const;
+    double ddx(const GridPDF::KnotArray1F& subgrid, size_t ix, size_t iq2) const;
   };
 
-
   /// @todo Make a log-space BicubicLogInterpolator based on this
+
 
 }

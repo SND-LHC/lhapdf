@@ -91,4 +91,6 @@ AS AND WHEN
 * Read zipped/tarred PDFs
    With standard directory structure internally.
 
+* Separate x and Q2 extrapolators?
+
 * Updated Octave wrapper

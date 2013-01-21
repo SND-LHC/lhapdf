@@ -23,91 +23,85 @@ namespace LHAPDF {
 
 
   // Provides d/dx at all grid locations
-  /// @todo Convert to operate on a subgrid object instead
-  double BicubicInterpolator::ddx(const double* xfs, size_t xidx, size_t q2idx) const {
-    // Check for edge
-    if (xidx == 0) {
-      // Use forward difference
-      return (xfs[pdf()->ptindex(xidx+1, q2idx)] - xfs[pdf()->ptindex(xidx, q2idx)]) / (pdf()->xKnots()[xidx+1]-pdf()->xKnots()[xidx]);
-    } else if (xidx == pdf()->xKnots().size()-1) {
-      // Use backward difference
-      return (xfs[pdf()->ptindex(xidx, q2idx)] - xfs[pdf()->ptindex(xidx-1, q2idx)]) / (pdf()->xKnots()[xidx]-pdf()->xKnots()[xidx-1]);
-    } else {
-      // Use central difference
-      double lddx = (xfs[pdf()->ptindex(xidx, q2idx)] - xfs[pdf()->ptindex(xidx-1, q2idx)]) / (pdf()->xKnots()[xidx]-pdf()->xKnots()[xidx-1]);
-      double rddx = (xfs[pdf()->ptindex(xidx+1, q2idx)] - xfs[pdf()->ptindex(xidx, q2idx)]) / (pdf()->xKnots()[xidx+1]-pdf()->xKnots()[xidx]);
-      return 0.5 * (lddx + rddx);
+  /// @todo Make into a non-member function (and use an unnamed namespace)
+  double BicubicInterpolator::ddx(const GridPDF::KnotArray1F& subgrid, size_t ix, size_t iq2) const {
+    /// @todo Re-order this if so that branch prediction will favour the "normal" central case
+    if (ix == 0) { //< If at leftmost edge, use forward difference
+      return (subgrid.xf(ix+1, iq2) - subgrid.xf(ix, iq2)) / (subgrid.xs()[ix+1] - subgrid.xs()[ix]);
+    } else if (ix == subgrid.xs().size() - 1) { //< If at rightmost edge, use backward difference
+      return (subgrid.xf(ix, iq2) - subgrid.xf(ix-1, iq2)) / (subgrid.xs()[ix] - subgrid.xs()[ix-1]);
+    } else { //< If central, use the central difference
+      const double lddx = (subgrid.xf(ix, iq2) - subgrid.xf(ix-1, iq2)) / (subgrid.xs()[ix] - subgrid.xs()[ix-1]);
+      const double rddx = (subgrid.xf(ix+1, iq2) - subgrid.xf(ix, iq2)) / (subgrid.xs()[ix+1] - subgrid.xs()[ix]);
+      return (lddx + rddx) / 2.0;
     }
   }
 
 
   double BicubicInterpolator::interpolateXQ2(int id, double x, double q2) const {
-    /// Move this functionality to a helper which only operates on a subgrid, with interpolateXQ2 at a higher level to identify that subgrid
-
+    /// @todo Move the following to the Interpolator interface and implement caching
+    // Subgrid lookup
+    /// @todo Do this in two stages to cache the KnotArrayNF
+    /// @todo Flavour error checking
+    const GridPDF::KnotArray1F& subgrid = pdf().subgrid(q2, id);
     // Index look-up
-    size_t xidx = pdf()->xKnotLow(x);
-    size_t q2idx = pdf()->q2KnotLow(q2);
+    /// @todo Cache this lookup
+    const size_t ix = subgrid.xlow(x);
+    const size_t iq2 = subgrid.q2low(q2);
+    /// @todo End of section to be moved
+    return interpolateXQ2(subgrid, ix, iq2);
+  }
 
-    // Fractional parameters
-    double tx = (x - pdf()->xKnots()[xidx]) / (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]);
-    double tq = (q2 - pdf()->q2Knots()[q2idx]) / (pdf()->q2Knots()[q2idx+1] - pdf()->q2Knots()[q2idx]);
 
-    // The xf value (sub)grid
-    const double* xfs = pdf()->ptdata(id);
+  /// @todo Make into a non-member function (and use an unnamed namespace)
+  double BicubicInterpolator::interpolateXQ2(const GridPDF::KnotArray1F& subgrid, size_t ix, size_t iq2) const {
+    // Distance parameters
+    const double dx = subgrid.xs()[ix+1] - subgrid.xs()[ix];
+    const double tx = (x - subgrid.xs()[ix]) / dx;
+    const double dq_0 = subgrid.q2s()[iq2] - subgrid.q2s()[iq2-1];
+    const double dq_1 = subgrid.q2s()[iq2+1] - subgrid.q2s()[iq2];
+    const double dq_2 = subgrid.q2s()[iq2+2] - subgrid.q2s()[iq2+1];
+    const double dq = dq1;
+    const double tq = (q2 - subgrid.q2s()[iq2]) / dq;
 
     // Points in Q2
-    double vl = interpolateCubic(tx, xfs[pdf()->ptindex(xidx, q2idx)],
-                                 ddx(xfs, xidx, q2idx) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]),
-                                 xfs[pdf()->ptindex(xidx+1, q2idx)],
-                                 ddx(xfs, xidx+1, q2idx) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]) );
-    double vh = interpolateCubic(tx, xfs[pdf()->ptindex(xidx, q2idx+1)],
-                                 ddx(xfs, xidx, q2idx+1) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]),
-                                 xfs[pdf()->ptindex(xidx+1, q2idx+1)],
-                                 ddx(xfs, xidx+1, q2idx+1) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]) );
+    double vl = interpolateCubic(tx, subgrid.xf(ix, iq2), ddx(subgrid, ix, iq2) * dx,
+                                     subgrid.xf(ix+1, iq2), ddx(subgrid, ix+1, iq2) * dx;
+    double vh = interpolateCubic(tx, subgrid.xf(ix, iq2+1), ddx(subgrid, ix, iq2+1) * dx,
+                                     subgrid.xf(ix+1, iq2+1), ddx(subgrid, ix+1, iq2+1) * dx);
 
     // Derivatives in Q2
     double vdl, vdh;
-
-    if (q2idx == 0) {
+    if (iq2 == 0) {
       // Forward difference for lower q
-      vdl = (vh - vl)/(pdf()->q2Knots()[q2idx+1]-pdf()->q2Knots()[q2idx]);
+      vdl = (vh - vl) / dq_1;
       // Central difference for higher q
-      double vhh = interpolateCubic(tx, xfs[pdf()->ptindex(xidx, q2idx+2)],
-                                    ddx(xfs, xidx, q2idx+2) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]),
-                                    xfs[pdf()->ptindex(xidx+1, q2idx+2)],
-                                    ddx(xfs, xidx+1, q2idx+2) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]) );
-      vdh = 0.5 * vdl + 0.5 * (vhh - vh)/(pdf()->q2Knots()[q2idx+2] - pdf()->q2Knots()[q2idx+1]);
+      double vhh = interpolateCubic(tx, subgrid.xf(ix, iq2+2), ddx(subgrid, ix, iq2+2) * dx,
+                                        subgrid.xf(ix+1, iq2+2), ddx(subgrid, ix+1, iq2+2) * dx);
+      vdh = (vdl + (vhh - vh)/dq_2) / 2.0;
     }
-    else if (q2idx+1 == pdf()->q2Knots().size()-1) {
+    else if (iq2+1 == subgrid.q2s().size()-1) {
       // Backward difference for higher q
-      vdh = (vh - vl)/(pdf()->q2Knots()[q2idx+1]-pdf()->q2Knots()[q2idx]);
+      vdh = (vh - vl) / dq_1;
       // Central difference for lower q
-      double vll = interpolateCubic(tx, xfs[pdf()->ptindex(xidx, q2idx-1)],
-                                    ddx(xfs, xidx, q2idx-1) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]),
-                                    xfs[pdf()->ptindex(xidx+1, q2idx-1)],
-                                    ddx(xfs, xidx+1, q2idx-1) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]) );
-      vdl = 0.5 * vdh + 0.5 * (vl - vll)/(pdf()->q2Knots()[q2idx] - pdf()->q2Knots()[q2idx-1]);
+      double vll = interpolateCubic(tx, subgrid.xf(ix, iq2-1), ddx(subgrid, ix, iq2-1) * dx,
+                                        subgrid.xf(ix+1, iq2-1), ddx(subgrid, ix+1, iq2-1) * dx);
+      vdl = (vdh + (vl - vll)/dq_0) / 2.0;
     }
     else {
       // Central difference for both q
-      double vll = interpolateCubic( tx, xfs[pdf()->ptindex(xidx, q2idx-1)],
-                                     ddx(xfs, xidx, q2idx-1) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]),
-                                     xfs[pdf()->ptindex(xidx+1, q2idx-1)],
-                                     ddx(xfs, xidx+1, q2idx-1) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]) );
-      vdl = 0.5 * (vh - vl)/(pdf()->q2Knots()[q2idx+1]-pdf()->q2Knots()[q2idx]) + 0.5 * (vl - vll)/(pdf()->q2Knots()[q2idx]-pdf()->q2Knots()[q2idx-1]);
-      double vhh = interpolateCubic( tx, xfs[pdf()->ptindex(xidx, q2idx+2)],
-                                     ddx(xfs, xidx, q2idx+2) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]),
-                                     xfs[pdf()->ptindex(xidx+1, q2idx+2)],
-                                     ddx(xfs, xidx+1, q2idx+2) * (pdf()->xKnots()[xidx+1] - pdf()->xKnots()[xidx]) );
-      vdh = 0.5 * (vh - vl)/(pdf()->q2Knots()[q2idx+1] - pdf()->q2Knots()[q2idx]) + 0.5 * (vhh - vh)/(pdf()->q2Knots()[q2idx+2] - pdf()->q2Knots()[q2idx+1]);
+      double vll = interpolateCubic(tx, subgrid.xf(ix, iq2-1), ddx(subgrid, ix, iq2-1) * dx,
+                                        subgrid.xf(ix+1, iq2-1), ddx(subgrid, ix+1, iq2-1) * dx);
+      vdl = ( (vh - vl)/dq_1 + (vl - vll)/dq_0 ) / 2.0;
+      double vhh = interpolateCubic(tx, subgrid.xf(ix, iq2+2), ddx(subgrid, ix, iq2+2) * dx,
+                                        subgrid.xf(ix+1, iq2+2), ddx(subgrid, ix+1, iq2+2) * dx);
+      vdh = ( (vh - vl)/dq_1 + (vhh - vh)/dq_2 ) / 2.0;
     }
 
-    vdl *= (pdf()->q2Knots()[q2idx+1]-pdf()->q2Knots()[q2idx]);
-    vdh *= (pdf()->q2Knots()[q2idx+1]-pdf()->q2Knots()[q2idx]);
+    vdl *= dq;
+    vdh *= dq;
 
-    double f_f = interpolateCubic( tq, vl, vdl, vh, vdh );
-
-    return f_f;
+    return interpolateCubic(tq, vl, vdl, vh, vdh);
   }
 
 

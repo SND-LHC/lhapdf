@@ -9,31 +9,31 @@ namespace LHAPDF {
   class GridPDF;
 
 
-  /// The general interface for extrapolating beyond grid boundaries.
+  /// The general interface for extrapolating beyond grid boundaries
   class Extrapolator {
   public:
 
     /// Destructor to allow inheritance
     virtual ~Extrapolator() { }
 
-    /// Bind to a GridPDF.
-    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    /// Bind to a GridPDF
     void bind(const GridPDF* pdf) { _pdf = pdf; }
 
-    /// Unbind from GridPDF.
-    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
+    /// Unbind from GridPDF
     void unbind() { _pdf = 0; }
 
-    /// Get the associated GridPDF.
-    /// @todo Clarify the ownership: who's responsible for deleting? Singleton status?
-    const GridPDF* pdf() const { return _pdf; }
+    /// Identify whether this Extrapolator has an associated PDF
+    bool hasPdf() { return _pdf != 0; }
 
-    /// Extrapolate a single-point in (x,Q).
+    /// Get the associated GridPDF
+    const GridPDF& pdf() const { return *_pdf; }
+
+    /// Extrapolate a single-point in (x,Q)
     double extrapolateXQ(int id, double x, double q) const {
       return extrapolateXQ2(id, x, q*q );
     }
 
-    /// Extrapolate a single-point in (x,Q2).
+    /// Extrapolate a single-point in (x,Q2)
     virtual double extrapolateXQ2(int, double x, double q2) const = 0;
 
     /// @todo The all-PID version of extrapolateQ and Q2

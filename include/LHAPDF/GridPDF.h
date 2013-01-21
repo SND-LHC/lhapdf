@@ -50,26 +50,6 @@ namespace LHAPDF {
 
   public:
 
-    /// Metadata
-    //@{
-
-    /// Check if x is in the grid range
-    bool inRangeX(double x) const {
-      if (x < xKnots().front()) return false;
-      if (x > xKnots().back()) return false;
-      return true;
-    }
-
-    /// Check if q2 is in the grid range
-    bool inRangeQ2(double q2) const {
-      if (q2 < q2Knots().front()) return false;
-      if (q2 > q2Knots().back()) return false;
-      return true;
-    }
-
-    //@}
-
-
     /// @name Interpolators and extrapolators
     //@{
 
@@ -166,69 +146,13 @@ namespace LHAPDF {
     //@}
 
 
-    /// @name Info about the grid, and access to the raw data points
-    //@{
-
-    /// Return knot values in x
-    const std::vector<double>& xKnots() const {
-      /// @todo Rework to use the multi-grid system
-      return _xknots;
-    }
-
-    /// Return knot values in Q2
-    const std::vector<double>& q2Knots() const {
-      /// @todo Rework to use the multi-grid system
-      return _q2knots;
-    }
-
-    /// Get the index of the closest x knot row <= x
-    ///
-    /// @todo Rework to use the multi-grid system
-    size_t xKnotLow(double x) const {
-      /// @todo Test for x in grid range
-      size_t i = lower_bound(xKnots().begin(), xKnots().end(), x) - xKnots().begin();
-      if (i == xKnots().size()-1) --i; // if last row, step back
-      return i;
-    }
-
-    /// Get the index of the closest Q2 knot column <= q2
-    ///
-    /// @todo Rework to use the multi-grid system
-    size_t q2KnotLow(double q2) const {
-      size_t i = lower_bound(q2Knots().begin(), q2Knots().end(), q2) - q2Knots().begin();
-      if (i == q2Knots().size()-1) --i; // if last col, step back
-      return i;
-    }
-
-    /// Get the raw xf(x,Q2) data points
-    ///
-    /// @todo Rework to use the multi-grid system
-    const double* ptdata(int id) const {
-      if (!hasFlavor(id)) {
-        std::stringstream error;
-        error << "Undefined particle ID requested: " << id;
-        throw FlavorError(error.str());
-      }
-      return _ptdata.find(id)->second;
-    }
-
-    /// @brief Transform a (ix, iQ2) pair into a 1D "raw" index
-    ///
-    /// @todo Rework to use the multi-grid system
-    size_t ptindex(size_t ix, size_t iq2) const {
-      if (ix >= xKnots().size()) throw GridError("Invalid x index");
-      if (iq2 >= q2Knots().size()) throw GridError("Invalid Q2 index");
-      return ix + iq2 * xKnots().size();
-    }
-
-    //@}
-
-
   protected:
 
     /// @brief Get PDF xf(x,Q2) value (via grid inter/extrapolators)
     double _xfxQ2(int, double x, double q2) const;
 
+
+  public:
 
     /// @name Internal storage
     //@{
@@ -267,20 +191,53 @@ namespace LHAPDF {
       const std::vector<double>& xs() const { return _xs; }
       void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
+      /// Get the index of the closest x knot row <= x
+      size_t xlow(double x) const {
+        // Test that x is in the grid range
+        if (x < xs().front()) throw GridError("x value " + to_str(x) + " is lower than lowest-x grid point at " + to_str(xs().front()));
+        if (x > xs().back()) throw GridError("x value " + to_str(x) + " is higher than highest-x grid point at " + to_str(xs().back()));
+        /// Find the closest knot below the requested value
+        size_t i = upper_bound(xs().begin(), xs().end(), x) - xs().begin();
+        return --i; // have to step back to get the knot <= x behaviour
+      }
+
+
       // Q2 knot accessors
       const std::vector<double>& q2s() const { return _q2s; }
       void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
+      /// Get the index of the closest x knot row <= x
+      size_t q2low(double q2) const {
+        // Test that x is in the grid range
+        if (q2 < q2s().front()) throw GridError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
+        if (q2 > q2s().back()) throw GridError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
+        /// Find the closest knot below the requested value
+        size_t i = upper_bound(q2s().begin(), q2s().end(), q2) - q2s().begin();
+        return --i; // have to step back to get the knot <= q2 behaviour
+      }
+
 
       // xf value accessors
       const valarray& xfs() const { return _xfs; }
       valarray& xfs() { return _xfs; }
       void setxfs(const valarray& xfs) { _xfs = xfs; }
+      const double& xf(size_t ix, size_t iq2) const { return _xfs[ix][iq2]; }
 
-      /// @todo Add index converter and finder methods
+
+      // /// @brief Transform a (ix, iQ2) pair into a 1D "raw" index
+      // ///
+      // /// @todo Rework to use the multi-grid system
+      // size_t ptindex(size_t ix, size_t iq2) const {
+      //   if (ix >= xKnots().size()) throw GridError("Invalid x index");
+      //   if (iq2 >= q2Knots().size()) throw GridError("Invalid Q2 index");
+      //   return ix + iq2 * xKnots().size();
+      // }
+
 
     private:
       std::vector<double> _xs, _q2s;
       valarray _xfs;
+
     };
 
 
@@ -291,7 +248,64 @@ namespace LHAPDF {
     //@}
 
 
+    /// @name Info about the grid, and access to the raw data points
+    //@{
+
+    /// Get the N-flavour subgrid containing Q2 = q2
+    const KnotArrayNF& subgrid(double q2) const {
+      assert(q2 >= 0);
+      map<double, KnotArrayNF>::const_iterator it = _knotarrays.upper_bound(q2);
+      if (it != _knotarrays.begin()) --it; // upper_bound (and lower_bound) return the entry *above* q2: we need to step back
+      return it->second;
+    }
+
+    /// Get the 1-flavour subgrid for PID=id containing Q2 = q2
+    const KnotArray1F& subgrid(int id, double q2) const {
+      if (!hasFlavor(id)) throw FlavorError("Undefined particle ID requested: " + to_str(id));
+      return subgrid(q2).find(id)->second;
+    }
+
+    // /// Return knot values in x
+    // const std::vector<double>& xKnots() const {
+    //   /// @todo Use Boost join?
+    //   return _xknots;
+    // }
+
+    // /// Return knot values in Q2
+    // const std::vector<double>& q2Knots() const {
+    //   /// @todo Use Boost join?
+    //   return _q2knots;
+    // }
+
+    /// Check if x is in the grid range
+    bool inRangeX(double x) const {
+      /// @todo Reinstate this simpler method
+      // if (x < xKnots().front()) return false;
+      // if (x > xKnots().back()) return false;
+      const vector<double>& xs = _knotarrays.begin()->second.begin()->second.xs();
+      if (x < xs.front()) return false;
+      if (x > xs.back()) return false;
+      return true;
+    }
+
+    /// Check if q2 is in the grid range
+    bool inRangeQ2(double q2) const {
+      /// @todo Reinstate this simpler method
+      // if (q2 < q2Knots().front()) return false;
+      // if (q2 > q2Knots().back()) return false;
+      if (q2 < _knotarrays.begin()->first) return false;
+      if (q2 > (--_knotarrays.end())->second.begin()->second.q2s().back()) return false;
+      return true;
+    }
+
+    //@}
+
+
   private:
+
+    /// @name To remove
+    /// @ deprecated REMOVE!
+    //@{
 
     /// Interpolation grid anchor point lists in x and Q2
     std::vector<double> _xknots, _q2knots;
@@ -299,6 +313,9 @@ namespace LHAPDF {
     /// Raw data grids, indexed by flavour
     /// @todo Need an intermediate type for the subgrids
     std::map<int, double*> _ptdata;
+
+    //@}
+
 
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
     std::map<double, KnotArrayNF> _knotarrays;
