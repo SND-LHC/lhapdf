@@ -8,14 +8,14 @@ using namespace std;
 int main() {
   const GridPDF pdf("EXAMPLEPDF", 0);
 
-  // cout << pdf.info().metadata("Foo") << endl;
-  cout << pdf.info().metadata("Verbosity") << endl;
-  cout << pdf.info().metadata("PdfDesc") << endl;
-  cout << pdf.info().metadata("SetDesc") << endl;
-  cout << pdf.info().metadata("Flavors") << endl;
+  cout << "Verbosity = " << pdf.info().metadata("Verbosity") << endl;
+  cout << "PdfDesc = " << pdf.info().metadata("PdfDesc") << endl;
+  cout << "SetDesc = " << pdf.info().metadata("SetDesc") << endl;
+  cout << "Flavors (str) = " << pdf.info().metadata("Flavors") << endl;
   vector<int> pids = pdf.info().metadata< vector<int> >("Flavors");
+  cout << "Flavors (ints) = ";
   foreach (int f, pids) cout << f << " "; cout << endl;
-  cout << LHAPDF::to_str(pids) << endl;
+  cout << "Flavors (vec<int>) = " << LHAPDF::to_str(pids) << endl;
 
   return 0;
 }

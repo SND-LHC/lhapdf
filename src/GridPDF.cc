@@ -95,14 +95,9 @@ namespace LHAPDF {
           KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
           for (size_t ipid = 0; ipid < npid; ++ipid) {
             const int pid = flavors()[ipid];
-            KnotArray1F ka(xs, q2s);
-            arraynf[pid] = ka; //KnotArray1F(); // create the 2D array with the x and Q2 knot positions
-            // arraynf[pid] = KnotArray1F(xs, q2s); // create the 2D array with the x and Q2 knot positions
+            arraynf[pid] = KnotArray1F(xs, q2s); // create the 2D array with the x and Q2 knot positions
             arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end()); // populate the xf array
           }
-          cout << q2s.size() << endl;
-          cout << q2s.front() << endl;
-          // _knotarrays[q2s.front()] = arraynf; //< @todo Prefer getting the reference as above, to avoid re-copying a big data array
           xs.clear(); q2s.clear(); ipid_xfs.clear();
 
         }
