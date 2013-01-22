@@ -53,6 +53,10 @@ namespace LHAPDF {
   template <typename N>
   inline N sqr(const N& x) { return x*x; }
 
+  /// Get the sign of a number
+  template <typename N>
+  inline int sgn(N val) { return (N(0) < val) - (val < N(0)); }
+
   /// @todo Add iszero() & equals(,) functions?
 
 

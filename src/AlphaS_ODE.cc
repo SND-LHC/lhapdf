@@ -21,40 +21,60 @@ namespace LHAPDF {
   // Solve the differential equation in alphaS using an implementation of RK4
   double AlphaS_ODE::alphasQ2(double q2) const {
 
-    /// @todo Make these class members?
-    // Step size
-    double h = 0.001;
+    /// @todo Make these class members
+    // Initial step size
+    /// @todo Use an adaptive step size -- stepping in log space? It needs to be *much* faster!
+    double h = 0.01;
     // Fractional threshold to which we run in Q2 scale
     /// @todo Need a mechanism to shrink the steps if accuracy < stepsize?
-    double accuracy = 0.001;
+    /// @todo Is the accuracy in Q or Q2? Q is better, I think.
+    const double faccuracy = 0.001;
 
-    // Check if we are going to run forward or backwards in energy scale towards target Q2.
-    // Set h to step backwards if our target is less than where we are at.
-    if (q2 < sqr(_mz)) h *= -1;
+    // Calculated absolute tolerance around the target Q2.
+    /// @todo Would specifying the accuracy in abs rather than rel terms be better?
+    const double accuracy = faccuracy * q2;
 
     // Number of active flavours used in beta function calculations
+    /// @todo This needs to happen *inside* the running loop
     const int nf = nf_Q2(q2);
     const vector<double> bs = betas(nf);
+
+    /// @todo Running (i.e. t and h) is in Q rather than Q2? Check
+
+    /// @todo Use caching of the last target so we don't always have to start the running from MZ?
+    ///       Then choose to start from last or MZ, whichever is closer.
 
     // Run in energy using RK4 algorithm until we are within our defined threshold energy
     double t = _mz; // starting point
     double y = _alphas_mz; // starting value
-    double f1, f2, f3, f4, k1, k2, k3, k4;
-    while (fabs(q2 - t)/q2 > accuracy) {
+    /// @todo Units of q2 and t are different. Which quantity are we evolving in?
+    while (fabs(q2 - t) > accuracy) {
+      /// Mechanism to shrink the steps if accuracy < stepsize and we are close to Q2
+      if (fabs(h) > accuracy && fabs(q2 - t)/h < 10) h = accuracy/2.0;
+
+      // Check if we are going to run forward or backwards in energy scale towards target Q2.
+      /// @todo C++11's std::copysign would be perfect here
+      if ((q2 < t && sgn(h) > 0) || (q2 > t && sgn(h) < 0)) h *= -1;
+
+      // cout << t << " -> " << q2 << ", in steps of size " << h << endl;
+
+      /// @todo Make these more local
+      double f1, f2, f3, f4, k1, k2, k3, k4;
+
       // Increment based on the slope at the beginning of the interval using a simple Euler step
       f1 = _derivative(t, y, bs);
-      k1 = h*f1;
+      k1 = h * f1;
 
       // Increments based on the slope at the midpoint of the interval
-      f2 = _derivative(t + (h/2.0), y + (k1/2.0), bs);
-      k2 = h*f2;
+      f2 = _derivative(t + h/2.0, y + k1/2.0, bs);
+      k2 = h * f2;
 
-      f3 = _derivative(t + (h/2.0), y + (k2/2.0), bs);
-      k3 = h*f3;
+      f3 = _derivative(t + h/2.0, y + k2/2.0, bs);
+      k3 = h * f3;
 
       // Increment based on the slope at the end of the interval
       f4 = _derivative(t + h, y + k3, bs);
-      k4 = h*f4;
+      k4 = h * f4;
 
       // Calculate the weighted average of these increments and make the step
       y += (k1 + 2*k2 + 2*k3 + k4) / 6.0;

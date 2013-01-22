@@ -13,10 +13,12 @@ int main() {
   ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat");
   for (double log10q = 0.2; log10q < 3; log10q += 0.05) {
     const double q = pow(10, log10q);
-    cout << "Q = " << q << ", alpha_s(Q)_ana = " << as_ana.alphasQ(q) << endl;
-    fa << q << " " << as_ana.alphasQ(q) << endl;
-    // cout << "Q = " << q << ", alpha_s(Q)_ODE = " << as_ode.alphasQ(q) << endl;
-    // fo << q << " " << as_ode.alphasQ(q) << endl;
+    const double as_ana_q = as_ana.alphasQ(q);
+    cout << "alpha_s(Q=" << q << ")_ana = " << as_ana_q << endl;
+    fa << q << " " << as_ana_q << endl;
+    const double as_ode_q = as_ode.alphasQ(q);
+    cout << "alpha_s(Q=" << q << ")_ODE = " << as_ode_q << endl;
+    fo << q << " " << as_ode_q << endl;
   }
   fa.close(); fo.close();
 
