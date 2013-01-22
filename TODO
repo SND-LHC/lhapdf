@@ -62,6 +62,8 @@ FOR BETA 1
 
 FOR BETA 2
 
+* Profile GridPDF and AlphaS_ODE
+
 * Include the DESIGN, CONFIGFLAGS and CODINGSTYLE files in the Doxygen
    How does H++ doc the config interfaces? Can we use a simpler markup than HTML
    so that the plain text files remain painlessly readable?
