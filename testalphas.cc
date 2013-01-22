@@ -11,7 +11,7 @@ int main() {
   const AlphaS_Analytic as_ana;
 
   ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat");
-  for (double log10q = 0.2; log10q < 3; log10q += 0.05) {
+  for (double log10q = 0.8; log10q < 2.5; log10q += 0.05) {
     const double q = pow(10, log10q);
     const double as_ana_q = as_ana.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ana = " << as_ana_q << endl;

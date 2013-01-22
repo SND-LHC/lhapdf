@@ -3,14 +3,22 @@ LHAPDF6 TODO list
 
 NOW
 
-* Caching of grid indices in Interpolator and Extrapolator interfaces
-
 * Fix and test numerical and analytic alpha_s running
    Define params on AlphaS and subclasses, and set them in the PDF interface
    creation method.
 
+* Caching of subgrid indices in Interpolator and Extrapolator interfaces
+
 * Enable Doxygen building
    And put the DESIGN and CONFIGFLAGS documents into the Doxy output
+
+* Migrate CTEQ6L1 and CT10 PDFs to new format and validate
+
+* Validation system and plotting
+   Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
+   point list, then separately dump out xf(x) values into separate files with
+   old and new LHAPDF, and finally compare the files line-by-line, with
+   pulls/ratios to the "old" LHAPDF as the reference.
 
 
 NEXT
@@ -30,27 +38,21 @@ NEXT
 * Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
    Both should just use nset = 0 all the time.
 
-* Forbid PDF construction from a direct path to the data file?
-   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes)
-   Same set of constructors for PDF (and derivatives) and Info?
 
 
 FOR BETA 1
 
 * lhapdf-config build assistant script
 
-* Validation system and plotting
-   Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
-   point list, then separately dump out xf(x) values into separate files with
-   old and new LHAPDF, and finally compare the files line-by-line, with
-   pulls/ratios to the "old" LHAPDF as the reference.
-
 * Printing out banner info... needed by code that greps for it :-/
    e.g. ATLAS' Generate_trf.py ...
 
 * Implement PDF::pdfsetname and memberID
 
-* Throw/assert if dir name and file name are inconsistent
+* Forbid PDF construction from a direct path to the data file?
+   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes)
+   Same set of constructors for PDF (and derivatives) and Info?
+   Throw/assert if dir name and file name are inconsistent
 
 
 FOR BETA 2
@@ -60,9 +62,6 @@ FOR BETA 2
    initialisation: an infinite loop results.
 
 * Add interpolation-from-metadata implementation of AlphaS
-
-* More Fortran API elements
-   On demand after first beta release.
 
 * Updated lhapdf-getdata, downloading PDFs as tarballs
 
@@ -74,6 +73,7 @@ FOR BETA 2
 FOR STABLE 6.0.0 RELEASE
 
 * Write-up
+   Target at EPJC Tools, cf. Rivet?
 
 * Interpolation in (log(x), log(Q2)) as well as (x, Q)
 

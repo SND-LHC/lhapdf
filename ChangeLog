@@ -1,3 +1,9 @@
+2013-01-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding initial CONFIGFLAGS and CODINGSTYLE doc files.
+
+	* AlphaS_ODE reworking -- lots needed.
+
 2013-01-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding an empty AlphaS_Ipol and making AlphaS_Analytic work with a smooth Lambda4/5 transition.
