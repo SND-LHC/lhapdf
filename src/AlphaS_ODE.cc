@@ -58,23 +58,20 @@ namespace LHAPDF {
 
       // cout << t << " -> " << q2 << ", in steps of size " << h << endl;
 
-      /// @todo Make these more local
-      double f1, f2, f3, f4, k1, k2, k3, k4;
-
       // Increment based on the slope at the beginning of the interval using a simple Euler step
-      f1 = _derivative(t, y, bs);
-      k1 = h * f1;
+      const double f1 = _derivative(t, y, bs);
+      const double k1 = h * f1;
 
       // Increments based on the slope at the midpoint of the interval
-      f2 = _derivative(t + h/2.0, y + k1/2.0, bs);
-      k2 = h * f2;
+      const double f2 = _derivative(t + h/2.0, y + k1/2.0, bs);
+      const double k2 = h * f2;
 
-      f3 = _derivative(t + h/2.0, y + k2/2.0, bs);
-      k3 = h * f3;
+      const double f3 = _derivative(t + h/2.0, y + k2/2.0, bs);
+      const double k3 = h * f3;
 
       // Increment based on the slope at the end of the interval
-      f4 = _derivative(t + h, y + k3, bs);
-      k4 = h * f4;
+      const double f4 = _derivative(t + h, y + k3, bs);
+      const double k4 = h * f4;
 
       // Calculate the weighted average of these increments and make the step
       y += (k1 + 2*k2 + 2*k3 + k4) / 6.0;
