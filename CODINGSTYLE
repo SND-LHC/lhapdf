@@ -68,6 +68,14 @@ LHAPDF >= 6.
 * "Flavour" is spelt the American way, "flavor" in all places in the code, for
   definiteness.
 
+* Use comments! Describe what sections of not-immediately-clear code do in as
+  clear and concise a way as possible, preferably on one line. In header files
+  use Doxygen /// comments and operators with an @ delimiter (particularly @todo)
+  to describe the meanings of classes, methods, their arguments, etc. While writing
+  code it's often best to leave some details until later -- mark these with a
+  @todo operator and a description of the missing feature: these will be collected
+  into a helpful list by Doxygen.
+
 * If in doubt, ask!
 
 THANKS FOR READING :-)

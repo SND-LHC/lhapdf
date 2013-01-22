@@ -9,9 +9,6 @@ NOW
 
 * Caching of subgrid indices in Interpolator and Extrapolator interfaces
 
-* Enable Doxygen building
-   And put the DESIGN and CONFIGFLAGS documents into the Doxy output
-
 * Migrate CTEQ6L1 and CT10 PDFs to new format and validate
 
 * Validation system and plotting
@@ -22,6 +19,9 @@ NOW
 
 
 NEXT
+
+* Remove or fix Doxy param lists
+   Make sure that Doxygen isn't producing error messages
 
 * Add Boost and yaml-cpp detection and path-passing to build system
    Can yaml-cpp be kept completely internal and bundled?
@@ -64,9 +64,9 @@ FOR BETA 2
 
 * Profile GridPDF and AlphaS_ODE
 
-* Include the DESIGN, CONFIGFLAGS and CODINGSTYLE files in the Doxygen
-   How does H++ doc the config interfaces? Can we use a simpler markup than HTML
-   so that the plain text files remain painlessly readable?
+* Include the TODO, DESIGN, CONFIGFLAGS and CODINGSTYLE files in the Doxygen
+   How does H++ doc the config interfaces? Doxygen now supports Markdown syntax
+   so the plain text files should be able to remain painlessly readable.
 
 * Find a way to specify whether PWD is to be searched, if possible
    The Config mechanism can't be used as it uses the path searching in its

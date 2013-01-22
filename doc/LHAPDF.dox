@@ -7,39 +7,41 @@
  * Previous versions of LHAPDF were written in Fortan 77/90.  There are several reasons for migrating to
  * C++, the main ones being:
  *
- *	- Dynamic memory allocation
- *		- Although modern Fortran compilers can now deal with this, older versions of LHAPDF were written with
- * 		  static memory allocation in mind.  These versions were then extended to allow for the initialisation of several
- *		  PDF data files at once.  As we look towards the parallelisation of such tasks; the static memory
- *		  cost of loading several large PDF files becomes noticeable.  Being able to dynamically
- *		  allocate memory means that we do not need to use large amounts for cases where we only
- *                need a small number of PDFs loaded at a time.
- *	- Generality
- *		- Previous versions of LHAPDF evolved slowly over time.  The original code was not written with
- * 		  certain added features in mind.  Taking the above case of multiple PDF loading as an example; the
- * 		  current Fortan version of LHAPDF has specific functionality to deal with this case.  The C++ version
- * 		  that we propose deals with multiple PDF loading as standard, using the same functionality as for the
- *  		  single PDF case.  Other examples of this include dealing with special parton cases such as photons.
- * 		  Although this has little to do with language limitation; a rewrite with these general cases in mind, in
- * 		  any language, will allow for clearer code.  Along with this, current Fortran code has been modified extensively
- * 		  to deal with different PDF file formats, each with their own parameter space and interpolation rules.  One of the
- * 		  largest improvements we seek to implement in this C++ version is a unified PDF file format.  This will remove
- * 		  the need for specific case interpolation rules being included in several PDF author wrappers.
- *	- Extensibility
- *		- Extensions to the current Fortan code are difficult considering how much it has evolved since its conception.  
- *                By exploiting object orientated practises, the C++ version will allow for the easy extension of several features.
- *		  An example of this is the Interpolator interface.  By implementing this; users can add to the current list of
- * 		  general interpolation methods that can be called on any PDF set, rather than dealing with specific interpolation rules
- * 		  being included in the individual authors' wrapper files.  The modular nature of the program means that any 
- * 		  unforeseeable requirements in the future can, hopefully, be implemented easily. 
+ *    - Dynamic memory allocation
+ *      - Although modern Fortran compilers can now deal with this, older versions of LHAPDF were written with
+ *        static memory allocation in mind.  These versions were then extended to allow for the initialisation of several
+ *        PDF data files at once.  As we look towards the parallelisation of such tasks; the static memory
+ *        cost of loading several large PDF files becomes noticeable.  Being able to dynamically
+ *        allocate memory means that we do not need to use large amounts for cases where we only
+ *        need a small number of PDFs loaded at a time.
+ *
+ *    - Generality
+ *      - Previous versions of LHAPDF evolved slowly over time.  The original code was not written with
+ *        certain added features in mind.  Taking the above case of multiple PDF loading as an example; the
+ *        current Fortan version of LHAPDF has specific functionality to deal with this case.  The C++ version
+ *        that we propose deals with multiple PDF loading as standard, using the same functionality as for the
+ *        single PDF case.  Other examples of this include dealing with special parton cases such as photons.
+ *        Although this has little to do with language limitation; a rewrite with these general cases in mind, in
+ *        any language, will allow for clearer code.  Along with this, current Fortran code has been modified extensively
+ *        to deal with different PDF file formats, each with their own parameter space and interpolation rules.  One of the
+ *        largest improvements we seek to implement in this C++ version is a unified PDF file format.  This will remove
+ *        the need for specific case interpolation rules being included in several PDF author wrappers.
+ *
+ *    - Extensibility
+ *      - Extensions to the current Fortan code are difficult considering how much it has evolved since its conception.
+ *        By exploiting object orientated practises, the C++ version will allow for the easy extension of several features.
+ *        An example of this is the Interpolator interface.  By implementing this; users can add to the current list of
+ *        general interpolation methods that can be called on any PDF set, rather than dealing with specific interpolation rules
+ *        being included in the individual authors' wrapper files.  The modular nature of the program means that any
+ *        unforeseeable requirements in the future can, hopefully, be implemented easily.
  *
  * We hope to implement these improvements whilst retaining the functionality of current Fortran LHAPDF versions.  By doing so, we
  * hope that this version will be easier to extend and maintain in the future.  For Fortran LHADPF documentaion as well as
  * other information with regards to the project see http://lhapdf.hepforge.org/.
- * 
+ *
  *
  * \section install_sec Installation
- * 
+ *
  * TODO: write installation instructions after makefiles etc. have been finalised
  *
  *
@@ -47,5 +49,4 @@
  *
  * TODO: write simple instructions on how to get started with using LHAPDF
  *
- *
- */		  	  
+ */

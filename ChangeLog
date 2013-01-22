@@ -1,5 +1,7 @@
 2013-01-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding Doxyfile.in with basic Doxy config.
+
 	* Adding initial CONFIGFLAGS and CODINGSTYLE doc files.
 
 	* AlphaS_ODE reworking -- lots needed.
