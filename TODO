@@ -4,8 +4,8 @@ LHAPDF6 TODO list
 NOW
 
 * Fix and test numerical and analytic alpha_s running
-   Define params on AlphaS and subclasses, and set them in the PDF interface
-   creation method.
+   The ODE solver needs serious optimisation, and numerically the results look
+   dubious for both the analytic and ODE versions
 
 * Caching of subgrid indices in Interpolator and Extrapolator interfaces
 
@@ -47,6 +47,8 @@ FOR BETA 1
 * Printing out banner info... needed by code that greps for it :-/
    e.g. ATLAS' Generate_trf.py ...
 
+* Move the test programs into "tests" and clean up the root dir
+
 * Implement PDF::pdfsetname and memberID
 
 * Forbid PDF construction from a direct path to the data file?
@@ -56,6 +58,9 @@ FOR BETA 1
 
 
 FOR BETA 2
+
+* Document the config flags
+   Add a CONFIGFLAGS
 
 * Find a way to specify whether PWD is to be searched, if possible
    The Config mechanism can't be used as it uses the path searching in its
