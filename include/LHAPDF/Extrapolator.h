@@ -29,12 +29,22 @@ namespace LHAPDF {
     const GridPDF& pdf() const { return *_pdf; }
 
     /// Extrapolate a single-point in (x,Q)
+    ///
+    /// @param id PDG parton ID
+    /// @param x Momentum fraction
+    /// @param q Energy scale
+    /// @return The xf value at (x,q2)
     double extrapolateXQ(int id, double x, double q) const {
       return extrapolateXQ2(id, x, q*q );
     }
 
     /// Extrapolate a single-point in (x,Q2)
-    virtual double extrapolateXQ2(int, double x, double q2) const = 0;
+    ///
+    /// @param id PDG parton ID
+    /// @param x Momentum fraction
+    /// @param q2 Squared energy scale
+    /// @return The xf value at (x,q2)
+    virtual double extrapolateXQ2(int id, double x, double q2) const = 0;
 
     /// @todo The all-PID version of extrapolateQ and Q2
 

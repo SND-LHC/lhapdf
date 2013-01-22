@@ -28,7 +28,7 @@ namespace LHAPDF {
     /// Default constructor.
     PDF() { }
 
-    /// Constructor from a file path.
+    /// @brief Constructor from a file path.
     ///
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
@@ -37,7 +37,7 @@ namespace LHAPDF {
       _loadInfo(path);
     }
 
-    /// Constructor from a set name and member ID.
+    /// @brief Constructor from a set name and member ID.
     ///
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
@@ -47,7 +47,7 @@ namespace LHAPDF {
       _loadInfo(searchpath.native());
     }
 
-    /// Constructor from an LHAPDF ID code.
+    /// @brief Constructor from an LHAPDF ID code.
     ///
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
@@ -89,11 +89,10 @@ namespace LHAPDF {
     /// All grids are defined in Q2 rather than Q since the natural value
     /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
     ///
-    /// @param id the parton ID in the PDG scheme
-    /// @param x the momentum fraction
-    /// @param Q2 the energy scale (squared)
-    /// @return the value of xf(x,q2)
-    ///
+    /// @param id PDG parton ID
+    /// @param x Momentum fraction
+    /// @param q2 Squared energy (renormalization) scale
+    /// @return The value of xf(x,q2)
     double xfxQ2(int id, double x, double q2) const {
       // Physical x range check
       if (!inPhysicalRangeX(x)) {
@@ -118,11 +117,10 @@ namespace LHAPDF {
     /// All grids are defined in q2 rather than q since the natural value
     /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
     ///
-    /// @param id the parton ID in the PDG scheme
-    /// @param x the momentum fraction
-    /// @param Q the energy scale
-    /// @return the value of xf(x,Q)
-    ///
+    /// @param id PDG parton ID
+    /// @param x Momentum fraction
+    /// @param q Energy (renormalization) scale
+    /// @return The value of xf(x,q2)
     double xfxQ(int id, double x, double q) const {
       return xfxQ2(id, x, q*q);
     }
@@ -133,10 +131,9 @@ namespace LHAPDF {
     /// All grids are defined in q2 rather than q since the natural value
     /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
     ///
-    /// @param x the momentum fraction
-    /// @param Q2 the energy scale (squared)
-    /// @return the value of xf(x,q2)
-    ///
+    /// @param x Momentum fraction
+    /// @param q2 Squared energy (renormalization) scale
+    /// @return The value of xf(x,q2)
     std::map<int, double> xfxQ2(double x, double q2) const {
       std::map<int, double> rtn;
       foreach (int id, flavors()) {
@@ -151,10 +148,9 @@ namespace LHAPDF {
     /// All grids are defined in q2 rather than q since the natural value
     /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
     ///
-    /// @param x the momentum fraction
-    /// @param Q the energy scale
-    /// @return the value of xf(x,Q)
-    ///
+    /// @param x Momentum fraction
+    /// @param q Energy (renormalization) scale
+    /// @return The value of xf(x,q2)
     std::map<int, double> xfxQ(double x, double q) const {
       return xfxQ2(x, q*q);
     }
@@ -170,11 +166,10 @@ namespace LHAPDF {
     /// range and PID checks need only be done in one place, rather than need to
     /// be re-implemented in each concrete implementation.
     ///
-    /// @param id the parton ID in the PDG scheme
-    /// @param x the momentum fraction
-    /// @param Q2 the energy scale (squared)
+    /// @param id Parton ID in the PDG scheme
+    /// @param x Momentum fraction
+    /// @param q2 Squared energy (renormalization) scale
     /// @return the value of xf(x,q2)
-    ///
     virtual double _xfxQ2(int id, double x, double q2) const = 0;
 
     //@}
@@ -185,7 +180,7 @@ namespace LHAPDF {
     /// @name Range checks
     //@{
 
-    /// Check whether the given x is physically valid
+    /// @brief Check whether the given x is physically valid
     ///
     /// Returns false for x less than 0 or greater than 1, since it
     /// is a momentum fraction and not valid outside those values.
@@ -193,14 +188,14 @@ namespace LHAPDF {
       return x >= 0.0 && x < 1.0;
     }
 
-    /// Check whether the given Q2 is physically valid
+    /// @brief Check whether the given Q2 is physically valid
     ///
     /// Returns false for Q2 less than 0 (Q must be real-valued).
     bool inPhysicalRangeQ2(double q2) const {
       return q2 >= 0.0;
     }
 
-    /// Check whether the given Q is physically valid
+    /// @brief Check whether the given Q is physically valid
     ///
     /// Returns false for Q less than 0 (Q must be positive).
     bool inPhysicalRangeQ(double q) const {
@@ -217,30 +212,31 @@ namespace LHAPDF {
       return inPhysicalRangeX(x) && inPhysicalRangeQ(q);
     }
 
-    /// inRangeQ will return true when given (X,Q) are in the range of this PDF.
-    /// It actually squares given Q and returns value from inRangeQ2.
+    /// @brief Grid range check for Q
     ///
-    /// \param X the momentum fraction
-    /// \param Q the energy scale
-    /// \return whether q is in range
+    /// Return true when given Q is in the coverage range of this PDF.
+    /// It actually squares the given Q and returns value from inRangeQ2.
+    ///
+    /// @param q Energy scale
+    /// @return Whether q is in range
     virtual bool inRangeQ(double q) const {
       return inRangeQ2(q*q);
     }
 
-    /// Grid range check for Q2
+    /// @brief Grid range check for Q2
     ///
-    /// inRangeQ2 will return true when given Q2 is in the coverage range of this PDF.
+    /// Return true when given Q2 is in the coverage range of this PDF.
     ///
-    /// \param Q2 the squared energy scale
-    /// \return
+    /// @param q2 Squared energy scale
+    /// @return Whether q2 is in range
     virtual bool inRangeQ2(double q2) const = 0;
 
-    /// Grid range check for x
+    /// @brief Grid range check for x
     ///
-    /// inRangex will return true when given x is in the coverage range of this PDF.
+    /// Return true when given x is in the coverage range of this PDF.
     ///
-    /// \param x the momentum fraction
-    /// \return
+    /// @param x Momentum fraction
+    /// @return Whether x is in range
     virtual bool inRangeX(double x) const = 0;
 
     /// Combined range check for x and Q
@@ -293,7 +289,7 @@ namespace LHAPDF {
     /// @name Parton content and QCD parameters
     //@{
 
-    /// List of flavours defined by this PDF set.
+    /// @brief List of flavours defined by this PDF set.
     ///
     /// This list is stored locally after its initial read from the Info object
     /// to avoid unnecessary lookups and string decoding, since e.g. it is
@@ -311,7 +307,7 @@ namespace LHAPDF {
       return find(ids.begin(), ids.end(), id) != ids.end();
     }
 
-    /// Order of QCD at which this PDF has been constructed
+    /// @brief Order of QCD at which this PDF has been constructed
     ///
     /// "Order" is defined here and throughout LHAPDF as the maximum number of
     /// loops included in the matrix elements, in order to have an integer value

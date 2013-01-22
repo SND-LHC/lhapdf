@@ -22,12 +22,11 @@ NOW
    old and new LHAPDF, and finally compare the files line-by-line, with
    pulls/ratios to the "old" LHAPDF as the reference.
 
+- Eliminate remaining Doxygen warnings
+
 
 NEXT
 ----
-
-- Remove or fix Doxy param lists
-   Make sure that Doxygen isn't producing error messages
 
 - Tidy up DESIGN document
 
@@ -46,6 +45,8 @@ NEXT
 - Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
    Both should just use nset = 0 all the time.
 
+- Test LHAGLUE with PYTHIA6 and Pythia8
+
 
 FOR BETA 1
 ----------
@@ -53,7 +54,8 @@ FOR BETA 1
 - lhapdf-config build assistant script
 
 - Printing out banner info... needed by code that greps for it :-/
-   e.g. ATLAS' Generate_trf.py ...
+   e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be
+   fundamentally built-in that we have to maintain the old banner style!
 
 - Change "config" -> "settings"?
    And add a Settings.h or Config.h to access it, rather than the static fn on Info

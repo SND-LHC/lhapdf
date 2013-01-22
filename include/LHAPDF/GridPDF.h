@@ -157,27 +157,29 @@ namespace LHAPDF {
     /// @name Internal storage
     //@{
 
+    /// @brief Internal storage class for PDF data point grids
+    ///
     /// We use "array" to refer to the "raw" knot grid, while "grid" means a grid-based PDF.
     /// The "1F" means that this is a single-flavour array
     class KnotArray1F {
     public:
-      // Use the Boost multi_array for efficiency and ease of indexing
+      /// Use the Boost multi_array for efficiency and ease of indexing
       typedef boost::multi_array<double, 2> valarray;
 
-      // Default constructor just for std::map insertability
+      /// Default constructor just for std::map insertability
       KnotArray1F() {}
 
-      // Constructor from x and Q2 knot values, and an xf value grid
+      /// Constructor from x and Q2 knot values, and an xf value grid
       KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots, const valarray& xfs)
         : _xs(xknots), _q2s(q2knots), _xfs(xfs)
       { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
 
-      // Constructor from x and Q2 knot values
+      /// Constructor from x and Q2 knot values
       KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots)
         : _xs(xknots), _q2s(q2knots), _xfs(boost::extents[xknots.size()][q2knots.size()])
       { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
 
-      // An explicit operator= is needed due to the Boost multi_array copy semantics
+      /// An explicit operator= is needed due to the Boost multi_array copy semantics
       KnotArray1F& operator=(const KnotArray1F& other) {
         _xs = other._xs;
         _q2s = other._q2s;
@@ -187,7 +189,7 @@ namespace LHAPDF {
         return *this;
       }
 
-      // x knot accessors
+      /// x knot accessors
       const std::vector<double>& xs() const { return _xs; }
       void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
@@ -196,13 +198,13 @@ namespace LHAPDF {
         // Test that x is in the grid range
         if (x < xs().front()) throw GridError("x value " + to_str(x) + " is lower than lowest-x grid point at " + to_str(xs().front()));
         if (x > xs().back()) throw GridError("x value " + to_str(x) + " is higher than highest-x grid point at " + to_str(xs().back()));
-        /// Find the closest knot below the requested value
+        // Find the closest knot below the requested value
         size_t i = upper_bound(xs().begin(), xs().end(), x) - xs().begin();
         return --i; // have to step back to get the knot <= x behaviour
       }
 
 
-      // Q2 knot accessors
+      /// Q2 knot accessors
       const std::vector<double>& q2s() const { return _q2s; }
       void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
@@ -217,7 +219,7 @@ namespace LHAPDF {
       }
 
 
-      // xf value accessors
+      /// xf value accessors
       const valarray& xfs() const { return _xfs; }
       valarray& xfs() { return _xfs; }
       void setxfs(const valarray& xfs) { _xfs = xfs; }
@@ -235,13 +237,15 @@ namespace LHAPDF {
 
 
     private:
+
       std::vector<double> _xs, _q2s;
       valarray _xfs;
 
     };
 
 
-    /// Typedef for a collection of KnotArray1F accessed by PID code
+    /// @brief Typedef for a collection of KnotArray1F accessed by PID code
+    ///
     /// The "NF" means "> 1 flavour", cf. the KnotArray1F name for a single flavour data array.
     typedef std::map<int, KnotArray1F> KnotArrayNF;
 
@@ -277,6 +281,9 @@ namespace LHAPDF {
     //   return _q2knots;
     // }
 
+
+  public:
+
     /// Check if x is in the grid range
     bool inRangeX(double x) const {
       /// @todo Reinstate this simpler method
@@ -302,20 +309,6 @@ namespace LHAPDF {
 
 
   private:
-
-    /// @name To remove
-    /// @ deprecated REMOVE!
-    //@{
-
-    /// Interpolation grid anchor point lists in x and Q2
-    std::vector<double> _xknots, _q2knots;
-
-    /// Raw data grids, indexed by flavour
-    /// @todo Need an intermediate type for the subgrids
-    std::map<int, double*> _ptdata;
-
-    //@}
-
 
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
     std::map<double, KnotArrayNF> _knotarrays;

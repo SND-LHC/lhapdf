@@ -1,5 +1,9 @@
 2013-01-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Removing defunct data and knot members from GridPDF.
+
+	* Including general doc files in Doxygen output and finessing Doxygen comments.
+
 	* Adding Doxyfile.in with basic Doxy config.
 
 	* Adding initial CONFIGFLAGS and CODINGSTYLE doc files.
