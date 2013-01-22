@@ -657,7 +657,7 @@ WARN_LOGFILE           =
 # with spaces.
 
 # TODO: Use @top_srcdir@
-INPUT                  = ../include/LHAPDF LHAPDF.dox
+INPUT                  = ../include/LHAPDF LHAPDF.dox ../TODO ../DESIGN ../CODINGSTYLE ../CONFIGFLAGS
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -911,6 +911,9 @@ HTML_STYLESHEET        =
 # the files will be copied as-is; there are no commands or markers available.
 
 HTML_EXTRA_FILES       =
+
+HTML_EXTRA_STYLESHEET  = lhapdf.css
+
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the style sheet and background images

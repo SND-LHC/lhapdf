@@ -1,3 +1,6 @@
+/**
+@page design Design
+
 LHAPDF6 DESIGN
 ==============
 
@@ -7,18 +10,21 @@ for several flavours.
 Note that the historical/community terminology for levels of "PDF" is rather
 vague, leading to frequent confusion. The term "PDF" may, depending on the
 speaker, mean any of the following:
- - a single parton density function for one parton flavour;
- - a PDF set member, consisting of a correlated group of parton densities, one for each parton flavour;
- - a set of PDF members, usually reflecting uncertainties encountered in PDF construction.
+- a single parton density function for one parton flavour;
+- a PDF set member, consisting of a correlated group of parton densities, one for each parton flavour;
+- a set of PDF members, usually reflecting uncertainties encountered in PDF construction.
+
 The second of these, the "member", is the most commonly used PDF object as it
 is usual to choose a point in (x,Q2) space and then use the parton density values
 for each parton flavour to determine the outcome of a Markovian process step.
-  However, the name "member" is not in active usage for this concept. Hence in
+
+However, the name "member" is not in active usage for this concept. Hence in
 this version of LHAPDF we use the term "PDF" to mean a member, and "PDF set" to
 mean a collection of these. No explicit term is defined for a single-flavour PDF
 but we tentatively reserve the terms 1FPDF and PDF1F (the latter for C/C++ validity)
 for this purpose.
-  * Review this situation: should we rename LHAPDF::PDF -> LHAPDF::Member?
+
+@todo Review this situation: should we rename LHAPDF::PDF -> LHAPDF::Member?
 
 PDF objects are allocated dynamically (either locally or on the heap). None of the
 static memory issues from Fortran LHAPDF. Potential for use of singleton
@@ -26,14 +32,16 @@ allocation based on unique data paths.
 
 PDF data to be separated from the framework: new PDFs should not require
 addition of new handling code, nor even a new release of LHAPDF.
-  * TODO: A data versioning standard will be needed for reproducibility: IDEAS?
+
+@todo A data versioning standard will be needed for reproducibility: IDEAS?
 
 Flavours are identified by standard PDG ID codes. A PDF can contain arbitrarily
 many flavours.
 
 There is (in the current envisioning) no explicit type specified for a PDF set,
 but the class name LHAPDF::PDFSet is reserved for possible future use.
-  * TODO: Explicitly add this type to the API to block user attempts to define it?
+
+@todo Explicitly add this type to the API to block user attempts to define it?
 
 Allow use of a "return zero" treatment for unsupported flavours, based on
 global, set-level, or member-level configuration.
@@ -45,8 +53,10 @@ Interpolators: bicubic as standard, but with (in general) use of subgrids to
 handle discontinuous transitions in Q2 across flavour mass thresholds. Log
 interpolation? Named interpolators overrideable in code, but with defaults
 specified in the set/member metadata.
-  * TODO: allow the interpolator to have access to multiple subgrids such that
-    interpolation on a boundary will use the average of both grid interpolations?
+
+@todo Allow the interpolator to have access to multiple subgrids such that
+    interpolation on a boundary will use the average of both grid
+    interpolations?
 
 There is no current concept of a PDF set enshrined in the LHAPDF6 code design but
 the name LHAPDF::PDFSet is reserved for future use.
@@ -56,7 +66,9 @@ later be added for zip or tar archives whose *contents* have a directory
 structure) containing data files. Each PDF member is stored in a text file with
 the name of the set followed by an underscore and a four digit number (including
 leading zeros if needed) and the extension .lha, e.g. <setname>/<setname>_0031.lha
-  * TODO: better suggestions than .lha?
+
+@todo Any better suggestions than .lha?
+
 The head of the file is reserved for member-level metadata in the YAML format:
 this section ends with a sequence of three dashes (---) on a line of their own. This
 YAML metadata section is mandatory for all PDF formats, but the format following
@@ -79,7 +91,8 @@ used in that grid. The following lines are the xf values of the PDFs for each
 supported flavour, in order. The flavours are specified as set (or member) metadata, and
 the xf values are listed in increasing order of PDG ID code (e.g. usually -5..5,
 21 or -6..6, 21 for the standard 5 or 6 quark-flavour PDF).
-  * TODO: Alternatively, format as "x Q2 f1 f2 f3 f4 ..."?
+
+@todo Alternatively, format as "x Q2 f1 f2 f3 f4 ..."?
 
 New PDF formats may be proposed to the LHAPDF maintainers, and will be
 considered for standardisation. Acceptance of proposals is not guaranteed, and
@@ -94,9 +107,11 @@ format from any file, stopping parsing at the --- marker: this allows metadata
 to be read for many (including all) sets simultaneously without incurring the
 memory penalty of having loaded many data grids. Allows automatic documentation
 for web, PDF (via LaTeX), etc.
-  * TODO: Documentation system
-  * TODO: Set-level info should be a singleton so that a change in code applies to all members.
-          Singleton storage/identification by abs path rather than set name?
+
+@todo Documentation system for PDFs -- output to Doxygen?
+
+@todo Set-level info should be a singleton so that a change in code applies to
+      all members. Singleton storage/identification by set name?
 
 Global config specified via the $prefix/lhapdf.conf file. Settings can be
 overridden in the code via a singleton.
@@ -113,15 +128,19 @@ ALWAYS calculating all flavours would be wasteful, so the best thing to cache is
 indices of the surrounding grid points (including implicit identification of grid
 edges) so that the lookup need not be done multiple times as each flavour is defined
 on the same (sub)grid.
-  * TODO: make sure that the interaction of caching with zeroed PDF value setting works
+
+@todo Make sure that the interaction of caching with zeroed PDF value setting works
 
 Search paths: search for set directories, and info and data files in them, based
 on a fallback path treatment. The default path list should just be the
 <install_prefix>/share/LHAPDF directory. If defined, the colon-separated
 LHAPDF_SET_PATH variable will be searched first
-  * TODO: Should the env var overwrite the install prefix or prepend?
+
+@todo Should the env var overwrite the install prefix or prepend?
+
 Prepending/appending or explicit setting of the paths should be possible via the API.
-  * TODO: Use the global config system for the path handling?
+
+@todo Use the global config system for the path handling?
 
 Extrapolators: extrapolation may be required but is not advised. Essentially a
 damage minimisation exercise. Specification via metadata or explicit code cf. interpolators.
@@ -134,7 +153,8 @@ the header for uniformity of treatment and to allow alpha_s calculation without
 being specific to the grid format. QCD params related to alpha_s to be specified
 in metadata: Lambda_4, Lambda_5, alpha_s_MZ, Nf, FFNS/VFNS, quark masses, QCD order
 (as int = nloops?), default alpha_s solver name.
-  * MUST specify alpha_s_mz? Lambda optional? Defaults?
+
+@todo MUST specify alpha_s_mz? Lambda optional? Defaults?
 
 Factories: PDF members, interpolators, extrapolators, and alpha_s solvers all
 obtainable by name from factories: this allows all configuration of defaults via
@@ -156,7 +176,7 @@ change. LHAPDF5 ID codes will be supported and will continue to be assigned: PDF
 loading by these IDs will be possible and used as the back-end for the Fortran
 functions.
 
-* TODO: legacy support for the LHAPDF multiset (initpdfsetm, etc.) functions? Demand?
+@todo Legacy support for the LHAPDF multiset (initpdfsetm, etc.) functions? Demand?
 
 No (initial) support for nuclear PDFs, but the modular design should make "PDF
 modifiers" relatively straightforward. We will consider well-formed proposals
@@ -169,7 +189,8 @@ will be made using automated scripts. Maximum tolerated deviation: relative
 xf = 0.1% or abs xf = 10^-5, whichever is larger (i.e. a > 0.1% deviation will be
 tolerated in regions where the PDF's xf value is anyway so small that it is of no
 physical importance.
-  * TODO: choose better-motivated thresholds!
+
+@todo Choose better-motivated thresholds!
 
 Index file pdfsets.index. Just two columns: a positive integer "LHAPDF ID" and
 the name of the PDF set whose first member starts at that ID. Used for lookup of
@@ -201,16 +222,19 @@ info in future to allow runtime set-level info setting? (Performance penalty?
 Probably not as long as the flavors() vector is stored locally on the PDF
 object.)
 
-* TODO: Origin/priority of PDF set naming and member numbers: taken from
-  filename, the containing directory name (require consistency with the
-  filenames?), and/or the metadata system? Suggest NOT allowing a metadata
-  source for naming and member IDs, since it would just lead to maximal
-  confusion if they got out of sync with the file/dir names. What if the dir and
-  file names are in contradiction? Answer: throw an exception or fail with an
-  assert rather than try to be "softer".
+@todo Origin/priority of PDF set naming and member numbers: taken from filename,
+  the containing directory name (require consistency with the filenames?),
+  and/or the metadata system? Suggest NOT allowing a metadata source for naming
+  and member IDs, since it would just lead to maximal confusion if they got out
+  of sync with the file/dir names. What if the dir and file names are in
+  contradiction? Answer: throw an exception or fail with an assert rather than
+  try to be "softer".
 
 
-Future prospects: new interpolators (e.g. interpolation in log space or separate
+Future prospects
+----------------
+
+New interpolators (e.g. interpolation in log space or separate
 x,Q2 interpolator functions), addition of DGLAP or other numerically evolved PDF
 types based on e.g. Hoppet (these are not included by default as there has been
 a strong trend of PDFs toward purely interpolated grids during the lifetime of
@@ -221,3 +245,5 @@ will make the writing of nuclear PDF wrapper classes easy, but do not personally
 have the experience to do so optimally. Nuclear physicists interested in addition
 of nuclear PDF capabilities are encouraged to get in touch with the LHAPDF
 developers to discuss requirements, and concrete proposals are particularly encouraged.
+
+*/

@@ -1,0 +1,8 @@
+body, table, div, p, dl {
+	font: 400 18px/19px Roboto,sans-serif;
+    line-height: 140%;
+}
+
+p, li, .todo {
+    max-width: 65em;
+}

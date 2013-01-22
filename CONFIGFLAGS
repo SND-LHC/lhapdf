@@ -1,3 +1,7 @@
+/**
+@page config Configuration flags
+
+
 LHAPDF v6 CONFIGURATION FLAGS
 =============================
 
@@ -6,32 +10,65 @@ settings, PDF set info, and PDF member info levels. If a configuration key
 is requested from a PDF member info and is not found, the search will fall
 back to first the PDF set and then to the global config.
 
-Verbosity (uint): 1
+Verbosity
+---------
+(uint): 1
 
-Interpolator (enum string): linear, cubic
+Interpolator
+------------
+(enum string): linear, cubic
 
-Extrapolator (enum string): error
+Extrapolator
+------------
+(enum string): error
 
-ImplicitFlavorAction (enum string): return_zero
+ImplicitFlavorAction
+--------------------
+(enum string): return_zero
 
-PwdInSearchPath (bool): false
+PwdInSearchPath
+---------------
+(bool): false
 
-SetName (free string): EXAMPLEPDF  # TODO: Allow? Just use dirname
+SetName
+-------
+(free string): EXAMPLEPDF  # TODO: Allow? Just use dirname
 
-SetDesc (free string): Just an example to test the parser mechanisms
+SetDesc
+-------
+(free string): Just an example to test the parser mechanisms
 
-Flavors (list<int> or int): [-5,-4,-3,-2,-1,1,2,3,4,5,21]
+Flavors
+-------
+(list<int> or int): [-5,-4,-3,-2,-1,1,2,3,4,5,21]
 
-OrderQcd (uint): 2 # or better to use text cf. lo, nlo, nnlo?
+OrderQcd
+--------
+(uint): 2 # or better to use text cf. lo, nlo, nnlo?
 
-AlphaS_MZ (float): 0.118
+AlphaS_MZ
+---------
+(float): 0.118
 
-NumMembers (uint): 1
+NumMembers
+----------
+(uint): 1
 
-Format (enum string): lhagrid
+Format
+------
+(enum string): lhagrid
 
-ErrorType (enum string): replica
+ErrorType
+---------
+(enum string): replica
 
-PdfDesc (free string): The main PDF in the EXAMPLE set
+PdfDesc
+-------
+(free string): The main PDF in the EXAMPLE set
 
-PdfType (enum string): main # or 'error' or 'replica'
+PdfType
+-------
+(enum string): main # or 'error' or 'replica'
+
+
+*/
