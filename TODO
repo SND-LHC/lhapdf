@@ -47,6 +47,9 @@ FOR BETA 1
 * Printing out banner info... needed by code that greps for it :-/
    e.g. ATLAS' Generate_trf.py ...
 
+* Change "config" -> "settings"?
+   And add a Settings.h or Config.h to access it, rather than the static fn on Info
+
 * Move the test programs into "tests" and clean up the root dir
 
 * Implement PDF::pdfsetname and memberID
@@ -59,8 +62,9 @@ FOR BETA 1
 
 FOR BETA 2
 
-* Document the config flags
-   Add a CONFIGFLAGS
+* Include the DESIGN, CONFIGFLAGS and CODINGSTYLE files in the Doxygen
+   How does H++ doc the config interfaces? Can we use a simpler markup than HTML
+   so that the plain text files remain painlessly readable?
 
 * Find a way to specify whether PWD is to be searched, if possible
    The Config mechanism can't be used as it uses the path searching in its
