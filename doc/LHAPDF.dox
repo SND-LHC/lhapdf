@@ -68,11 +68,23 @@ Usage
 
 @todo Write instructions on how to get started with using LHAPDF
 
+**Using and testing PDF grids:**
 @include tests/testgrid.cc
+
+**Testing the Info system:**
 @include tests/testinfo.cc
+
+**Testing the LHAPDF ID indexing system:**
 @include tests/testindex.cc
+
+**Testing the path searching system:**
 @include tests/testpaths.cc
+
+**Testing the AlphaS classes:**
 @include tests/testalphas.cc
+
+**Demo of making a new "analytic" PDF subclass:**
+@include examples/analytic.cc
 
 
 For developers

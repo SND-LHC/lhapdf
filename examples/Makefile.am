@@ -1,4 +1,3 @@
-# TODO: reinstate, convert to split LHAPDF 5/6 export, and use for validation
-# bin_PROGRAMS = accuracy
-# accuracy_SOURCES = Accuracy/accuracy.cc
-# accuracy_LDFLAGS = -L$(top_srcdir)/src -lLHAPDF
+bin_PROGRAMS = analyticpdf
+analyticpdf_SOURCES = analytic.cc
+analyticpdf_LDFLAGS = -L$(top_srcdir)/src -lLHAPDF -lboost_system -lboost_filesystem
