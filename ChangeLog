@@ -1,3 +1,7 @@
+2013-01-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Build system tweaks: adding --with args to configure for Boost and yaml-cpp, and a 'doxy' target.
+
 2013-01-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing defunct data and knot members from GridPDF.

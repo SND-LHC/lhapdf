@@ -43,16 +43,13 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
 
-dnl ## Enable binreloc
-dnl AM_BINRELOC
-
 
 ## Enable debugging symbols.
 AC_ARG_ENABLE([debug],
   [AC_HELP_STRING(--enable-debug, [build with debugging symbols (default=no)])],
   [], [enable_debug=no])
 if test x$enable_debug == xyes; then
-  [AM_FCFLAGS="$AM_FCFLAGS -g"]
+  [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
 fi
 
 
@@ -68,13 +65,8 @@ fi
 AM_CONDITIONAL(ENABLE_LHAGLUE, [test x$enable_lhaglue == xyes])
 
 
-## Build Doxygen if possible
-AC_ARG_ENABLE([doxygen],
-  [AC_HELP_STRING(--disable-doxygen, [don't try to make Doxygen documentation])],
-  [], [enable_doxygen=yes])
-if test x$enable_doxygen == xyes; then
-   AC_PATH_PROG(DOXYGEN, doxygen)
-fi
+## Find Doxygen if possible
+AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, [test x$DOXYGEN != x])
 
 
@@ -140,22 +132,45 @@ dnl fi
 dnl AM_CONDITIONAL(WITH_OCTAVE, [test x$OCTAVE != x && test x$MKOCTFILE != x])
 
 
-dnl ## Make a flag to detect if this build is on Windows
-dnl AC_MSG_CHECKING(if the target platform is Windows)
-dnl on_win32=no
-dnl if `echo "$target" | grep win32`; then on_win32=yes; fi
-dnl AC_MSG_RESULT([$on_win32])
-dnl AM_CONDITIONAL(USING_WIN32, [test x$on_win32 == xyes])
+## Boost utility library
+AC_ARG_WITH([boost], AS_HELP_STRING([--with-boost], [indicate the position of the Boost library]))
+if test "$with_boost"; then
+  ## Check for Boost libs (only if path has been explicitly given)
+  # TODO: Need lib extension independence for Macs...
+  # test -e $with_boost/lib/libboost_system.so || AC_MSG_ERROR([libboost_system not found.])
+  # test -e $with_boost/lib/libboost_filesystem.so || AC_MSG_ERROR([libboost_filesystem not found.])
+  BOOST_CPPFLAGS=-I$with_boost/include
+  BOOST_LDFLAGS=-L$with_boost/lib
+fi
+## Check for Boost headers
+oldCPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS -I$prefix/include"
+AC_CHECK_HEADER([boost/foreach.hpp], [], [AC_MSG_ERROR([Boost foreach not found.])])
+AC_CHECK_HEADER([boost/smart_ptr.hpp], [], [AC_MSG_ERROR([Boost smart_ptr not found.])])
+AC_CHECK_HEADER([boost/algorithm/string.hpp], [], [AC_MSG_ERROR([Boost algorithm/string not found.])])
+AC_CHECK_HEADER([boost/lexical_cast.hpp], [], [AC_MSG_ERROR([Boost lexical_cast not found.])])
+CPPFLAGS=$oldCPPFLAGS
+AC_SUBST(BOOST_CPPFLAGS)
+AC_SUBST(BOOST_LDFLAGS)
 
 
-# TODO: find Boost
-# TODO: find yaml-cpp
+# yaml-cpp parser library
+AC_ARG_WITH([yaml-cpp], AS_HELP_STRING([--with-yaml-cpp], [indicate the position of the yaml-cpp library]))
+if test "$with_yaml_cpp"; then
+  YAMLCPP_CPPFLAGS=-I$with_yaml_cpp/include
+  YAMLCPP_LDFLAGS=-I$with_yaml_cpp/lib
+fi
+oldCPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $YAMLCPP_CPPFLAGS -I$prefix/include"
+AC_CHECK_HEADER([yaml-cpp/yaml.h], [], [AC_MSG_ERROR([yaml-cpp/yaml.h header not found.])])
+CPPFLAGS=$oldCPPFLAGS
+AC_SUBST(YAMLCPP_CPPFLAGS)
+AC_SUBST(YAMLCPP_LDFLAGS)
 
 
-## Set final compiler flags
-AM_CPPFLAGS="$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(top_builddir)/include -I\$(prefix)/include"
+## Set base compiler flags
+AM_CPPFLAGS=["$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(prefix)/include"]
 AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
-
 AC_SUBST(AM_CPPFLAGS)
 #
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
@@ -169,6 +184,7 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([include/Makefile include/LHAPDF/Makefile])
 AC_CONFIG_FILES([examples/Makefile])
+AC_CONFIG_FILES([doc/Makefile doc/Doxyfile])
 dnl AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
 dnl AC_CONFIG_FILES([octave/Makefile])
 dnl AC_CONFIG_FILES([bin/Makefile bin/lhapdf-config])
