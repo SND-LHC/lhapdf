@@ -1,4 +1,4 @@
-// Example program to test PDF grid format reading and interpolation
+// Example program to test alpha_s calculation
 
 #include "LHAPDF/AlphaS.h"
 #include <iostream>

@@ -68,6 +68,12 @@ Usage
 
 @todo Write instructions on how to get started with using LHAPDF
 
+@include tests/testgrid.cc
+@include tests/testinfo.cc
+@include tests/testindex.cc
+@include tests/testpaths.cc
+@include tests/testalphas.cc
+
 
 For developers
 --------------
@@ -78,5 +84,11 @@ See the following pages:
 - @ref todo
 - @ref design
 - @ref codingstyle
+
+@example ../tests/testgrid.cc
+@example ../tests/testinfo.cc
+@example ../tests/testindex.cc
+@example ../tests/testpaths.cc
+@example ../tests/testalphas.cc
 
 */
