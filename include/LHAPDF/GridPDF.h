@@ -251,7 +251,7 @@ namespace LHAPDF {
 
 
       /// List of x knots
-      vector<double> _xs,
+      vector<double> _xs;
       /// List of Q2 knots
       vector<double> _q2s;
       /// List of xf values across the knot array

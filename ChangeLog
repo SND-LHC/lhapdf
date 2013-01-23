@@ -1,5 +1,7 @@
 2013-01-23  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Moving tests and their output data files into the tests/ dir.
+
 	* Build system tweaks: adding --with args to configure for Boost and yaml-cpp, and a 'doxy' target.
 
 2013-01-22  Andy Buckley  <andy.buckley@cern.ch>

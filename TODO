@@ -28,8 +28,6 @@ NEXT
 
 - Tidy up DESIGN document
 
-- Move the test programs into "tests" and clean up the root dir
-
 - Strip file extensions and deal specially with CTEQ6L1 in LHAGLUE
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
    compatibility at the same time as sorting out the misnaming. Only in the

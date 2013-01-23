@@ -185,10 +185,10 @@ AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([include/Makefile include/LHAPDF/Makefile])
 AC_CONFIG_FILES([examples/Makefile])
 AC_CONFIG_FILES([doc/Makefile doc/Doxyfile])
+AC_CONFIG_FILES([tests/Makefile])
 dnl AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
 dnl AC_CONFIG_FILES([octave/Makefile])
 dnl AC_CONFIG_FILES([bin/Makefile bin/lhapdf-config])
-dnl AC_CONFIG_FILES([tests/Makefile])
 AC_OUTPUT
 
 ## Message about getting PDF sets
