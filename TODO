@@ -8,19 +8,23 @@ LHAPDF6 TODO list
 NOW
 ---
 
-- Fix and test numerical and analytic alpha_s running
-   The ODE solver needs serious optimisation, and numerically the results look
-   dubious for both the analytic and ODE versions
-
-- Caching of subgrid indices in Interpolator and Extrapolator interfaces
-
 - Migrate CTEQ6L1 and CT10 PDFs to new format and validate
+   (First) switch the order of x and Q2 index looping in the grid format.
 
 - Validation system and plotting
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
    old and new LHAPDF, and finally compare the files line-by-line, with
    pulls/ratios to the "old" LHAPDF as the reference.
+
+- Fix and test numerical and analytic alpha_s running
+   The ODE solver needs serious optimisation, and numerically the results look
+   dubious for both the analytic and ODE versions.
+
+- Fix subgrid system
+   EXAMPLEPDF_0001 is currently failing in fun ways.
+
+- Caching of subgrid indices in Interpolator and Extrapolator interfaces
 
 
 NEXT

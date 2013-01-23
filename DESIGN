@@ -139,6 +139,8 @@ another `---` delimiter to unambiguously declare the end of the final subgrid bl
 
 @todo Specify the order in which the (x,Q2) line indices are iterated over
 
+@todo Comments in the grid block
+
 New PDF formats may be proposed to the LHAPDF maintainers, and will be
 considered for standardisation. Acceptance of proposals is not guaranteed, and
 modifications may be insisted upon. We do appreciate the effort, but need to

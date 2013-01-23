@@ -1,5 +1,7 @@
 2013-01-23  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding code to allow comments in the grid data blocks.
+
 	* Some DESIGN doc cleanup.
 
 	* Moving tests and their output data files into the tests/ dir.

@@ -7,7 +7,8 @@ using namespace LHAPDF;
 using namespace std;
 
 int main() {
-  const GridPDF pdf("EXAMPLEPDF", 0);
+  //const GridPDF pdf("EXAMPLEPDF", 0);
+  const GridPDF pdf("EXAMPLEPDF", 1);
 
   cout << "Verbosity = " << pdf.info().metadata("Verbosity") << endl;
   cout << "PdfDesc = " << pdf.info().metadata("PdfDesc") << endl;

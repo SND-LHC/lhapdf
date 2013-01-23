@@ -34,11 +34,13 @@ namespace LHAPDF {
     try {
       ifstream file(mempath.c_str());
       while (getline(file, line)) {
-        iline += 1;
-        iblockline += 1;
-
         // Trim the current line to ensure that there is no effect of leading spaces, etc.
         trim(line);
+
+        // If the line is commented out, increment the line number but not the block line
+        iline += 1;
+        if (line.find("#") == 0) continue;
+        iblockline += 1;
 
         if (line != "---") { // if we are not on a block separator line...
 
