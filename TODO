@@ -26,12 +26,17 @@ NOW
 NEXT
 ----
 
-- Tidy up DESIGN document
+- More tidying of the DESIGN document
+
+- Directly expose AlphaS param fields
+   Why bother with get and set methods?
 
 - Strip file extensions and deal specially with CTEQ6L1 in LHAGLUE
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
    compatibility at the same time as sorting out the misnaming. Only in the
    Fortran interface?
+
+- Implement PDF::pdfsetname and memberID
 
 - Treating missing flavours with error vs. return 0
    Provide a switch to distinguish the two responses. Put ID check into
@@ -48,14 +53,16 @@ FOR BETA 1
 
 - lhapdf-config build assistant script
 
+- Provide setAlphaS methods cf. setInterpolator
+   Use clearly invalid default AlphaS fields and throw an AlphaSException if the
+   values are not in a physical range.
+
 - Printing out banner info... needed by code that greps for it :-/
    e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be
    fundamentally built-in that we have to maintain the old banner style!
 
 - Change "config" -> "settings"?
    And add a Settings.h or Config.h to access it, rather than the static fn on Info
-
-- Implement PDF::pdfsetname and memberID
 
 - Forbid PDF construction from a direct path to the data file?
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes)
@@ -106,6 +113,8 @@ AS AND WHEN
 -----------
 
 - Add more metadata methods to PDF and PDFGrid as needed
+
+- Make GridPDFs not read their data block until an xf value is requested?!
 
 - Read zipped/tarred PDFs
    With standard directory structure internally.
