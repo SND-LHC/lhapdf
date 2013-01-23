@@ -14,6 +14,7 @@ namespace LHAPDF {
   /// NB. We don't use "Error" because that has a physics meaning!
   class Exception : public std::runtime_error {
   public:
+    /// Constructor with error description string
     Exception(const std::string& what) : std::runtime_error(what) {}
   };
 
@@ -21,6 +22,7 @@ namespace LHAPDF {
   /// Error for general PDF grid problems.
   class GridError : public Exception {
   public:
+    /// Constructor with error description string
     GridError(const std::string& what) : Exception(what) {}
   };
 
@@ -28,6 +30,7 @@ namespace LHAPDF {
   /// Error to be thrown when out of the valid range of a PDF.
   class RangeError : public Exception {
   public:
+    /// Constructor with error description string
     RangeError(const std::string& what) : Exception(what) {}
   };
 
@@ -35,6 +38,7 @@ namespace LHAPDF {
   /// Error for places where it should not have been possible to get to!
   class LogicError : public Exception {
   public:
+    /// Constructor with error description string
     LogicError(const std::string& what) : Exception(what) {}
   };
 
@@ -42,6 +46,7 @@ namespace LHAPDF {
   /// @brief Error for unfound or broken metadata entries.
   class MetadataError : public Exception {
   public:
+    /// Constructor with error description string
     MetadataError(const std::string& what) : Exception(what) {}
   };
 
@@ -49,6 +54,7 @@ namespace LHAPDF {
   /// @brief Error for file reading errors.
   class ReadError : public Exception {
   public:
+    /// Constructor with error description string
     ReadError(const std::string& what) : Exception(what) {}
   };
 
@@ -56,6 +62,7 @@ namespace LHAPDF {
   /// @brief Error for requests for unsupported/invalid flavour PIDs.
   class FlavorError : public Exception {
   public:
+    /// Constructor with error description string
     FlavorError(const std::string& what) : Exception(what) {}
   };
 
@@ -63,6 +70,7 @@ namespace LHAPDF {
   /// @brief Error to be raised by object factories given invalid requests.
   class FactoryError : public Exception {
   public:
+    /// Constructor with error description string
     FactoryError(const std::string& what) : Exception(what) {}
   };
 
@@ -70,6 +78,7 @@ namespace LHAPDF {
   /// @brief Error to be raised when a LHAPDF ID indexing fails
   class IndexError : public Exception {
   public:
+    /// Constructor with error description string
     IndexError(const std::string& what) : Exception(what) {}
   };
 
@@ -77,6 +86,7 @@ namespace LHAPDF {
   /// Problem exists between keyboard and chair.
   class UserError : public Exception {
   public:
+    /// Constructor with error description string
     UserError(const std::string& what) : Exception(what) {}
   };
 

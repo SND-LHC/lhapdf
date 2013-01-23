@@ -175,6 +175,7 @@ namespace LHAPDF {
       { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
 
       /// Constructor from x and Q2 knot values
+      /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
       KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots)
         : _xs(xknots), _q2s(q2knots), _xfs(boost::extents[xknots.size()][q2knots.size()])
       { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
@@ -183,14 +184,17 @@ namespace LHAPDF {
       KnotArray1F& operator=(const KnotArray1F& other) {
         _xs = other._xs;
         _q2s = other._q2s;
+        /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
         _xfs.resize(boost::extents[other._xfs.shape()[0]][other._xfs.shape()[1]]);
         _xfs = other._xfs;
         assert(_xfs.shape()[0] == _xs.size() && _xfs.shape()[1] == _q2s.size());
         return *this;
       }
 
-      /// x knot accessors
+      /// x knot accessor
       const std::vector<double>& xs() const { return _xs; }
+      /// x knot setter
+      /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
       void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
       /// Get the index of the closest x knot row <= x
@@ -204,8 +208,10 @@ namespace LHAPDF {
       }
 
 
-      /// Q2 knot accessors
+      /// Q2 knot accessor
       const std::vector<double>& q2s() const { return _q2s; }
+      /// Q2 knot setter
+      /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
       void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
       /// Get the index of the closest x knot row <= x
@@ -219,10 +225,15 @@ namespace LHAPDF {
       }
 
 
-      /// xf value accessors
+      /// xf value accessor (const)
       const valarray& xfs() const { return _xfs; }
+      /// xf value accessor (non-const)
       valarray& xfs() { return _xfs; }
+      /// xf value setter
       void setxfs(const valarray& xfs) { _xfs = xfs; }
+
+      /// Get the xf value at a particular indexed x,Q2 knot
+      /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
       const double& xf(size_t ix, size_t iq2) const { return _xfs[ix][iq2]; }
 
 
@@ -238,7 +249,12 @@ namespace LHAPDF {
 
     private:
 
-      std::vector<double> _xs, _q2s;
+
+      /// List of x knots
+      vector<double> _xs,
+      /// List of Q2 knots
+      vector<double> _q2s;
+      /// List of xf values across the knot array
       valarray _xfs;
 
     };
@@ -313,8 +329,10 @@ namespace LHAPDF {
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
     std::map<double, KnotArrayNF> _knotarrays;
 
-    /// Typedefs of smart pointer types for ipol/xpol memory handling
+    /// Typedef of smart pointer for ipol memory handling
     typedef auto_ptr<Interpolator> InterpolatorPtr;
+
+    /// Typedef of smart pointer for xpol memory handling
     typedef auto_ptr<Extrapolator> ExtrapolatorPtr;
 
     /// Associated interpolator (mutable to allow laziness)

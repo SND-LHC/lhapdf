@@ -8,8 +8,6 @@ LHAPDF6 TODO list
 NOW
 ---
 
-- Eliminate remaining Doxygen warnings and add "make doxy" target
-
 - Fix and test numerical and analytic alpha_s running
    The ODE solver needs serious optimisation, and numerically the results look
    dubious for both the analytic and ODE versions
@@ -29,6 +27,8 @@ NEXT
 ----
 
 - Tidy up DESIGN document
+
+- Move the test programs into "tests" and clean up the root dir
 
 - Strip file extensions and deal specially with CTEQ6L1 in LHAGLUE
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
@@ -56,8 +56,6 @@ FOR BETA 1
 
 - Change "config" -> "settings"?
    And add a Settings.h or Config.h to access it, rather than the static fn on Info
-
-- Move the test programs into "tests" and clean up the root dir
 
 - Implement PDF::pdfsetname and memberID
 

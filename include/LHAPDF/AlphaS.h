@@ -16,13 +16,13 @@ namespace LHAPDF {
   class AlphaS {
   public:
 
-    // Base class constructor for default param setup
+    /// Base class constructor for default param setup
     AlphaS();
 
-    // Calculate alphaS(Q)
+    /// Calculate alphaS(Q)
     double alphasQ(double q) const { return alphasQ2(q*q); }
 
-    // Calculate alphaS(Q2)
+    /// Calculate alphaS(Q2)
     virtual double alphasQ2(double q2) const = 0;
 
     /// Calculate the number of active flavours at energy scale Q
@@ -48,11 +48,15 @@ namespace LHAPDF {
     /// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
     double _qmasses[6];
 
-    /// Mass of the Z-boson and value of alpha_s(MZ)
-    double _mz,_alphas_mz;
+    /// Mass of the Z-boson
+    double _mz;
+    /// Value of alpha_s(MZ)
+    double _alphas_mz;
 
-    /// LambdaQCD values for 4 and 5 flavour regimes
-    double _lambda4, _lambda5;
+    /// LambdaQCD value for 4 flavour regime
+    double _lambda4;
+    /// LambdaQCD value for 5 flavour regime
+    double _lambda5;
 
     /// Order of QCD (expressed as number of loops)
     int _order;
