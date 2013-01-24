@@ -140,7 +140,7 @@ if test "$with_boost"; then
   # test -e $with_boost/lib/libboost_system.so || AC_MSG_ERROR([libboost_system not found.])
   # test -e $with_boost/lib/libboost_filesystem.so || AC_MSG_ERROR([libboost_filesystem not found.])
   BOOST_CPPFLAGS=-I$with_boost/include
-  BOOST_LDFLAGS=-L$with_boost/lib
+  BOOST_LDFLAGS=-L$with_boost/lib -R$with_boost/lib
 fi
 ## Check for Boost headers
 oldCPPFLAGS=$CPPFLAGS
@@ -158,7 +158,7 @@ AC_SUBST(BOOST_LDFLAGS)
 AC_ARG_WITH([yaml-cpp], AS_HELP_STRING([--with-yaml-cpp], [indicate the position of the yaml-cpp library]))
 if test "$with_yaml_cpp"; then
   YAMLCPP_CPPFLAGS=-I$with_yaml_cpp/include
-  YAMLCPP_LDFLAGS=-I$with_yaml_cpp/lib
+  YAMLCPP_LDFLAGS=-L$with_yaml_cpp/lib -R$with_yaml_cpp/lib
 fi
 oldCPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS $YAMLCPP_CPPFLAGS -I$prefix/include"
@@ -192,22 +192,22 @@ dnl AC_CONFIG_FILES([bin/Makefile bin/lhapdf-config])
 AC_OUTPUT
 
 ## Message about getting PDF sets
-pkgdatadir=`eval "echo $datarootdir/$PACKAGE_TARNAME"`
-echo
-echo "****************************************************************"
-echo "IMPORTANT INFORMATION ABOUT PDF SETS"
-echo
-echo "Due to the increasing number and size of PDF data files, LHAPDF"
-echo "no longer bundles PDF set data in the package tarball. The sets"
-echo "are instead all stored online at"
-echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/"
-echo "and you should install those that you wish to use into"
-echo "  $pkgdatadir"
-echo
-echo "The lhapdf-getdata script helps to automate the set download"
-echo "and installation process: before installation you will find"
-echo "it in the bin directory. Alternatively, download the sets by"
-echo "hand from the URL given above, and place them in the PDF sets"
-echo "directory (also given above.)"
-echo "****************************************************************"
-echo
+dnl pkgdatadir=`eval "echo $datarootdir/$PACKAGE_TARNAME"`
+dnl echo
+dnl echo "****************************************************************"
+dnl echo "IMPORTANT INFORMATION ABOUT PDF SETS"
+dnl echo
+dnl echo "Due to the increasing number and size of PDF data files, LHAPDF"
+dnl echo "no longer bundles PDF set data in the package tarball. The sets"
+dnl echo "are instead all stored online at"
+dnl echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/"
+dnl echo "and you should install those that you wish to use into"
+dnl echo "  $pkgdatadir"
+dnl echo
+dnl echo "The lhapdf-getdata script helps to automate the set download"
+dnl echo "and installation process: before installation you will find"
+dnl echo "it in the bin directory. Alternatively, download the sets by"
+dnl echo "hand from the URL given above, and place them in the PDF sets"
+dnl echo "directory (also given above.)"
+dnl echo "****************************************************************"
+dnl echo

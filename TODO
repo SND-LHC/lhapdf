@@ -24,16 +24,23 @@ NOW
 - Fix subgrid system
    EXAMPLEPDF_0001 is currently failing in fun ways.
 
+- Add functional Extrapolators
+
 - Caching of subgrid indices in Interpolator and Extrapolator interfaces
+
+- Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
+   Both should just use nset = 0 all the time.
+
+- Test LHAGLUE with PYTHIA6 and Pythia8
 
 
 NEXT
 ----
 
-- More tidying of the DESIGN document
-
 - Directly expose AlphaS param fields
    Why bother with get and set methods?
+
+- Improve the DESIGN document's coherence
 
 - Strip file extensions and deal specially with CTEQ6L1 in LHAGLUE
    The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
@@ -46,20 +53,15 @@ NEXT
    Provide a switch to distinguish the two responses. Put ID check into
    PDF::xfxQ2 function?
 
-- Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
-   Both should just use nset = 0 all the time.
-
-- Test LHAGLUE with PYTHIA6 and Pythia8
+- Provide setAlphaS methods cf. setInterpolator
+   Use clearly invalid default AlphaS fields and throw an AlphaSException if the
+   values are not in a physical range.
 
 
 FOR BETA 1
 ----------
 
 - lhapdf-config build assistant script
-
-- Provide setAlphaS methods cf. setInterpolator
-   Use clearly invalid default AlphaS fields and throw an AlphaSException if the
-   values are not in a physical range.
 
 - Printing out banner info... needed by code that greps for it :-/
    e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be

@@ -30,11 +30,11 @@ struct AnalyticPDF : public LHAPDF::PDF {
 
 
 int main(int argc, const char* argv[]) {
-  AnalyticPDF a;
-  PDF& a2 = a;
+  AnalyticPDF apdf;
+  LHAPDF::PDF& pdf = apdf;
   for (double x = 0; x < 1.0; x += 0.1) {
     for (double q2 = 0; q2 < 10; ++q2) {
-      cout << x << " " << q2 << " " << a.xfxQ2(0, x, q2) << endl;
+      cout << x << " " << q2 << " " << pdf.xfxQ2(0, x, q2) << endl;
     }
   }
   return 0;

@@ -1,14 +1,16 @@
+FLAGS := $(AM_CPPFLAGS) -I$(prefix)/include $(AM_LDFLAGS) -L$(prefix)/lib -L$(top_srcdir)/src -lLHAPDF -lboost_filesystem -lboost_system
+
 testalphas: testalphas.cc
-	g++ testalphas.cc $(AM_CPPFLAGS) -I$(prefix)/include $(AM_LDFLAGS) -L$(prefix)/lib -L$(top_srcdir)/src/.libs -lLHAPDF -lboost_filesystem -lboost_system -o testalphas
+	$(CXX) testalphas.cc $(FLAGS) -o testalphas
 
 testgrid: testgrid.cc
-	g++ testgrid.cc $(AM_CPPFLAGS) -I$(prefix)/include $(AM_LDFLAGS) -L$(prefix)/lib -L$(top_srcdir)/src/.libs -lLHAPDF -lboost_filesystem -lboost_system -o testgrid
+	$(CXX) testgrid.cc $(FLAGS) -o testgrid
 
 testindex: testindex.cc
-	g++ testindex.cc $(AM_CPPFLAGS) -I$(prefix)/include $(AM_LDFLAGS) -L$(prefix)/lib -L$(top_srcdir)/src/.libs -lLHAPDF -lboost_filesystem -lboost_system -o testindex
+	$(CXX) testindex.cc $(FLAGS) -o testindex
 
 testinfo: testinfo.cc
-	g++ testinfo.cc $(AM_CPPFLAGS) -I$(prefix)/include $(AM_LDFLAGS) -L$(prefix)/lib -L$(top_srcdir)/src/.libs -lLHAPDF -lboost_filesystem -lboost_system -o testinfo
+	$(CXX) testinfo.cc $(FLAGS) -o testinfo
 
 testpaths: testpaths.cc
-	g++ testpaths.cc $(AM_CPPFLAGS) -I$(prefix)/include $(AM_LDFLAGS) -L$(prefix)/lib -L$(top_srcdir)/src/.libs -lLHAPDF -lboost_filesystem -lboost_system -o testpaths
+	$(CXX) testpaths.cc $(FLAGS) -o testpaths
