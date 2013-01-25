@@ -131,5 +131,17 @@ AS AND WHEN
 
 - Use Autoconf's more robust FC_* Fortran function name macros
 
+- Add helper functions for calculating PDF errors on observables
+   It's not obviously something to include since there are several possible
+   treatments (esp. the sort of confidence interval that's constructed with
+   replica ensembles, and what about non-scalar observables?). And typically it
+   requires storing vectors/arrays of all the PDF error values for each
+   observable number for the function to operate on, which is not always the
+   most efficient way. But it's certainly a good thing to provide an example
+   for... maybe it should just be provided as an example? One nice thing is
+   that since we now store a clear ErrorType metadata entry for each PDF set,
+   working out the appropriate error treatment should be easy (I think it's
+   best to not use words like "infallible"!)
+
 
 */

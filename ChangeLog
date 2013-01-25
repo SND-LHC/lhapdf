@@ -1,3 +1,9 @@
+2013-01-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fixed the AnalyticPDF example: now simpler _and_ it works :)
+
+	* A bit of virtual function rethinking on PDF.
+
 2013-01-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding code to allow comments in the grid data blocks.

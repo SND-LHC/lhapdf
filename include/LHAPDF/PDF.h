@@ -295,6 +295,8 @@ namespace LHAPDF {
     /// to avoid unnecessary lookups and string decoding, since e.g. it is
     /// looked at by every call to the GridPDF's Interpolator and Extrapolator
     /// classes.
+    ///
+    /// @todo Make virtual for AnalyticPDF? Or allow manual setting of the Info?
     const std::vector<int>& flavors() const {
       if (_flavors.empty())
         _flavors = info().metadata< vector<int> >("Flavors");
@@ -302,7 +304,7 @@ namespace LHAPDF {
     }
 
     /// Checks whether @a id is a valid parton for this PDF.
-    virtual bool hasFlavor(int id) const {
+    bool hasFlavor(int id) const {
       const vector<int>& ids = flavors();
       return find(ids.begin(), ids.end(), id) != ids.end();
     }
