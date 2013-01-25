@@ -1,5 +1,15 @@
 2013-01-25  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding sorting of the flavor array when reading from metadata
+	(and use of Boost range sort)
+
+	* Fixed clearing of temp double* array variable so subgrid loading
+	now works. Interpolation across subgrid boundaries not tested!
+
+	* Added two more ways to assign the grid data arrays, but the
+	original way seems fine. Now defining the grid data x/Q2 loop
+	order.
+
 	* Fixed the AnalyticPDF example: now simpler _and_ it works :)
 
 	* A bit of virtual function rethinking on PDF.

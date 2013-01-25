@@ -9,7 +9,6 @@ NOW
 ---
 
 - Migrate CTEQ6L1 and CT10 PDFs to new format and validate
-   (First) switch the order of x and Q2 index looping in the grid format.
 
 - Validation system and plotting
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
@@ -20,9 +19,6 @@ NOW
 - Fix and test numerical and analytic alpha_s running
    The ODE solver needs serious optimisation, and numerically the results look
    dubious for both the analytic and ODE versions.
-
-- Fix subgrid system
-   EXAMPLEPDF_0001 is currently failing in fun ways.
 
 - Add functional Extrapolators
 
@@ -89,7 +85,9 @@ FOR BETA 2
    The Config mechanism can't be used as it uses the path searching in its
    initialisation: an infinite loop results.
 
-- Add interpolation-from-metadata implementation of AlphaS
+- Add interpolation-from-metadata implementation of AlphaS Specify with
+   AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
+   values robustly to implement 1D subgrids.
 
 - Updated lhapdf-getdata, downloading PDFs as tarballs
 
@@ -113,6 +111,8 @@ FOR STABLE 6.0.0 RELEASE
    For access to standard functionality but not pluggable in the sense that a
    Python interpolator class cannot be passed to a wrapped PDF object: so hide
    the non-factory-based functions.
+
+- Provide a way to find the numbers of members in PDF sets
 
 
 AS AND WHEN

@@ -157,6 +157,8 @@ AC_CHECK_HEADER([boost/foreach.hpp], [], [AC_MSG_ERROR([Boost foreach not found.
 AC_CHECK_HEADER([boost/smart_ptr.hpp], [], [AC_MSG_ERROR([Boost smart_ptr not found.])])
 AC_CHECK_HEADER([boost/algorithm/string.hpp], [], [AC_MSG_ERROR([Boost algorithm/string not found.])])
 AC_CHECK_HEADER([boost/lexical_cast.hpp], [], [AC_MSG_ERROR([Boost lexical_cast not found.])])
+AC_CHECK_HEADER([boost/range.hpp], [], [AC_MSG_ERROR([Boost range not found.])])
+AC_CHECK_HEADER([boost/range/algorithm/sort.hpp], [], [AC_MSG_ERROR([Boost range sort not found.])])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([#include "boost/filesystem.hpp"],
   [boost::filesystem::path dummy = "/foo/bar"])],
   [AC_MSG_NOTICE([Boost filesystem found.])],

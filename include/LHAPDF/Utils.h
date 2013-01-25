@@ -14,6 +14,8 @@
 // Boost includes
 #include "boost/shared_ptr.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/range.hpp"
+#include "boost/range/algorithm/sort.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
 
