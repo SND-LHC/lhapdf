@@ -1,4 +1,4 @@
-FLAGS := $(AM_CPPFLAGS) -I$(prefix)/include $(AM_LDFLAGS) -L$(prefix)/lib -L$(top_srcdir)/src -lLHAPDF -lboost_filesystem -lboost_system
+FLAGS := $(AM_CPPFLAGS) $(BOOST_CPPFLAGS) $(YAMLCPP_CPPFLAGS) $(AM_LDFLAGS) $(BOOST_LDFLAGS) $(YAMLCPP_LDFLAGS) -L$(top_srcdir)/src -lLHAPDF $(BOOST_LIBS) $(YAMLCPP_LIBS)
 
 testalphas: testalphas.cc
 	$(CXX) testalphas.cc $(FLAGS) -o testalphas

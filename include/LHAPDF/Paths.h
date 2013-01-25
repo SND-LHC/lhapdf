@@ -1,8 +1,8 @@
 #pragma once
 
-#include <LHAPDF/Config.h>
-#include <LHAPDF/Utils.h>
-#include <boost/filesystem.hpp>
+#include "LHAPDF/Config.h"
+#include "LHAPDF/Utils.h"
+#include "boost/filesystem.hpp"
 
 namespace LHAPDF {
 

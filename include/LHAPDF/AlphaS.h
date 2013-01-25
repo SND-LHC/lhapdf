@@ -1,7 +1,7 @@
 #pragma once
 
-#include <LHAPDF/Utils.h>
-#include <LHAPDF/Exceptions.h>
+#include "LHAPDF/Utils.h"
+#include "LHAPDF/Exceptions.h"
 
 namespace LHAPDF {
 

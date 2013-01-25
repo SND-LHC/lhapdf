@@ -132,51 +132,61 @@ dnl fi
 dnl AM_CONDITIONAL(WITH_OCTAVE, [test x$OCTAVE != x && test x$MKOCTFILE != x])
 
 
+## Set base compiler flags
+AM_CPPFLAGS=["$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(prefix)/include"]
+AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
+AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
+AC_CEDAR_CHECKCXXFLAG([-ansi], [AM_CXXFLAGS="$AM_CXXFLAGS -ansi "])
+AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
+AM_LDFLAGS=["$AM_LDFLAGS -L\$(prefix)/lib"]
+
+
 ## Boost utility library
 AC_ARG_WITH([boost], AS_HELP_STRING([--with-boost], [indicate the position of the Boost library]))
-if test "$with_boost"; then
-  ## Check for Boost libs (only if path has been explicitly given)
-  # TODO: Need lib extension independence for Macs...
-  # test -e $with_boost/lib/libboost_system.so || AC_MSG_ERROR([libboost_system not found.])
-  # test -e $with_boost/lib/libboost_filesystem.so || AC_MSG_ERROR([libboost_filesystem not found.])
-  BOOST_CPPFLAGS=-I$with_boost/include
-  BOOST_LDFLAGS=-L$with_boost/lib -R$with_boost/lib
-fi
-## Check for Boost headers
+test "$with_boost" && BOOST_CPPFLAGS="-I$with_boost/include"
+test "$with_boost" && BOOST_LDFLAGS="-L$with_boost/lib -R$with_boost/lib"
+BOOST_LIBS="-lboost_filesystem -lboost_system"
+## Check for Boost headers and libs
 oldCPPFLAGS=$CPPFLAGS
+oldLDFLAGS=$LDFLAGS
+oldLIBS=$LIBS
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS -I$prefix/include"
+LDFLAGS="$LDFLAGS $BOOST_LDFLAGS -L$prefix/lib"
+LIBS="$LIBS $BOOST_LIBS"
 AC_CHECK_HEADER([boost/foreach.hpp], [], [AC_MSG_ERROR([Boost foreach not found.])])
 AC_CHECK_HEADER([boost/smart_ptr.hpp], [], [AC_MSG_ERROR([Boost smart_ptr not found.])])
 AC_CHECK_HEADER([boost/algorithm/string.hpp], [], [AC_MSG_ERROR([Boost algorithm/string not found.])])
 AC_CHECK_HEADER([boost/lexical_cast.hpp], [], [AC_MSG_ERROR([Boost lexical_cast not found.])])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([#include "boost/filesystem.hpp"],
+  [boost::filesystem::path dummy = "/foo/bar"])],
+  [AC_MSG_NOTICE([Boost filesystem found.])],
+  [AC_MSG_ERROR([Boost filesystem not found.])])
 CPPFLAGS=$oldCPPFLAGS
+LDFLAGS=$oldLDFLAGS
+LIBS=$oldLIBS
 AC_SUBST(BOOST_CPPFLAGS)
 AC_SUBST(BOOST_LDFLAGS)
+AC_SUBST(BOOST_LIBS)
 
 
 # yaml-cpp parser library
 AC_ARG_WITH([yaml-cpp], AS_HELP_STRING([--with-yaml-cpp], [indicate the position of the yaml-cpp library]))
-if test "$with_yaml_cpp"; then
-  YAMLCPP_CPPFLAGS=-I$with_yaml_cpp/include
-  YAMLCPP_LDFLAGS=-L$with_yaml_cpp/lib -R$with_yaml_cpp/lib
-fi
+test "$with_yaml_cpp" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp/include"
+test "$with_yaml_cpp" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib -R$with_yaml_cpp/lib"
+YAMLCPP_LIBS="-lyaml-cpp"
 oldCPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS $YAMLCPP_CPPFLAGS -I$prefix/include"
 AC_CHECK_HEADER([yaml-cpp/yaml.h], [], [AC_MSG_ERROR([yaml-cpp/yaml.h header not found.])])
 CPPFLAGS=$oldCPPFLAGS
 AC_SUBST(YAMLCPP_CPPFLAGS)
 AC_SUBST(YAMLCPP_LDFLAGS)
+AC_SUBST(YAMLCPP_LIBS)
 
 
-## Set base compiler flags
-AM_CPPFLAGS=["$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(prefix)/include"]
-AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
+## Export base compiler flags
 AC_SUBST(AM_CPPFLAGS)
-#
-AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
-AC_CEDAR_CHECKCXXFLAG([-ansi], [AM_CXXFLAGS="$AM_CXXFLAGS -ansi "])
-AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
 AC_SUBST(AM_CXXFLAGS)
+AC_SUBST(AM_LDFLAGS)
 
 
 ## Output
