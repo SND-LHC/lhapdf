@@ -85,10 +85,6 @@ FOR BETA 2
    How does H++ doc the config interfaces? Doxygen now supports Markdown syntax
    so the plain text files should be able to remain painlessly readable.
 
-- Find a way to specify whether PWD is to be searched, if possible
-   The Config mechanism can't be used as it uses the path searching in its
-   initialisation: an infinite loop results.
-
 - Add interpolation-from-metadata implementation of AlphaS Specify with
    AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
    values robustly to implement 1D subgrids.

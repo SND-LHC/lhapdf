@@ -1,5 +1,7 @@
 2013-01-28  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding search path set/append/prepend functions, using the LHAPDF_DATA_PATH env variable.
+
 	* More methods, and public access to most data members on AlphaS.
 
 2013-01-25  Andy Buckley  <andy.buckley@cern.ch>

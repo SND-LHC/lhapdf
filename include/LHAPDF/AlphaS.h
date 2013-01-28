@@ -23,6 +23,7 @@ namespace LHAPDF {
     double alphasQ(double q) const { return alphasQ2(q*q); }
 
     /// Calculate alphaS(Q2)
+    /// @todo Throw error in this base method if Q < Lambda?
     virtual double alphasQ2(double q2) const = 0;
 
     /// Calculate the number of active flavours at energy scale Q

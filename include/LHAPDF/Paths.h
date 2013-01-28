@@ -15,6 +15,44 @@ namespace LHAPDF {
   std::vector<path> paths();
 
 
+  /// Set the search paths list as a colon-separated string
+  void setPaths(const std::string& pathstr);
+  /// Set the search paths list
+  inline void setPaths(std::vector<string> paths) {
+    setPaths(join(paths, ":"));
+  }
+  /// Set the search paths list
+  inline void setPaths(std::vector<path> paths) {
+    vector<string> ss; ss.reserve(paths.size());
+    foreach (const path& p, paths) ss.push_back(p.native());
+    setPaths(ss);
+  }
+
+
+  /// Prepend to the search paths list
+  inline void pathsPrepend(const path& p) {
+    vector<path> ps = paths();
+    ps.insert(ps.begin(), p);
+    setPaths(ps);
+  }
+  /// Prepend to the search paths list
+  inline void pathsPrepend(const std::string& p) {
+    pathsPrepend(path(p));
+  }
+
+
+  /// Append to the search paths list
+  inline void pathsAppend(const path& p) {
+    vector<path> ps = paths();
+    ps.push_back(p);
+    setPaths(ps);
+  }
+  /// Append to the search paths list
+  inline void pathsAppend(const std::string& p) {
+    pathsAppend(path(p));
+  }
+
+
   /// Return the first location in which a file is found
   ///
   /// If no matching file is found, return an empty path.
@@ -25,9 +63,6 @@ namespace LHAPDF {
     }
     return path();
   }
-
-
-  /// @todo Add functions for pre/appending to and explicitly setting the search paths
 
 
   /// @name Functions for handling standard LHAPDF filename structures
