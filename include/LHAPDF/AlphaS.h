@@ -41,25 +41,35 @@ namespace LHAPDF {
     /// Currently returns a 3-element vector of beta0 -- beta2.
     std::vector<double> betas(int nf) const;
 
-    /// @todo Add get and set methods for params... or just expose the data members?
+    /// Get quark masses by PDG code
+    double qmass(int id) const { return _qmasses[abs(id)-1]; }
+    /// Set quark masses by PDG code
+    void setQmass(int id, double value) { _qmasses[abs(id)-1] = value; }
+
+  public:
+
+    /// @name Public properties -- no get/set methods needed
+    //@{
+
+    /// Mass of the Z-boson in GeV
+    double mz;
+    /// Value of alpha_s(MZ)
+    double alphas_mz;
+
+    /// LambdaQCD value for 4 flavour regime
+    double lambda4;
+    /// LambdaQCD value for 5 flavour regime
+    double lambda5;
+
+    /// Order of QCD (expressed as number of loops)
+    int qcdorder;
+
+    //@}
 
   protected:
 
     /// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
     double _qmasses[6];
-
-    /// Mass of the Z-boson
-    double _mz;
-    /// Value of alpha_s(MZ)
-    double _alphas_mz;
-
-    /// LambdaQCD value for 4 flavour regime
-    double _lambda4;
-    /// LambdaQCD value for 5 flavour regime
-    double _lambda5;
-
-    /// Order of QCD (expressed as number of loops)
-    int _order;
 
   };
 

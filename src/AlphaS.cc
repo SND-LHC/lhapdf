@@ -6,25 +6,25 @@ namespace LHAPDF {
 
   // Base class constructor for default param setup
   AlphaS::AlphaS() {
-    _qmasses[0] = 0.0017;
-    _qmasses[1] = 0.0041;
-    _qmasses[2] = 0.1;
-    _qmasses[3] = 1.29;
-    _qmasses[4] = 4.1;
-    _qmasses[5] = 172.5;
-    _mz = 91.1876;
-    _alphas_mz = 0.118;
-    /// @todo Use better, or more explicitly invalid, defaults
-    _lambda4 = 0.215;
-    _lambda5 = 0.165;
-    _order = 1;
+    /// @todo Should we instead use explicitly invalid defaults?
+    setQmass(1, 0.0017);
+    setQmass(2, 0.0041);
+    setQmass(3, 0.1);
+    setQmass(4, 1.29);
+    setQmass(5, 4.1);
+    setQmass(6, 172.5);
+    mz = 91.1876;
+    alphas_mz = 0.118;
+    lambda4 = 0.215;
+    lambda5 = 0.165;
+    qcdorder = 1;
   }
 
 
   // Calculate the number of active quark flavours at energy scale Q2
   int AlphaS::nf_Q2(double q2) const {
     for (int nf = 2; nf <= 4; ++nf)
-      if (q2 < sqr(_qmasses[nf])) return nf;
+      if (q2 < sqr(qmass(nf+1))) return nf;
     return 5;
   }
 

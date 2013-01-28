@@ -16,25 +16,35 @@ NOW
    old and new LHAPDF, and finally compare the files line-by-line, with
    pulls/ratios to the "old" LHAPDF as the reference.
 
+- Set alpha_s params in PDF interface during lazy instantiation
+
 - Fix and test numerical and analytic alpha_s running
    The ODE solver needs serious optimisation, and numerically the results look
-   dubious for both the analytic and ODE versions.
+   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
+   evolution... looks like we can't borrow their ODE code without introducing a
+   Fortran dependency, which we'd rather avoid.
 
-- Add functional Extrapolators
+- Make NearestPointExtrapolator work
+   Requires some additions to the grid storage class.
 
-- Caching of subgrid indices in Interpolator and Extrapolator interfaces
+- Tidy Interpolator interface to reduce duplication and to do "automatic" index caching
+
+- Implement PDF::pdfsetname and memberID
+   The names are determined by file/directory consistency, not metadata, to
+   avoid inconsistency.
 
 - Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
    Both should just use nset = 0 all the time.
 
 - Test LHAGLUE with PYTHIA6 and Pythia8
 
+- Provide setAlphaS methods cf. setInterpolator
+   The setAlphaS method should set the params appropriate for the PDF it's being
+   attached to.
+
 
 NEXT
 ----
-
-- Directly expose AlphaS param fields
-   Why bother with get and set methods?
 
 - Improve the DESIGN document's coherence
 
@@ -43,15 +53,10 @@ NEXT
    compatibility at the same time as sorting out the misnaming. Only in the
    Fortran interface?
 
-- Implement PDF::pdfsetname and memberID
-
-- Treating missing flavours with error vs. return 0
-   Provide a switch to distinguish the two responses. Put ID check into
-   PDF::xfxQ2 function?
-
-- Provide setAlphaS methods cf. setInterpolator
-   Use clearly invalid default AlphaS fields and throw an AlphaSException if the
-   values are not in a physical range.
+- Forbid PDF construction from a direct path to the data file?
+   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
+   Same set of constructors for PDF (and derivatives) and Info?
+   Throw/assert if dir name and file name are inconsistent
 
 
 FOR BETA 1
@@ -66,16 +71,15 @@ FOR BETA 1
 - Change "config" -> "settings"?
    And add a Settings.h or Config.h to access it, rather than the static fn on Info
 
-- Forbid PDF construction from a direct path to the data file?
-   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes)
-   Same set of constructors for PDF (and derivatives) and Info?
-   Throw/assert if dir name and file name are inconsistent
-
 
 FOR BETA 2
 ----------
 
 - Profile GridPDF and AlphaS_ODE
+
+- AlphaS default params
+   Should the param defaults be clearly invalid so that default AlphaS fields and
+   throw an AlphaSException if the values are not in a physical range?
 
 - Include the TODO, DESIGN, CONFIGFLAGS and CODINGSTYLE files in the Doxygen
    How does H++ doc the config interfaces? Doxygen now supports Markdown syntax
@@ -95,6 +99,10 @@ FOR BETA 2
    Will allow set-level configs to propagate to all members.
    Define the "lock time", for things like ipol/xpol/alphaS.
 
+- Treating missing flavours with error vs. return 0
+   Provide a switch to distinguish the two responses. Put ID check into
+   PDF::xfxQ2 function?
+
 
 FOR STABLE 6.0.0 RELEASE
 ------------------------
@@ -102,7 +110,7 @@ FOR STABLE 6.0.0 RELEASE
 - Write-up
    Target at EPJC Tools, cf. Rivet?
 
-- Interpolation in (log(x), log(Q2)) as well as (x, Q)
+- Interpolation in (log(x), log(Q2)) as well as (x, Q)?
 
 - Versioning scheme for PDF data
    In metadata and tarball filenames.

@@ -42,10 +42,10 @@ namespace LHAPDF {
     ///       Then choose to start from last or MZ, whichever is closer.
 
     // Run in Q2 using RK4 algorithm until we are within our defined accuracy
-    double t = sqr(_mz); // starting point
-    double y = _alphas_mz; // starting value
+    double t = sqr(mz); // starting point
+    double y = alphas_mz; // starting value
     while (fabs(q2 - t) > accuracy) {
-      // Number of active flavours used in beta function calculations
+      // Calculate beta functions based on the number of active flavours at Q2=t
       const vector<double> bs = betas(nf_Q2(t));
 
       /// Mechanism to shrink the steps if accuracy < stepsize and we are close to Q2

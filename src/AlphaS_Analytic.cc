@@ -9,7 +9,7 @@ namespace LHAPDF {
     /// Get the number of active flavours and corresponding LambdaQCD
     /// @todo Also respect an explicit nfmax flag
     const int nf = nf_Q2(q2);
-    const double lambdaQCD = (nf < 5) ? _lambda4 : _lambda5;
+    const double lambdaQCD = (nf < 5) ? lambda4 : lambda5;
 
     // Get beta coeffs for the number of active (above threshold) quark flavours at energy Q
     const std::vector<double> beta = betas(nf);
@@ -27,11 +27,11 @@ namespace LHAPDF {
     const double A = 4 * M_PI / beta[0];
     const double a_0 = 1;
     double tmp = a_0;
-    if (_order > 0) {
+    if (qcdorder > 0) {
       const double a_1 = - 2 * beta[1] * lnlnx / beta02;
       tmp -= a_1 * y;
     }
-    if (_order > 1) {
+    if (qcdorder > 1) {
       const double B = 4 * beta12 / (beta02 * beta02);
       const double a_20 = (lnlnx - 0.5) * (lnlnx - 0.5);
       const double a_21 = beta[2] * beta[0] / (8 * beta12);
