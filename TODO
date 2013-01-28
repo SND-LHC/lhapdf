@@ -8,19 +8,22 @@ LHAPDF6 TODO list
 NOW
 ---
 
-- Migrate CTEQ6L1 and CT10 PDFs to new format and validate
+- Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,BP)
 
-- Validation system and plotting
+- Validation system and plotting (SL,MR,DM,BP)
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
    old and new LHAPDF, and finally compare the files line-by-line, with
    pulls/ratios to the "old" LHAPDF as the reference.
+   Advice from Graeme/HOPPET is to scan on lines in x and Q2 (with one of the
+   pair fixed) rather than to compare randomly sampled points.
 
-- Fix and test numerical and analytic alpha_s running
+- Fix and test numerical and analytic alpha_s running (KN,SL,MR,GW)
    The ODE solver needs serious optimisation, and numerically the results look
    dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
    evolution... looks like we can't borrow their ODE code without introducing a
-   Fortran dependency, which we'd rather avoid.
+   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
+   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
 - Make NearestPointExtrapolator work (AB)
    Requires some additions to the grid storage class.
@@ -44,25 +47,29 @@ NEXT
    The setAlphaS method should set the params appropriate for the PDF it's being
    attached to.
 
-- Improve the DESIGN document's coherence
+- Improve the DESIGN document's coherence (AB)
 
-- Forbid PDF construction from a direct path to the data file?
+- Forbid PDF construction from a direct path to the data file? (AB)
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
    Same set of constructors for PDF (and derivatives) and Info?
    Throw/assert if dir name and file name are inconsistent
+
+- Change "config" -> "settings"?
+   And add a Settings.h or Config.h to access it, rather than the static fn on Info
 
 
 FOR BETA 1
 ----------
 
-- lhapdf-config build assistant script
+- lhapdf-config build assistant script (AB)
 
-- Printing out banner info... needed by code that greps for it :-/
-   e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be
-   fundamentally built-in that we have to maintain the old banner style!
+- Add interpolation-from-metadata implementation of AlphaS
+   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
+   values robustly to implement 1D subgrids.
 
-- Change "config" -> "settings"?
-   And add a Settings.h or Config.h to access it, rather than the static fn on Info
+- Treating missing flavours with error vs. return 0
+   Provide a switch to distinguish the two responses. Put ID check into
+   PDF::xfxQ2 function?
 
 
 FOR BETA 2
@@ -74,23 +81,20 @@ FOR BETA 2
    Should the param defaults be clearly invalid so that default AlphaS fields and
    throw an AlphaSException if the values are not in a physical range?
 
-- Include the TODO, DESIGN, CONFIGFLAGS and CODINGSTYLE files in the Doxygen
-   How does H++ doc the config interfaces? Doxygen now supports Markdown syntax
-   so the plain text files should be able to remain painlessly readable.
-
-- Add interpolation-from-metadata implementation of AlphaS Specify with
-   AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
-   values robustly to implement 1D subgrids.
-
 - Updated lhapdf-getdata, downloading PDFs as tarballs
+
+- Printing out banner info... needed by code that greps for it :-/
+   e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be
+   fundamentally built-in that we have to maintain the old banner style!
 
 - Re-introduce set-level Info singletons
    Will allow set-level configs to propagate to all members.
    Define the "lock time", for things like ipol/xpol/alphaS.
 
-- Treating missing flavours with error vs. return 0
-   Provide a switch to distinguish the two responses. Put ID check into
-   PDF::xfxQ2 function?
+- Python interface
+   For access to standard functionality but not pluggable in the sense that a
+   Python interpolator class cannot be passed to a wrapped PDF object: so hide
+   the non-factory-based functions.
 
 
 FOR STABLE 6.0.0 RELEASE
@@ -100,16 +104,13 @@ FOR STABLE 6.0.0 RELEASE
    Target at EPJC Tools, cf. Rivet?
 
 - Interpolation in (log(x), log(Q2)) as well as (x, Q)?
+   Need expert input on the most appropriate / performant space for evolution/interpolation.
 
 - Versioning scheme for PDF data
    In metadata and tarball filenames.
 
-- Python interface
-   For access to standard functionality but not pluggable in the sense that a
-   Python interpolator class cannot be passed to a wrapped PDF object: so hide
-   the non-factory-based functions.
-
-- Provide a way to find the numbers of members in PDF sets
+- Provide a way to find the number of members in a PDF set
+   Or just iterate over ints until an Exception is thrown?
 
 
 AS AND WHEN
@@ -118,15 +119,26 @@ AS AND WHEN
 - Add more metadata methods to PDF and PDFGrid as needed
 
 - Make GridPDFs not read their data block until an xf value is requested?!
+   Super-laziness!
 
 - Read zipped/tarred PDFs
    With standard directory structure internally.
 
-- Separate x and Q2 extrapolators?
+- Use subgrids in x?
+   Graeme reports that the HOPPET manual discusses performance improvements from
+   use of x-subgrids. Wouldn't be a huge change now that subgrids exist at all,
+   but is it needed? Do any current PDFs use x-subgrids?
+
+- Separate the x and Q2 inter/extrapolation?
+   Allow mix & match combinations. Would this simplify the code since the
+   1D interpolation methods are very simple and the 2D is built from them?
 
 - Updated Octave wrapper
+   To come from Phil Ilten
 
 - Use Autoconf's more robust FC_* Fortran function name macros
+   But this would require testing for a Fortran compiler, which we would rather
+   not do. It certainly shouldn't be a blocker.
 
 - Add helper functions for calculating PDF errors on observables
    It's not obviously something to include since there are several possible
