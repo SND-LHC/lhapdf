@@ -22,34 +22,29 @@ NOW
    evolution... looks like we can't borrow their ODE code without introducing a
    Fortran dependency, which we'd rather avoid.
 
-- Make NearestPointExtrapolator work
+- Make NearestPointExtrapolator work (AB)
    Requires some additions to the grid storage class.
 
-- Tidy Interpolator interface to reduce duplication and to do "automatic" index caching
+- Tidy Interpolator interface to reduce duplication and to do "automatic" index caching (AB)
 
-- Implement PDF::pdfsetname and memberID
+- Implement PDF::pdfsetname and memberID (AB)
    The names are determined by file/directory consistency, not metadata, to
    avoid inconsistency.
 
-- Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines.
+- Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF)
    Both should just use nset = 0 all the time.
 
-- Test LHAGLUE with PYTHIA6 and Pythia8
-
-- Provide setAlphaS methods cf. setInterpolator
-   The setAlphaS method should set the params appropriate for the PDF it's being
-   attached to.
+- Test LHAGLUE with PYTHIA6 and Pythia8 (JF)
 
 
 NEXT
 ----
 
-- Improve the DESIGN document's coherence
+- Provide setAlphaS methods cf. setInterpolator (AB)
+   The setAlphaS method should set the params appropriate for the PDF it's being
+   attached to.
 
-- Strip file extensions and deal specially with CTEQ6L1 in LHAGLUE
-   The old LHAPDF set was misnamed as CTEQ6ll (two L's). Need some backward
-   compatibility at the same time as sorting out the misnaming. Only in the
-   Fortran interface?
+- Improve the DESIGN document's coherence
 
 - Forbid PDF construction from a direct path to the data file?
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)

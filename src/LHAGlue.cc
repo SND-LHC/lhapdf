@@ -3,6 +3,7 @@
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/Config.h"
 #include "LHAPDF/Utils.h"
+#include "LHAPDF/Paths.h"
 
 using namespace std;
 
@@ -104,15 +105,25 @@ extern "C" {
   ///
   /// @todo Does this version actually take a *path*? What to do?
   void initpdfsetm_(int& nset, const char* setpath, int setpathlength) {
-    /// @todo Strip file extension for backward compatibility
+    // Strip file extension for backward compatibility
+    const boost::filesystem::path p = setpath; //< Presumably need to use setpathlength since Fortran strs are not 0-terminated
+    string path = (p.extension().empty()) ? p.native() : p.stem().native(); //< @todo Will be wrong if a structured path is given
+    /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
+    if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "CTEQ6L1";
+    // Create the PDF set with index nset
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-      ACTIVESETS[nset] = PDFSetHandler(setpath); //< @todo Will be wrong if a structured path is given
+      ACTIVESETS[nset] = PDFSetHandler(path); //< @todo Will be wrong if a structured path is given
   }
 
 
   /// Load a PDF set by name
-  void initpdfsetbynamem_(int& nset, const char* name, int namelength) {
-    /// @todo Strip file extension for backward compatibility
+  void initpdfsetbynamem_(int& nset, const char* setname, int setnamelength) {
+    // Strip file extension for backward compatibility
+    const boost::filesystem::path p = setname; //< Presumably need to use setnamelength since Fortran strs are not 0-terminated
+    string name = (p.extension().empty()) ? p.native() : p.stem().native();
+    /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
+    if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "CTEQ6L1";
+    // Create the PDF set with index nset
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       ACTIVESETS[nset] = PDFSetHandler(name);
   }
