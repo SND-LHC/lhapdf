@@ -325,9 +325,23 @@ namespace LHAPDF {
     /// Calculated numerically, analytically, or interpolated according to
     /// metadata, using the AlphaS classes.
     double alphaS(double q2) const {
+      /// @todo Treat like Ipol/Xpol objects, with lazy default loading and set methods
       if (_alphas.get() == 0) {
         AlphaS* as = mkAlphaS(info().metadata("AlphaS_Type"));
-        /// @todo Configure the QCD params on this AlphaS
+        /// @todo Move this into new setAlphaS method(s)
+        // Configure the QCD params on this AlphaS
+        if (info().has_key("MZ")) as->mz = info().metadata<double>("MZ");
+        if (info().has_key("AlphaS_MZ")) as->alphas_mz = info().metadata<double>("AlphaS_MZ");
+        if (info().has_key("MUp")) as->setQmass(1, info().metadata<double>("MUp"));
+        if (info().has_key("MDown")) as->setQmass(2, info().metadata<double>("MDown"));
+        if (info().has_key("MStrange")) as->setQmass(3, info().metadata<double>("MStrange"));
+        if (info().has_key("MCharm")) as->setQmass(4, info().metadata<double>("MCharm"));
+        if (info().has_key("MBottom")) as->setQmass(5, info().metadata<double>("MBottom"));
+        if (info().has_key("MTop")) as->setQmass(6, info().metadata<double>("MTop"));
+        if (info().has_key("Lambda4")) as->lambda4 = info().metadata<double>("Lambda4");
+        if (info().has_key("Lambda5")) as->lambda5 = info().metadata<double>("Lambda5");
+        if (info().has_key("QCDOrder")) as->qcdorder = info().metadata<int>("QCDOrder");
+        /// @todo How to do type triggering to set ipol points for Alphas_Ipol?
         /// @todo Throw an error if the QCD params are changed after a first alpha_s query? How?
         _alphas.reset(as);
       }

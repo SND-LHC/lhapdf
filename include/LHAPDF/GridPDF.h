@@ -67,6 +67,8 @@ namespace LHAPDF {
     ///
     /// The passed value must be a concrete instantiation of the Interpolator
     /// interface. It will be copied and heap-assigned for use inside this GridPDF.
+    ///
+    /// @todo Use SFINAE magic to restrict INTERPOLATOR to subclasses of Interpolator?
     template <typename INTERPOLATOR>
     void setInterpolator(INTERPOLATOR ipol) {
       setInterpolator(new INTERPOLATOR(ipol));
@@ -113,6 +115,8 @@ namespace LHAPDF {
     ///
     /// The passed value must be a concrete instantiation of the Extrapolator
     /// interface. It will be copied and heap-assigned for use inside this GridPDF.
+    ///
+    /// @todo Use SFINAE magic to restrict EXTRAPOLATOR to subclasses of Extrapolator?
     template <typename EXTRAPOLATOR>
     void setExtrapolator(EXTRAPOLATOR xpol) {
       setExtrapolator(new EXTRAPOLATOR(xpol));
