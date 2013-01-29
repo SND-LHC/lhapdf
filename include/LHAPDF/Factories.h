@@ -10,6 +10,9 @@ namespace LHAPDF {
   class AlphaS;
 
 
+  /// @name Factory functions for making PDFs and other objects
+  //@{
+
   /// Create a new PDF from the given data file path.
   ///
   /// Returns a 'new'ed PDF by pointer.
@@ -48,6 +51,8 @@ namespace LHAPDF {
   /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
   /// the caller is responsible for deletion of the created object.
   AlphaS* mkAlphaS(const std::string& name);
+
+  //@}
 
 
 }

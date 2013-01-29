@@ -25,31 +25,42 @@
 #endif
 
 
+/// Namespace for all LHAPDF functions and classes
 namespace LHAPDF {
   // Allow implicit use of the std and boost namespaces within namespace LHAPDF
   using namespace std;
   using namespace boost;
 
 
-  // String handling
+  /// @name String handling utility functions
+  //@{
+
+  /// Make a string representation of @a val
   template <typename T>
   inline std::string to_str(const T& val) {
     return lexical_cast<string>(val);
   }
+
+  /// Make a string representation of a vector @a vec
   template <typename T>
   inline std::string to_str(const std::vector<T>& vec) {
     vector<string> svec; svec.reserve(vec.size());
     foreach (const T& t, vec) svec.push_back( to_str(t) );
     return join(svec, ",");
   }
+
+  /// Format an integer @a val as a zero-padded string of length @a nchars
   inline std::string to_str_zeropad(int val, size_t nchars=4) {
     stringstream ss;
     ss << setfill('0') << setw(nchars) << val;
     return ss.str();
   }
 
+  //@}
 
-  // Math functions in the LHAPDF namespace
+
+  /// @name Math functions in the LHAPDF namespace
+  //@{
 
   /// Convenience function for squaring (of any type)
   template <typename N>
@@ -61,6 +72,12 @@ namespace LHAPDF {
 
   /// @todo Add iszero() & equals(,) functions?
 
+  //@}
+
+
+
+  /// @name Container handling helpers
+  //@{
 
   // /// @name Implementation of generic begin/end container identification by traits
   // /// taken from http://stackoverflow.com/a/9407420/91808 . Needs C++11 (or maybe just C++0x).
@@ -105,5 +122,6 @@ namespace LHAPDF {
   //                            has_begin_end<T>::beg_value && has_begin_end<T>::end_value>
   // { };
 
+  //@}
 
 }

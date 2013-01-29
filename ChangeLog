@@ -1,3 +1,7 @@
+2013-01-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* More Doxygen: making the namespace and free functions documented, with grouping.
+
 2013-01-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding backward compatibility special case treatment for the "cteq6ll" misspelling from prehistory.

@@ -6,7 +6,7 @@
 namespace LHAPDF {
 
 
-  /// Contains different schemes for calculating alpha_s
+  /// @brief Calculator interface for computing alpha_s(Q2) in various ways
   ///
   /// The design of the AlphaS classes is that they are substitutible
   /// (cf. polymorphism) and are entirely non-dependent on the PDF and Info

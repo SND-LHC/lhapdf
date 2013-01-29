@@ -7,6 +7,9 @@
 namespace LHAPDF {
 
 
+  /// @name Functions for PDF lookup by LHAPDF ID index file
+  //@{
+
   /// Get the singleton LHAPDF set ID -> PDF index map
   inline std::map<int, std::string>& getPDFIndex() {
     static map<int, string> _lhaindex;
@@ -62,5 +65,6 @@ namespace LHAPDF {
     return -1; //< failure value
   }
 
+  //@}
 
 }

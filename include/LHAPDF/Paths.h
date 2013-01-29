@@ -10,6 +10,8 @@ namespace LHAPDF {
   using namespace boost;
   using namespace boost::filesystem;
 
+  /// @name File searching and search path handling functions
+  //@{
 
   /// Get the ordered list of search paths, from $LHAPDF_DATA_PATH and the install location
   std::vector<path> paths();
@@ -33,6 +35,7 @@ namespace LHAPDF {
   inline void pathsPrepend(const path& p) {
     vector<path> ps = paths();
     ps.insert(ps.begin(), p);
+    ps.pop_back(); //< Discard the auto-added fallback path to the installed data prefix
     setPaths(ps);
   }
   /// Prepend to the search paths list
@@ -44,6 +47,7 @@ namespace LHAPDF {
   /// Append to the search paths list
   inline void pathsAppend(const path& p) {
     vector<path> ps = paths();
+    ps.pop_back(); //< Discard the auto-added fallback path to the installed data prefix
     ps.push_back(p);
     setPaths(ps);
   }
@@ -63,6 +67,9 @@ namespace LHAPDF {
     }
     return path();
   }
+
+  //@}
+
 
 
   /// @name Functions for handling standard LHAPDF filename structures
