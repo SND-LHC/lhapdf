@@ -34,10 +34,10 @@ NOW
    The names are determined by file/directory consistency, not metadata, to
    avoid inconsistency.
 
-- Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF)
+- Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN)
    Both should just use nset = 0 all the time.
 
-- Test LHAGLUE with PYTHIA6 and Pythia8 (JF)
+- Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN)
 
 
 NEXT
