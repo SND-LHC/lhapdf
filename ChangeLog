@@ -1,5 +1,7 @@
 2013-01-29  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Updates to TODOs, CONFIGFLAGS, DESIGN, etc. after first dev meeting.
+
 	* More Doxygen: making the namespace and free functions documented, with grouping.
 
 2013-01-28  Andy Buckley  <andy.buckley@cern.ch>

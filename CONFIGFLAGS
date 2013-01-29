@@ -10,61 +10,73 @@ settings, PDF set info, and PDF member info levels. If a configuration key
 is requested from a PDF member info and is not found, the search will fall
 back to first the PDF set and then to the global config.
 
+
 Verbosity
 ---------
 (uint): 1
+
 
 Interpolator
 ------------
 (enum string): linear, cubic
 
+
 Extrapolator
 ------------
 (enum string): error
+
 
 ImplicitFlavorAction
 --------------------
 (enum string): return_zero
 
-PwdInSearchPath
----------------
-(bool): false
 
 SetName
 -------
 (free string): EXAMPLEPDF  # TODO: Allow? Just use dirname
 
+
 SetDesc
 -------
 (free string): Just an example to test the parser mechanisms
+
 
 Flavors
 -------
 (list<int> or int): [-5,-4,-3,-2,-1,1,2,3,4,5,21]
 
+
 OrderQcd
 --------
 (uint): 2 # or better to use text cf. lo, nlo, nnlo?
+
 
 AlphaS_MZ
 ---------
 (float): 0.118
 
+
 NumMembers
 ----------
 (uint): 1
+
 
 Format
 ------
 (enum string): lhagrid
 
+
 ErrorType
 ---------
-(enum string): replica
+(enum string): replica, symmhessian, asymmhessian
+
+@todo Also specify the Hessian confidence interval... via a separate flag?
+
 
 PdfDesc
 -------
 (free string): The main PDF in the EXAMPLE set
+
 
 PdfType
 -------

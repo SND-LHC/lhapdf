@@ -95,6 +95,7 @@ See the following pages:
 - @ref todolist
 - @ref todo
 - @ref design
+- @ref config
 - @ref codingstyle
 
 @example ../tests/testgrid.cc

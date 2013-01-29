@@ -60,6 +60,11 @@ of data points.
 binned in Q2, so that gradient discontinuities across flavour thresholds can be
 handled correctly (this is at least needed by the MSTW PDFs).
 
+@todo Subgrids in x have also been suggested, but just ensuring sufficient x knot
+density seems preferable: unlike flavour thresholds, gradient continuity is important,
+and this is complex to implement, and anyway the benefit is more for evolution than
+for interpolation.
+
 There is no current concept of a PDF set enshrined in the LHAPDF6 code design but
 the name LHAPDF::PDFSet is reserved for future use.
 
@@ -142,7 +147,10 @@ increasing order of PDG ID code (e.g. usually -5..5, 21 or -6..6, 21 for the
 standard 5 or 6 quark-flavour PDF). The final line should be another `---`
 delimiter to unambiguously declare the end of the final subgrid block.
 
-@todo Specify the order in which the (x,Q2) line indices are iterated over
+Scientific formatting should be used throughout the data block, and as required
+in the metadata block. The exponent character should be E (or e) rather than D,
+and the set preparer is responsible for ensuring that the values are entered with
+sufficient precision for the required numerical performance.
 
 @todo Comments in the grid block
 
@@ -332,9 +340,19 @@ Future prospects
 
 New interpolators (e.g. interpolation in log space or separate
 x,Q2 interpolator functions), addition of DGLAP or other numerically evolved PDF
-types based on e.g. Hoppet (these are not included by default as there has been
+types based on e.g. HOPPET (these are not included by default as there has been
 a strong trend of PDFs toward purely interpolated grids during the lifetime of
 LHAPDF5.)
+
+"Indirect representations" of PDFs are anticipated but not directly supported in
+LHAPDF 6.0: these are grid PDFs in which the grid interpolation is not directly
+performed on the functions corresponding to physical partons, but on "utility"
+functions such as separated valence and sea components, which are combined to
+give the physical results. This may be implemented by making use of the
+"generator specific" range of PDG ID codes to represent the intermediate
+"flavors" -- several issues are involved in such an extension, so please contact
+the authors if you wish to implement such a PDF type so that we can ensure that
+the design meets general scalability and maintainability requirements.
 
 Nuclear PDFs are not supported in LHAPDFv6.0. We hope that the new C++ interface
 will make the writing of nuclear PDF wrapper classes easy, but do not personally
