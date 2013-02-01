@@ -66,6 +66,8 @@ NEXT
 FOR BETA 1
 ----------
 
+- Usage instructions, including installation and env variables, etc.
+
 - lhapdf-config build assistant script (AB)
 
 - Add interpolation-from-metadata implementation of AlphaS
@@ -95,6 +97,9 @@ FOR BETA 2
 - Re-introduce set-level Info singletons
    Will allow set-level configs to propagate to all members.
    Define the "lock time", for things like ipol/xpol/alphaS.
+
+- Metadata standards for accessing special member numbers.
+   e.g. a PosDefMemberID metadata key at set level.
 
 - Python interface
    For access to standard functionality but not pluggable in the sense that a
