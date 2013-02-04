@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import lhapdf
 import numpy
 
@@ -12,10 +14,10 @@ qMin = 1e-10
 #qMax = numpy.sqrt(lhapdf.getQ2max(0))
 qMax = 1e10
 
-nx = 100	
+nx = 100
 nq = 100
 
-pids = [-5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5]	
+pids = [-5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5]
 
 xlogs = numpy.linspace(numpy.log10(xMin), numpy.log10(xMax), nx)
 qlogs = numpy.linspace(numpy.log10(qMin), numpy.log10(qMax), nq)

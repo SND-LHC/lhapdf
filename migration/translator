@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import lhapdf
 import numpy
 
@@ -41,7 +43,7 @@ xfxs = []
 
 x = xMin
 q2 = q2Min
-pids = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]	
+pids = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
 
 xs = numpy.logspace(numpy.log(xMin), numpy.log(xMax), nx)
 qs = numpy.linspace(q2Min, q2Max, nq2)
