@@ -17,7 +17,8 @@ namespace LHAPDF {
     LHAPDF::Info info(path);
     const string fmt = info.metadata("Format");
     // Then use the format information to call the appropriate concrete PDF constructor:
-    if (fmt == "lhagrid") return new GridPDF(path);
+    if (fmt == "lhagrid1") return new GridPDF(path);
+    /// @todo Throw a deprecation error if format version is too old or new
     throw FactoryError("No LHAPDF factory defined for format type '" + fmt + "'");
   }
 

@@ -1,0 +1,18 @@
+Instructions for building and running migration scripts/programs
+----------------------------------------------------------------
+
+To migrate a PDF, install LHAPDF5 (including the Python module) and call e.g.
+
+./creategrids CT10.LHgrid
+
+This will create the .info set metadata file and .lha grid data files in a (new) CT10 directory.
+
+To test the new PDFs, a member at a time, build the testpdf program, e.g.:
+
+g++ testpdf.cc -I$HOME/heplocal/include -L$HOME/heplocal/lib -lLHAPDF -lboost_filesystem -lboost_system -o testpdf
+
+and run it with set and member ID as arguments, making sure to specify the paths to the lhapdf.conf and current dir:
+
+LHAPDF_DATA_PATH=$PWD:$PWD/.. ./testpdf CT10 0
+
+(TODO: why isn't lhapdf.conf being found automatically?)

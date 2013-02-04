@@ -1,3 +1,5 @@
+"Little Python wrapper for the x, Q grid points of the current PDF"
+
 from ctypes import *
 
 try:

@@ -48,7 +48,7 @@ namespace LHAPDF {
           if (iblock == 0) continue;
 
           // Debug
-          cout << line << " @ " << iline << " = block line #" << iblockline << endl;
+          //cout << line << " @ " << iline << " = block line #" << iblockline << endl;
 
           // Parse the data lines
           double token;

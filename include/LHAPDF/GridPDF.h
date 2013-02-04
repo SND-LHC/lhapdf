@@ -253,7 +253,6 @@ namespace LHAPDF {
 
     private:
 
-
       /// List of x knots
       vector<double> _xs;
       /// List of Q2 knots
@@ -289,39 +288,50 @@ namespace LHAPDF {
       return subgrid(q2).find(id)->second;
     }
 
-    // /// Return knot values in x
-    // const std::vector<double>& xKnots() const {
-    //   /// @todo Use Boost join?
-    //   return _xknots;
-    // }
+    /// @brief Return a representative list of interpolation knots in x
+    ///
+    /// The x knot array for the first flavor grid of the lowest-Q2 subgrid is returned.
+    const vector<double>& xKnots() const {
+      const KnotArrayNF& subgrid1 = _knotarrays.begin()->second;
+      const KnotArray1F& grid1 = subgrid1.begin()->second;
+      return grid1.xs();
+    }
 
-    // /// Return knot values in Q2
-    // const std::vector<double>& q2Knots() const {
-    //   /// @todo Use Boost join?
-    //   return _q2knots;
-    // }
+    /// @brief Return a representative list of interpolation knots in Q2
+    ///
+    /// Constructed and cached by walking over all subgrids and concatenating their Q2 lists.
+    const vector<double>& q2Knots() const {
+      if (_q2knots.empty()) {
+        // Get the list of Q2 knots by combining all subgrids
+        /// @todo Roll on C++11... range-based for and auto :-)
+        for (map<double, KnotArrayNF>::const_iterator isub = _knotarrays.begin(); isub != _knotarrays.end(); ++isub) {
+          const KnotArrayNF& subgrid = isub->second;
+          const KnotArray1F& grid1 = subgrid.begin()->second;
+          if (grid1.q2s().empty()) continue;
+          foreach (const double& q2, grid1.q2s()) {
+            if (_q2knots.empty() || q2 != _q2knots.back()) _q2knots.push_back(q2);
+          }
+        }
+      }
+      return _q2knots;
+    }
 
 
   public:
 
     /// Check if x is in the grid range
     bool inRangeX(double x) const {
-      /// @todo Reinstate this simpler method
-      // if (x < xKnots().front()) return false;
-      // if (x > xKnots().back()) return false;
-      const vector<double>& xs = _knotarrays.begin()->second.begin()->second.xs();
-      if (x < xs.front()) return false;
-      if (x > xs.back()) return false;
+      assert(!xKnots().empty());
+      if (x < xKnots().front()) return false;
+      if (x > xKnots().back()) return false;
       return true;
     }
 
     /// Check if q2 is in the grid range
     bool inRangeQ2(double q2) const {
-      /// @todo Reinstate this simpler method
-      // if (q2 < q2Knots().front()) return false;
-      // if (q2 > q2Knots().back()) return false;
-      if (q2 < _knotarrays.begin()->first) return false;
-      if (q2 > (--_knotarrays.end())->second.begin()->second.q2s().back()) return false;
+      assert(!q2Knots().empty());
+      if (q2 < q2Knots().front()) return false;
+      if (q2 > q2Knots().back()) return false;
       return true;
     }
 
@@ -332,6 +342,12 @@ namespace LHAPDF {
 
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
     std::map<double, KnotArrayNF> _knotarrays;
+
+    // /// Caching vector of x knot values
+    // mutable std::vector<double> _xknots;
+
+    /// Caching vector of Q2 knot values
+    mutable std::vector<double> _q2knots;
 
     /// Typedef of smart pointer for ipol memory handling
     typedef auto_ptr<Interpolator> InterpolatorPtr;

@@ -1,18 +1,14 @@
-import gridhack
-import lhapdf
-import numpy
-import os
+#! /usr/bin/env python
 
-def setup():
-    lhapdf.initPDFSetByName('cteq66.LHgrid')
-    return gridhack.get_grid()
+import lhapdf, numpy
+import os, sys, optparse
 
-def xfx_values(lhapids, xs, qs):
-    xfxs = []
-    for q in qs:
-        for x in xs:
-            xfxs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
-    return xfxs
+def getxfs(lhapids, xs, qs):
+    xfs = []
+    for x in xs:
+        for q in qs:
+            xfs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
+    return xfs
 
 def active_flavours(xfxs):
     pids = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
@@ -21,90 +17,81 @@ def active_flavours(xfxs):
     return pids
 
 
-# Select PDF sets to translates here
-pdf_sets = ['MSTW2008lo90cl_nf3', 'MSTW2008lo90cl', 'NNPDF23_nlo_as_0119', 'CT10', 'cteq66', 'cteq61']
+## Parse the command line to get the set names for migration (in LHAPDF5 format)
+# e.g. 'MSTW2008lo90cl_nf3.LHgrid', 'MSTW2008lo90cl.LHgrid', 'NNPDF23_nlo_as_0119.LHgrid', 'CT10.LHgrid', 'cteq66.LHgrid', 'cteq6ll.LHpdf', 'cteq6ll.LHgrid', ...
+p = optparse.OptionParser(usage="%prog <setname> [<setname2> ...]")
+opts, args = p.parse_args()
 
-# Declare the base path directory to LHGrid files
-dir = '/phys/linux/s0821167/Summer Project/Interpolator/lhapdfv6/tests/'
-
-# Declare meta filename, the same for every set.
-meta_filename = 'meta.LHinfo'
 
 # For every PDF set
-for pdf_set in pdf_sets:
+for lha5name in args:
+    setname = os.path.splitext(lha5name)[0]
+    print "Migrating %s -> %s" % (lha5name, setname)
 
-    # Initialise PIDs 
-    lhapids = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
+    ## Create output dir if needed
+    if not os.path.exists(setname):
+        os.mkdir(setname)
 
-    # Initialise LHgrid file
-    input = pdf_set + '.LHgrid'
-    lhapdf.initPDFSetByName(input)
+    ## Initialize LHAPDF for this set
+    lhapdf.initPDFSetByName(lha5name)
+    # TODO: Get alpha_s anchors here (for grid Qs?) to write into set metadata
 
-    # Determine correct output directory for set
-    output_dir = dir + pdf_set + '/'
-    
-    # Create directory
-    try:
-        os.mkdir(output_dir)
-    except OSError:
-        pass # already exists
+    ## Create meta file for set
+    metapath = os.path.join(setname, setname + '.info')
+    f = open(metapath, "w")
+    f.write("SetDesc: \n")
+    f.write("NumMembers: %d\n" % lhapdf.numberPDF())
+    f.write("Flavors: [-5,-4,-3,-2,-1,1,2,3,4,5,21]\n")
+    f.write("ErrorType: \n")
+    f.write("Format: lhagrid1\n")
+    f.write("AlphaS_MZ: \n")
+    f.write("LambdaQCD: \n")
+    f.write("OrderQcd: \n")
+    f.close()
 
-    # Use gridhack python wrapper to call LHAPDF for exact x and q2 grid points
-    xs, q2s = gridhack.get_grid()
-    qs = numpy.sqrt(numpy.array(q2s))
-
-    # Determine active flavours
-    xfxs = xfx_values(lhapids, xs, qs)
-    lhapids = active_flavours(xfxs)        
-
-    # Create meta file for set
-    with open(os.path.join(output_dir, meta_filename), 'wb') as meta_output:
-        print >>meta_output, '---'
-        print >>meta_output, 'SetName: ' + pdf_set
-        print >>meta_output, 'SetDescription: '
-        print >>meta_output
-        print >>meta_output, 'SetLambdaQCD: '
-        print >>meta_output, 'SetOrder: '
-        print >>meta_output
-        print >>meta_output, 'SetFlavours: '
-        print >>meta_output
-        print >>meta_output, 'SetInterpolator: '
-        print >>meta_output, 'SetExtrapolator: '
-        print >>meta_output, '---'
-
-    # Find the number of pdf members in pdf set
-    n_members = lhapdf.numberPDF()
-
-    for member in range(n_members):
-
-        # Load member
+    ## Iterate over each member in the set
+    for member in xrange(lhapdf.numberPDF()):
         lhapdf.initPDF(member)
 
-        # Set up new output grid format file
-        output_file = 'mbr_' + str(member)+ '.LHm'
+        ## Get the x and Q anchor point arrays
+        try:
+            ## Use LHAPDF5 to get the exact x and q2 grid points (requires LHAPDF 5.9)
+            import gridhack
+            xs, q2s = gridhack.get_grid()
+        except:
+            xs = numpy.logspace(-8, -0.001, 30)
+            q2s = numpy.logspace(0.1, 8, 50)
+        qs = numpy.sqrt(numpy.array(q2s))
 
-        # Set member name to be central if it is the 0th member, errors
-        # otherwise
-        member_name = ''
-        if member == 0:
-            member_name = 'Central'
-        else:
-            member_name = 'Errors'
+        ## Determine the active (non-zero) flavours in the grid (will be -5..5 or -6..6)
+        ## NB. 0 is listed last since it will be translated to 21 in the PDG scheme
+        #lhapids = active_flavours(xfxs)
+        #lhapids = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 0]
+        lhapids = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 0]
 
-        # Get xfx values
-        xfxs = xfx_values(lhapids, xs, qs)
+        ## Get the xf values for this PDF member
+        xfs = getxfs(lhapids, xs, qs)
 
-        # Print results to file:
-        # ---------------------
-        # xs
-        # q2s
-        # xfxs
-        # ---------------------
-        with open(os.path.join(output_dir, output_file), 'wb') as output:
-            print >>output, 'MemberName: ' + member_name
-            print >>output, 'MemberID: ' + str(member)
-            print >>output, 'Xs: ' + str(xs)
-            print >>output, 'Q2s: ' + str(q2s)
-            print >>output, '---'
-            for line in xfxs:
-                print >>output, " ".join(str(i) for i in line)
+        ## Work out the member file path and open it for writing
+        memname = setname + ('_%04d.lha' % member)
+        mempath = os.path.join(setname, memname)
+        f = open(mempath, "w")
+        f.write("PdfDesc: \n")
+        f.write("PdfType: %s\n" % ("central" if member == 0 else "error"))
+        f.write("---\n")
+        ## Write x points
+        line = " ".join("%2.6e" % x for x in xs)
+        f.write(line + "\n")
+        ## Write Q2 points
+        line = " ".join("%2.6e" % q2 for q2 in q2s)
+        f.write(line + "\n")
+        ## Write block of xf values
+        for xfs_xq in xfs:
+            line = ""
+            for xf in xfs_xq:
+                if xf == 0.0: xf = 0.0 # remove occurences of negative zero
+                line += "%2.6e " % xf
+            f.write(line.strip() + "\n")
+
+        f.write("---\n")
+        f.close()

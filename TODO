@@ -9,6 +9,11 @@ NOW
 ---
 
 - Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,BP)
+   AB: I've made CT10 work with a bit of updating of the migration/creategrids
+   script. No attempt at validation other than eyeballing in gnuplot.
+
+- Debug install path searching (AB)
+   lhapdf.conf isn't being found... are we installing it?
 
 - Validation system and plotting (SL,MR,DM,BP)
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
@@ -30,6 +35,9 @@ NOW
 
 - Tidy Interpolator interface to reduce duplication and to do "automatic" index caching (AB)
 
+- Interpolation in (log(x), log(Q2)) (AB)
+   Graeme suggests that this is the best choice of measure.
+
 - Implement PDF::pdfsetname and memberID (AB)
    The names are determined by file/directory consistency, not metadata, to
    avoid inconsistency.
@@ -48,9 +56,6 @@ NEXT
 - Provide setAlphaS methods cf. setInterpolator (AB)
    The setAlphaS method should set the params appropriate for the PDF it's being
    attached to.
-
-- Interpolation in (log(x), log(Q2)) as well as (x, Q)?
-   Need expert input on the most appropriate / performant space for evolution/interpolation.
 
 - Improve the DESIGN document's coherence (AB)
 
@@ -116,8 +121,12 @@ FOR STABLE 6.0.0 RELEASE
 - Versioning scheme for PDF data
    In metadata and tarball filenames.
 
-- Provide a way to find the number of members in a PDF set
-   Or just iterate over ints until an Exception is thrown?
+- Provide a way to find the number of members in a PDF set Or just iterate over
+   ints until an Exception is thrown? We should be able to find out not just how
+   many members are available but which numbers, so that they do not have to be
+   consecutive (modulo the restriction from the LHAPDF ID indexing
+   ranges). Determine by counting member data files in the PDF set directory
+   (remember that the info file may not be present).
 
 
 AS AND WHEN
@@ -136,6 +145,10 @@ AS AND WHEN
 
 - Make GridPDFs not read their data block until an xf value is requested?!
    Super-laziness!
+
+- More aggressive memory and CPU optimisation
+   For example avoiding duplication of x,Q knot arrays between flavors... if
+   this "1D" effect is really significant.
 
 - Read zipped/tarred PDFs
    With standard directory structure internally.

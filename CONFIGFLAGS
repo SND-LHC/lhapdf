@@ -13,57 +13,96 @@ back to first the PDF set and then to the global config.
 
 Verbosity
 ---------
-(uint): 1
+(uint)
+
+Level of verbosity of the LHAPDF system.
+
+
+ShowLHA5Banner
+--------------
+(bool)
+
+Whether or not to print out an LHAPDF5-style banner to stdout upon set
+initialisation.
 
 
 Interpolator
 ------------
 (enum string): linear, cubic
 
+The factory name string of the PDF grid interpolator to use (if overriding the
+default)
+
 
 Extrapolator
 ------------
 (enum string): error
 
+The factory name string of the PDF grid extrapolator to use (if overriding the
+default).
+
 
 ImplicitFlavorAction
 --------------------
-(enum string): return_zero
+(enum string): return_zero, error
+
+What to do if an xf value for an unsupported PID code is requested? Either
+return 0 (i.e. there is implicitly none of that parton in the hadron) or throw
+an error.
 
 
-SetName
--------
-(free string): EXAMPLEPDF  # TODO: Allow? Just use dirname
+# SetName
+# -------
+# (free string): EXAMPLEPDF
+
+# TODO: Allow? Just use dirname instead
 
 
 SetDesc
 -------
-(free string): Just an example to test the parser mechanisms
+(free string): A human-readable description of this PDF set.
 
 
 Flavors
 -------
 (list<int> or int): [-5,-4,-3,-2,-1,1,2,3,4,5,21]
 
+List of supported (user-visible) parton flavors, using the PDG Monte Carlo
+numbering scheme (quarks from 1 .. 6, antiquarks from -6 .. -1, and gluon = 21,
+as well as any "optional extras" such as photon = 22).
+
 
 OrderQcd
 --------
 (uint): 2 # or better to use text cf. lo, nlo, nnlo?
+
+Maximum number of loops considered in the QCD evolution of this set (i.e. 0 =
+LO, 1 = NLO, etc.)
 
 
 AlphaS_MZ
 ---------
 (float): 0.118
 
+The value of alpha_s at Q = MZ.
+
 
 NumMembers
 ----------
 (uint): 1
 
+How many members there are in the set.
+
+TODO: no guarantee that all members are installed or that they are consecutively
+numbered. Instead determine how many members are available by counting member
+data files in the PDF set directory.
+
 
 Format
 ------
-(enum string): lhagrid
+(enum string): lhagrid1, ... the trailing number is for format versioning.
+
+Used to determine what parser should be instantiated to read the member file(s).
 
 
 ErrorType
@@ -75,12 +114,33 @@ ErrorType
 
 PdfDesc
 -------
-(free string): The main PDF in the EXAMPLE set
+(free string): Description of the role of this PDF member
 
 
 PdfType
 -------
-(enum string): main # or 'error' or 'replica'
+(enum string): central # or 'error' or 'replica'
 
+The type of this PDF, i.e. is it a central (canonical) PDF or is it meant for
+use as either a Hessian error or a replica member of a statistical ensemble.
+
+@todo Treat "posdef" and other constructions as orthogonal to the "type"?
+
+
+MainMemberId
+-------
+(uint):
+
+The member ID in this PDF set of the main ("central") member.
+
+
+PosDefMainMemberId
+-------
+(uint):
+
+The member ID in this PDF set of a main ("central") member with a positive
+definiteness constraint. Important for parton shower programs where negative (or
+even zero?) values in PDFs do not make sense in the ISR Sudakov emission
+probability interpretation.
 
 */

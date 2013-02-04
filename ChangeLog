@@ -1,3 +1,13 @@
+2013-02-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding migration/testpdf.cc and corresponding README instructions.
+
+	* Removed debug printout from GridPDF.cc and re-added xKnots() and q2Knots() methods.
+
+	* Updated creategrids script to new format.
+
+	* Creating the migration directory.
+
 2013-01-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Updates to TODOs, CONFIGFLAGS, DESIGN, etc. after first dev meeting.
