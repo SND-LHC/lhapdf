@@ -1,5 +1,18 @@
 #! /usr/bin/env python
 
+"""\
+Usage: %prog <setname> [<setname2> ...]
+
+The set names given are in the format required for initialisation in LHAPDF5, e.g.
+
+  MSTW2008lo90cl_nf3.LHgrid, MSTW2008lo90cl.LHgrid, NNPDF23_nlo_as_0119.LHgrid,
+  CT10.LHgrid, cteq66.LHgrid, cteq6ll.LHpdf, cteq6ll.LHgrid, ...
+
+It's also possible to rename sets from the HAPDF5 name to a new LHAPDF6 name, e.g.
+
+  cteq6ll.LHpdf:CTEQ6L1 or cteq6ll.LHgrid:CTEQ6L1
+"""
+
 import lhapdf, numpy
 import os, sys, optparse
 
@@ -17,14 +30,16 @@ def active_flavours(xfxs):
     return pids
 
 
+
 ## Parse the command line to get the set names for migration (in LHAPDF5 format)
-# e.g. 'MSTW2008lo90cl_nf3.LHgrid', 'MSTW2008lo90cl.LHgrid', 'NNPDF23_nlo_as_0119.LHgrid', 'CT10.LHgrid', 'cteq66.LHgrid', 'cteq6ll.LHpdf', 'cteq6ll.LHgrid', ...
-p = optparse.OptionParser(usage="%prog <setname> [<setname2> ...]")
+p = optparse.OptionParser(usage=__doc__)
 opts, args = p.parse_args()
 
 
-# For every PDF set
+## For every PDF set
 for lha5name in args:
+
+    ## Given names can be in the format lhapdf5name:lhapdf6name for easy set renaming
     if ":" in lha5name:
         setname = lha5name.split(":")[1]
         lha5name = lha5name.split(":")[0]
