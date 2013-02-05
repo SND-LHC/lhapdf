@@ -25,7 +25,11 @@ opts, args = p.parse_args()
 
 # For every PDF set
 for lha5name in args:
-    setname = os.path.splitext(lha5name)[0]
+    if ":" in lha5name:
+        setname = lha5name.split(":")[1]
+        lha5name = lha5name.split(":")[0]
+    else:
+        setname = os.path.splitext(lha5name)[0]
     print "Migrating %s -> %s" % (lha5name, setname)
 
     ## Create output dir if needed
