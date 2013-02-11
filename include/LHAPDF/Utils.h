@@ -16,6 +16,8 @@
 #include "boost/lexical_cast.hpp"
 #include "boost/range.hpp"
 #include "boost/range/algorithm/sort.hpp"
+#include "boost/range/algorithm/lower_bound.hpp"
+#include "boost/range/algorithm/upper_bound.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
 

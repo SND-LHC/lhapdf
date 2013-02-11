@@ -23,7 +23,7 @@ namespace LHAPDF {
     void unbind() { _pdf = 0; }
 
     /// Identify whether this Extrapolator has an associated PDF
-    bool hasPdf() { return _pdf != 0; }
+    bool hasPDF() { return _pdf != 0; }
 
     /// Get the associated GridPDF
     const GridPDF& pdf() const { return *_pdf; }

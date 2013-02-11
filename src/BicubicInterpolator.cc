@@ -102,8 +102,8 @@ namespace LHAPDF {
     const GridPDF::KnotArray1F& subgrid = pdf().subgrid(id, q2);
     // Index look-up
     /// @todo Cache this lookup
-    const size_t ix = subgrid.xlow(x);
-    const size_t iq2 = subgrid.q2low(q2);
+    const size_t ix = subgrid.ixbelow(x);
+    const size_t iq2 = subgrid.iq2below(q2);
     /// @todo End of section to be moved
     return _interpolateXQ2(subgrid, x, ix, q2, iq2);
   }

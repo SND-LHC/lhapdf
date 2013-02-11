@@ -202,12 +202,12 @@ namespace LHAPDF {
       void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
       /// Get the index of the closest x knot row <= x
-      size_t xlow(double x) const {
+      size_t ixbelow(double x) const {
         // Test that x is in the grid range
         if (x < xs().front()) throw GridError("x value " + to_str(x) + " is lower than lowest-x grid point at " + to_str(xs().front()));
         if (x > xs().back()) throw GridError("x value " + to_str(x) + " is higher than highest-x grid point at " + to_str(xs().back()));
         // Find the closest knot below the requested value
-        size_t i = upper_bound(xs().begin(), xs().end(), x) - xs().begin();
+        size_t i = upper_bound(xs(), x) - xs().begin();
         return --i; // have to step back to get the knot <= x behaviour
       }
 
@@ -219,12 +219,12 @@ namespace LHAPDF {
       void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
       /// Get the index of the closest x knot row <= x
-      size_t q2low(double q2) const {
+      size_t iq2below(double q2) const {
         // Test that x is in the grid range
         if (q2 < q2s().front()) throw GridError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
         if (q2 > q2s().back()) throw GridError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
         /// Find the closest knot below the requested value
-        size_t i = upper_bound(q2s().begin(), q2s().end(), q2) - q2s().begin();
+        size_t i = upper_bound(q2s(), q2) - q2s().begin();
         return --i; // have to step back to get the knot <= q2 behaviour
       }
 
@@ -278,7 +278,9 @@ namespace LHAPDF {
     const KnotArrayNF& subgrid(double q2) const {
       assert(q2 >= 0);
       map<double, KnotArrayNF>::const_iterator it = _knotarrays.upper_bound(q2);
-      if (it != _knotarrays.begin()) --it; // upper_bound (and lower_bound) return the entry *above* q2: we need to step back
+      if (it == _knotarrays.begin()) throw GridError("Requested Q2 is smaller than any available subgrid");
+      if (it == _knotarrays.end() && q2 > q2Knots().back()) throw GridError("Requested Q2 is higher than any available subgrid");
+      --it; // upper_bound (and lower_bound) returns the entry *above* q2: we need to decrement by one element
       return it->second;
     }
 

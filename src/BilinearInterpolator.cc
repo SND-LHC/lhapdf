@@ -24,8 +24,8 @@ namespace LHAPDF {
     /// @todo Move the following to the Interpolator interface and implement caching
     // Subgrid and index lookup
     const GridPDF::KnotArray1F& subgrid = pdf().subgrid(id, q2);
-    const size_t ix = subgrid.xlow(x);
-    const size_t iq2 = subgrid.q2low(q2);
+    const size_t ix = subgrid.ixbelow(x);
+    const size_t iq2 = subgrid.iq2below(q2);
 
     // First interpolate in x
     const double f_ql = _interpolateLinear(x, subgrid.xs()[ix], subgrid.xs()[ix+1], subgrid.xf(ix, iq2), subgrid.xf(ix+1, iq2));
