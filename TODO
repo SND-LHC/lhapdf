@@ -12,9 +12,6 @@ NOW
    AB: I've made CT10 work with a bit of updating of the migration/creategrids
    script. No attempt at validation other than eyeballing in gnuplot.
 
-- Debug install path searching (AB)
-   lhapdf.conf isn't being found... are we installing it?
-
 - Validation system and plotting (SL,MR,DM,BP)
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
@@ -30,7 +27,7 @@ NOW
    Fortran dependency, which we'd rather avoid. Maybe start with conversion to
    C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
-- Fix bicubic interpolation to treat low and high edge cases more carefully
+- Fix bicubic interpolation to treat low and high edge cases more carefully (MR,AB)
    The highest inter-knot range is currently broken. And x interpolation should
    receive the same careful treatment as Q2 interpolation does: some refactoring
    should happen to make the same function treat both directions.
@@ -46,6 +43,8 @@ NOW
 
 - Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
    Both should just use nset = 0 all the time.
+
+- Make pdfsets.index
 
 - Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)
    PY6 will probably need some fiddling to return the array with the expected

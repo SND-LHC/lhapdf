@@ -3,8 +3,8 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src examples include doc
 # TODO: re-add bin tests
 
-# TODO: Make this automatically somehow?
-# dist_pkgdata_DATA = pdfsets.index
+dist_pkgdata_DATA = lhapdf.conf
+# TODO: make and install pdfsets.index
 
 doxy:
 	(cd doc && make doxy)
