@@ -1,4 +1,3 @@
-#include "LHAPDF/GridPDF.h"
 #include "LHAPDF/BicubicInterpolator.h"
 #include <iostream>
 
@@ -27,7 +26,7 @@ namespace LHAPDF {
 
     // Provides d/dx at all grid locations
     /// @todo Make into a non-member function (and use an unnamed namespace)
-    double _ddx(const GridPDF::KnotArray1F& subgrid, size_t ix, size_t iq2) {
+    double _ddx(const KnotArray1F& subgrid, size_t ix, size_t iq2) {
       /// @todo Re-order this if so that branch prediction will favour the "normal" central case
       if (ix == 0) { //< If at leftmost edge, use forward difference
         return (subgrid.xf(ix+1, iq2) - subgrid.xf(ix, iq2)) / (subgrid.xs()[ix+1] - subgrid.xs()[ix]);
@@ -40,72 +39,58 @@ namespace LHAPDF {
       }
     }
 
-
-    double _interpolateXQ2(const GridPDF::KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) {
-      // Distance parameters
-      const double dx = subgrid.xs()[ix+1] - subgrid.xs()[ix];
-      const double tx = (x - subgrid.xs()[ix]) / dx;
-      const double dq_0 = subgrid.q2s()[iq2] - subgrid.q2s()[iq2-1];
-      const double dq_1 = subgrid.q2s()[iq2+1] - subgrid.q2s()[iq2];
-      const double dq_2 = subgrid.q2s()[iq2+2] - subgrid.q2s()[iq2+1];
-      const double dq = dq_1;
-      const double tq = (q2 - subgrid.q2s()[iq2]) / dq;
-
-      // Points in Q2
-      double vl = _interpolateCubic(tx, subgrid.xf(ix, iq2), _ddx(subgrid, ix, iq2) * dx,
-                                        subgrid.xf(ix+1, iq2), _ddx(subgrid, ix+1, iq2) * dx);
-      double vh = _interpolateCubic(tx, subgrid.xf(ix, iq2+1), _ddx(subgrid, ix, iq2+1) * dx,
-                                        subgrid.xf(ix+1, iq2+1), _ddx(subgrid, ix+1, iq2+1) * dx);
-
-      // Derivatives in Q2
-      double vdl, vdh;
-      if (iq2 == 0) {
-        // Forward difference for lower q
-        vdl = (vh - vl) / dq_1;
-        // Central difference for higher q
-        double vhh = _interpolateCubic(tx, subgrid.xf(ix, iq2+2), _ddx(subgrid, ix, iq2+2) * dx,
-                                           subgrid.xf(ix+1, iq2+2), _ddx(subgrid, ix+1, iq2+2) * dx);
-        vdh = (vdl + (vhh - vh)/dq_2) / 2.0;
-      }
-      else if (iq2+1 == subgrid.q2s().size()-1) {
-        // Backward difference for higher q
-        vdh = (vh - vl) / dq_1;
-        // Central difference for lower q
-        double vll = _interpolateCubic(tx, subgrid.xf(ix, iq2-1), _ddx(subgrid, ix, iq2-1) * dx,
-                                           subgrid.xf(ix+1, iq2-1), _ddx(subgrid, ix+1, iq2-1) * dx);
-        vdl = (vdh + (vl - vll)/dq_0) / 2.0;
-      }
-      else {
-        // Central difference for both q
-        double vll = _interpolateCubic(tx, subgrid.xf(ix, iq2-1), _ddx(subgrid, ix, iq2-1) * dx,
-                                           subgrid.xf(ix+1, iq2-1), _ddx(subgrid, ix+1, iq2-1) * dx);
-        vdl = ( (vh - vl)/dq_1 + (vl - vll)/dq_0 ) / 2.0;
-        double vhh = _interpolateCubic(tx, subgrid.xf(ix, iq2+2), _ddx(subgrid, ix, iq2+2) * dx,
-                                           subgrid.xf(ix+1, iq2+2), _ddx(subgrid, ix+1, iq2+2) * dx);
-        vdh = ( (vh - vl)/dq_1 + (vhh - vh)/dq_2 ) / 2.0;
-      }
-
-      vdl *= dq;
-      vdh *= dq;
-
-      return _interpolateCubic(tq, vl, vdl, vh, vdh);
-    }
-
   }
 
 
-  double BicubicInterpolator::interpolateXQ2(int id, double x, double q2) const {
-    /// @todo Move the following to the Interpolator interface and implement caching
-    // Subgrid lookup
-    /// @todo Do this in two stages to cache the KnotArrayNF
-    /// @todo Flavour error checking
-    const GridPDF::KnotArray1F& subgrid = pdf().subgrid(id, q2);
-    // Index look-up
-    /// @todo Cache this lookup
-    const size_t ix = subgrid.ixbelow(x);
-    const size_t iq2 = subgrid.iq2below(q2);
-    /// @todo End of section to be moved
-    return _interpolateXQ2(subgrid, x, ix, q2, iq2);
+
+  double BicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
+    // Distance parameters
+    const double dx = subgrid.xs()[ix+1] - subgrid.xs()[ix];
+    const double tx = (x - subgrid.xs()[ix]) / dx;
+    const double dq_0 = subgrid.q2s()[iq2] - subgrid.q2s()[iq2-1];
+    const double dq_1 = subgrid.q2s()[iq2+1] - subgrid.q2s()[iq2];
+    const double dq_2 = subgrid.q2s()[iq2+2] - subgrid.q2s()[iq2+1];
+    const double dq = dq_1;
+    const double tq = (q2 - subgrid.q2s()[iq2]) / dq;
+
+    // Points in Q2
+    double vl = _interpolateCubic(tx, subgrid.xf(ix, iq2), _ddx(subgrid, ix, iq2) * dx,
+                                      subgrid.xf(ix+1, iq2), _ddx(subgrid, ix+1, iq2) * dx);
+    double vh = _interpolateCubic(tx, subgrid.xf(ix, iq2+1), _ddx(subgrid, ix, iq2+1) * dx,
+                                      subgrid.xf(ix+1, iq2+1), _ddx(subgrid, ix+1, iq2+1) * dx);
+
+    // Derivatives in Q2
+    double vdl, vdh;
+    if (iq2 == 0) {
+      // Forward difference for lower q
+      vdl = (vh - vl) / dq_1;
+      // Central difference for higher q
+      double vhh = _interpolateCubic(tx, subgrid.xf(ix, iq2+2), _ddx(subgrid, ix, iq2+2) * dx,
+                                         subgrid.xf(ix+1, iq2+2), _ddx(subgrid, ix+1, iq2+2) * dx);
+      vdh = (vdl + (vhh - vh)/dq_2) / 2.0;
+    }
+    else if (iq2+1 == subgrid.q2s().size()-1) {
+      // Backward difference for higher q
+      vdh = (vh - vl) / dq_1;
+      // Central difference for lower q
+      double vll = _interpolateCubic(tx, subgrid.xf(ix, iq2-1), _ddx(subgrid, ix, iq2-1) * dx,
+                                         subgrid.xf(ix+1, iq2-1), _ddx(subgrid, ix+1, iq2-1) * dx);
+      vdl = (vdh + (vl - vll)/dq_0) / 2.0;
+    }
+    else {
+      // Central difference for both q
+      double vll = _interpolateCubic(tx, subgrid.xf(ix, iq2-1), _ddx(subgrid, ix, iq2-1) * dx,
+                                         subgrid.xf(ix+1, iq2-1), _ddx(subgrid, ix+1, iq2-1) * dx);
+      vdl = ( (vh - vl)/dq_1 + (vl - vll)/dq_0 ) / 2.0;
+      double vhh = _interpolateCubic(tx, subgrid.xf(ix, iq2+2), _ddx(subgrid, ix, iq2+2) * dx,
+                                         subgrid.xf(ix+1, iq2+2), _ddx(subgrid, ix+1, iq2+2) * dx);
+      vdh = ( (vh - vl)/dq_1 + (vhh - vh)/dq_2 ) / 2.0;
+    }
+
+    vdl *= dq;
+    vdh *= dq;
+
+    return _interpolateCubic(tq, vl, vdl, vh, vdh);
   }
 
 

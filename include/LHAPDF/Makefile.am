@@ -10,6 +10,7 @@ pkginclude_HEADERS = \
   Factories.h \
   PDFIndex.h \
   GridPDF.h \
+  KnotArray.h \
   Interpolator.h \
   Extrapolator.h \
   BicubicInterpolator.h \

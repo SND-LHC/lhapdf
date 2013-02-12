@@ -1,6 +1,7 @@
 #pragma once
 
 // STL includes
+#include <cassert>
 #include <vector>
 #include <map>
 #include <string>
@@ -9,8 +10,8 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <cassert>
 #include <fstream>
+#include <limits>
 // Boost includes
 #include "boost/shared_ptr.hpp"
 #include "boost/lexical_cast.hpp"

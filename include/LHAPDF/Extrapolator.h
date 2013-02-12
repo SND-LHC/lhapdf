@@ -16,6 +16,10 @@ namespace LHAPDF {
     /// Destructor to allow inheritance
     virtual ~Extrapolator() { }
 
+
+    /// @name Binding to a PDF object
+    //@{
+
     /// Bind to a GridPDF
     void bind(const GridPDF* pdf) { _pdf = pdf; }
 
@@ -27,6 +31,12 @@ namespace LHAPDF {
 
     /// Get the associated GridPDF
     const GridPDF& pdf() const { return *_pdf; }
+
+    //@}
+
+
+    /// @name Extrapolation methods
+    //@{
 
     /// Extrapolate a single-point in (x,Q)
     ///
@@ -46,7 +56,10 @@ namespace LHAPDF {
     /// @return The xf value at (x,q2)
     virtual double extrapolateXQ2(int id, double x, double q2) const = 0;
 
-    /// @todo The all-PID version of extrapolateQ and Q2
+
+    /// @todo Make an all-PID version of extrapolateQ and Q2?
+
+    //@}
 
 
   private:
