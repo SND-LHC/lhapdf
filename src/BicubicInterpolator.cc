@@ -44,9 +44,14 @@ namespace LHAPDF {
 
 
   double BicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
+    /// @todo Allow interpolation right up to the borders of the grid in Q2 and x... the last inter-knot range is currently broken
+
+    /// @todo Also treat the x top/bottom edges carefully, cf. the Q2 ones
+
     // Distance parameters
     const double dx = subgrid.xs()[ix+1] - subgrid.xs()[ix];
     const double tx = (x - subgrid.xs()[ix]) / dx;
+    /// @todo Only compute these if the +1 and +2 indices are guaranteed to be valid
     const double dq_0 = subgrid.q2s()[iq2] - subgrid.q2s()[iq2-1];
     const double dq_1 = subgrid.q2s()[iq2+1] - subgrid.q2s()[iq2];
     const double dq_2 = subgrid.q2s()[iq2+2] - subgrid.q2s()[iq2+1];

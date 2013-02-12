@@ -30,8 +30,10 @@ NOW
    Fortran dependency, which we'd rather avoid. Maybe start with conversion to
    C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
-- Make NearestPointExtrapolator work (AB)
-   Requires some additions to the grid storage class.
+- Fix bicubic interpolation to treat low and high edge cases more carefully
+   The highest inter-knot range is currently broken. And x interpolation should
+   receive the same careful treatment as Q2 interpolation does: some refactoring
+   should happen to make the same function treat both directions.
 
 - Tidy Interpolator interface to reduce duplication and to do "automatic" index caching (AB)
 

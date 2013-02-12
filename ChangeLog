@@ -2,7 +2,9 @@
 
 	* Header dependence reduction and include statement clean-up.
 
-	* Reworking Interpolator and GridPDF interfaces to centralise index finding. KnotArray1F and NF are now defined as non-inner classes in a separate KnotArray.h header.
+	* Reworking Interpolator and GridPDF interfaces to centralise
+	index finding. KnotArray1F and NF are now defined as non-inner
+	classes in a separate KnotArray.h header.
 
 2013-02-11  Andy Buckley  <andy.buckley@cern.ch>
 
