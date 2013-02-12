@@ -1,5 +1,7 @@
 2013-02-12  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Now installing pdfsets.index into the share dir.
+
 	* Now installing lhapdf.conf into the share dir.
 
 	* Header dependence reduction and include statement clean-up.

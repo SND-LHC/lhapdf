@@ -10,7 +10,8 @@ NOW
 
 - Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,BP)
    AB: I've made CT10 work with a bit of updating of the migration/creategrids
-   script. No attempt at validation other than eyeballing in gnuplot.
+   script. No attempt at validation other than eyeballing in
+   gnuplot. pdfsets.index will need to be populated for each set.
 
 - Validation system and plotting (SL,MR,DM,BP)
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
@@ -32,23 +33,19 @@ NOW
    receive the same careful treatment as Q2 interpolation does: some refactoring
    should happen to make the same function treat both directions.
 
-- Tidy Interpolator interface to reduce duplication and to do "automatic" index caching (AB)
-
-- Interpolation in (log(x), log(Q2)) (AB)
+- Interpolation in (log(x), log(Q2)) (AB,MR)
    Graeme suggests that this is the best choice of measure.
 
 - Implement PDF::pdfsetname and memberID (AB)
-   The names are determined by file/directory consistency, not metadata, to
-   avoid inconsistency.
+   These names should be determined by file/directory consistency, not metadata,
+   to avoid inconsistency.
 
 - Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
    Both should just use nset = 0 all the time.
 
-- Make pdfsets.index
-
 - Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)
    PY6 will probably need some fiddling to return the array with the expected
-   6-element origin offset.
+   6-element origin offset. pdfsets.index will need to be populated for each set.
 
 
 NEXT
