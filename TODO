@@ -40,8 +40,8 @@ NOW
    These names should be determined by file/directory consistency, not metadata,
    to avoid inconsistency.
 
-- Really old PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
-   Both should just use nset = 0 all the time.
+- Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
+   Both should just use nset = 0 all the time, I think...
 
 - Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)
    PY6 will probably need some fiddling to return the array with the expected

@@ -34,7 +34,7 @@ int main() {
     ofstream f("pdf.dat");
     for (double x = 0; x <= 1; x += 0.02) {
       for (double log10q2 = 1; log10q2 < 5; log10q2 += 0.05) {
-        cout << x << " " << log10q2 << " " << pdf.xfxQ2(21, x, pow(10, log10q2)) << endl;
+        f << x << " " << log10q2 << " " << pdf.xfxQ2(21, x, pow(10, log10q2)) << endl;
       }
     }
     f.close();

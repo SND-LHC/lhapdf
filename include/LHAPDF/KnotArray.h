@@ -46,14 +46,18 @@ namespace LHAPDF {
       /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
       void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
-      /// Get the index of the closest x knot row <= x
+      /// @brief Get the index of the closest x knot row <= x
+      ///
+      /// If the value is >= x_max, return i_max-1 (for polynomial spine construction)
       size_t ixbelow(double x) const {
         // Test that x is in the grid range
         if (x < xs().front()) throw GridError("x value " + to_str(x) + " is lower than lowest-x grid point at " + to_str(xs().front()));
         if (x > xs().back()) throw GridError("x value " + to_str(x) + " is higher than highest-x grid point at " + to_str(xs().back()));
         // Find the closest knot below the requested value
         size_t i = upper_bound(xs(), x) - xs().begin();
-        return --i; // have to step back to get the knot <= x behaviour
+        if (i == xs().size()) i -= 1; // can't return the last knot index
+        i -= 1; // have to step back to get the knot <= x behaviour
+        return i;
       }
 
 
@@ -63,14 +67,18 @@ namespace LHAPDF {
       /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
       void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
 
-      /// Get the index of the closest x knot row <= x
+      /// Get the index of the closest Q2 knot row <= q2
+      ///
+      /// If the value is >= q2_max, return i_max-1 (for polynomial spine construction)
       size_t iq2below(double q2) const {
         // Test that x is in the grid range
         if (q2 < q2s().front()) throw GridError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
         if (q2 > q2s().back()) throw GridError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
         /// Find the closest knot below the requested value
         size_t i = upper_bound(q2s(), q2) - q2s().begin();
-        return --i; // have to step back to get the knot <= q2 behaviour
+        if (i == q2s().size()) i -= 1; // can't return the last knot index
+        i -= 1; // have to step back to get the knot <= q2 behaviour
+        return i;
       }
 
 
