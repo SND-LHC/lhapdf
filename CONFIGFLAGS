@@ -87,6 +87,23 @@ AlphaS_MZ
 The value of alpha_s at Q = MZ.
 
 
+AlphaS_Type
+-----------
+(enum string): ode, analytic, ipol
+
+The method to be used to calculate alpha_s for this set (cf. the AlphaS class hierarchy).
+
+
+AlphaS_Qs, AlphaS_vals
+----------------------
+(2 x list<float>)
+
+A pair of lists for interpolation-based alpha_s(Q) solving (i.e. Alphas_Type =
+ipol). The values of Q are in GeV, and the two lists must be the same length. If
+only one of these keys is defined, or if their lengths are different, a metadata
+exception will be thrown.
+
+
 NumMembers
 ----------
 (uint): 1
