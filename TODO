@@ -9,11 +9,13 @@ NOW
 ---
 
 - Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,BP)
+
    AB: I've made CT10 work with a bit of updating of the migration/creategrids
    script. No attempt at validation other than eyeballing in
    gnuplot. pdfsets.index will need to be populated for each set.
 
 - Validation system and plotting (SL,MR,DM,BP)
+
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
    old and new LHAPDF, and finally compare the files line-by-line, with
@@ -21,29 +23,44 @@ NOW
    Advice from Graeme/HOPPET is to scan on lines in x and Q2 (with one of the
    pair fixed) rather than to compare randomly sampled points.
 
+- Fix bicubic interpolation to treat low and high edge cases more carefully (MR,AB)
+
+   I think I fixed a bug where interpolation in the last "gap" between knots did
+   not work, by explicitly returning the n-1'th knot in that edge case. Not
+   convinced it was the 100% best way to do it, though: maybe the interpolators
+   should have to be more careful?
+
+   Cubic x interpolation should receive the same careful treatment as Q2
+   interpolation does: some refactoring should happen to make the same function
+   treat both directions.
+
+- Interpolation in (log(x), log(Q2)) (AB,MR)
+
+   Graeme suggests that this is the best choice of measure: sounds good. How to
+   implement with minimal/no duplication and without a performance hit? I think
+   the design means that one interpolator can't just use another, since the knot
+   values are properties of the KnotArray rather than external lists that could
+   be "logified".
+
 - Fix and test numerical and analytic alpha_s running (KN,SL,MR,GW)
+
    The ODE solver needs serious optimisation, and numerically the results look
    dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
    evolution... looks like we can't borrow their ODE code without introducing a
    Fortran dependency, which we'd rather avoid. Maybe start with conversion to
    C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
-- Fix bicubic interpolation to treat low and high edge cases more carefully (MR,AB)
-   The highest inter-knot range is currently broken. And x interpolation should
-   receive the same careful treatment as Q2 interpolation does: some refactoring
-   should happen to make the same function treat both directions.
-
-- Interpolation in (log(x), log(Q2)) (AB,MR)
-   Graeme suggests that this is the best choice of measure.
-
 - Implement PDF::pdfsetname and memberID (AB)
+
    These names should be determined by file/directory consistency, not metadata,
    to avoid inconsistency.
 
 - Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
+
    Both should just use nset = 0 all the time, I think...
 
 - Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)
+
    PY6 will probably need some fiddling to return the array with the expected
    6-element origin offset. pdfsets.index will need to be populated for each set.
 
@@ -52,17 +69,18 @@ NEXT
 ----
 
 - Provide setAlphaS methods cf. setInterpolator (AB)
+
    The setAlphaS method should set the params appropriate for the PDF it's being
    attached to.
 
-- Improve the DESIGN document's coherence (AB)
-
 - Forbid PDF construction from a direct path to the data file? (AB)
+
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
    Same set of constructors for PDF (and derivatives) and Info?
    Throw/assert if dir name and file name are inconsistent
 
 - Change "config" -> "settings"?
+
    And add a Settings.h or Config.h to access it, rather than the static fn on Info
 
 
@@ -71,13 +89,17 @@ FOR BETA 1
 
 - Usage instructions, including installation and env variables, etc.
 
+- Improve the DESIGN document's coherence (AB)
+
 - lhapdf-config build assistant script (AB)
 
 - Add interpolation-from-metadata implementation of AlphaS
+
    Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
    values robustly to implement 1D subgrids.
 
 - Treating missing flavours with error vs. return 0
+
    Provide a switch to distinguish the two responses. Put ID check into
    PDF::xfxQ2 function?
 
@@ -88,23 +110,28 @@ FOR BETA 2
 - Profile GridPDF and AlphaS_ODE
 
 - AlphaS default params
+
    Should the param defaults be clearly invalid so that default AlphaS fields and
    throw an AlphaSException if the values are not in a physical range?
 
 - Updated lhapdf-getdata, downloading PDFs as tarballs
 
 - Printing out banner info... needed by code that greps for it :-/
+
    e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be
    fundamentally built-in that we have to maintain the old banner style!
 
 - Re-introduce set-level Info singletons
+
    Will allow set-level configs to propagate to all members.
    Define the "lock time", for things like ipol/xpol/alphaS.
 
 - Metadata standards for accessing special member numbers.
+
    e.g. a PosDefMemberID metadata key at set level.
 
 - Python interface
+
    For access to standard functionality but not pluggable in the sense that a
    Python interpolator class cannot be passed to a wrapped PDF object: so hide
    the non-factory-based functions.
@@ -114,17 +141,20 @@ FOR STABLE 6.0.0 RELEASE
 ------------------------
 
 - Write-up
+
    Target at EPJC Tools, cf. Rivet?
 
 - Versioning scheme for PDF data
+
    In metadata and tarball filenames.
 
-- Provide a way to find the number of members in a PDF set Or just iterate over
-   ints until an Exception is thrown? We should be able to find out not just how
-   many members are available but which numbers, so that they do not have to be
-   consecutive (modulo the restriction from the LHAPDF ID indexing
-   ranges). Determine by counting member data files in the PDF set directory
-   (remember that the info file may not be present).
+- Provide a way to find the number of members in a PDF set
+
+   Or just iterate over ints until an Exception is thrown? We should be able to
+   find out not just how many members are available but which numbers, so that
+   they do not have to be consecutive (modulo the restriction from the LHAPDF ID
+   indexing ranges). Determine by counting member data files in the PDF set
+   directory (remember that the info file may not be present).
 
 
 AS AND WHEN
@@ -132,52 +162,57 @@ AS AND WHEN
 
 - Add more metadata methods to PDF and PDFGrid as needed
 
-- Allow use of valence/sea etc. decompostions GridPDF may be inherited from to
-   allow the returned values to be built from separate interpolations of
-   component PDFs such as interpolated valence, sea, or difference PDFs that are
-   combined to make the physical ones. The PDG ID code range for "generator
-   specific" applications may be used, but we'll need to bear in mind that this
-   will mean that the flavor ID list has different meanings and contents for
-   internal and external purposes: maybe the "internal" PDG ID list needs to
-   become part of the grid data header, or can the metadata be used?
+- Allow use of valence/sea etc. decompostions
+
+   GridPDF may be inherited from to allow the returned values to be built from
+   separate interpolations of component PDFs such as interpolated valence, sea,
+   or difference PDFs that are combined to make the physical ones. The PDG ID
+   code range for "generator specific" applications may be used, but we'll need
+   to bear in mind that this will mean that the flavor ID list has different
+   meanings and contents for internal and external purposes: maybe the
+   "internal" PDG ID list needs to become part of the grid data header, or can
+   the metadata be used?
 
 - Make GridPDFs not read their data block until an xf value is requested?!
+
    Super-laziness!
 
 - More aggressive memory and CPU optimisation
+
    For example avoiding duplication of x,Q knot arrays between flavors... if
    this "1D" effect is really significant.
 
 - Read zipped/tarred PDFs
+
    With standard directory structure internally.
 
 - Use subgrids in x?
+
    Graeme reports that the HOPPET manual discusses performance improvements from
    use of x-subgrids. Wouldn't be a huge change now that subgrids exist at all,
    but is it needed? Do any current PDFs use x-subgrids?
 
 - Separate the x and Q2 inter/extrapolation?
+
    Allow mix & match combinations. Would this simplify the code since the
    1D interpolation methods are very simple and the 2D is built from them?
 
 - Updated Octave wrapper
+
    To come from Phil Ilten
 
 - Use Autoconf's more robust FC_* Fortran function name macros
+
    But this would require testing for a Fortran compiler, which we would rather
    not do. It certainly shouldn't be a blocker.
 
 - Add helper functions for calculating PDF errors on observables
-   It's not obviously something to include since there are several possible
-   treatments (esp. the sort of confidence interval that's constructed with
-   replica ensembles, and what about non-scalar observables?). And typically it
-   requires storing vectors/arrays of all the PDF error values for each
-   observable number for the function to operate on, which is not always the
-   most efficient way. But it's certainly a good thing to provide an example
-   for... maybe it should just be provided as an example? One nice thing is
-   that since we now store a clear ErrorType metadata entry for each PDF set,
-   working out the appropriate error treatment should be easy (I think it's
-   best to not use words like "infallible"!)
+
+   Certainly a good thing to provide an example for... maybe it should just be
+   provided as an example? One nice thing is that since we now store a clear
+   ErrorType metadata entry for each PDF set, working out the appropriate error
+   treatment should be easy (I think it's best to not use words like
+   "infallible"!)
 
 
 */

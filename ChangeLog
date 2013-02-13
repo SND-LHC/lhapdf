@@ -1,5 +1,7 @@
 2013-02-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fixing install path data lookup to include the 'LHAPDF' part.
+
 	* Fixed use of interpolation up to the last knot (in Q2, at least)
 	by making KnotArray1F::x/q2below never return the last index.
 

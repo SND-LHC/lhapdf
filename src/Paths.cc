@@ -15,7 +15,8 @@ namespace LHAPDF {
     //   if (Info::config().metadata<bool>("PwdInSearchPath")) rtn.push_back(".");
     // }
     /// Fall back to install prefix
-    rtn.push_back(LHAPDF_DATA_PREFIX);
+    path datadir = LHAPDF_DATA_PREFIX;
+    rtn.push_back(datadir / "LHAPDF");
    return rtn;
   }
 

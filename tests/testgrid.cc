@@ -6,14 +6,24 @@
 using namespace LHAPDF;
 using namespace std;
 
-int main() {
+void safeprint(const PDF& pdf, const string& key) {
+  if (pdf.info().has_key(key))
+    cout << key << " = " << pdf.info().metadata(key) << endl;
+}
+
+
+int main(int argc, char* argv[]) {
+
+  const string setname = (argc > 1) ? argv[1] : "EXAMPLEPDF";
 
   for (int i = 0; i <= 1; ++i) {
-    const GridPDF pdf("EXAMPLEPDF", i);
+    const GridPDF pdf(setname, i);
 
-    cout << "Verbosity = " << pdf.info().metadata("Verbosity") << endl;
-    cout << "PdfDesc = " << pdf.info().metadata("PdfDesc") << endl;
-    cout << "SetDesc = " << pdf.info().metadata("SetDesc") << endl;
+    foreach (const path& p, paths()) cout << p << " : "; cout << endl;
+
+    safeprint(pdf, "Verbosity");
+    safeprint(pdf, "PdfDesc");
+    safeprint(pdf, "SetDesc");
     cout << "Flavors (str) = " << pdf.info().metadata("Flavors") << endl;
     vector<int> pids = pdf.info().metadata< vector<int> >("Flavors");
     cout << "Flavors (ints) = ";
