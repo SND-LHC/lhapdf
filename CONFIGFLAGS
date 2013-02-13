@@ -51,13 +51,6 @@ return 0 (i.e. there is implicitly none of that parton in the hadron) or throw
 an error.
 
 
-# SetName
-# -------
-# (free string): EXAMPLEPDF
-
-# TODO: Allow? Just use dirname instead
-
-
 SetDesc
 -------
 (free string): A human-readable description of this PDF set.
