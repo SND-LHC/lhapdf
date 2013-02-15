@@ -57,7 +57,8 @@ NOW
 
 - Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
 
-   Both should just use nset = 0 all the time, I think...
+   Both should just use nset = 0 all the time, I think. getnset_ and getnmem_
+   also need to be provided.
 
 - Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)
 
@@ -214,5 +215,6 @@ AS AND WHEN
    treatment should be easy (I think it's best to not use words like
    "infallible"!)
 
+- Support the new yaml-cpp API... *and* the old one?
 
 */

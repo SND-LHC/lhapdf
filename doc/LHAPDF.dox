@@ -60,13 +60,58 @@ http://lhapdf.hepforge.org/.
 Installation
 ------------
 
-@todo Write installation instructions after makefiles etc. have been finalised
+If you have downloaded a release tarball, unpack it with `tar xf
+LHAPDF-xxx.tar.gz`, then `cd` to the newly-created directory.
+
+@note If checking out from version control rather than unpacking a tarball,
+again `cd` to the new directory, but you must then also run `autoreconf -i`
+before proceeding to the instructions below. This extra step is because the
+tarballs contain pre-made build scripts, while if you check out from version
+control then you are effectively a developer and must make these scripts
+yourself. You must have automake, autoconf, and libtool installed to build
+LHAPDF from an SVN checkout.
+
+Now you should run the `configure` script to analyse your machine, compiler,
+etc. and set up the Makefiles. You will probably need to provide some arguments
+to `configure` to tell it where you want to install LHAPDF (probably you don't
+want to install to `/usr/local`, which is the default) and perhaps where to find
+the `Boost` (http://www.boost.org) and `yaml-cpp`
+(http://code.google.com/p/yaml-cpp/) libraries that LHAPDF6 requires.
+
+@note For now you must use `yaml-cpp` version 0.3.x, *not* the new API in
+version 0.5 and higher.
+
+An example call to configure might look like:
+
+    ./configure --prefix=$HOME/local --with-yaml-cpp=$HOME/local
+
+(this should be appropriate if you have installed Boost in `/usr` via your
+machine's packaging system, and have privately installed yaml-cpp 0.3 into `~/local`)
+
+If you want to use an alternative C++ compiler, then you can specify the CXX
+variable on the command line, e.g.
+
+    ./configure --prefix=... CXX=clang++
+
+The configure script will run and produce quite a bit of output from its various
+tests. Hopefully everything will be successful: if it gets to the end without
+stopping due to an error then all is well.
+
+Then just call `make` to build the library (or e.g. `make -j4` to compile 4
+files in parallel -- if your machine has enough processor cores to do so, even
+-j2 will speed up the build quite a bit). To install LHAPDF to the `--prefix`
+location that you specified, call `make install`. You will (or at least
+*should(!) find installed files in `$prefix/lib`, `$prefix/include/LHAPDF`, and
+`$prefix/share/LHAPDF`.
 
 
 Usage
 -----
 
-@todo Write instructions on how to get started with using LHAPDF
+The following examples should help you to get to grips with using LHAPDF:
+
+**Using and testing PDFs:**
+@include migration/testpdf.cc
 
 **Using and testing PDF grids:**
 @include tests/testgrid.cc

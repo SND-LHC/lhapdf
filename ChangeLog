@@ -1,3 +1,7 @@
+2013-02-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding installation and usage instructions to the Doxy manual.
+
 2013-02-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fixing install path data lookup to include the 'LHAPDF' part.
