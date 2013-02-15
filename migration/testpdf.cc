@@ -1,7 +1,6 @@
 // Program to test LHAPDF6 PDF behaviour by writing out their values at lots of x and Q points
 
 #include "LHAPDF/PDF.h"
-#include "LHAPDF/GridPDF.h"
 #include "LHAPDF/Factories.h"
 #include <iostream>
 #include <fstream>
