@@ -8,11 +8,12 @@ LHAPDF6 TODO list
 NOW
 ---
 
-- Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,BP)
+- Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,AB)
 
    AB: I've made CT10 work with a bit of updating of the migration/creategrids
    script. No attempt at validation other than eyeballing in
-   gnuplot. pdfsets.index will need to be populated for each set.
+   gnuplot. pdfsets.index will need to be populated for each set. Metadata will
+   need to be set manually, I think (?).
 
 - Validation system and plotting (SL,MR,DM,BP)
 
@@ -25,8 +26,8 @@ NOW
 
 - Fix bicubic interpolation to treat low and high edge cases more carefully (MR,AB)
 
-   I think I fixed a bug where interpolation in the last "gap" between knots did
-   not work, by explicitly returning the n-1'th knot in that edge case. Not
+   AB: I think I fixed a bug where interpolation in the last "gap" between knots
+   did not work, by explicitly returning the n-1'th knot in that edge case. Not
    convinced it was the 100% best way to do it, though: maybe the interpolators
    should have to be more careful?
 
@@ -41,14 +42,6 @@ NOW
    the design means that one interpolator can't just use another, since the knot
    values are properties of the KnotArray rather than external lists that could
    be "logified".
-
-- Fix and test numerical and analytic alpha_s running (KN,SL,MR,GW)
-
-   The ODE solver needs serious optimisation, and numerically the results look
-   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
-   evolution... looks like we can't borrow their ODE code without introducing a
-   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
-   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
 - Implement PDF::pdfsetname and memberID (AB)
 
@@ -65,28 +58,22 @@ NOW
    PY6 will probably need some fiddling to return the array with the expected
    6-element origin offset. pdfsets.index will need to be populated for each set.
 
+- Fix and test ODE and analytic alpha_s running (KN,SL,MR,GW)
 
-NEXT
-----
+   The ODE solver needs serious optimisation, and numerically the results look
+   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
+   evolution... looks like we can't borrow their ODE code without introducing a
+   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
+   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
-- Provide setAlphaS methods cf. setInterpolator (AB)
-
-   The setAlphaS method should set the params appropriate for the PDF it's being
-   attached to.
-
-- Forbid PDF construction from a direct path to the data file? (AB)
-
-   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
-   Same set of constructors for PDF (and derivatives) and Info?
-   Throw/assert if dir name and file name are inconsistent
-
-- Change "config" -> "settings"?
-
-   And add a Settings.h or Config.h to access it, rather than the static fn on Info
 
 
 FOR BETA 1
 ----------
+
+- Change "config" -> "settings"?
+
+   And add a Settings.h or Config.h to access it, rather than the static fn on Info
 
 - Usage instructions, including installation and env variables, etc.
 
@@ -109,6 +96,17 @@ FOR BETA 2
 ----------
 
 - Profile GridPDF and AlphaS_ODE
+
+- Provide setAlphaS methods cf. setInterpolator (AB)
+
+   The setAlphaS method should set the params appropriate for the PDF it's being
+   attached to.
+
+- Forbid PDF construction from a direct path to the data file? (AB)
+
+   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
+   Same set of constructors for PDF (and derivatives) and Info?
+   Throw/assert if dir name and file name are inconsistent
 
 - AlphaS default params
 
