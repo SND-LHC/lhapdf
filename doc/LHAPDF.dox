@@ -81,6 +81,12 @@ the `Boost` (http://www.boost.org) and `yaml-cpp`
 @note For now you must use `yaml-cpp` version 0.3.x, *not* the new API in
 version 0.5 and higher.
 
+@note Also make sure that your build of `yaml-cpp` has installed a *shared*
+library (with a file extension of `.so` on Linux, or `.dylib` on Mac,
+e.g. `libyaml-cpp.so`) as well as the default `libyaml-cpp.a` static library.
+To make sure that the shared library is built, call `cmake
+-DBUILD_SHARED_LIBS=ON` during the build.
+
 An example call to configure might look like:
 
     ./configure --prefix=$HOME/local --with-yaml-cpp=$HOME/local
