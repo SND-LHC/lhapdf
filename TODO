@@ -35,7 +35,7 @@ NOW
    interpolation does: some refactoring should happen to make the same function
    treat both directions.
 
-- Interpolation in (log(x), log(Q2)) (AB,MR)
+- Interpolation in (log(x), log(Q2)) (AB)
 
    Graeme suggests that this is the best choice of measure: sounds good. How to
    implement with minimal/no duplication and without a performance hit? I think
@@ -47,6 +47,10 @@ NOW
 
    These names should be determined by file/directory consistency, not metadata,
    to avoid inconsistency.
+
+- Add extra flavors line to grid format (AB)
+
+   Will allow use of composite PDF parameterisations in future.
 
 - Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
 
@@ -124,6 +128,11 @@ FOR BETA 2
 
    Will allow set-level configs to propagate to all members.
    Define the "lock time", for things like ipol/xpol/alphaS.
+
+- Specialise interpolation for x
+
+   PDFs must all interpolate to 0 at x=1.0, without going negative: this
+   deserves specialisation beyond generic splines.
 
 - Metadata standards for accessing special member numbers.
 
