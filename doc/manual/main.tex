@@ -1,0 +1,76 @@
+\documentclass{report}
+\input{preamble}
+
+\title {LHAPDF6 -- a new standard interface for parton densities}
+\author{Andy~Buckley, \grey{James~Ferrando}, \grey{Karl~Nordstrom},
+  Stephen~Lloyd, Ben~Page, Martin~R\"ufenacht, Marek~Sch\"onherr,
+  \grey{Graeme~Watt}, Mike~Whalley}
+
+
+\begin{document}
+\maketitle
+
+\chapter{Overview}
+
+This is the part written for the \emph{earlier} LHAPDF rewrite -- modify/delete
+as appropriate. Some initial notes for this new version are at the end of the
+document and should be merged with this.
+
+\input{overview}
+
+\chapter{PDF specification}
+\todo{HEADER}
+
+\chapter{Technical details}
+
+\section{Interfaces}
+\input{interfaces}
+
+\section{PDF\_Base}
+\input{pdfBase}
+
+\section{Fortran PDFs}
+\input{fortranPDFs}
+
+\section{Evolution PDFs}
+\input{evolutionPDFs}
+
+\section{Interpolation PDFs}
+\input{interpolationPDFs}
+
+\section{CPP PDFs}
+\input{cppPDFs}
+
+\chapter{Cookbooks}
+
+\section{Fortran Wrapper Cookbook}
+\input{wrapperCookbook}
+
+
+\chapter{Bits from the \emph{other} manual}
+
+To be merged\dots
+
+
+\section{Introduction}
+\input{intro}
+
+\section{Building}
+\input{building}
+
+\section{Usage}
+\input{usage}
+
+\section{Improvements}
+\input{improvements}
+
+\section{Comparisons}
+\input{comparisons}
+
+\section{Acknowledgements}
+
+Thanks to Jeppe~Andersen, Juan~Rojo, Luigi~del~Debbio, Richard~Ball,
+$\langle$NNPDF student$\rangle$ for helpful suggestions and inputs on PDF
+collaboration requirements, which were invaluable in evolving this design.
+
+\end{document}

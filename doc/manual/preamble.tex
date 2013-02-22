@@ -1,0 +1,61 @@
+\usepackage[a4paper]{geometry}
+\usepackage{a4wide}
+\usepackage{xcolor,tikz,graphicx}
+\usepackage{todonotes}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{relsize}
+\usepackage[update,prepend]{epstopdf}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{cancel}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{bm}
+% \usepackage{underscore}
+% \usepackage{mathpazo}
+% \usepackage[latin1]{inputenc}
+% \usepackage[english]{babel}
+% \usepackage[T1]{fontenc}
+
+\frenchspacing
+
+\newcommand{\img}[2][1.0]{\includegraphics[width=#1\textwidth]{#2}\xspace}
+\newcommand{\bold}[1]{\textbf{#1}}
+
+% \newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\red}[1]{\textcolor{red!90!black}{#1}}
+\newcommand{\green}[1]{\textcolor{green!70!black}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue!80!white}{#1}}
+\newcommand{\orange}[1]{\textcolor{orange}{#1}}
+\newcommand{\grey}[1]{\textcolor{gray}{#1}}
+
+\newcommand{\eV}{\ensuremath{\text{e}\mspace{-0.8mu}\text{V}\xspace}}
+\newcommand{\MeV}{\ensuremath{\text{M\eV}}\xspace}
+\newcommand{\GeV}{\ensuremath{\text{G\eV}}\xspace}
+\newcommand{\TeV}{\ensuremath{\text{T\eV}}\xspace}
+
+\renewcommand{\d}[1]{\ensuremath{\mathrm{d}#1}\xspace}
+\newcommand{\pt}{\ensuremath{p_T}\xspace}
+\newcommand{\qsq}{\ensuremath{Q^2}\xspace}
+\newcommand{\xf}{\ensuremath{xf}\xspace}
+\newcommand{\xq}{\ensuremath{(x,Q)}\xspace}
+\newcommand{\xqsq}{\ensuremath{(x,Q^2)}\xspace}
+\newcommand{\fxq}{\ensuremath{f\xq}\xspace}
+\newcommand{\fxqsq}{\ensuremath{f\xqsq}\xspace}
+\newcommand{\xfxq}{\ensuremath{x\fxq}\xspace}
+\newcommand{\xfxqsq}{\ensuremath{x\fxqsq}\xspace}
+\newcommand{\alphaS}{\ensuremath{\alpha_\text{s}}\xspace}
+\newcommand{\Fortran}{\textsc{Fortran}\xspace}
+
+\makeatletter
+\DeclareRobustCommand{\kbd}[1]{{\smaller{\texttt{#1}}}}
+\DeclareRobustCommand{\code}[1]{\kbd{#1}\xspace}
+\DeclareRobustCommand{\To}{\ensuremath{\Rightarrow}\xspace}
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+
+\lstset{language=c++}
+% \lstset{basicstyle=\color{blue!50!green!80!black}\ttfamily\bfseries\small\smaller}
+\lstset{commentstyle=\textit}

@@ -1,22 +1,25 @@
-This section will attempt to provide an overview of the work done in 
-LHAPDF6 to improve the memory usage of the library. Rewriting it in C++ 
-gave the opportunity to use dynamic memory allocation functions such as 
-malloc, in order to only allocate the required amount of memory at run 
-time. What's more, LHAPDF6 uses dynamic linking to load an evolution 
+This section will attempt to provide an overview of the work done in
+LHAPDF6 to improve the memory usage of the library. Rewriting it in C++
+gave the opportunity to use dynamic memory allocation functions such as
+malloc, in order to only allocate the required amount of memory at run
+time. What's more, LHAPDF6 uses dynamic linking to load an evolution
 routine meaning that unnecessary code is not loaded into memory.
 
 This report is split into three distinct chapters - the overview, the PDF
-specification, the technical details and the cookbooks. For any developer 
-looking to maintain, the technical details section should cover the 
-implementation. If you are wanting to add a new evolution routine then 
+specification, the technical details and the cookbooks. For any developer
+looking to maintain, the technical details section should cover the
+implementation. If you are wanting to add a new evolution routine then
 check the cookbooks chapter.
 
-LHAPDF6 is based around a C++ class, with wrappers that provide both a 
-functional C interface and a fortran interface. The total structure of 
+LHAPDF6 is based around a C++ class, with wrappers that provide both a
+functional C interface and a fortran interface. The total structure of
 LHAPDF6 is shown in figure \ref{fig:classStructure}. This class structure
 is explained in great detail in the Technical Details chapter.
 
-\begin{figure}[h]
+\todo[inline]{Redraw this class diagram with the new class hierarchy and TikZ
+  (possibly there is an automatic UML diagramming module?)}
+
+\begin{figure}[b]
   \begin{picture}(400,100)
     \setlength{\fboxsep}{1mm}
 
@@ -41,7 +44,7 @@ is explained in great detail in the Technical Details chapter.
         \put(148, 30){\makebox{parent}}
         \put(5, 10){\framebox{Fortran\_Evolution\_PDF\vphantom{p}}}
         \put(125, 10){\framebox{Fortran\_Interpolation\_PDF}}
-      
+
         %Fortran_PDF_Base wraps arrow
         \put(160, 70){\makebox{wraps}}
         \put(173,53){\vector(1, 1){20}}
@@ -79,11 +82,8 @@ is explained in great detail in the Technical Details chapter.
     }
   \end{picture}
   \caption{A diagram of the class structure within LHAPDF6.
-           \label{fig:classStructure}} 
+           \label{fig:classStructure}}
 \end{figure}
 
-{
-  \bf
-  The rest of things that I want to put here are things like examples of
-  speed increases, memory decreases and proof of equality.
-}
+\todo[inline]{The rest of things that I want to put here are things like
+  examples of speed increases, memory decreases and proof of equality.}
