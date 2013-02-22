@@ -1,3 +1,9 @@
+#if WITH_PDF
+man:
+	(cd manual && make)
+#endif
+
+
 ## Doxygen
 if WITH_DOXYGEN
 doxy:
