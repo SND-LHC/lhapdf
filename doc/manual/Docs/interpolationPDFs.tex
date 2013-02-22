@@ -1,0 +1,88 @@
+Interpolation, or grid PDFs, were the main motivation for rewriting LHAPDF
+due to their large memory allocation habits. Because of the way Fortran is
+structured, all POSSIBLE necessary memory is allocated immediately. Which
+for sets such as NNPDF20\_1000.LHgrid, can cause a catastrophic amount of
+allocation, even if only a single member set is required. (For example,
+to set up the central member only about 20MB is required, however LHAPDF5
+allocates around 17GB!). These are different to evolution pdfs (LHpdf files)
+as the previous did not need to allocate and manage memory as it doesn't use
+such large arrays.
+
+In order to take over the allocation of the blocks, the wrappers themselves
+had to be edited. In short any large array is replaced with a Fortran
+pointer, which we point at a block of memory allocated by the C++. There is
+no need for the C++ to do anything more complicated than allocation. This
+requires a few changes to the wrapper fortran, as well as a few C++
+functions that both standardise the function naming and do the allocation.
+For a full instruction set on how to do this, please see the wrapper
+cookbook.
+
+One, annoying, implementation detail is that the way Fortran arrays point
+differs between compilers. Specifically I have noticed the change occur
+between GCC 4.1.2 and GCC 4.4.3. To explain we must first discuss the way
+that fortran arrays are declared. A complicated array definition could look
+like this:
+
+\begin{verbatim}
+  real*8 MyArray(0:4, -3:7, 4:10)
+\end{verbatim}
+
+Why does this cause problems? The change in implementation was the decision
+to move from Fortran pointing to the MyArray(1,1,1) element to the
+MyArray(0, -3, 4) element when doing the pointing. CLEARLY the 
+MyArray(1,1,1) element is non-physical and just an artifact of pointer
+arithmetic, yet in earlier versions of GCC this is how it was done.
+Within the wrapper this has to be compensated for. The wrapper code now
+looks a lot longer, but hopefully with compiler optimisation it won't go
+through the process of allocating all the extra doubles (it's just for ease
+of reading).
+
+There are two other points to talk about with regards to the editing of the
+wrappers and these are the idea of member skipping and the putdata function.
+Fortran's File IO is record based, and can only read line by line. Each
+member set is loaded by starting from the top of the grid file, even if
+you may want to load the 9th member. The loading of the first member will be
+very quick, as it will load to that point and then stop execution. However,
+the loading of the second member involves using the same routine. The
+routine has been edited such that it loads all members into the same space
+when you are attempting to load a single member. LHAPDF6 takes the job of
+managing which space it is loaded into. For example when you load member 0
+it will do the following to block 1:
+
+\begin{verbatim}
+  load member 0 into block 1
+\end{verbatim}
+
+When you load member 1, it would do the following to block 2:
+
+\begin{verbatim}
+  load member 0 into block 2
+  load member 1 into block 2
+\end{verbatim}
+
+If you take the time to load ALL of the members then LHAPDF6 will be slower
+than LHAPDF5. I believe this can be programmed around (with some 
+difficulty), but for the moment the load has a speed decrease. (Though
+usually anyone using these will load them only once, and calculate a lot
+more, so this should not be too much of a problem).
+
+The final key implementation detail is that of the ``putdata'' function.
+This is how LHAPDF6 handles telling the fortran where the data is. This
+function is called every time a PDFset has been ``deactivated'' and is now
+needed to be used again. By ``deactivated'' I mean that another PDF set has
+been used (that uses the same evolution routine), as this would require
+telling the fortran to use the other data. This putdata function is called
+by Lhapdf when it runs MakeActive() (hence the need for the function).
+It takes one argument which is a pointer to a database which contains the
+information needed for pointing. Each LHAPDF6 wrapper, when allocating the
+data, creates a Database object (or something polymorphic to it) and gets
+LHAPDF to save it to the PDF\_Base object. This is done in a global way,
+so requires a global way to access the LHAPDF class. This is a problem as
+it causes difficulties when using multiple instances - they wouldn't be
+independant. However I believe this is a problem that is solved.
+
+The specifics of how to create a putdata function are described in the
+fortran wrapper cookbook and can be easily observed by looking at any of the
+currently implemented wrappers.
+
+%FIXME FINISH

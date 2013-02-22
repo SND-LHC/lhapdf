@@ -1,0 +1,19 @@
+The C++ PDF is the future of LHAPDF PDFs, and will increase the speed, and
+decrease the memory usage, further. Currently there are complications in
+the way of C++ PDFs, more than simply implementing the PDF itself.
+LHAPDF's header read routines are tied to the Fortran implementation and so
+they will need to be either abstracted into the PDF\_Base class (with
+difficulty) OR they will neeed to be reimplemented.
+
+However, in principal something descending from the (currently 
+unimplemented) CPP\_PDF\_Base would need to provide only four functions:
+\begin{itemize}
+  \item The constructor
+  \item The xfx evolution routine
+  \item The $\alpha_S$ evolution routine
+  \item The destructor
+\end{itemize}
+
+It would not be possible (and probably would be undesirable) to use the
+dynamic linking mechanisms of the Fortran PDFs as dlopen is unable to deal
+with dynamically linking classes.
