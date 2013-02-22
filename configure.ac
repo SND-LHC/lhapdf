@@ -65,6 +65,10 @@ fi
 AM_CONDITIONAL(ENABLE_LHAGLUE, [test x$enable_lhaglue == xyes])
 
 
+## Find pdflatex if possible
+AC_PATH_PROG(PDFLATEX, pdflatex)
+AM_CONDITIONAL(WITH_PDFLATEX, [test x$PDFLATEX != x])
+
 ## Find Doxygen if possible
 AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, [test x$DOXYGEN != x])

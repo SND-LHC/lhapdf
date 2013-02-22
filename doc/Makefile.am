@@ -1,10 +1,9 @@
-#if WITH_PDF
+if WITH_PDFLATEX
 man:
 	(cd manual && make)
-#endif
+endif
 
 
-## Doxygen
 if WITH_DOXYGEN
 doxy:
 	@echo "Running Doxygen..."
