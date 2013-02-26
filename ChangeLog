@@ -1,3 +1,11 @@
+2013-02-26  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Started work on new LaTeX manual/paper, based on previous contribution from Ben and Marek.
+
+	* Cleaning up defunct wrappers directories.
+
+	* Fixing a bug in handling of nearest knot lookup for underflow x/Q2 requests.
+
 2013-02-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding installation and usage instructions to the Doxy manual.

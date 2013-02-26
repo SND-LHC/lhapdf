@@ -35,6 +35,14 @@ NOW
    interpolation does: some refactoring should happen to make the same function
    treat both directions.
 
+- Treat x -> 1 extrapolation properly (GW,AB,MR,...)
+
+   I think there is a good case here for using specialist x and Q2 ipol/xpol
+   algorithms... and specifying the x and Q2 parameterisations separately?
+
+   Simplest solution is always to include x = 1 in the grids... a bit wasteful,
+   but surely a small performance penalty?
+
 - Interpolation in (log(x), log(Q2)) (AB)
 
    Graeme suggests that this is the best choice of measure: sounds good. How to

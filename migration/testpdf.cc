@@ -21,14 +21,18 @@ int main(int argc, char* argv[]) {
   const PDF* pdf = mkPDF(setname, imem);
   vector<int> pids = pdf->flavors();
 
+  const double MINLOGX = -10;
+  const double MINLOGQ2 = 1;
+  const double MAXLOGQ2 = 8;
+
   foreach (int pid, pids) {
     const string spid = boost::lexical_cast<string>(pid);
     const string filename = setname + "_" + smem + "_" + spid + ".dat";
     ofstream f(filename.c_str());
     const double dx = 0.1; // 0.01
     const double dq2 = 0.1; // 0.01
-    for (double log10x = -8; log10x < -0.1; log10x += dx) {
-      for (double log10q2 = 1; log10q2 < 8; log10q2 += dq2) {
+    for (double log10x = MINLOGX; log10x <= 0.0; log10x += dx) {
+      for (double log10q2 = MINLOGQ2; log10q2 <= MAXLOGQ2; log10q2 += dq2) {
         const double x = pow(10, log10x);
         const double q2 = pow(10, log10q2);
         f << log10x << " " << log10q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
