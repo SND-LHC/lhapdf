@@ -1,13 +1,16 @@
 cimport clhapdf as c
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from itertools import izip
+
 
 # def do_something(char *name):
 #     cdef c.PDFGrid *grid = c.PDFGrid_load(string(name))
-
 #          print grid.xfxQ2(1, 0.3, 1000)
 
-from itertools import izip
+
+# TODO: Add a very minimal mapping of only the PDF interface (ipol/xpolspec by string) and the PDF factory functions
+
 
 cdef knotsToList(vector[double] knots):
     outputKnots = []
@@ -15,6 +18,7 @@ cdef knotsToList(vector[double] knots):
     for i in range(knots.size()):
         outputKnots.append(knots[i])
     return outputKnots
+
 
 cdef class PDF:
     """
@@ -50,7 +54,8 @@ cdef class PDF:
         return self._ptr.getMemberNumber()
 
     def __dealloc__(self):
-        del self._ptr 
+        del self._ptr
+
 
 cdef class PDFGrid(PDF):
     """
@@ -84,10 +89,10 @@ cdef class PDFGrid(PDF):
     @property
     def q2Knots(self):
         return knotsToList(self._PDFGrid().getQ2Knots())
-  
+
     def setInterpolator(self, Interpolator interpolator):
         self._PDFGrid().setInterpolator(interpolator._ptr)
-    
+
     def setDefaultInterpolator(self):
         self._PDFGrid().setDefaultInterpolator()
 
@@ -96,7 +101,7 @@ cdef class PDFGrid(PDF):
 
     def setDefaultExtrapolator(self):
         self._PDFGrid().setDefaultExtrapolator()
-    
+
     def hasInterpolator(self):
         return self._PDFGrid().hasInterpolator()
 
@@ -114,9 +119,10 @@ cdef class PDFGrid(PDF):
         cdef PDFGrid obj = PDFGrid.__new__(PDFGrid)
         obj.set_ptr(c.PDFGrid_loadByName(string(name)))
         return obj
-    
+
     def __dealloc__(self):
-        del self._ptr 
+        del self._ptr
+
 
 cdef class Interpolator:
     """
@@ -140,7 +146,7 @@ cdef class Interpolator:
         self._ptr.interpolateQ2(pdfgrid._PDFGrid()[0], pid, x, q2)
 
     def __dealloc__(self):
-        del self._ptr 
+        del self._ptr
 
     #TODO: static methods
 
@@ -165,9 +171,9 @@ cdef class Extrapolator:
 
     def extrapolateQ2(self, PDFGrid pdfgrid, pid, x, q2):
         self._ptr.extrapolateQ2(pdfgrid._PDFGrid()[0], pid, x, q2)
-    
+
     def __dealloc__(self):
-        del self._ptr 
+        del self._ptr
 
 
 cdef class PDFSet:
@@ -202,7 +208,7 @@ cdef class PDFSet:
 
 
 def createInterpolator(char *interpolatorName):
-    cdef Interpolator obj = Interpolator.__new__(Interpolator) 
+    cdef Interpolator obj = Interpolator.__new__(Interpolator)
     obj.set_ptr(c.createInterpolator(string(interpolatorName)))
     return obj
 

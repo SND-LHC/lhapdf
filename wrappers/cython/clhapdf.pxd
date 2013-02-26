@@ -19,7 +19,7 @@ cdef extern from "../../include/PDF.h":
         double xfxQ(PID_t, X_t, Q_t) except +
         double xfxQ2(PID_t, X_t, Q2_t) except +
         void xfxQ(PID_t, int, X_t, Q_t, double*) except +
-        void xfxQ2(PID_t, int, X_t, Q2_t, double*) except + 
+        void xfxQ2(PID_t, int, X_t, Q2_t, double*) except +
         bool inRangeQ(X_t, Q_t) except +
         bool inRangeQ2(X_t, Q2_t) except +
         bool hasPID(PID_t) except +
@@ -41,7 +41,7 @@ cdef extern from "../../include/PDFGrid.h":
         bool hasInterpolator()
         bool hasExtrapolator()
 
-    cdef PDFGrid *PDFGrid_load "PDFGrid::load" (string)   
+    cdef PDFGrid *PDFGrid_load "PDFGrid::load" (string)
     cdef PDFGrid *PDFGrid_loadByName "PDFGrid::loadByName" (string)
 
 cdef extern from "../../include/Interpolator.h":
@@ -49,10 +49,10 @@ cdef extern from "../../include/Interpolator.h":
         void bind(PDFGrid)
         void unbind(PDFGrid)
         double interpolateQ(PDFGrid, PID_t, X_t, Q_t)
-        double interpolateQ2(PDFGrid, PID_t, X_t, Q2_t) 
-        void interpolateQ(PDFGrid, PID_t, uint32_t, X_t, Q_t, double)  
+        double interpolateQ2(PDFGrid, PID_t, X_t, Q2_t)
+        void interpolateQ(PDFGrid, PID_t, uint32_t, X_t, Q_t, double)
         void interpolateQ2(PDFGrid, PID_t, uint32_t, X_t, Q_t, double)
-    
+
     cdef void Interpolator_bind "Interpolator::bind" (PDFGrid)
     cdef void Interpolator_unbind "Interpolator::unbind" (PDFGrid)
     cdef double Interpolator_interpolateQ "Interpolator::interpolateQ" (
@@ -75,8 +75,8 @@ cdef extern from "../../include/Extrapolator.h":
         void bind(PDFGrid)
         void unbind(PDFGrid)
         double extrapolateQ(PDFGrid, PID_t, X_t, Q_t)
-        double extrapolateQ2(PDFGrid, PID_t, X_t, Q2_t) 
-        void extrapolateQ(PDFGrid, PID_t, uint32_t, X_t, Q_t, double)  
+        double extrapolateQ2(PDFGrid, PID_t, X_t, Q2_t)
+        void extrapolateQ(PDFGrid, PID_t, uint32_t, X_t, Q_t, double)
         void extrapolateQ2(PDFGrid, PID_t, uint32_t, X_t, Q_t, double)
 
 cdef extern from "../../include/PDFSet.h":
