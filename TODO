@@ -37,11 +37,15 @@ NOW
 
 - **Treat x -> 1 extrapolation properly (GW,AB,MR,...)**
 
+   PDFs must all interpolate to 0 at x=1.0, (usually) without going negative: this
+   deserves specialisation beyond generic splines.
+
    I think there is a good case here for using specialist x and Q2 ipol/xpol
    algorithms... and specifying the x and Q2 parameterisations separately?
 
-   Simplest/quickest solution is always to include x = 1 in the grids... a bit
-   wasteful, but simpler and (probably) a relatively small performance penalty?
+   The simplest/quickest solution right now is always to include x = 1 in the
+   grids... a bit wasteful, but simpler and (probably) a relatively small
+   performance penalty? But we can do better in the long run.
 
 - **Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)**
 
@@ -65,17 +69,19 @@ FOR BETA 1
 
 - **Add extra flavors line to grid format (AB)**
 
-   Will allow use of composite PDF parameterisations in future.
+   Anticipating demand for use of composite PDF parameterisations in future.
 
 - **Config system improvements (AB)**
 
-   Change "config" -> "settings"? And certainly add a factory function (or
-   Config.h/Settings.h) to access it, rather than the static fn on Info.
+   Change "config" -> "settings"? Particularly since `Config.h` is already used
+   for the `#define`s from autoconf. And we should certainly make a
+   `Factories.h` function (or in `Settings.h`?) to access the main config
+   object, rather than a static fn on Info itself.
 
-- **Treating missing flavours with error vs. return 0 (AB)**
+- **Re-introduce set-level Info singletons**
 
-   Provide a switch to distinguish the two responses. Put ID check into
-   PDF::xfxQ2 function?
+   Will allow set-level configs to propagate to all members.
+   Define the "lock time", for things like ipol/xpol/alphaS.
 
 
 FOR BETA 2
@@ -103,6 +109,11 @@ FOR BETA 2
    The setAlphaS method should set the params appropriate for the PDF it's being
    attached to.
 
+- **Treating missing flavours with error vs. return 0 (AB)**
+
+   Provide a switch to distinguish the two responses. Put ID check into
+   PDF::xfxQ2 function?
+
 - **Forbid PDF construction from a direct path to the data file? (AB)**
 
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
@@ -120,16 +131,6 @@ FOR BETA 2
 
    e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be
    fundamentally built-in that we have to maintain the old banner style!
-
-- **Re-introduce set-level Info singletons**
-
-   Will allow set-level configs to propagate to all members.
-   Define the "lock time", for things like ipol/xpol/alphaS.
-
-- **Specialise interpolation for x**
-
-   PDFs must all interpolate to 0 at x=1.0, without going negative: this
-   deserves specialisation beyond generic splines.
 
 - **Metadata standards for accessing special member numbers.**
 
