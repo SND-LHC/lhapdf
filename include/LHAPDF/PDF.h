@@ -261,17 +261,22 @@ namespace LHAPDF {
     /// Get the info class that actually stores and handles the metadata (const version)
     const Info& info() const { return _info; }
 
-    /// @todo Set name should be set by the constructor, not the metadata system
-    // /// PDF set name
-    // std::string setname() const {
-    //   return _setname;
-    // }
+    /// @brief PDF set name
+    ///
+    /// Obtained from the member file path, not Info-based metadata.
+    std::string setname() const {
+      return _mempath.parent_path().filename().string();
+    }
 
-    /// @todo Member ID should be set by the constructor, not the metadata system
-    // /// PDF member ID number
-    // int memberid() const {
-    //   return _memberid;
-    // }
+    /// @brief PDF member ID number
+    ///
+    /// Obtained from the member file path, not Info-based metadata.
+    int memberid() const {
+      const string memname = _mempath.stem().string();
+      assert(memname.find(setname()) == 0);
+      const int memid = lexical_cast<int>(memname.substr(memname.length()-4)); //< Last 4 chars should be the member number
+      return memid;
+    }
 
     /// Description of the set
     std::string description() const {

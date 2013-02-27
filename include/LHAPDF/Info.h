@@ -48,7 +48,7 @@ namespace LHAPDF {
 
     /// Get the singleton global configuration object
     ///
-    /// @todo Move this to somewhere else -- out of Info?
+    /// @todo Move this to somewhere else -- out of Info? In Factories.h?
     ///
     /// The global config is populated by reading from lhapdf.conf if it is
     /// found in the search paths.

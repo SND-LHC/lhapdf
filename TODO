@@ -63,11 +63,6 @@ NOW
 FOR BETA 1
 ----------
 
-- **Implement PDF::pdfsetname and memberID (AB)**
-
-   These names should be determined by file/directory consistency, not metadata,
-   to avoid inconsistency.
-
 - **Add extra flavors line to grid format (AB)**
 
    Will allow use of composite PDF parameterisations in future.

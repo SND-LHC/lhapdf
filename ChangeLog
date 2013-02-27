@@ -1,3 +1,7 @@
+2013-02-27  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Implemented PDF::setname() and PDF::memberid().
+
 2013-02-26  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a lhapdf-config build assistant script.
