@@ -1,5 +1,9 @@
 2013-02-26  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding a lhapdf-config build assistant script.
+
+	* Adding hacky first implementations of log-space interpolators. Separation of x and Q2 ipol seems ever more likely.
+
 	* Started work on new LaTeX manual/paper, based on previous contribution from Ben and Marek.
 
 	* Cleaning up defunct wrappers directories.

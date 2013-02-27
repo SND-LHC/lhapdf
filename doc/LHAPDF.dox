@@ -114,7 +114,20 @@ location that you specified, call `make install`. You will (or at least
 Usage
 -----
 
-The following examples should help you to get to grips with using LHAPDF:
+As for previous versions, LHAPDF is a programmatic library. It can be accessed
+via user code written in C++, and to a more limited extent from Python and
+Fortran programs.
+
+PDF sets (each of which is stored in a unique filesystem directory) should
+usually be installed in the `$prefix/share/LHAPDF/` directory (i.e. the PDF dirs
+are at the same level as the global `lhapdf.conf` file). To make use of PDF sets
+installed in other places, those search paths should be listed in the
+`LHAPDF_DATA_PATH` environment variable. [`LHAPDF_DATA_PATH` is an extension of
+the old `LHAPATH` variable which supports multiple search paths separated by
+colon (`:`) characters, cf. standard system paths like `PATH`,
+`LD_LIBRARY_PATH`, etc.]
+
+The following examples should help you to get to grips with using LHAPDF from C++:
 
 **Using and testing PDFs:**
 @include migration/testpdf.cc

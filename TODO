@@ -8,14 +8,14 @@ LHAPDF6 TODO list
 NOW
 ---
 
-- Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,AB)
+- **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,AB)**
 
    AB: I've made CT10 work with a bit of updating of the migration/creategrids
    script. No attempt at validation other than eyeballing in
    gnuplot. pdfsets.index will need to be populated for each set. Metadata will
    need to be set manually, I think (?).
 
-- Validation system and plotting (SL,MR,DM,BP)
+- **Validation system and plotting (SL,MR,DM,BP)**
 
    Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
    point list, then separately dump out xf(x) values into separate files with
@@ -24,7 +24,7 @@ NOW
    Advice from Graeme/HOPPET is to scan on lines in x and Q2 (with one of the
    pair fixed) rather than to compare randomly sampled points.
 
-- Fix bicubic interpolation to treat low and high edge cases more carefully (MR,AB)
+- **Fix bicubic interpolation to treat low and high edge cases more carefully (MR,AB)**
 
    AB: I think I fixed a bug where interpolation in the last "gap" between knots
    did not work, by explicitly returning the n-1'th knot in that edge case. Not
@@ -35,70 +35,49 @@ NOW
    interpolation does: some refactoring should happen to make the same function
    treat both directions.
 
-- Treat x -> 1 extrapolation properly (GW,AB,MR,...)
+- **Treat x -> 1 extrapolation properly (GW,AB,MR,...)**
 
    I think there is a good case here for using specialist x and Q2 ipol/xpol
    algorithms... and specifying the x and Q2 parameterisations separately?
 
-   Simplest solution is always to include x = 1 in the grids... a bit wasteful,
-   but surely a small performance penalty?
+   Simplest/quickest solution is always to include x = 1 in the grids... a bit
+   wasteful, but simpler and (probably) a relatively small performance penalty?
 
-- Interpolation in (log(x), log(Q2)) (AB)
-
-   Graeme suggests that this is the best choice of measure: sounds good. How to
-   implement with minimal/no duplication and without a performance hit? I think
-   the design means that one interpolator can't just use another, since the knot
-   values are properties of the KnotArray rather than external lists that could
-   be "logified".
-
-- Implement PDF::pdfsetname and memberID (AB)
-
-   These names should be determined by file/directory consistency, not metadata,
-   to avoid inconsistency.
-
-- Add extra flavors line to grid format (AB)
-
-   Will allow use of composite PDF parameterisations in future.
-
-- Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)
+- **Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)**
 
    Both should just use nset = 0 all the time, I think. getnset_ and getnmem_
    also need to be provided.
 
-- Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)
+   Fortran array pointer passing (and symbol name mangling, and string length
+   extra args) schemes to be established using the autoconf `FC_FUNC`
+   etc. macros to test the Fortran compiler -- but *only* if the
+   `ENABLE_LHAGLUE` conditional is active, i.e. don't test the Fortran compiler
+   if it isn't going to be used.
+
+- **Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)**
 
    PY6 will probably need some fiddling to return the array with the expected
    6-element origin offset. pdfsets.index will need to be populated for each set.
-
-- Fix and test ODE and analytic alpha_s running (KN,SL,MR,GW)
-
-   The ODE solver needs serious optimisation, and numerically the results look
-   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
-   evolution... looks like we can't borrow their ODE code without introducing a
-   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
-   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
-
 
 
 FOR BETA 1
 ----------
 
-- Change "config" -> "settings"?
+- **Implement PDF::pdfsetname and memberID (AB)**
 
-   And add a Settings.h or Config.h to access it, rather than the static fn on Info
+   These names should be determined by file/directory consistency, not metadata,
+   to avoid inconsistency.
 
-- Usage instructions, including installation and env variables, etc.
+- **Add extra flavors line to grid format (AB)**
 
-- Improve the DESIGN document's coherence (AB)
+   Will allow use of composite PDF parameterisations in future.
 
-- lhapdf-config build assistant script (AB)
+- **Config system improvements (AB)**
 
-- Add interpolation-from-metadata implementation of AlphaS
+   Change "config" -> "settings"? And certainly add a factory function (or
+   Config.h/Settings.h) to access it, rather than the static fn on Info.
 
-   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
-   values robustly to implement 1D subgrids.
-
-- Treating missing flavours with error vs. return 0
+- **Treating missing flavours with error vs. return 0 (AB)**
 
    Provide a switch to distinguish the two responses. Put ID check into
    PDF::xfxQ2 function?
@@ -107,46 +86,61 @@ FOR BETA 1
 FOR BETA 2
 ----------
 
-- Profile GridPDF and AlphaS_ODE
+- **Improve the DESIGN document's coherence (AB)**
 
-- Provide setAlphaS methods cf. setInterpolator (AB)
+- **Add interpolation-from-metadata implementation of AlphaS**
+
+   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
+   values robustly to implement 1D subgrids.
+
+- **Fix and test ODE and analytic alpha_s running (KN,SL,MR,GW)**
+
+   The ODE solver needs serious optimisation, and numerically the results look
+   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
+   evolution... looks like we can't borrow their ODE code without introducing a
+   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
+   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
+
+- **Profile GridPDF and AlphaS_ODE**
+
+- **Provide setAlphaS methods cf. setInterpolator (AB)**
 
    The setAlphaS method should set the params appropriate for the PDF it's being
    attached to.
 
-- Forbid PDF construction from a direct path to the data file? (AB)
+- **Forbid PDF construction from a direct path to the data file? (AB)**
 
    Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
    Same set of constructors for PDF (and derivatives) and Info?
    Throw/assert if dir name and file name are inconsistent
 
-- AlphaS default params
+- **AlphaS default params**
 
    Should the param defaults be clearly invalid so that default AlphaS fields and
    throw an AlphaSException if the values are not in a physical range?
 
-- Updated lhapdf-getdata, downloading PDFs as tarballs
+- **Updated lhapdf-getdata, downloading PDFs as tarballs**
 
-- Printing out banner info... needed by code that greps for it :-/
+- **Printing out banner info... needed by code that greps for it :-/**
 
    e.g. ATLAS' Generate_trf.py. Provide a helper function? It shouldn't be
    fundamentally built-in that we have to maintain the old banner style!
 
-- Re-introduce set-level Info singletons
+- **Re-introduce set-level Info singletons**
 
    Will allow set-level configs to propagate to all members.
    Define the "lock time", for things like ipol/xpol/alphaS.
 
-- Specialise interpolation for x
+- **Specialise interpolation for x**
 
    PDFs must all interpolate to 0 at x=1.0, without going negative: this
    deserves specialisation beyond generic splines.
 
-- Metadata standards for accessing special member numbers.
+- **Metadata standards for accessing special member numbers.**
 
    e.g. a PosDefMemberID metadata key at set level.
 
-- Python interface
+- **Python interface**
 
    For access to standard functionality but not pluggable in the sense that a
    Python interpolator class cannot be passed to a wrapped PDF object: so hide
@@ -156,15 +150,15 @@ FOR BETA 2
 FOR STABLE 6.0.0 RELEASE
 ------------------------
 
-- Write-up
+- **Write-up**
 
    Target at EPJC Tools, cf. Rivet?
 
-- Versioning scheme for PDF data
+- **Versioning scheme for PDF data**
 
    In metadata and tarball filenames.
 
-- Provide a way to find the number of members in a PDF set
+- **Provide a way to find the number of members in a PDF set**
 
    Or just iterate over ints until an Exception is thrown? We should be able to
    find out not just how many members are available but which numbers, so that
@@ -176,9 +170,9 @@ FOR STABLE 6.0.0 RELEASE
 AS AND WHEN
 -----------
 
-- Add more metadata methods to PDF and PDFGrid as needed
+- **Add more metadata methods to PDF and PDFGrid as needed**
 
-- Allow use of valence/sea etc. decompostions
+- **Allow use of valence/sea etc. decompostions**
 
    GridPDF may be inherited from to allow the returned values to be built from
    separate interpolations of component PDFs such as interpolated valence, sea,
@@ -189,40 +183,35 @@ AS AND WHEN
    "internal" PDG ID list needs to become part of the grid data header, or can
    the metadata be used?
 
-- Make GridPDFs not read their data block until an xf value is requested?!
+- **Make GridPDFs not read their data block until an xf value is requested?!**
 
    Super-laziness!
 
-- More aggressive memory and CPU optimisation
+- **More aggressive memory and CPU optimisation**
 
    For example avoiding duplication of x,Q knot arrays between flavors... if
    this "1D" effect is really significant.
 
-- Read zipped/tarred PDFs
+- **Read zipped/tarred PDFs**
 
    With standard directory structure internally.
 
-- Use subgrids in x?
-
-   Graeme reports that the HOPPET manual discusses performance improvements from
-   use of x-subgrids. Wouldn't be a huge change now that subgrids exist at all,
-   but is it needed? Do any current PDFs use x-subgrids?
-
-- Separate the x and Q2 inter/extrapolation?
+- **Separate the x and Q2 inter/extrapolation?**
 
    Allow mix & match combinations. Would this simplify the code since the
    1D interpolation methods are very simple and the 2D is built from them?
 
-- Updated Octave wrapper
+- **Updated Octave wrapper**
 
    To come from Phil Ilten
 
-- Use Autoconf's more robust FC_* Fortran function name macros
+- **Use Autoconf's more robust FC_* Fortran function name macros**
 
-   But this would require testing for a Fortran compiler, which we would rather
-   not do. It certainly shouldn't be a blocker.
+   This would require testing for a Fortran compiler, which we would rather
+   not do... but so do tests for Fortran array pointer handling, etc. Test for
+   the Fortran compiler unless told not to build LHAGLUE?
 
-- Add helper functions for calculating PDF errors on observables
+- **Add helper functions for calculating PDF errors on observables**
 
    Certainly a good thing to provide an example for... maybe it should just be
    provided as an example? One nice thing is that since we now store a clear
@@ -230,6 +219,9 @@ AS AND WHEN
    treatment should be easy (I think it's best to not use words like
    "infallible"!)
 
-- Support the new yaml-cpp API... *and* the old one?
+- **Support the new yaml-cpp API... *and* the old one?**
+
+   Or get rid of `yaml-cpp`? We don't want it to be a source of problems, but
+   best not to reinvent an existing wheel unless forced to do so...
 
 */
