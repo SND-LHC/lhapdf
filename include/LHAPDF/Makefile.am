@@ -13,8 +13,10 @@ pkginclude_HEADERS = \
   KnotArray.h \
   Interpolator.h \
   Extrapolator.h \
-  BicubicInterpolator.h \
   BilinearInterpolator.h \
+  BicubicInterpolator.h \
+  LogBilinearInterpolator.h \
+  LogBicubicInterpolator.h \
   ErrExtrapolator.h \
   NearestPointExtrapolator.h \
   AlphaS.h

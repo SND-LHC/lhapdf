@@ -1,6 +1,8 @@
 #include "LHAPDF/GridPDF.h"
 #include "LHAPDF/BilinearInterpolator.h"
 #include "LHAPDF/BicubicInterpolator.h"
+#include "LHAPDF/LogBilinearInterpolator.h"
+#include "LHAPDF/LogBicubicInterpolator.h"
 #include "LHAPDF/ErrExtrapolator.h"
 #include "LHAPDF/NearestPointExtrapolator.h"
 #include "LHAPDF/AlphaS.h"
@@ -52,6 +54,10 @@ namespace LHAPDF {
       return new BilinearInterpolator();
     else if (iname == "cubic")
       return new BicubicInterpolator();
+    else if (iname == "log")
+      return new LogBilinearInterpolator();
+    else if (iname == "logcubic")
+      return new LogBicubicInterpolator();
     else
       throw FactoryError("Undeclared interpolator requested: " + name);
   }

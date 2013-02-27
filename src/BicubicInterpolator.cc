@@ -25,7 +25,6 @@ namespace LHAPDF {
 
 
     // Provides d/dx at all grid locations
-    /// @todo Make into a non-member function (and use an unnamed namespace)
     double _ddx(const KnotArray1F& subgrid, size_t ix, size_t iq2) {
       /// @todo Re-order this if so that branch prediction will favour the "normal" central case
       if (ix == 0) { //< If at leftmost edge, use forward difference

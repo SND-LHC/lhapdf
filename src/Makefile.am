@@ -2,7 +2,8 @@ lib_LTLIBRARIES = libLHAPDF.la
 
 libLHAPDF_la_SOURCES = \
   GridPDF.cc Info.cc Paths.cc \
-  Interpolator.cc BicubicInterpolator.cc BilinearInterpolator.cc \
+  Interpolator.cc BilinearInterpolator.cc BicubicInterpolator.cc \
+  LogBilinearInterpolator.cc LogBicubicInterpolator.cc \
   ErrExtrapolator.cc NearestPointExtrapolator.cc \
   AlphaS.cc AlphaS_Analytic.cc AlphaS_ODE.cc AlphaS_Ipol.cc \
   Factories.cc

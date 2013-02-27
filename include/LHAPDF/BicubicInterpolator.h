@@ -13,7 +13,5 @@ namespace LHAPDF {
     double _interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const;
   };
 
-  /// @todo Make a log-space BicubicLogInterpolator based on this
-
 
 }
