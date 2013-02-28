@@ -71,12 +71,7 @@ FOR BETA 1
 
    Anticipating demand for use of composite PDF parameterisations in future.
 
-- **Config system improvements (AB)**
-
-   Change "config" -> "settings"? Particularly since `Config.h` is already used
-   for the `#define`s from autoconf. And we should certainly make a
-   `Factories.h` function (or in `Settings.h`?) to access the main config
-   object, rather than a static fn on Info itself.
+- **Change "config" -> "settings"?**
 
 - **Re-introduce set-level Info singletons**
 

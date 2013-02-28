@@ -21,6 +21,25 @@ namespace LHAPDF {
   }
 
 
+  Info& config() {
+    static Info _cfg;
+    string confpath = findFile("lhapdf.conf").native();
+    // cout << "CONFPATH = " << confpath.empty() << endl;
+    if (!confpath.empty()) _cfg.load(confpath);
+    return _cfg;
+  }
+
+  // bool Info::has_key(const std::string& key) const {
+  //   return has_key_local(key) || config().has_key_local(key);
+  // }
+
+  // const std::string& Info::metadata(const std::string& key) const {
+  //   if (has_key_local(key)) return _metadict.find(key)->second; //< value is defined locally -- return that
+  //   if (this != &config()) return config().metadata(key); //< if this isn't the global Config, ask that
+  //   throw MetadataError("Metadata for key: " + key + " not found."); //< this is the global Config and key is still not known
+  // }
+
+
   void Info::load(const path& filepath) {
     // Read the YAML file into the metadata map
     try {

@@ -98,14 +98,4 @@ namespace LHAPDF {
   }
 
 
-  /// Get the singleton global configuration object
-  Info& config() {
-    static Info _cfg;
-    string confpath = findFile("lhapdf.conf").native();
-    // cout << "CONFPATH = " << confpath.empty() << endl;
-    if (!confpath.empty()) _cfg.load(confpath);
-    return _cfg;
-  }
-
-
 }

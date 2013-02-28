@@ -1,12 +1,28 @@
 #pragma once
 
-#include "LHAPDF/Factories.h"
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
 #include <fstream>
 
 namespace LHAPDF {
+
+
+  /// Get the singleton global configuration object
+  ///
+  /// @todo Move this to somewhere else -- out of Info? In Factories.h?
+  ///
+  /// The global config is populated by reading from lhapdf.conf if it is
+  /// found in the search paths.
+  class Info;
+  Info& config();//  {
+  //   static Info _cfg;
+  //   string confpath = findFile("lhapdf.conf").native();
+  //   // cout << "CONFPATH = " << confpath.empty() << endl;
+  //   if (!confpath.empty()) _cfg.load(confpath);
+  //   return _cfg;
+  // }
+
 
 
   /// Metadata base class for PDFs, PDF sets, or global configuration

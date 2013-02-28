@@ -10,7 +10,6 @@ namespace LHAPDF {
   class Interpolator;
   class Extrapolator;
   class AlphaS;
-  class Info;
 
 
   /// @name Factory functions for making PDFs and other objects
@@ -56,15 +55,6 @@ namespace LHAPDF {
   AlphaS* mkAlphaS(const std::string& name);
 
   //@}
-
-
-  /// Get the singleton global configuration object
-  ///
-  /// @todo Move this to somewhere else -- out of Info? In Factories.h?
-  ///
-  /// The global config is populated by reading from lhapdf.conf if it is
-  /// found in the search paths.
-  Info& config();
 
 
 }
