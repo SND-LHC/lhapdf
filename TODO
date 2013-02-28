@@ -75,8 +75,8 @@ FOR BETA 1
 
 - **Re-introduce set-level Info singletons**
 
-   Will allow set-level configs to propagate to all members.
-   Define the "lock time", for things like ipol/xpol/alphaS.
+   Will allow set-level config changes to propagate to all members of the set.
+   Need to define the "lock time", for things like ipol/xpol/alphaS.
 
 
 FOR BETA 2
