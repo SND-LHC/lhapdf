@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LHAPDF/Factories.h"
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
@@ -22,6 +23,12 @@ namespace LHAPDF {
     Info(const std::string& mempath) {
       loadFull(mempath);
     }
+
+    /// Constructor from a set name and member ID.
+    Info(const std::string& setname, int member);
+
+    /// Constructor from an LHAPDF ID code.
+    Info(int lhaid);
 
     /// @todo Add constructors from set name and member, and from LHAPDF ID, cf. the PDF object
 
@@ -46,21 +53,6 @@ namespace LHAPDF {
     //@}
 
 
-    /// Get the singleton global configuration object
-    ///
-    /// @todo Move this to somewhere else -- out of Info? In Factories.h?
-    ///
-    /// The global config is populated by reading from lhapdf.conf if it is
-    /// found in the search paths.
-    static Info& config() {
-      static Info _cfg;
-      string confpath = findFile("lhapdf.conf").native();
-      // cout << "CONFPATH = " << confpath.empty() << endl;
-      if (!confpath.empty()) _cfg.load(confpath);
-      return _cfg;
-    }
-
-
     /// @name General metadata accessors
     //@{
 
@@ -76,7 +68,7 @@ namespace LHAPDF {
 
     /// Can this Info object return a value for the given key? (it may be defined non-locally)
     bool has_key(const std::string& key) const {
-      return has_key_local(key) || Info::config().has_key_local(key);
+      return has_key_local(key) || config().has_key_local(key);
     }
     /// Is a value defined for the given key on this specific object?
     bool has_key_local(const std::string& key) const {
@@ -86,7 +78,7 @@ namespace LHAPDF {
     /// Retrieve a metadata string by key name
     const std::string& metadata(const std::string& key) const {
       if (has_key_local(key)) return _metadict.find(key)->second; //< value is defined locally -- return that
-      if (this != &Info::config()) return Info::config().metadata(key); //< if this isn't the global Config, ask that
+      if (this != &config()) return config().metadata(key); //< if this isn't the global Config, ask that
       throw MetadataError("Metadata for key: " + key + " not found."); //< this is the global Config and key is still not known
     }
 

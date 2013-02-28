@@ -1,7 +1,24 @@
 #include "LHAPDF/Info.h"
+#include "LHAPDF/PDFIndex.h"
 #include "yaml-cpp/yaml.h"
 
 namespace LHAPDF {
+
+
+  /// Constructor from a set name and member ID.
+  Info::Info(const std::string& setname, int member) {
+    path searchpath = findFile(pdfmempath(setname, member));
+    loadFull(searchpath.native());
+  }
+
+  /// Constructor from an LHAPDF ID code.
+  Info::Info(int lhaid) {
+    const pair<string,int> setname_memid = lookupPDF(lhaid);
+    if (setname_memid.second == -1)
+      throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
+    path searchpath = pdfmempath(setname_memid.first, setname_memid.second);
+    loadFull(searchpath.native());
+  }
 
 
   void Info::load(const path& filepath) {

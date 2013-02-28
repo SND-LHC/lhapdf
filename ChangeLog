@@ -1,3 +1,9 @@
+2013-02-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding name+member and LHAPDF ID constructors for Info.
+
+	* Moving config() out of Info.
+
 2013-02-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Implemented PDF::setname() and PDF::memberid().

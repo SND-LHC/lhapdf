@@ -5,7 +5,7 @@ from Cython.Distutils import build_ext
 
 ext_modules = [
     Extension('lhapdf',
-              ['lhapdf.pyx'] + glob('../../src/*.cpp'),
+              ['lhapdf.pyx'] + glob('../../src/*.cc'),
               include_dirs=['../../include'],
               language='C++',
               libraries=['stdc++']) ]

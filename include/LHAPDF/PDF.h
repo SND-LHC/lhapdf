@@ -72,8 +72,6 @@ namespace LHAPDF {
   protected:
 
     void _loadInfo(const path& mempath) {
-      /// @todo Set the set name member data somewhere near here
-      /// @todo Set the set member number, too
       _mempath = findFile(mempath);
       _info.loadFull(mempath);
     }
