@@ -185,7 +185,7 @@ namespace LHAPDF {
     /// Returns false for x less than 0 or greater than 1, since it
     /// is a momentum fraction and not valid outside those values.
     bool inPhysicalRangeX(double x) const {
-      return x >= 0.0 && x < 1.0;
+      return x >= 0.0 && x <= 1.0;
     }
 
     /// @brief Check whether the given Q2 is physically valid
