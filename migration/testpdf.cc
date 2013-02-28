@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
     const double dq2 = 0.1; // 0.01
     for (double log10x = MINLOGX; log10x <= 0.0; log10x += dx) {
       for (double log10q2 = MINLOGQ2; log10q2 <= MAXLOGQ2; log10q2 += dq2) {
+        if (log10x > -1e-3) log10x = 0;
         const double x = pow(10, log10x);
         const double q2 = pow(10, log10q2);
         f << log10x << " " << log10q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;

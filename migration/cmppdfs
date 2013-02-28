@@ -1,0 +1,39 @@
+#! /usr/bin/env python
+
+"""
+Usage: %prog <grid1.dat> <grid2.dat>
+
+Compare two dumped grids of PDF xf(x,Q) values. The two input files should be in
+a format where each line has three numerical values separated by whitespace,
+corresponding to the x, Q2, and xf(x,Q) values sampled. The x and Q values must
+be line-by-line identical (within floating point accuracy) between the two data
+files. The output files from the migration/testpdf program are the main use case.
+"""
+
+import optparse, os
+
+op = optparse.OptionParser(usage=__doc__)
+opts, args = op.parse_args()
+
+assert len(args) == 2
+assert all(os.path.exists(a) for a in args)
+
+def diff(a, b):
+    if a == 0 and b == 0: return 0.0
+    return abs(a-b) / max(abs(a), abs(b))
+def approx_equal(a, b, tol=1e-8):
+    #return (abs(a - b) / max(abs(a), abs(b))) < tol
+    return diff(a, b) < tol
+
+f1 = open(args[0])
+f2 = open(args[1])
+while True:
+    l1, l2 = f1.readline(), f2.readline()
+    if not l1 or not l2:
+        break
+    lnx1, lnq1, xf1 = [float(a) for a in l1.split()]
+    lnx2, lnq2, xf2 = [float(a) for a in l2.split()]
+    assert approx_equal(lnx1, lnx2) and approx_equal(lnq1, lnq2)
+    if xf1 < 1e-3 and xf2 < 1e-3:
+        continue
+    print lnx1, lnq1, xf1, "vs.", xf2, "=", diff(xf1, xf2), "->", approx_equal(xf1, xf2, 1e-3)
