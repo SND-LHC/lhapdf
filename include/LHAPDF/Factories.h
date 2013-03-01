@@ -19,7 +19,7 @@ namespace LHAPDF {
   ///
   /// Returns a 'new'ed PDF by pointer.
   /// The caller is responsible for deletion of the created object.
-  PDF* mkPDF(const std::string& path);
+  // PDF* mkPDF(const std::string& path);
 
   /// Create a new PDF with the given PDF set name and member ID.
   ///
