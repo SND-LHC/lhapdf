@@ -1,4 +1,11 @@
-/* include/LHAPDF/Config.h.in.  Generated from configure.ac by autoheader.  */
+#pragma once
 
 /* "LHAPDF version string" */
 #undef LHAPDF_VERSION
+
+#include <string>
+namespace LHAPDF {
+  inline std::string version() {
+    return LHAPDF_VERSION;
+  }
+}
