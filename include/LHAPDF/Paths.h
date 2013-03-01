@@ -15,7 +15,12 @@ namespace LHAPDF {
 
   /// Get the ordered list of search paths, from $LHAPDF_DATA_PATH and the install location
   std::vector<path> paths();
-
+  /// A vector<string> version, for easy Cython compatibility
+  inline std::vector<std::string> _paths() {
+    std::vector<std::string> rtn;
+    foreach (const path& p, paths()) rtn.push_back(p.string());
+    return rtn;
+  }
 
   /// Set the search paths list as a colon-separated string
   void setPaths(const std::string& pathstr);
@@ -26,7 +31,7 @@ namespace LHAPDF {
   /// Set the search paths list
   inline void setPaths(std::vector<path> paths) {
     vector<string> ss; ss.reserve(paths.size());
-    foreach (const path& p, paths) ss.push_back(p.native());
+    foreach (const path& p, paths) ss.push_back(p.string());
     setPaths(ss);
   }
 

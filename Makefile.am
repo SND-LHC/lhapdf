@@ -1,7 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src examples include doc
-# TODO: re-add bin tests
+SUBDIRS = src examples include tests wrappers doc
 
 bin_SCRIPTS = lhapdf-config
 dist_pkgdata_DATA = lhapdf.conf pdfsets.index
