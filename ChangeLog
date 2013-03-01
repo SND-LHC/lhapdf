@@ -1,5 +1,11 @@
 2013-03-01  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add a fallback to use LHAPATH if LHAPDF_DATA_PATH is undefined. (pre-deprecated?)
+
+	* Re-enabling Cython mapping (only the basic functionality subset).
+
+	* Adding LHAPDF::version() function.
+
 	* Adding configure testing for -mt versions of Boost (file)system libs.
 
 2013-02-28  Andy Buckley  <andy.buckley@cern.ch>
