@@ -10,58 +10,44 @@ NOW
 
 - **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,AB)**
 
-   AB: I've made CT10 work with a bit of updating of the migration/creategrids
-   script. No attempt at validation other than eyeballing in
-   gnuplot. pdfsets.index will need to be populated for each set. Metadata will
-   need to be set manually, I think (?).
+   The migration/creategrid script should work. pdfsets.index will need to be
+   populated for each set. Metadata will need to be set manually.
 
 - **Validation system and plotting (SL,MR,DM,BP)**
 
-   Don't try to link both LHAPDFs simultaneously. Generate a big x,Q sample
-   point list, then separately dump out xf(x) values into separate files with
-   old and new LHAPDF, and finally compare the files line-by-line, with
-   pulls/ratios to the "old" LHAPDF as the reference.
+   The migration/testpdf program will dump out large scans of points in x,Q
+   space for each parton flavour in the specified PDF member. Such files (with
+   identical x,Q points) can be compared using the migration/cmppdfs script.
+
+   AB: replace testpdf with a Python script that can use both LHAPDF 5 and 6?
+
+   Plotting of the PDF accuracy needed -- a fairly easy way to do this is with
+   matplotlib, cf.
+   http://stackoverflow.com/questions/6323737/make-a-2d-pixel-plot-with-matplotlib
+
    Advice from Graeme/HOPPET is to scan on lines in x and Q2 (with one of the
    pair fixed) rather than to compare randomly sampled points.
 
-- **Fix bicubic interpolation to treat low and high edge cases more carefully (MR,AB)**
+- **Interpolation improvements (MR,AB,GW,...)**
 
-   AB: I think I fixed a bug where interpolation in the last "gap" between knots
-   did not work, by explicitly returning the n-1'th knot in that edge case. Not
-   convinced it was the 100% best way to do it, though: maybe the interpolators
-   should have to be more careful?
+   Martin to check that Andy's treatment of bicubic edge cases in Q2 is correct.
 
-   Cubic x interpolation should receive the same careful treatment as Q2
-   interpolation does: some refactoring should happen to make the same function
-   treat both directions.
+   Cubic x interpolation should be as careful about the lowest/highest knot-gaps
+   as the Q2 interpolation is. Additionally, x -> 1 extrapolation should be done
+   carefully to ensure that all PDFs -> 0 at x = 1.0, (usually) without going
+   negative. This deserves specialisation beyond generic splines.
 
-- **Treat x -> 1 extrapolation properly (GW,AB,MR,...)**
+- **Fortran compatibility functions (JF,KN,BP)**
 
-   PDFs must all interpolate to 0 at x=1.0, (usually) without going negative: this
-   deserves specialisation beyond generic splines.
-
-   I think there is a good case here for using specialist x and Q2 ipol/xpol
-   algorithms... and specifying the x and Q2 parameterisations separately?
-
-   The simplest/quickest solution right now is always to include x = 1 in the
-   grids... a bit wasteful, but simpler and (probably) a relatively small
-   performance penalty? But we can do better in the long run.
-
-- **Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran subroutines (JF,KN,BP)**
-
-   Both should just use nset = 0 all the time, I think. getnset_ and getnmem_
-   also need to be provided.
+   Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran
+   subroutines. Both should just use nset = 0 all the time, I think. getnset_
+   and getnmem_ also need to be provided.
 
    Fortran array pointer passing (and symbol name mangling, and string length
-   extra args) schemes to be established using the autoconf `FC_FUNC`
+   extra args) schemes need to be determined using the autoconf `FC_FUNC`
    etc. macros to test the Fortran compiler -- but *only* if the
    `ENABLE_LHAGLUE` conditional is active, i.e. don't test the Fortran compiler
    if it isn't going to be used.
-
-- **Test LHAGLUE with PYTHIA6 and Pythia8 (JF,KN,BP)**
-
-   PY6 will probably need some fiddling to return the array with the expected
-   6-element origin offset. pdfsets.index will need to be populated for each set.
 
 
 FOR BETA 1
@@ -130,12 +116,6 @@ FOR BETA 2
 - **Metadata standards for accessing special member numbers.**
 
    e.g. a PosDefMemberID metadata key at set level.
-
-- **Python interface**
-
-   For access to standard functionality but not pluggable in the sense that a
-   Python interpolator class cannot be passed to a wrapped PDF object: so hide
-   the non-factory-based functions.
 
 
 FOR STABLE 6.0.0 RELEASE
