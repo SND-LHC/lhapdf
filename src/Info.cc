@@ -41,6 +41,9 @@ namespace LHAPDF {
 
 
   void Info::load(const path& filepath) {
+    if (filepath.empty() || !exists(filepath))
+      throw ReadError("PDF data file '" + filepath.string() + "' not found");
+
     // Read the YAML file into the metadata map
     try {
       std::ifstream info(filepath.c_str());
@@ -75,16 +78,20 @@ namespace LHAPDF {
   }
 
 
-  /// @todo Only support loading via PDF set name and member ID, not paths?
+  /// @todo Only support loading via PDF set name and member ID, not explicit paths
+  /// @todo Replace the loading of the set metadata into the member info with set-level Info singletons
   void Info::loadFull(const path& mempath) { //< @todo Need a better method name!
+    // Extract the set name from the member data file path
     const path memberdata = findFile(mempath);
-    if (memberdata.empty()) throw ReadError("Could not find PDF data file '" + mempath.native() + "'");
+    if (memberdata.empty() || !exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath.native() + "'");
     const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
     const path setdir = memberdata.parent_path();
     const string setname = setdir.filename().native();
     path setinfo = findpdfsetinfopath(setname);
+    // Load the set info
     if (exists(setinfo)) load(setinfo.native());
-    load(memberdata.native()); //< Override set-level info
+    // Load the member info (possibly overriding the set-level metadata)
+    load(memberdata.native());
   }
 
 

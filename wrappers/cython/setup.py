@@ -6,13 +6,14 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
 ext_modules = [
-    Extension('lhapdf',
-              ['lhapdf.pyx'],
-              include_dirs=['../../include'],
-              library_dirs=['../../src/.libs'],
-              language='C++',
-              libraries=['stdc++', 'LHAPDF']) ]
+    Extension("lhapdf",
+              ["lhapdf.pyx"],
+              include_dirs=["../../include"],
+              library_dirs=["../../src/.libs"],
+              language="C++",
+              libraries=["stdc++", "LHAPDF"]) ]
 
-setup(name = 'lhapdflib',
-      cmdclass = {'build_ext': build_ext},
+setup(name = "LHAPDF",
+      version = "6.0.0a0",
+      cmdclass = {"build_ext": build_ext},
       ext_modules = ext_modules)

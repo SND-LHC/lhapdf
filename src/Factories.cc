@@ -30,7 +30,7 @@ namespace LHAPDF {
   /// Returns a 'new'ed PDF by pointer.
   /// The caller is responsible for deletion of the created object.
   PDF* mkPDF(const std::string& setname, int member) {
-    path mempath = findFile(pdfmempath(setname, member));
+    path mempath = pdfmempath(setname, member);
     return mkPDF(mempath.native());
   }
 

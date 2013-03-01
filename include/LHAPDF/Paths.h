@@ -61,6 +61,7 @@ namespace LHAPDF {
   ///
   /// If no matching file is found, return an empty path.
   inline path findFile(const path& target) {
+    if (target.empty()) return path();
     foreach (const path& base, paths()) {
       path p = (!target.is_absolute()) ? base / target : target;
       if (exists(p)) return p;
@@ -78,7 +79,7 @@ namespace LHAPDF {
   inline path pdfmempath(const std::string& setname, int member) {
     const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
     path mempath = setname / memname;
-    return findFile(mempath);
+    return mempath;
   }
 
   inline path findpdfmempath(const std::string& setname, int member) {
