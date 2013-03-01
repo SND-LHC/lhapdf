@@ -73,6 +73,18 @@ AM_CONDITIONAL(WITH_PDFLATEX, [test x$PDFLATEX != x])
 AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, [test x$DOXYGEN != x])
 
+## Find Python and Cython if possible
+AC_PATH_PROG(PYTHON, python)
+AM_CONDITIONAL(WITH_PYTHON, [test x$PYTHON != x])
+if test x$PYTHON != x; then
+  PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
+  AC_SUBST(PYTHON_VERSION)
+  PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
+  AC_SUBST(PYTHON_PATH)
+fi
+AC_PATH_PROG(CYTHON, cython)
+AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON != x])
+
 
 dnl ## Python extension
 dnl AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
@@ -209,8 +221,9 @@ AC_CONFIG_FILES([examples/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([doc/Makefile doc/Doxyfile])
 AC_CONFIG_FILES([lhapdf-config])
-dnl AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
-dnl AC_CONFIG_FILES([octave/Makefile])
+AC_CONFIG_FILES([wrappers/Makefile])
+AC_CONFIG_FILES([wrappers/cython/Makefile wrappers/cython/setup.py])
+dnl AC_CONFIG_FILES([wrappers/octave/Makefile])
 AC_OUTPUT
 
 ## Message about getting PDF sets

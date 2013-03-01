@@ -1,5 +1,7 @@
 2013-03-01  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Integrating the Cython extension build into the autotools build/install.
+
 	* Path handling and PDF data file search error reporting fixes/improvements.
 
 	* Add a fallback to use LHAPATH if LHAPDF_DATA_PATH is undefined. (pre-deprecated?)
