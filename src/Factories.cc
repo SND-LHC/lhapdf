@@ -24,6 +24,7 @@ namespace LHAPDF {
     throw FactoryError("No LHAPDF factory defined for format type '" + fmt + "'");
   }
 
+
   /// Create a new PDF with the given PDF set name and member ID.
   ///
   /// Returns a 'new'ed PDF by pointer.
