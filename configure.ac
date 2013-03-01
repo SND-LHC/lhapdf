@@ -149,24 +149,30 @@ AM_LDFLAGS=["$AM_LDFLAGS -L\$(prefix)/lib"]
 AC_ARG_WITH([boost], AS_HELP_STRING([--with-boost], [indicate the position of the Boost library]))
 test "$with_boost" && BOOST_CPPFLAGS="-I$with_boost/include"
 test "$with_boost" && BOOST_LDFLAGS="-L$with_boost/lib -R$with_boost/lib"
-BOOST_LIBS="-lboost_filesystem -lboost_system"
 ## Check for Boost headers and libs
 oldCPPFLAGS=$CPPFLAGS
-oldLDFLAGS=$LDFLAGS
-oldLIBS=$LIBS
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS -I$prefix/include"
-LDFLAGS="$LDFLAGS $BOOST_LDFLAGS -L$prefix/lib"
-LIBS="$LIBS $BOOST_LIBS"
 AC_CHECK_HEADER([boost/foreach.hpp], [], [AC_MSG_ERROR([Boost foreach not found.])])
 AC_CHECK_HEADER([boost/smart_ptr.hpp], [], [AC_MSG_ERROR([Boost smart_ptr not found.])])
 AC_CHECK_HEADER([boost/algorithm/string.hpp], [], [AC_MSG_ERROR([Boost algorithm/string not found.])])
 AC_CHECK_HEADER([boost/lexical_cast.hpp], [], [AC_MSG_ERROR([Boost lexical_cast not found.])])
 AC_CHECK_HEADER([boost/range.hpp], [], [AC_MSG_ERROR([Boost range not found.])])
 AC_CHECK_HEADER([boost/range/algorithm/sort.hpp], [], [AC_MSG_ERROR([Boost range sort not found.])])
+oldLDFLAGS=$LDFLAGS
+oldLIBS=$LIBS
+LDFLAGS="$LDFLAGS $BOOST_LDFLAGS -L$prefix/lib"
+BOOST_LIBS="-lboost_filesystem-mt -lboost_system-mt"
+LIBS="$LIBS $BOOST_LIBS"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([#include "boost/filesystem.hpp"],
   [boost::filesystem::path dummy = "/foo/bar"])],
-  [AC_MSG_NOTICE([Boost filesystem found.])],
-  [AC_MSG_ERROR([Boost filesystem not found.])])
+  [AC_MSG_NOTICE([Boost filesystem found.])], [
+  ## If that failed, try again with the alternative lib names
+  BOOST_LIBS="-lboost_filesystem -lboost_system"
+  LIBS="$oldLIBS $BOOST_LIBS"
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([#include "boost/filesystem.hpp"],
+    [boost::filesystem::path dummy = "/foo/bar"])],
+    [AC_MSG_NOTICE([Boost filesystem found.])],
+    [AC_MSG_ERROR([Boost filesystem not found.])])  ])
 CPPFLAGS=$oldCPPFLAGS
 LDFLAGS=$oldLDFLAGS
 LIBS=$oldLIBS
