@@ -20,7 +20,7 @@ namespace LHAPDF {
 
 
   void setPaths(const std::string& pathstr) {
-    setenv("LHAPDF_DATA_PATH", pathstr.c_str(), 0);
+    setenv("LHAPDF_DATA_PATH", pathstr.c_str(), 1);
   }
 
 
