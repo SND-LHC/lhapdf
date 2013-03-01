@@ -9,7 +9,8 @@ using namespace std;
 
 namespace { //< Unnamed namespace to restrict visibility to this file
 
-  /// A struct for handling the active PDFs for the Fortran interface.
+
+  /// @brief A struct for handling the active PDFs for the Fortran interface.
   ///
   /// We operate in a string-based way, since maybe there will be sets with names, but no
   /// index entry in pdfsets.index.
@@ -21,7 +22,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   /// scope (i.e. is overwritten).
   struct PDFSetHandler {
 
-    /// Internal storage is a smart pointer to ensure deletion of created PDFs
+    /// @brief Internal storage is a smart pointer to ensure deletion of created PDFs
     ///
     /// NB. std::auto_ptr cannot be stored in STL containers, hence we use
     /// boost::shared_ptr. std::unique_ptr is the nature replacement when C++11
@@ -33,7 +34,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
 
     /// Constructor from a PDF set name
     PDFSetHandler(const string& name)
-      : currentmem(-1), setname(setname)
+      : currentmem(-1), setname(name)
     {    }
 
     /// Constructor from a PDF set's LHAPDF ID code
@@ -43,32 +44,39 @@ namespace { //< Unnamed namespace to restrict visibility to this file
       loadMember(set_mem.second);
     }
 
-    /// Load a new PDF member
+    /// @brief Load a new PDF member
     ///
-    /// If it's already loaded, the existing object will be deleted and
-    /// recreated. Due to the underlying auto_ptr mechanism no memory should be
-    /// leaked as a result.
+    /// If it's already loaded, the existing object will not be reloaded.
     void loadMember(int mem) {
-      members[mem] = PDFPtr(LHAPDF::mkPDF(setname, mem));
+      if (members.find(mem) == members.end())
+        members[mem] = PDFPtr(LHAPDF::mkPDF(setname, mem));
       currentmem = mem;
     }
 
     /// Actively delete a PDF member to save memory
     void unloadMember(int mem) {
       members.erase(mem);
+      /// @todo Set currentmem to the "next" active member?
       currentmem = -1;
     }
 
-    /// Get a PDF member
-    const PDFPtr member(int mem) const {
-      // if (members.find(mem) == members.end())
-      //   loadMember(mem);
+    /// @brief Get a PDF member
+    ///
+    /// Non-const because it can secretly load the member. Not that constness
+    /// matters in a Fortran interface utility function!
+    const PDFPtr member(int mem) {
+      if (members.find(mem) == members.end())
+        loadMember(mem);
       return members.find(mem)->second;
     }
 
     /// Get the currently active PDF member
-    const PDFPtr activemember() const {
-      return members.find(currentmem)->second;
+    ///
+    /// Non-const because it can secretly load the member. Not that constness
+    /// matters in a Fortran interface utility function!
+    const PDFPtr activemember() {
+      /// @todo Throw if currentmem < 0 to minimise horrible debugging for users?
+      return member(currentmem);
     }
 
     /// The currently active member in this set
@@ -85,8 +93,10 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     map<int, PDFPtr> members;
   };
 
+
   static const int PIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
   static map<int, PDFSetHandler> ACTIVESETS;
+
 
 }
 
