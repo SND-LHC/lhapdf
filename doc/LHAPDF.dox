@@ -129,25 +129,28 @@ colon (`:`) characters, cf. standard system paths like `PATH`,
 
 The following examples should help you to get to grips with using LHAPDF from C++:
 
-**Using and testing PDFs:**
+**Using and testing PDFs in C++:**
 @include migration/testpdf.cc
 
-**Using and testing PDF grids:**
+**Using and testing PDFs in Python:**
+@include examples/pythonexample.py
+
+**Using and testing PDF grids in C++:**
 @include tests/testgrid.cc
 
-**Testing the Info system:**
+**Testing the Info system in C++:**
 @include tests/testinfo.cc
 
-**Testing the LHAPDF ID indexing system:**
+**Testing the LHAPDF ID indexing system in C++:**
 @include tests/testindex.cc
 
-**Testing the path searching system:**
+**Testing the path searching system in C++:**
 @include tests/testpaths.cc
 
-**Testing the AlphaS classes:**
+**Testing the AlphaS classes in C++:**
 @include tests/testalphas.cc
 
-**Demo of making a new "analytic" PDF subclass:**
+**Making a new PDF subclass in C++:**
 @include examples/analytic.cc
 
 
@@ -162,10 +165,13 @@ See the following pages:
 - @ref config
 - @ref codingstyle
 
+@example ../migration/testpdf.cc
+@example ../examples/pythonexample.py
 @example ../tests/testgrid.cc
 @example ../tests/testinfo.cc
 @example ../tests/testindex.cc
 @example ../tests/testpaths.cc
 @example ../tests/testalphas.cc
+@example ../examples/analytic.cc
 
 */

@@ -1,3 +1,8 @@
+2013-03-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding an example script for using the Python wrapper, and
+	improving/fixing the mkPDF mapping.
+
 2013-03-01  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Some LHAGlue fixes and improvements.

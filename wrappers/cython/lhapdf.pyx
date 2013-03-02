@@ -65,18 +65,30 @@ cdef class PDF:
         "Check if the specified parton ID is contained in this PDF."
         return self._ptr.hasFlavor(pid)
 
+    # TODO: Map the rest of the metadata functions (including the generic metadata() -> str)
 
-def mkPDF(char* setname, int memid):
+
+cdef mkPDF_setmem(char* setname, int memid):
     "Factory function to make a PDF object from the set name and member number."
     cdef PDF obj = PDF.__new__(PDF)
     obj.set_ptr(c.mkPDF(string(setname), memid))
     return obj
 
-def mkPDF(int lhaid):
+cdef mkPDF_lhaid(int lhaid):
     "Factory function to make a PDF object from the LHAPDF ID number."
     cdef PDF obj = PDF.__new__(PDF)
     obj.set_ptr(c.mkPDF(lhaid))
     return obj
+
+def mkPDF(*args):
+    """Factory function to make a PDF object from the set name and member number
+    (2 args), or just the unique LHAPDF ID number for that member (1 arg)."""
+    if len(args) == 1 and type(args[0]) == int:
+        return mkPDF_lhaid(args[0])
+    elif len(args) == 2 and type(args[0]) == str and type(args[1]) == int:
+        return mkPDF_setmem(args[0], args[1])
+    else:
+        raise Exception("Unknown call signature")
 
 
 def version():
