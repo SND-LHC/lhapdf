@@ -151,8 +151,8 @@ dnl AM_CONDITIONAL(WITH_OCTAVE, [test x$OCTAVE != x && test x$MKOCTFILE != x])
 ## Set base compiler flags
 AM_CPPFLAGS=["$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(prefix)/include"]
 AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
+#AC_CEDAR_CHECKCXXFLAG([-ansi], [AM_CXXFLAGS="$AM_CXXFLAGS -ansi "])
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
-AC_CEDAR_CHECKCXXFLAG([-ansi], [AM_CXXFLAGS="$AM_CXXFLAGS -ansi "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
 AM_LDFLAGS=["$AM_LDFLAGS -L\$(prefix)/lib"]
 

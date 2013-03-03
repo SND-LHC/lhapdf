@@ -1,3 +1,9 @@
+2013-03-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove -ansi from the compiler setup (the long long in some
+	yaml-cpp versions is causing trouble, at least on Macs with gcc
+	4.2)
+
 2013-03-02  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding an example script for using the Python wrapper, and
