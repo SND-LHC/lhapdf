@@ -18979,24 +18979,3 @@
 0.95 99700 1.70326e-05
 0.95 99800 1.70294e-05
 0.95 99900 1.70263e-05
- *************************************
- *       LHAPDF Version 5.8.9b3      *
- *   Configured for the following:   *
- *             All PDFs              *
- *         FULL MEMORY option        *
- *    Maximum  3 concurrent set(s)   *
- *************************************
-
- >>>>>> PDF description: <<<<<<
- CT10                                                            
- H.-L.Lai, M.Guzzi, J. Huston, Z.Li,                             
- P.M.Nadolsky, J.Pumplin and C.-P.Yuan.                          
- Reference: arXiv:1007.2241                                      
- PDF fits using the standard CTEQ PDF evolution                  
- but using the HOPPIT alphas_s running solution.                 
- Excluding the D0 Run-II W asymmetry data.                       
- This set has 52 member PDFs.                                    
-     mem=0 --> central value                                     
-     mem=1-52 --> eigenvector sets                               
- >>>>>>                   <<<<<<
-
