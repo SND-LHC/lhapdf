@@ -1,3 +1,9 @@
+2013-03-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Convert LHAGlue.cc to load the 0th member on set initialisation,
+	plus some other tweaks (this matches the v5 behaviour _and_ makes
+	it much harder to get into an inconsistent state).
+
 2013-03-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Remove -ansi from the compiler setup (the long long in some

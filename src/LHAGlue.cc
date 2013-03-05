@@ -30,12 +30,15 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
 
     /// Default constructor
-    PDFSetHandler() { } //< It is stored in a map so we need one of these...
+    PDFSetHandler() : currentmember(0)
+    { } //< It'll be stored in a map so we need one of these...
 
     /// Constructor from a PDF set name
     PDFSetHandler(const string& name)
-      : currentmem(-1), setname(name)
-    {    }
+      : setname(name)
+    {
+      loadMember(0);
+    }
 
     /// Constructor from a PDF set's LHAPDF ID code
     PDFSetHandler(int lhaid) {
@@ -48,6 +51,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     ///
     /// If it's already loaded, the existing object will not be reloaded.
     void loadMember(int mem) {
+      assert(mem >= 0);
       if (members.find(mem) == members.end())
         members[mem] = PDFPtr(LHAPDF::mkPDF(setname, mem));
       currentmem = mem;
@@ -56,8 +60,8 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     /// Actively delete a PDF member to save memory
     void unloadMember(int mem) {
       members.erase(mem);
-      /// @todo Set currentmem to the "next" active member?
-      currentmem = -1;
+      const int nextmem = (members.size() != 0) ? members.begin()->first : 0;
+      loadMember(nextmem);
     }
 
     /// @brief Get a PDF member
@@ -65,8 +69,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     /// Non-const because it can secretly load the member. Not that constness
     /// matters in a Fortran interface utility function!
     const PDFPtr member(int mem) {
-      if (members.find(mem) == members.end())
-        loadMember(mem);
+      loadMember(mem);
       return members.find(mem)->second;
     }
 
@@ -75,7 +78,6 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     /// Non-const because it can secretly load the member. Not that constness
     /// matters in a Fortran interface utility function!
     const PDFPtr activemember() {
-      /// @todo Throw if currentmem < 0 to minimise horrible debugging for users?
       return member(currentmem);
     }
 
@@ -116,7 +118,8 @@ extern "C" {
   /// @todo Does this version actually take a *path*? What to do?
   void initpdfsetm_(int& nset, const char* setpath, int setpathlength) {
     // Strip file extension for backward compatibility
-    const boost::filesystem::path p = setpath; //< Presumably need to use setpathlength since Fortran strs are not 0-terminated
+    /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
+    const boost::filesystem::path p = setpath;
     string path = (p.extension().empty()) ? p.native() : p.stem().native(); //< @todo Will be wrong if a structured path is given
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "CTEQ6L1";
@@ -129,7 +132,8 @@ extern "C" {
   /// Load a PDF set by name
   void initpdfsetbynamem_(int& nset, const char* setname, int setnamelength) {
     // Strip file extension for backward compatibility
-    const boost::filesystem::path p = setname; //< Presumably need to use setnamelength since Fortran strs are not 0-terminated
+    /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
+    const boost::filesystem::path p = setname;
     string name = (p.extension().empty()) ? p.native() : p.stem().native();
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "CTEQ6L1";
