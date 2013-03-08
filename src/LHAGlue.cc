@@ -30,7 +30,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
 
     /// Default constructor
-    PDFSetHandler() : currentmember(0)
+    PDFSetHandler() : currentmem(0)
     { } //< It'll be stored in a map so we need one of these...
 
     /// Constructor from a PDF set name
