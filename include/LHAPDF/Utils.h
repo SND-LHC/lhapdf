@@ -12,6 +12,7 @@
 #include <sstream>
 #include <fstream>
 #include <limits>
+#include <cmath>
 // Boost includes
 #include "boost/shared_ptr.hpp"
 #include "boost/lexical_cast.hpp"
