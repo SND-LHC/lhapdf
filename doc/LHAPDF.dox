@@ -85,14 +85,15 @@ version 0.5 and higher.
 library (with a file extension of `.so` on Linux, or `.dylib` on Mac,
 e.g. `libyaml-cpp.so`) as well as the default `libyaml-cpp.a` static library.
 To make sure that the shared library is built, call `cmake
--DBUILD_SHARED_LIBS=ON` during the build.
+-DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PATH=/my/install/area` during the build.
 
 An example call to configure might look like:
 
     ./configure --prefix=$HOME/local --with-yaml-cpp=$HOME/local
 
 (this should be appropriate if you have installed Boost in `/usr` via your
-machine's packaging system, and have privately installed yaml-cpp 0.3 into `~/local`)
+machine's packaging system, and have privately installed yaml-cpp 0.3 into
+`~/local` via the `-DCMAKE_INSTALL_PATH=...` described above.)
 
 If you want to use an alternative C++ compiler, then you can specify the CXX
 variable on the command line, e.g.
