@@ -1,5 +1,9 @@
 2013-03-15  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Using much cleverer Boost discovery macros (with a slight fix)
+	from https://github.com/tsuna/boost.m4. Need to feed back the
+	fix...
+
 	* Adding --with-boost-lib, --with-boost-inc, and
 	--with-yaml-cpp-lib, --with-yaml-cpp-inc configure flags,
 	particularly for use on systems where Boost's install is a bit
