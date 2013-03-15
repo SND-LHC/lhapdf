@@ -159,8 +159,12 @@ AM_LDFLAGS=["$AM_LDFLAGS -L\$(prefix)/lib"]
 
 ## Boost utility library
 AC_ARG_WITH([boost], AS_HELP_STRING([--with-boost], [indicate the position of the Boost library]))
+AC_ARG_WITH([boost-lib], AS_HELP_STRING([--with-boost-lib], [indicate the position of the Boost lib directory (the one containing libboost-system.so, etc.)]))
+AC_ARG_WITH([boost-inc], AS_HELP_STRING([--with-boost-inc], [indicate the position of the Boost include directory (the one *containing* the 'boost' directory)]))
 test "$with_boost" && BOOST_CPPFLAGS="-I$with_boost/include"
+test "$with_boost_inc" && BOOST_CPPFLAGS="-I$with_boost_inc"
 test "$with_boost" && BOOST_LDFLAGS="-L$with_boost/lib -R$with_boost/lib"
+test "$with_boost_lib" && BOOST_LDFLAGS="-L$with_boost_lib -R$with_boost_lib"
 ## Check for Boost headers and libs
 oldCPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS -I$prefix/include"
@@ -195,8 +199,12 @@ AC_SUBST(BOOST_LIBS)
 
 # yaml-cpp parser library
 AC_ARG_WITH([yaml-cpp], AS_HELP_STRING([--with-yaml-cpp], [indicate the position of the yaml-cpp library]))
+AC_ARG_WITH([yamp-cpp-lib], AS_HELP_STRING([--with-yaml-cpp-lib], [indicate the position of the yaml-cpp lib directory (the one containing libyaml-cpp.so)]))
+AC_ARG_WITH([yaml-cpp-inc], AS_HELP_STRING([--with-yaml-cpp-inc], [indicate the position of the yaml-cpp include directory (the one *containing* the 'yaml-cpp' directory)]))
 test "$with_yaml_cpp" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp/include"
+test "$with_yaml_cpp_inc" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp_inc"
 test "$with_yaml_cpp" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib -R$with_yaml_cpp/lib"
+test "$with_yaml_cpp_lib" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp_lib -R$with_yaml_cpp_lib"
 YAMLCPP_LIBS="-lyaml-cpp"
 oldCPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS $YAMLCPP_CPPFLAGS -I$prefix/include"

@@ -1,3 +1,11 @@
+2013-03-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding --with-boost-lib, --with-boost-inc, and
+	--with-yaml-cpp-lib, --with-yaml-cpp-inc configure flags,
+	particularly for use on systems where Boost's install is a bit
+	borked and there is no common prefix dir for which $prefix/lib and
+	$prefix/include are valid dirs.
+
 2013-03-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Convert LHAGlue.cc to load the 0th member on set initialisation,
