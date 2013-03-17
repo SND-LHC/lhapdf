@@ -409,8 +409,6 @@ dnl generated only once above (before we start the for loops).
         # https://github.com/tsuna/boost.m4/issues/19
         AC_CACHE_VAL([boost_cv_rpath_link_ldflag],
           [for boost_cv_rpath_link_ldflag in -Wl,-R, -Wl,-rpath,; do
-            # AB second hack: split LIBS from LDFLAGS in the test
-            #LDFLAGS="$boost_save_LDFLAGS -L$boost_ldpath $Boost_lib_LIBS $boost_cv_rpath_link_ldflag$boost_ldpath"
             LDFLAGS="$boost_save_LDFLAGS -L$boost_ldpath $boost_cv_rpath_link_ldflag$boost_ldpath"
             LIBS="$Boost_lib_LIBS $boost_save_LIBS"
             _BOOST_AC_LINK_IFELSE([],
@@ -1214,8 +1212,6 @@ boost_use_source=:
 # tries to link the existing object file instead of compiling from source.
 test -f conftest.$ac_objext && ac_ext=$ac_objext && boost_use_source=false &&
   _AS_ECHO_LOG([re-using the existing conftest.$ac_objext])
-# AB first attempt hack by reordering conftest.$ac_ext and $LDFLAGS
-#ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS conftest.$ac_ext $LDFLAGS $LIBS >&AS_MESSAGE_LOG_FD'
 AS_IF([_AC_DO_STDERR($ac_link) && {
 	 test -z "$ac_[]_AC_LANG_ABBREV[]_werror_flag" ||
 	 test ! -s conftest.err

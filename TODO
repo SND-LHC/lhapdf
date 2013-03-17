@@ -164,6 +164,14 @@ AS AND WHEN
 
    With standard directory structure internally.
 
+- **Speed up interpolation with (optional) GPU-based interpolation**
+
+   Interpolation of PDFs seems like an ideal use case for PDFs, since it's
+   normal to query for all partons in the set at once: if we can load the
+   relevant ipol anchors for all flavours onto the GPU then we can maybe get a
+   substantial speedup (with Amdahl's Law as the obvious caveat). Good student
+   project...
+
 - **Separate the x and Q2 inter/extrapolation?**
 
    Allow mix & match combinations. Would this simplify the code since the
