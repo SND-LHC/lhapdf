@@ -16,12 +16,12 @@ namespace LHAPDF {
   double GridPDF::_xfxQ2(int id, double x, double q2 ) const {
     /// Decide whether to use interpolation or extrapolation... the sanity checks
     /// are done in the public PDF::xfxQ2 function.
-    // cout << "From GridPDF[0]: x = " << x << ", Q2 = " << q2 << endl;
+     //cout << "From GridPDF[0]: x = " << x << ", Q2 = " << q2 << endl;
     if (inRangeXQ2(x, q2)) {
-      // cout << "From GridPDF[ipol]: x = " << ", Q2 = " << q2 << x << endl;
+       //cout << "From GridPDF[ipol]: x = " << ", Q2 = " << q2 << x << endl;
       return interpolator().interpolateXQ2(id, x, q2);
     } else {
-      // cout << "From GridPDF[xpol]: x = " << x << ", Q2 = " << q2 << endl;
+       //cout << "From GridPDF[xpol]: x = " << x << ", Q2 = " << q2 << endl;
       return extrapolator().extrapolateXQ2(id, x, q2);
     }
   }
@@ -115,6 +115,7 @@ namespace LHAPDF {
             //   }
             // }
           }
+          //cout << _knotarrays.size() << endl;
           xs.clear(); q2s.clear();
           for (size_t ipid = 0; ipid < npid; ++ipid) ipid_xfs[ipid].clear();
 

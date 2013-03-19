@@ -142,6 +142,10 @@ extern "C" {
       ACTIVESETS[nset] = PDFSetHandler(name);
   }
 
+  void initpdf_(int& nset) {
+    // Do nothing - only for compatibility with ThePEG configure script for now.
+  }
+
 
   /// Load a PDF in current set.
   void initpdfm_(int& nset, int& nmember) {
@@ -176,6 +180,18 @@ extern "C" {
     } catch (const std::exception& e) {
       fxq = 0;
     }
+  }
+
+  void evolvepdfpm_(int& a, double& b, double& c, double& d, int& e, double& f) {
+      //Do nothing for now (this function is declared in ThePEG's LHAPDF interface).
+  }
+
+  // Following three functions are also declared in ThePEG's LHAPDF interface
+  void numberpdfm_(int& a, int& b){
+  }
+  void getnfm_(int& a, double& b){
+  }
+  void lhaprint_(int& a){
   }
 
 

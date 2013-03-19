@@ -47,6 +47,7 @@ namespace LHAPDF {
 
     /// @todo Also treat the x top/bottom edges carefully, cf. the Q2 ones
 
+    //cout << "interp" << endl;
     // Distance parameters
     const double dx = subgrid.xs()[ix+1] - subgrid.xs()[ix];
     const double tx = (x - subgrid.xs()[ix]) / dx;
