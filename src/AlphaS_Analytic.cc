@@ -17,9 +17,10 @@ namespace LHAPDF {
     const double beta12 = sqr(beta[1]);
 
     // Pre-calculate ln(Q2/lambdaQCD) and expansion term y = 1/ln(Q2/lambdaQCD)
-    const double x = q2 / lambdaQCD;
+    const double x = q2 / (lambdaQCD*lambdaQCD);
     const double lnx = log(x);
     const double lnlnx = log(lnx);
+    const double lnlnx2 = lnlnx * lnlnx;
     const double y = 1 / lnx;
 
     // Calculate and combine expansion terms Ay[a_0*y^0 - a_1*y^1 + By^2[a_20 + a_21 - a_22]]
@@ -28,14 +29,14 @@ namespace LHAPDF {
     const double a_0 = 1;
     double tmp = a_0;
     if (qcdorder > 0) {
-      const double a_1 = - 2 * beta[1] * lnlnx / beta02;
+      const double a_1 = beta[1] * lnlnx / beta02;
       tmp -= a_1 * y;
     }
     if (qcdorder > 1) {
-      const double B = 4 * beta12 / (beta02 * beta02);
-      const double a_20 = (lnlnx - 0.5) * (lnlnx - 0.5);
-      const double a_21 = beta[2] * beta[0] / (8 * beta12);
-      const double a_22 = 5 / 4.0;
+      const double B = beta12 / (beta02 * beta02);
+      const double a_20 = lnlnx2 - lnlnx;
+      const double a_21 = beta[2] * beta[0] / beta12;
+      const double a_22 = 1;
       tmp += B * y*y * (a_20 + a_21 - a_22);
     }
     const double alphaS = A * y * tmp;
