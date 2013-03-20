@@ -15,6 +15,8 @@ Output is given in the following format:
   x Q2 delta_xfx fractional_accuracy
 """
 
+epsilon = 1e-4
+
 ## Finds the absolute values of the differences between two lists of values
 def delta(xs, ys):
     delta = [abs(x - y) for x, y in zip(xs, ys)]
@@ -22,11 +24,11 @@ def delta(xs, ys):
 
 ## Finds the fractional accuracy of a difference with respect to some assumed correct value
 def fractional_accuracy(deltas, xs):
-    acc = [(delta / x) for delta, x in zip(deltas, xs)]
+    acc = [(abs(delta) / (abs(x)+epsilon)) for delta, x in zip(deltas, xs)]
     return acc
 
-v5_data = open('dumpv5.txt', 'r')
-v6_data = open('dumpv6.txt', 'r')
+v5_data = open('CT10v5/flavour_v5_5.dat', 'r')
+v6_data = open('CT10v6/flavour_v6_5.dat', 'r')
 
 xs = []
 q2s = []

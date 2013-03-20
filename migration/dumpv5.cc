@@ -7,7 +7,7 @@
 
 #include <LHAPDF/LHAPDF.h>
 
-#define MINLOGX -10
+#define MINLOGX -8
 #define MINLOGQ2 1
 #define MAXLOGQ2 8
 
