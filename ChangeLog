@@ -1,5 +1,7 @@
 2013-03-23  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding non-multiset versions of LHAGlue.cc functions.
+
 	* Use 1 rather than 0 as the lowest (and default) multi-set index
 	in LHAGlue.cc.
 
