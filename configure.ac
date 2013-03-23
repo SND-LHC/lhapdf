@@ -86,57 +86,6 @@ AC_PATH_PROG(CYTHON, cython)
 AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON != x])
 
 
-dnl ## Python extension
-dnl AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
-dnl   [don't build Python module (default=build)])],
-dnl   [], [enable_pyext=yes])
-dnl if test x$enable_ccwrap != xyes; then
-dnl    AC_MSG_WARN([Can't build Python extension since the C++ wrapper is not being built])
-dnl    enable_pyext=no
-dnl fi
-dnl AZ_PYTHON_DEFAULT
-dnl ## Basic Python checks
-dnl if test x$enable_pyext == xyes; then
-dnl   AZ_PYTHON_PATH
-dnl   AZ_PYTHON_VERSION_ENSURE([2.3])
-dnl   ## Test for Python header
-dnl   if test -x "$PYTHON"; then
-dnl     AC_MSG_CHECKING([for Python include path])
-dnl     python_incpath=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"`
-dnl     AC_MSG_RESULT([$python_incpath])
-dnl     python_header="$python_incpath/Python.h"
-dnl     if test -z "$python_incpath"; then
-dnl       AC_MSG_WARN([Can't build Python extension since include directory cannot be determined from distutils])
-dnl       enable_pyext=no
-dnl     elif test ! -e "$python_header"; then
-dnl       AC_MSG_WARN([Can't build Python extension since header file $python_header cannot be found])
-dnl       enable_pyext=no
-dnl     fi
-dnl   fi
-dnl fi
-dnl ## SWIG version checks
-dnl if test x$enable_pyext == xyes -a ! -e pyext/lhapdf_wrap.cc; then
-dnl   AC_PATH_PROG(SWIG, swig)
-dnl   if test -x "$SWIG"; then
-dnl     swig_version=`$SWIG -version 2>&1 | grep Version | cut -f3 -d" "`
-dnl     swig_major=`echo $swig_version | cut -f1 -d.`
-dnl     swig_minor=`echo $swig_version | cut -f2 -d.`
-dnl     swig_micro=`echo $swig_version | cut -f3 -d.`
-dnl     let swig_version_num="1000*$swig_major+100*$swig_minor+$swig_micro"
-dnl     if test "$swig_version_num" -lt 1333; then
-dnl     #if test "$swig_major" -eq 1 -a "$swig_minor" -eq 3 -a "$swig_micro" -lt 33; then
-dnl       AC_MSG_WARN([Can't build Python extension since SWIG version is too old to build wrapper files: please use a tarball release])
-dnl       enable_pyext=no
-dnl     fi
-dnl   fi
-dnl fi
-dnl ## Finish
-dnl AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
-dnl if test x$enable_pyext == xyes; then
-dnl   AC_MSG_NOTICE([All Python build checks successful: 'lhapdf' Python extension will be built])
-dnl fi
-
-
 dnl ## Build Octave interface if possible
 dnl AC_ARG_ENABLE([octave],
 dnl   [AC_HELP_STRING(--disable-octave, [don't try to make Octave interface])],
@@ -151,22 +100,14 @@ dnl AM_CONDITIONAL(WITH_OCTAVE, [test x$OCTAVE != x && test x$MKOCTFILE != x])
 ## Set base compiler flags
 AM_CPPFLAGS=["$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(prefix)/include"]
 AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
-#AC_CEDAR_CHECKCXXFLAG([-ansi], [AM_CXXFLAGS="$AM_CXXFLAGS -ansi "])
+AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98 "])
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
+dnl AC_CEDAR_CHECKCXXFLAG([-Wno-long-long], [AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long "])
 AM_LDFLAGS=["$AM_LDFLAGS -L\$(prefix)/lib"]
 
 
 ## Boost utility library
-
-dnl AC_ARG_WITH([boost], AS_HELP_STRING([--with-boost], [indicate the position of the Boost library]))
-dnl AC_ARG_WITH([boost-lib], AS_HELP_STRING([--with-boost-lib], [indicate the position of the Boost lib directory (the one containing libboost-system.so, etc.)]))
-dnl AC_ARG_WITH([boost-inc], AS_HELP_STRING([--with-boost-inc], [indicate the position of the Boost include directory (the one *containing* the 'boost' directory)]))
-dnl test "$with_boost" && BOOST_CPPFLAGS="-I$with_boost/include"
-dnl test "$with_boost_inc" && BOOST_CPPFLAGS="-I$with_boost_inc"
-dnl test "$with_boost" && BOOST_LDFLAGS="-L$with_boost/lib -L$with_boost/lib64" # TODO: check the architecture for 64 bit before appending this variant
-dnl test "$with_boost_lib" && BOOST_LDFLAGS="-L$with_boost_lib"
-
 BOOST_REQUIRE([1.40.0])
 BOOST_FOREACH
 BOOST_SMART_PTR
@@ -175,32 +116,6 @@ BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/range.hpp])
 BOOST_FIND_HEADER([boost/range/algorithm/sort.hpp])
 BOOST_FILESYSTEM
-
-dnl ## Check for Boost headers and libs
-dnl oldCPPFLAGS=$CPPFLAGS
-dnl oldLDFLAGS=$LDFLAGS
-dnl oldLIBS=$LIBS
-dnl CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS -I$prefix/include"
-dnl LDFLAGS="$LDFLAGS $BOOST_FILESYSTEM_LDFLAGS -L$prefix/lib"
-dnl dnl BOOST_LIBS="-lboost_filesystem-mt -lboost_system-mt"
-dnl LIBS="$LIBS $BOOST_FILESYSTEM_LIBS"
-dnl AC_CHECK_HEADER([boost/foreach.hpp], [], [AC_MSG_ERROR([Boost foreach not found.])])
-dnl AC_CHECK_HEADER([boost/smart_ptr.hpp], [], [AC_MSG_ERROR([Boost smart_ptr not found.])])
-dnl AC_CHECK_HEADER([boost/algorithm/string.hpp], [], [AC_MSG_ERROR([Boost algorithm/string not found.])])
-dnl AC_CHECK_HEADER([boost/lexical_cast.hpp], [], [AC_MSG_ERROR([Boost lexical_cast not found.])])
-dnl AC_CHECK_HEADER([boost/range.hpp], [], [AC_MSG_ERROR([Boost range not found.])])
-dnl AC_CHECK_HEADER([boost/range/algorithm/sort.hpp], [], [AC_MSG_ERROR([Boost range sort not found.])])
-dnl AC_LINK_IFELSE([AC_LANG_PROGRAM([#include "boost/filesystem.hpp"],
-dnl   [boost::filesystem::path dummy = "/foo/bar"])],
-dnl   [AC_MSG_NOTICE([Boost filesystem found.])],
-dnl   [AC_MSG_ERROR([Boost filesystem not found.]) ])
-dnl CPPFLAGS=$oldCPPFLAGS
-dnl LDFLAGS=$oldLDFLAGS
-dnl LIBS=$oldLIBS
-
-dnl AC_SUBST(BOOST_CPPFLAGS)
-dnl AC_SUBST(BOOST_LDFLAGS)
-dnl AC_SUBST(BOOST_LIBS)
 
 
 # yaml-cpp parser library

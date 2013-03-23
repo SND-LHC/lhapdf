@@ -1,3 +1,8 @@
+2013-03-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Use 1 rather than 0 as the lowest (and default) multi-set index
+	in LHAGlue.cc.
+
 2013-03-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Using much cleverer Boost discovery macros (with a slight fix)

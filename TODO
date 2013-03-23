@@ -26,12 +26,14 @@ NOW / FOR BETA 1
 
 - **Fortran compatibility functions (JF,KN,BP,AB)**
 
-   Add PDFLIB-style xfx etc. functions, and the non-*m LHAPDF5 Fortran
-   subroutines. Both should just use nset = 1 all the time, I think. getnset_
-   and getnmem_ also need to be provided.
-
    James & Karl: test with PYTHIA6 and Herwig++, and test the ported CT10 with
    Pythias 8 & 6 and James' existing MC validation code.
+
+   Andy: add the non-*m LHAPDF5 Fortran subroutines. Should just use nset = 1
+   all the time, I think.
+
+   Also need to add PDFLIB-style xfx etc. functions -- probably necessary for PY6.
+   getnset_ and getnmem_ also need to be provided.
 
 - **Improve build robustness, test on Macs and SL5/6/lxplus (AB + testers)**
 

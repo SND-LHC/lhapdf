@@ -30,14 +30,14 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
 
     /// Default constructor
-    PDFSetHandler() : currentmem(0)
+    PDFSetHandler() : currentmem(1)
     { } //< It'll be stored in a map so we need one of these...
 
     /// Constructor from a PDF set name
     PDFSetHandler(const string& name)
       : setname(name)
     {
-      loadMember(0);
+      loadMember(1);
     }
 
     /// Constructor from a PDF set's LHAPDF ID code
@@ -51,7 +51,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     ///
     /// If it's already loaded, the existing object will not be reloaded.
     void loadMember(int mem) {
-      assert(mem >= 0);
+      assert(mem > 0);
       if (members.find(mem) == members.end())
         members[mem] = PDFPtr(LHAPDF::mkPDF(setname, mem));
       currentmem = mem;
@@ -60,7 +60,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     /// Actively delete a PDF member to save memory
     void unloadMember(int mem) {
       members.erase(mem);
-      const int nextmem = (members.size() != 0) ? members.begin()->first : 0;
+      const int nextmem = (!members.empty()) ? members.begin()->first : 1;
       loadMember(nextmem);
     }
 
