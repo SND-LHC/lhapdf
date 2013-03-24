@@ -29,10 +29,8 @@ NOW / FOR BETA 1
    James & Karl: test with PYTHIA6 and Herwig++, and test the ported CT10 with
    Pythias 8 & 6 and James' existing MC validation code.
 
-   Andy: add missing LHAPDF5 Fortran subroutines: getnset_, getnmem_, lhaprint_,
-   getnf_, numberpdf_, evolvepdfp_
-
-   Need PDFLIB functions (and common-block populating?) for PY6 etc.
+   Andy: add missing LHAPDF5 and PDFLIB Fortran subroutines... and common-block
+   populating?
 
 - **Improve build robustness, test on Macs and SL5/6/lxplus (AB + testers)**
 
@@ -43,7 +41,10 @@ NOW / FOR BETA 1
 
    Anticipating demand for use of composite PDF parameterisations in future.
 
-- **Improve the DESIGN document's coherence (AB)**
+- **Provide ways to find the number of members in a PDF set and to identify a member's LHAPDF ID**
+
+   Determine by counting member data files in the PDF set directory (remember
+   that the info file may not be present). How to do the reverse LHAPDF ID lookup?
 
 
 FOR BETA 2
@@ -66,6 +67,8 @@ FOR BETA 2
    evolution... looks like we can't borrow their ODE code without introducing a
    Fortran dependency, which we'd rather avoid. Maybe start with conversion to
    C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
+
+- **Improve the DESIGN document's coherence (AB)**
 
 - **Profile GridPDF and AlphaS_ODE**
 
@@ -112,14 +115,6 @@ FOR STABLE 6.0.0 RELEASE
 - **Versioning scheme for PDF data**
 
    In metadata and tarball filenames.
-
-- **Provide a way to find the number of members in a PDF set**
-
-   Or just iterate over ints until an Exception is thrown? We should be able to
-   find out not just how many members are available but which numbers, so that
-   they do not have to be consecutive (modulo the restriction from the LHAPDF ID
-   indexing ranges). Determine by counting member data files in the PDF set
-   directory (remember that the info file may not be present).
 
 
 AS AND WHEN

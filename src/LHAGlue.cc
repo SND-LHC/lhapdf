@@ -222,7 +222,7 @@ extern "C" {
 
   /// Get xf(x) values for common partons from a photon PDF
   void evolvepdfpm_(int& nset, double& x, double& q, double& p2, int& ip2, double& fxq) {
-    /// @todo Implement me! (and improve param names)
+    /// @todo Implement me!
     throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
   }
 
@@ -233,25 +233,25 @@ extern "C" {
   }
 
 
-  /// @todo Doc
+  /// @todo What does this do?
   void numberpdfm_(int& nset, int& numpdf) {
     /// @todo Implement me!
   }
 
-  /// @todo Doc
+  /// @todo What does this do?
   void numberpdf_(int& numpdf) {
     int nset1 = 1;
     numberpdfm_(nset1, numpdf);
   }
 
 
-  /// @todo Doc
+  /// Get the number of flavours
   void getnfm_(int& nset, double& nf) {
     /// @todo Implement me! (and improve param names)
   }
 
-  /// @todo Doc
-  void getnf_(double& nf){
+  /// Get the number of flavours (non-multiset version)
+  void getnf_(double& nf) {
     int nset1 = 1;
     getnfm_(nset1, nf);
   }
@@ -262,6 +262,9 @@ extern "C" {
     // Do nothing for now
     /// @todo Can this be mapped?
   }
+
+
+  /// @todo Need getnset_ and getnmem_
 
 
   /// @brief Set LHAPDF parameters
