@@ -32,7 +32,7 @@ NOW / FOR BETA 1
    Andy: add missing LHAPDF5 Fortran subroutines: getnset_, getnmem_, lhaprint_,
    getnf_, numberpdf_, evolvepdfp_
 
-   Also need to add PDFLIB-style xfx etc. functions for PY6 etc.
+   Need PDFLIB functions (and common-block populating?) for PY6 etc.
 
 - **Improve build robustness, test on Macs and SL5/6/lxplus (AB + testers)**
 
@@ -124,6 +124,16 @@ FOR STABLE 6.0.0 RELEASE
 
 AS AND WHEN
 -----------
+
+- **Support photon structure functions**
+
+   Need to make use of the P2 and IP2 params. No idea how to even start here...
+
+- **Support nuclear corrections**
+
+   Have to be applyable to all nucleon PDFs, regardless of implementation:
+   probably nuclear PDFs will inherit from PDF (since they are PDFs) and
+   _contain_ a nucleon PDF whose values will be modified before returning.
 
 - **Add more metadata methods to PDF and PDFGrid as needed**
 

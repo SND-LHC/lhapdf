@@ -1,3 +1,9 @@
+2013-03-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a NotImplementedError!
+
+	* Adding main PDFLIB functions as implemented in PYTHIA6's pdfdummies.f.
+
 2013-03-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding non-multiset versions of LHAGlue.cc functions.

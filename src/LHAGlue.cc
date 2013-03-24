@@ -10,6 +10,14 @@ using namespace std;
 namespace { //< Unnamed namespace to restrict visibility to this file
 
 
+  /// @brief PDF object storage here is a smart pointer to ensure deletion of created PDFs
+  ///
+  /// NB. std::auto_ptr cannot be stored in STL containers, hence we use
+  /// boost::shared_ptr. std::unique_ptr is the nature replacement when C++11
+  /// is globally available.
+  typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
+
+
   /// @brief A struct for handling the active PDFs for the Fortran interface.
   ///
   /// We operate in a string-based way, since maybe there will be sets with names, but no
@@ -21,13 +29,6 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   /// that they auto-delete if the PDFSetHandler that holds them goes out of
   /// scope (i.e. is overwritten).
   struct PDFSetHandler {
-
-    /// @brief Internal storage is a smart pointer to ensure deletion of created PDFs
-    ///
-    /// NB. std::auto_ptr cannot be stored in STL containers, hence we use
-    /// boost::shared_ptr. std::unique_ptr is the nature replacement when C++11
-    /// is globally available.
-    typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
 
     /// Default constructor
     PDFSetHandler() : currentmem(1)
@@ -96,7 +97,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   };
 
 
-  static const int PIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
+  static const int LHAPIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
   static map<int, PDFSetHandler> ACTIVESETS;
 
 
@@ -176,7 +177,7 @@ extern "C" {
     // Evaluate for the LHAPDF5 standard partons
     for (size_t i = 0; i < 13; ++i) {
       try {
-        fxq[i] = ACTIVESETS[nset].activemember()->xfxQ2(PIDS[i], x, q*q);
+        fxq[i] = ACTIVESETS[nset].activemember()->xfxQ(LHAPIDS[i], x, q);
       } catch (const std::exception& e) {
         fxq[i] = 0;
       }
@@ -190,37 +191,45 @@ extern "C" {
   }
 
 
-  /// Get photon PID xfx value from current PDF
-  void evolvepdfphotonm_(int& nset, double& x, double& q, double& fxq, double& photonparam) {
+  /// Determine if the current PDF has a photon flavour (historically only MRST2004QED)
+  /// @todo Function rather than subroutine?
+  bool has_photon_() {
+    /// @todo Only apply to nset = 1? Or do we need to track the current nset value?
+    return ACTIVESETS[1].activemember()->hasFlavor(22);
+  }
+
+
+  /// Get xfx values from current PDF, including an extra photon flavour
+  void evolvepdfphotonm_(int& nset, double& x, double& q, double* fxq, double& photonfxq) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    // Evaluate for the MRST2004QED photon flavor
+    // First evaluate the "normal" partons
+    evolvepdfm_(nset, x, q, fxq);
+    // Then evaluate the photon flavor (historically only for MRST2004QED)
     try {
-      fxq = ACTIVESETS[nset].activemember()->xfxQ2(22, x, q*q);
+      photonfxq = ACTIVESETS[nset].activemember()->xfxQ(22, x, q);
     } catch (const std::exception& e) {
-      fxq = 0;
+      photonfxq = 0;
     }
   }
 
-  /// Get photon PID xfx value from current PDF (non-multiset version)
-  void evolvepdfphoton_(double& x, double& q, double& fxq, double& photonparam) {
+  /// Get xfx values from current PDF, including an extra photon flavour (non-multiset version)
+  void evolvepdfphoton_(double& x, double& q, double* fxq, double& photonfxq) {
     int nset1 = 1;
-    evolvepdfphotonm_(nset1, x, q, fxq, photonparam);
+    evolvepdfphotonm_(nset1, x, q, fxq, photonfxq);
   }
 
 
-  /// @todo Implement, tidy, and document the following functions:
-
-  /// @todo Doc
-  void evolvepdfpm_(int& nset, double& b, double& c, double& d, int& e, double& f) {
+  /// Get xf(x) values for common partons from a photon PDF
+  void evolvepdfpm_(int& nset, double& x, double& q, double& p2, int& ip2, double& fxq) {
     /// @todo Implement me! (and improve param names)
+    throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
   }
 
-  /// @todo Doc
-  /// @todo Improve param names
-  void evolvepdfp_(double& b, double& c, double& d, int& e, double& f) {
+  /// Get xf(x) values for common partons from a photon PDF (non-multiset version)
+  void evolvepdfp_(double& x, double& q, double& p2, int& ip2, double& fxq) {
     int nset1 = 1;
-    evolvepdfpm_(nset1, b, c, d, e, f);
+    evolvepdfpm_(nset1, x, q, p2, ip2, fxq);
   }
 
 
@@ -263,7 +272,44 @@ extern "C" {
   }
 
 
-  /// @todo Add mapping of the xfx_ etc. functions for PYTHIA6 etc.
+  /// PDFLIB initialisation function
+  void pdfset_(const char* par, const double* value, int parlength) {
+    /// Take PDF ID from value[0]
+    ACTIVESETS[1] = PDFSetHandler(value[0]);
+    /// @todo How to use the par string?... most important for PYTHIA6?
+  }
+
+
+  /// PDFLIB nucleon structure function querying
+  void structm_(const double& x, const double& q,
+                double& upv, double& dnv, double& usea, double& dsea,
+                double& str, double& chm, double& bot, double& top, double& glu) {
+    /// Fill (partial) parton return variables
+    PDFPtr pdf = ACTIVESETS[1].activemember();
+    dsea = pdf->xfxQ(-1, x, q);
+    usea = pdf->xfxQ(-2, x, q);
+    dnv = pdf->xfxQ(1, x, q) - dsea;
+    upv = pdf->xfxQ(2, x, q) - usea;
+    str = pdf->xfxQ(3, x, q);
+    chm = (pdf->hasFlavor(4)) ? pdf->xfxQ(4, x, q) : 0;
+    bot = (pdf->hasFlavor(5)) ? pdf->xfxQ(5, x, q) : 0;
+    top = (pdf->hasFlavor(6)) ? pdf->xfxQ(6, x, q) : 0;
+    glu = pdf->xfxQ(21, x, q);
+  }
+
+
+  /// PDFLIB photon structure function querying
+  void structp_(const double& x, const double& q2, const double& p2, const double& ip2,
+                double& upv, double& dnv, double& usea, double& dsea,
+                double& str, double& chm, double& bot, double& top, double& glu) {
+    throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
+  }
+
+
+  /// PDFLIB statistics on PDF under/overflows
+  void pdfsta_() {
+    /// @todo Do anything?
+  }
 
 
 }

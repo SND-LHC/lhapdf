@@ -90,6 +90,14 @@ namespace LHAPDF {
     UserError(const std::string& what) : Exception(what) {}
   };
 
+
+  /// This feature doesn't exist yet
+  class NotImplementedError : public Exception {
+  public:
+    /// Constructor with error description string
+    NotImplementedError(const std::string& what) : Exception(what) {}
+  };
+
   //@}
 
 
