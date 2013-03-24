@@ -30,16 +30,12 @@ NOW / FOR BETA 1
    Pythias 8 & 6 and James' existing MC validation code.
 
    Andy: add missing LHAPDF5 and PDFLIB Fortran subroutines... and common-block
-   populating?
+   populating? PDFSET_ function needs to read PYTHIA6 common block?
 
 - **Improve build robustness, test on Macs and SL5/6/lxplus (AB + testers)**
 
    Boost detection already improved. Boost version compatibility to be tweaked
    in the code. Bootstrap script and pre-installed version to be provided.
-
-- **Add extra flavors line to grid format (AB)**
-
-   Anticipating demand for use of composite PDF parameterisations in future.
 
 - **Provide ways to find the number of members in a PDF set and to identify a member's LHAPDF ID**
 
@@ -54,6 +50,10 @@ FOR BETA 2
 
    Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
    values robustly to implement 1D subgrids.
+
+- **Add extra flavors line to grid format (AB)**
+
+   Anticipating demand for use of composite PDF parameterisations in future.
 
 - **Re-introduce set-level Info singletons**
 

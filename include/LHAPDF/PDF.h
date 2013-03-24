@@ -303,7 +303,7 @@ namespace LHAPDF {
     const std::vector<int>& flavors() const {
       if (_flavors.empty()) {
         _flavors = info().metadata< vector<int> >("Flavors");
-        sort(_flavors);
+        sort(_flavors.begin(), _flavors.end());
       }
       return _flavors;
     }

@@ -1,5 +1,9 @@
 2013-03-24  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Removing uses of Boost range algorithms -- nice, but apparently
+	introduces a bit too much sensitivity on Boost version for some
+	Mac and SL systems.
+
 	* Adding a NotImplementedError!
 
 	* Adding main PDFLIB functions as implemented in PYTHIA6's pdfdummies.f.

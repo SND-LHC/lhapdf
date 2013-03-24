@@ -54,7 +54,7 @@ namespace LHAPDF {
         if (x < xs().front()) throw GridError("x value " + to_str(x) + " is lower than lowest-x grid point at " + to_str(xs().front()));
         if (x > xs().back()) throw GridError("x value " + to_str(x) + " is higher than highest-x grid point at " + to_str(xs().back()));
         // Find the closest knot below the requested value
-        size_t i = upper_bound(xs(), x) - xs().begin();
+        size_t i = upper_bound(xs().begin(), xs().end(), x) - xs().begin();
         if (i == xs().size()) i -= 1; // can't return the last knot index
         i -= 1; // have to step back to get the knot <= x behaviour
         return i;
@@ -75,7 +75,7 @@ namespace LHAPDF {
         if (q2 < q2s().front()) throw GridError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
         if (q2 > q2s().back()) throw GridError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
         /// Find the closest knot below the requested value
-        size_t i = upper_bound(q2s(), q2) - q2s().begin();
+        size_t i = upper_bound(q2s().begin(), q2s().end(), q2) - q2s().begin();
         if (i == q2s().size()) i -= 1; // can't return the last knot index
         i -= 1; // have to step back to get the knot <= q2 behaviour
         return i;

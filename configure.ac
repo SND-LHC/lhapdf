@@ -114,7 +114,7 @@ BOOST_SMART_PTR
 BOOST_STRING_ALGO
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/range.hpp])
-BOOST_FIND_HEADER([boost/range/algorithm/sort.hpp])
+dnl BOOST_FIND_HEADER([boost/range/algorithm/sort.hpp])
 BOOST_FILESYSTEM
 
 
