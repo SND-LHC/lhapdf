@@ -16,21 +16,6 @@ It's also possible to rename sets from the HAPDF5 name to a new LHAPDF6 name, e.
 import lhapdf, numpy
 import os, sys, optparse
 
-def getxfs(lhapids, xs, qs):
-    xfs = []
-    for x in xs:
-        for q in qs:
-            xfs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
-    return xfs
-
-def active_flavours(xfxs):
-    pids = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
-    xfxs_array = numpy.array(xfxs)
-    pids = [pid for i, pid in enumerate(pids) if xfxs_array[:,i].any()]
-    return pids
-
-
-
 ## Parse the command line to get the set names for migration (in LHAPDF5 format)
 p = optparse.OptionParser(usage=__doc__)
 opts, args = p.parse_args()
@@ -75,21 +60,46 @@ for lha5name in args:
         ## Get the x and Q anchor point arrays
         try:
             ## Use LHAPDF5 to get the exact x and q2 grid points (requires LHAPDF 5.9)
-            import gridhack
-            xs, q2s = gridhack.get_grid()
+            from ctypes import *
+            try:
+                _lha = CDLL('libLHAPDF.so')
+            except:
+                _lha = CDLL('libLHAPDF.dylib')
+            nxgrid = c_uint()
+            nqgrid = c_uint()
+            gridx = (c_double * 500)()
+            gridq = (c_double * 500)()
+            _lha.getgrid_(byref(nxgrid), byref(nqgrid), gridx, gridq)
+            xs, q2s = gridx[:nxgrid.value], gridq[:nqgrid.value]
         except:
             xs = numpy.logspace(-8, -0.001, 30)
             q2s = numpy.logspace(0.1, 8, 50)
         qs = numpy.sqrt(numpy.array(q2s))
 
+        ## If there isn't an x = 1 point, create one
+        # TODO: Remove this when LHAPDF ipol knows about x=1
+        if xs[-1] != 1.0:
+            xs.append(1.0)
+
         ## Determine the active (non-zero) flavours in the grid (will be -5..5 or -6..6)
+        # def active_flavours(xfxs):
+        #     pids = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
+        #     xfxs_array = numpy.array(xfxs)
+        #     pids = [pid for i, pid in enumerate(pids) if xfxs_array[:,i].any()]
+        #     return pids
         ## NB. 0 is listed last since it will be translated to 21 in the PDG scheme
-        #lhapids = active_flavours(xfxs)
-        #lhapids = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 0]
         lhapids = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 0]
 
         ## Get the xf values for this PDF member
-        xfs = getxfs(lhapids, xs, qs)
+        xfs = []
+        for x in xs:
+            for q in qs:
+                if x != 1.0:
+                    xfs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
+                else:
+                    ## Force xf(x=1) = 0 for now, until ipol is improved
+                    # TODO: Remove this when LHAPDF ipol knows about x=1
+                    xfs.append([0.0 for pid in lhapids])
 
         ## Work out the member file path and open it for writing
         memname = setname + ('_%04d.lha' % member)
