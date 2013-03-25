@@ -1,3 +1,9 @@
+2013-03-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fixing accidental shift of LHAGlue default member from 0 ->
+	1. The default index = 1 should only apply to the multiset index
+	used by non-multiset functions.
+
 2013-03-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing uses of Boost range algorithms -- nice, but apparently

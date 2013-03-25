@@ -31,14 +31,14 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   struct PDFSetHandler {
 
     /// Default constructor
-    PDFSetHandler() : currentmem(1)
+    PDFSetHandler() : currentmem(0)
     { } //< It'll be stored in a map so we need one of these...
 
     /// Constructor from a PDF set name
     PDFSetHandler(const string& name)
       : setname(name)
     {
-      loadMember(1);
+      loadMember(0);
     }
 
     /// Constructor from a PDF set's LHAPDF ID code
@@ -52,7 +52,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     ///
     /// If it's already loaded, the existing object will not be reloaded.
     void loadMember(int mem) {
-      assert(mem > 0);
+      assert(mem >= 0);
       if (members.find(mem) == members.end())
         members[mem] = PDFPtr(LHAPDF::mkPDF(setname, mem));
       currentmem = mem;
@@ -61,7 +61,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     /// Actively delete a PDF member to save memory
     void unloadMember(int mem) {
       members.erase(mem);
-      const int nextmem = (!members.empty()) ? members.begin()->first : 1;
+      const int nextmem = (!members.empty()) ? members.begin()->first : 0;
       loadMember(nextmem);
     }
 
