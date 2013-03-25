@@ -27,7 +27,7 @@ int main(int argc, const char* argv[]) {
   // Dump out points in (x,Q)
   for (int flavour = -6; flavour <= 6; ++flavour) {
     std::stringstream filename;
-    filename << "flavour_v6_" << flavour << ".dat";
+    filename << "xf_v5_" << flavour << ".dat";
     std::ofstream output( filename.str().c_str() );
 
     // x sampling for fixed Q

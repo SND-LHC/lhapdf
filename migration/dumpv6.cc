@@ -30,7 +30,7 @@ int main(int argc, const char* argv[]) {
     int flavour = flavours[idx];
 
     std::stringstream filename;
-    filename << "flavour_v6_" << flavour << ".dat";
+    filename << "xf_v6_" << flavour << ".dat";
 
     std::ofstream output( filename.str().c_str() );
 
