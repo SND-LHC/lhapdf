@@ -7,7 +7,7 @@
 #include <LHAPDF/PDF.h>
 #include <LHAPDF/Factories.h>
 
-const double MINLOGX = -8;
+const double MINLOGX = -10;
 const double MINLOGQ = log10(10);
 const double MAXLOGQ = log10(5000);
 const double DX = 0.1;

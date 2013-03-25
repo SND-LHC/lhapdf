@@ -6,7 +6,7 @@
 
 #include <LHAPDF/LHAPDF.h>
 
-const double MINLOGX = -8;
+const double MINLOGX = -10;
 const double MINLOGQ = log10(10);
 const double MAXLOGQ = log10(5000);
 const double DX = 0.1;
@@ -25,7 +25,7 @@ int main(int argc, const char* argv[]) {
   LHAPDF::initPDF(member);
 
   // Dump out points in (x,Q)
-  int flavors[] = {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 21};
+  int flavors[] = {-5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5};
   for (int id = -5; id <= 5; ++id) {
     int flavor = flavors[id+5];
 

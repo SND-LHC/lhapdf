@@ -1,0 +1,58 @@
+#! /usr/bin/env python
+
+"""\
+Usage: %prog <gridv5.dat> <gridv6.dat>
+
+Compare two dumped grids of PDF xf(x,Q) values. The two input files should be in
+a format where each line has three numerical values separated by whitespace,
+corresponding to the x, Q2, and xf(x,Q) values sampled. The x and Q values must
+be line-by-line identical (within floating point accuracy) between the two data
+files. The output files from the migration/testpdf program are the main use case.
+
+Both input data sets are given by lines in the following format:
+
+  x Q xfx
+
+Where xfx is the central value for the top quark given by the set used in v5 and v6.
+
+Program assumes the values produced by v5 are accurate and compares these to values
+produced by v6 and plots them using gnuplot.
+
+Output is given in the following format:
+
+  x Q delta_xfx fractional_accuracy
+"""
+
+import optparse, os
+
+op = optparse.OptionParser(usage=__doc__)
+op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
+op.add_option("-e", dest="EPSILON", metavar="EPS", help="abs tolerance scale", type=int, default=1e-4)
+opts, args = op.parse_args()
+
+assert len(args) == 2
+assert all(os.path.exists(a) for a in args)
+
+f5 = open(args[0])
+f6 = open(args[1])
+out = open(opts.OUTPUT, "w")
+
+def diff(a, b):
+    return abs(a-b)
+def fracdiff(a, b):
+    if a == 0 and b == 0: return 0.0
+    return abs(a-b) / max(abs(a), abs(b))
+def accuracy(ref, test, epsilon=opts.EPSILON):
+    if ref == 0 and test == 0: return 0.0
+    return abs(test-ref) / (abs(ref)+epsilon)
+
+while True:
+    l5, l6 = f5.readline(), f6.readline()
+    if not l5 or not l6: break
+    lnx5, lnq5, xf5 = [float(a) for a in l5.split()]
+    lnx6, lnq6, xf6 = [float(b) for b in l6.split()]
+    assert fracdiff(lnx5, lnx6) < 1e-8 and fracdiff(lnq5, lnq6) < 1e-8
+    diff56, acc56 = diff(xf5, xf6), accuracy(xf5, xf6)
+    out.write("%0.3e %0.3e %0.3e %0.3e\n" % (lnx5, lnq5, diff56, acc56))
+    if acc56 > 1e-3:
+        print "%0.3e, %0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e" % (lnx5, lnq5, xf5, xf6, diff56, acc56)

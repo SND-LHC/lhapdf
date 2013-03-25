@@ -25,3 +25,6 @@ The cmppdfs script can be used to numerically compare dumped-out PDF values as w
 (the optional output file is written in the same format as the PDF dumps, to
 allow the differences to be visualised with the same code as the PDF value
 dumps)
+
+g++ dumpv5.cc -o dumpv5 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
+g++ dumpv6.cc -o dumpv6 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
