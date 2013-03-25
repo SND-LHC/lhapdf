@@ -25,23 +25,26 @@ int main(int argc, const char* argv[]) {
   LHAPDF::initPDF(member);
 
   // Dump out points in (x,Q)
-  for (int flavour = -6; flavour <= 6; ++flavour) {
+  int flavors[] = {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 21};
+  for (int id = -5; id <= 5; ++id) {
+    int flavor = flavors[id+5];
+
     std::stringstream filename;
-    filename << "xf_v5_" << flavour << ".dat";
+    filename << "xf_v5_" << flavor << ".dat";
     std::ofstream output( filename.str().c_str() );
 
     // x sampling for fixed Q
     const double q = 500;
     for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
       double x  = pow(10, logX);
-      output << x << " " << q << " " << LHAPDF::xfx(x, q, flavour) << std::endl;
+      output << x << " " << q << " " << LHAPDF::xfx(x, q, id) << std::endl;
     }
 
     // // Q sampling for fixed x
     // const double x = 1e-3;
     // for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
     //   double q = pow(10, logQ);
-    //   output << x << " " << q << " " << LHAPDF::xfx(x, q, flavour) << std::endl;
+    //   output << x << " " << q << " " << LHAPDF::xfx(x, q, id) << std::endl;
     // }
 
     // // (x,Q) 2D sampling
@@ -49,7 +52,7 @@ int main(int argc, const char* argv[]) {
     //   for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
     //     const double x  = pow(10, logX);
     //     const double q = pow(10, logQ);
-    //     output << x << " " << q << " " << LHAPDF::xfx(x, q, flavour) << std::endl;
+    //     output << x << " " << q << " " << LHAPDF::xfx(x, q, id) << std::endl;
     //   }
     // }
 
