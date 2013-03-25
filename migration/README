@@ -28,3 +28,5 @@ dumps)
 
 g++ dumpv5.cc -o dumpv5 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
 g++ dumpv6.cc -o dumpv6 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
+LHAPDF_DATA_PATH=$PWD ./dumpv6 CT10 0
+./dumpv5 CT10.LHgrid 0

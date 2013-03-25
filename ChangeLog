@@ -1,5 +1,7 @@
 2013-03-25  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Re-wrangling dump, comparison, and migration scripts.
+
 	* Fixing accidental shift of LHAGlue default member from 0 ->
 	1. The default index = 1 should only apply to the multiset index
 	used by non-multiset functions.

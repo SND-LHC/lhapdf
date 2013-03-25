@@ -27,7 +27,9 @@ import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
-op.add_option("-e", dest="EPSILON", metavar="EPS", help="abs tolerance scale", type=int, default=1e-4)
+op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser for comparisons to small xf values", type=float, default=1e-4)
+op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="pass/fail tolerance scale for accuracy", type=float, default=1e-3)
+1e-3
 opts, args = op.parse_args()
 
 assert len(args) == 2
@@ -44,7 +46,7 @@ def fracdiff(a, b):
     return abs(a-b) / max(abs(a), abs(b))
 def accuracy(ref, test, epsilon=opts.EPSILON):
     if ref == 0 and test == 0: return 0.0
-    return abs(test-ref) / (abs(ref)+epsilon)
+    return abs(test-ref) / (abs(ref)+epsilon/opts.TOLERANCE)
 
 while True:
     l5, l6 = f5.readline(), f6.readline()
@@ -54,5 +56,5 @@ while True:
     assert fracdiff(lnx5, lnx6) < 1e-8 and fracdiff(lnq5, lnq6) < 1e-8
     diff56, acc56 = diff(xf5, xf6), accuracy(xf5, xf6)
     out.write("%0.3e %0.3e %0.3e %0.3e\n" % (lnx5, lnq5, diff56, acc56))
-    if acc56 > 1e-3:
-        print "%0.3e, %0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e" % (lnx5, lnq5, xf5, xf6, diff56, acc56)
+    print "%0.3e, %0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
+          (lnx5, lnq5, xf5, xf6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL")

@@ -27,35 +27,47 @@ int main(int argc, const char* argv[]) {
   // Dump out points in (x,Q)
   int flavors[] = {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 21};
   for (int id = 0; id < 11; ++id) {
-    int flavor = flavors[id];
-
-    std::stringstream filename;
-    filename << "xf_v6_" << flavor << ".dat";
-    std::ofstream output( filename.str().c_str() );
+    const int flavor = flavors[id];
 
     // x sampling for fixed Q
-    const double q = 500;
-    for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
-      double x  = pow(10, logX);
-      output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
+    double qs[] = {10, 50, 100, 200, 500, 1000, 2000, 5000};
+    for (size_t iq = 0; iq < 8; ++iq) {
+      const double q = qs[iq];
+      std::stringstream filename;
+      filename << "xf_v6_scanQ" << q << "_" << flavor << ".dat";
+      std::ofstream output(filename.str().c_str());
+      for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
+        const double x  = pow(10, logX);
+        output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
+      }
+      output.close();
     }
 
-    // // Q sampling for fixed x
-    // const double x = 1e-3;
-    // for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
-    //   double q = pow(10, logQ);
-    //   output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
-    // }
+    // Q sampling for fixed x
+    double xs[] = {1e-8, 1e-6, 1e-4, 1e-2, 1e-1, 0.2, 0.5, 0.8};
+    for (size_t ix = 0; ix < 8; ++ix) {
+      const double x = xs[ix];
+      std::stringstream filename;
+      filename << "xf_v6_scanx" << x << "_" << flavor << ".dat";
+      std::ofstream output(filename.str().c_str());
+      for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
+        const double q = pow(10, logQ);
+        output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
+      }
+      output.close();
+    }
 
-    // // (x,Q) 2D sampling
-    // for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
-    //   for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
-    //     const double x  = pow(10, logX);
-    //     const double q = pow(10, logQ);
-    //     output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
-    //   }
-    // }
-
+    // (x,Q) 2D sampling
+    std::stringstream filename;
+    filename << "xf_v6_scanxQ" << flavor << ".dat";
+    std::ofstream output(filename.str().c_str());
+    for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
+      for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
+        const double x  = pow(10, logX);
+        const double q = pow(10, logQ);
+        output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
+      }
+    }
     output.close();
   }
 

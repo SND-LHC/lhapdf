@@ -1,3 +1,5 @@
+#cython: embedsignature=True
+
 cimport clhapdf as c
 from libcpp.string cimport string
 from libcpp.vector cimport vector

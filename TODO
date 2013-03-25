@@ -10,19 +10,22 @@ NOW / FOR BETA 1
 
 - **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,AB,BP,GW)**
 
-   The migration/creategrid script should work. pdfsets.index will need to be
+   The migration/creategrids script should work. pdfsets.index will need to be
    populated for each set. Metadata will need to be set manually.
 
-   Martin & Steve: make new "heat map" plots for logx+logQ interpolation and
-   log-sampling of comparison points.
-
-   Martin, Steve, Andy, Graeme: Probably creategrid will need to be adapted to
-   add some more anchor point density in the high-x region: > 0.5, > 0.8, etc.?
+   Martin, Steve, Andy, Graeme: Make new log-space "heat map" and 1D scan plots
+   for CT10, and possibly update creategrid to add more anchor point density in
+   the high-x region.  AB: largely done, just remaining automation to do and
+   converting plotting to mpl.
 
    Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
    all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3!)
+
+- **Fix extrapolation (AB)**
+
+   I'm seeing a hump just over the low-x boundary... addressing.
 
 - **Fortran compatibility functions (JF,KN,BP,AB)**
 
@@ -31,6 +34,9 @@ NOW / FOR BETA 1
 
    Andy: add missing LHAPDF5 and PDFLIB Fortran subroutines... and common-block
    populating? PDFSET_ function needs to read PYTHIA6 common block?
+
+   Triggering extrapolation from Fortran? We don't extrapolate, we either lock
+   to boundary values or throw an error.
 
 - **Improve build robustness, test on Macs and SL5/6/lxplus (AB + testers)**
 
