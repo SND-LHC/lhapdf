@@ -1,55 +1,60 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <math.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cmath>
+#include <cstdlib>
 
 #include <LHAPDF/LHAPDF.h>
 
-#define MINLOGX -8
-#define MINLOGQ2 1
-#define MAXLOGQ2 8
+const double MINLOGX = -8;
+const double MINLOGQ = log10(10);
+const double MAXLOGQ = log10(5000);
+const double DX = 0.1;
+const double DQ = 0.1;
 
-#define DX 0.1
-#define DQ2 0.1
+int main(int argc, const char* argv[]) {
 
-int main( int argc, const char* argv[] ) {
-    if( argc < 3 ) {
-        std::cerr << "./dumpv5 name member." << std::endl;
-        
-        return 1;
+  if (argc < 3) {
+    std::cerr << argv[0] << " <setname> <setmember>" << std::endl;
+    return 1;
+  }
+
+  const char* setname = argv[1];
+  const int member = atoi(argv[2]);
+  LHAPDF::initPDFSetByName(setname);
+  LHAPDF::initPDF(member);
+
+  // Dump out points in (x,Q)
+  for (int flavour = -6; flavour <= 6; ++flavour) {
+    std::stringstream filename;
+    filename << "flavour_v6_" << flavour << ".dat";
+    std::ofstream output( filename.str().c_str() );
+
+    // x sampling for fixed Q
+    const double q = 500;
+    for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
+      double x  = pow(10, logX);
+      output << x << " " << q << " " << LHAPDF::xfx(x, q, flavour) << std::endl;
     }
 
-    //Use CT10 LHgrid
-    const char* setname = argv[1];
-    LHAPDF::initPDFSetByName( setname );
+    // // Q sampling for fixed x
+    // const double x = 1e-3;
+    // for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
+    //   double q = pow(10, logQ);
+    //   output << x << " " << q << " " << LHAPDF::xfx(x, q, flavour) << std::endl;
+    // }
 
-    //Centeral value
-    const int member = atoi( argv[2] );
-    LHAPDF::initPDF( member );
+    // // (x,Q) 2D sampling
+    // for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
+    //   for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
+    //     const double x  = pow(10, logX);
+    //     const double q = pow(10, logQ);
+    //     output << x << " " << q << " " << LHAPDF::xfx(x, q, flavour) << std::endl;
+    //   }
+    // }
 
-    //Dump out points in (X,Q2)
-    for( int flavour = -6; flavour < 7; ++flavour ) {
-        std::stringstream filename;
-        filename << "flavour_v6_" << flavour << ".dat";
+    output.close();
+  }
 
-        std::ofstream output( filename.str().c_str() );
-        for( double logX = MINLOGX; logX <= 0.0; logX += DX ) {
-            for( double logQ2 = MINLOGQ2; logQ2 <= MAXLOGQ2; logQ2 += DQ2 ) {
-                double x  = pow( 10, logX );
-                double q2 = pow( 10, logQ2 );
-
-                //std::cout << x << " " << q2 << " ";
-                //std::cout << LHAPDF::xfx( x, sqrt(q2), flavour ) << std::endl;
-
-                output << x << " " << q2 << " ";
-                output << LHAPDF::xfx(x,sqrt(q2),flavour) << std::endl;
-            }
-        }
-
-        output.close();
-    }
-    
-    return 0;
+  return 0;
 }
