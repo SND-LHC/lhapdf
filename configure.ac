@@ -27,7 +27,7 @@ if test "$PROD_NAME" == "Mac OS X"; then
   MACOSX_DEPLOYMENT_TARGET=$($SWVERS -productVersion | cut -f 1,2 -d.)
   AC_MSG_NOTICE([MACOSX_DEPLOYMENT_TARGET = $MACOSX_DEPLOYMENT_TARGET])
   AM_CXXFLAGS="$AM_CXXFLAGS -Dunix"
-  AM_CXXFLAGS="$AM_LDFLAGS -flat_namespace"
+  AM_CXXFLAGS="$AM_CXXFLAGS -flat_namespace"
 fi
 
 
@@ -104,7 +104,7 @@ AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98 "])
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
 dnl AC_CEDAR_CHECKCXXFLAG([-Wno-long-long], [AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long "])
-AM_LDFLAGS=["$AM_LDFLAGS -L\$(prefix)/lib"]
+dnl AM_LDFLAGS=["$AM_LDFLAGS -L\$(prefix)/lib"]
 
 
 ## Boost utility library
