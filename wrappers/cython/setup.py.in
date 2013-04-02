@@ -13,11 +13,11 @@ libdir = os.path.abspath("@top_builddir@/src/.libs")
 ext = Extension("lhapdf",
                 ["lhapdf.pyx"],
                 include_dirs = [incdir_src, incdir_build],
-                extra_compile_args= "@BOOST_CPPFLAGS@ @YAMLCPP_CPPFLAGS@".split(),
+                extra_compile_args= "-I@prefix@/include @BOOST_CPPFLAGS@ @YAMLCPP_CPPFLAGS@".split(),
                 library_dirs = [libdir],
-                extra_link_args = "@BOOST_LDFLAGS@ @YAMLCPP_LDFLAGS@".split(),
+                extra_link_args = "-L@prefix@/lib @BOOST_LDFLAGS@ @YAMLCPP_LDFLAGS@".split() + "@BOOST_LIBS@ @YAMLCPP_LIBS@".split(),
                 language = "C++",
-                libraries = ["stdc++", "LHAPDF"] + "@BOOST_LIBS@ @YAMLCPP_LIBS@".split())
+                libraries = ["stdc++", "LHAPDF"])
 
 setup(name = "LHAPDF",
       version = "@PACKAGE_VERSION@",
