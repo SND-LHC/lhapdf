@@ -6,16 +6,18 @@ from glob import glob
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
-incdir_src = os.path.abspath('@top_srcdir@/include')
-incdir_build = os.path.abspath('@top_builddir@/include')
-libdir = os.path.abspath('@top_builddir@/src/.libs')
+incdir_src = os.path.abspath("@top_srcdir@/include")
+incdir_build = os.path.abspath("@top_builddir@/include")
+libdir = os.path.abspath("@top_builddir@/src/.libs")
 
 ext = Extension("lhapdf",
                 ["lhapdf.pyx"],
                 include_dirs = [incdir_src, incdir_build],
+                extra_compile_args= "@BOOST_CPPFLAGS@ @YAMLCPP_CPPFLAGS@".split(),
                 library_dirs = [libdir],
+                extra_link_args = "@BOOST_LDFLAGS@ @YAMLCPP_LDFLAGS@".split(),
                 language = "C++",
-                libraries = ["stdc++", "LHAPDF"])
+                libraries = ["stdc++", "LHAPDF"] + "@BOOST_LIBS@ @YAMLCPP_LIBS@".split())
 
 setup(name = "LHAPDF",
       version = "@PACKAGE_VERSION@",
