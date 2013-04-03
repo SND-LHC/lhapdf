@@ -1,6 +1,11 @@
+2013-04-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* migration/: Combined dumpv5.cc and dumpv6.cc into a single
+	dumpv5v6.cc, with the version selected by a preprocessor macro.
+
 2013-04-02  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Build system fixes... *almost* working on lxplus now! :-)
+	* Build system fixes... *finally* working on lxplus! :-)
 
 2013-03-25  Andy Buckley  <andy.buckley@cern.ch>
 

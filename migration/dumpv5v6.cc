@@ -1,11 +1,27 @@
+/// PDF value dumping program, for both LHAPDF version 5 and 6
+///
+/// The version is specified via the LHAVERSION macro definition, e.g.
+///   g++ dumpv5v6.cc -DLHAVERSION=5 -o dumpv5 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
+///   g++ dumpv5v6.cc -DLHAVERSION=6 -o dumpv6 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cmath>
 #include <cstdlib>
 
+#ifndef LHAVERSION
+#error Must specify -DLHAVERSION=[5|6]
+#endif
+
+#if LHAVERSION > 5
 #include <LHAPDF/PDF.h>
 #include <LHAPDF/Factories.h>
+#define XF(X, Q) pdf.xfxQ(flavor, X, Q)
+#else
+#include <LHAPDF/LHAPDF.h>
+#define XF(X, Q) LHAPDF::xfx(X, Q, id)
+#endif
 
 const double MINLOGX = -10;
 const double MINLOGQ = log10(10);
@@ -19,15 +35,24 @@ int main(int argc, const char* argv[]) {
     std::cerr << argv[0] << " <setname> <setmember>" << std::endl;
     return 1;
   }
-
   const char* setname = argv[1];
-  const int setmember = atoi(argv[2]);
-  const LHAPDF::PDF& pdf = *LHAPDF::mkPDF(setname, setmember);
+  const int member = atoi(argv[2]);
+
+  #if LHAVERSION > 5
+  const LHAPDF::PDF& pdf = *LHAPDF::mkPDF(setname, member);
+  #else
+  LHAPDF::initPDFSetByName(setname);
+  LHAPDF::initPDF(member);
+  #endif
 
   // Dump out points in (x,Q)
   int flavors[] = {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 21};
   for (int id = 0; id < 11; ++id) {
+    #if LHAVERSION > 5
     const int flavor = flavors[id];
+    #else
+    const int flavor = flavors[id+5];
+    #endif
 
     // x sampling for fixed Q
     double qs[] = {10, 50, 100, 200, 500, 1000, 2000, 5000};
@@ -38,7 +63,7 @@ int main(int argc, const char* argv[]) {
       std::ofstream output(filename.str().c_str());
       for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
         const double x  = pow(10, logX);
-        output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
+        output << x << " " << q << " " << XF(x, q) << std::endl;
       }
       output.close();
     }
@@ -52,7 +77,7 @@ int main(int argc, const char* argv[]) {
       std::ofstream output(filename.str().c_str());
       for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
         const double q = pow(10, logQ);
-        output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
+        output << x << " " << q << " " << XF(x, q) << std::endl;
       }
       output.close();
     }
@@ -65,7 +90,7 @@ int main(int argc, const char* argv[]) {
       for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
         const double x  = pow(10, logX);
         const double q = pow(10, logQ);
-        output << x << " " << q << " " << pdf.xfxQ(flavor, x, q) << std::endl;
+        output << x << " " << q << " " << XF(x, q) << std::endl;
       }
     }
     output.close();
