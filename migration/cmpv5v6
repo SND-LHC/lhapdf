@@ -27,7 +27,7 @@ import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
-op.add_option("-e", dest="EPSILON", metavar="EPS", help="threshold below which differences are effectively zero", type=float, default=1e-5)
+op.add_option("-e", dest="EPSILON", metavar="EPS", help="threshold below which differences are effectively zero", type=float, default=0)
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="pass/fail tolerance scale for accuracy", type=float, default=1e-3)
 opts, args = op.parse_args()
 
