@@ -8,24 +8,29 @@ LHAPDF6 TODO list
 NOW / FOR BETA 1
 ----------------
 
+- **Fix extrapolation (AB)**
+
+   I'm seeing a hump just over the low-x boundary in CT10... addressing.
+
 - **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,AB,BP,GW)**
 
    The migration/creategrids script should work. pdfsets.index will need to be
    populated for each set. Metadata will need to be set manually.
 
-   Martin, Steve, Andy, Graeme: Make new log-space "heat map" and 1D scan plots
-   for CT10, and possibly update creategrid to add more anchor point density in
-   the high-x region.  AB: largely done, just remaining automation to do and
-   converting plotting to mpl.
+   Someone: update creategrids to create a sensible log-then-lin in x, log-in-Q
+   sampling of LHpdf sets, between the xmin/max and Qmin/max reported by
+   LHAPDFv5. Use for CTEQ6L1.
+
+   AB: re-dump CT10 using the improved CT10nlo set from LHAPDF5. We'll use
+   this as the new base for CT10 in v6. Wonder if we'll see accuracy differences
+   w.r.t. CT10.LHgrid...
+
+   Martin, Steve: Make new log-space "heat map" plots for CT10.
 
    Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
    all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3!)
-
-- **Fix extrapolation (AB)**
-
-   I'm seeing a hump just over the low-x boundary... addressing.
 
 - **Fortran compatibility functions (JF,KN,BP,AB)**
 
@@ -38,19 +43,19 @@ NOW / FOR BETA 1
    Triggering extrapolation from Fortran? We don't extrapolate, we either lock
    to boundary values or throw an error.
 
-- **Improve build robustness, test on Macs and SL5/6/lxplus (AB + testers)**
-
-   Boost detection already improved. Boost version compatibility to be tweaked
-   in the code. Bootstrap script and pre-installed version to be provided.
-
 - **Provide ways to find the number of members in a PDF set and to identify a member's LHAPDF ID**
 
-   Determine by counting member data files in the PDF set directory (remember
-   that the info file may not be present). How to do the reverse LHAPDF ID lookup?
+   People will want this! Determine by counting member data files in the PDF set
+   directory (remember that the info file may not be present). How to do the
+   reverse LHAPDF ID lookup?
 
 
 FOR BETA 2
 ----------
+
+- **MSTW2008 PDF migration (GW)**
+
+   First attempt to use subgrids in anger.
 
 - **Add interpolation-from-metadata implementation of AlphaS**
 
