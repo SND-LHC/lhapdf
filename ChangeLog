@@ -1,5 +1,8 @@
 2013-04-03  Andy Buckley  <andy.buckley@cern.ch>
 
+	* migration/: Many updates to comparison scripts, and adding a
+	plotv5v6 script and new README instructions.
+
 	* migration/: Combined dumpv5.cc and dumpv6.cc into a single
 	dumpv5v6.cc, with the version selected by a preprocessor macro.
 

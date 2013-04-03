@@ -1,0 +1,91 @@
+#! /usr/bin/env python
+
+"""\
+Usage: %prog <data1.dat> <data2.dat> [...]
+
+Plot the given PDF comparison files.
+"""
+
+import optparse, os
+
+op = optparse.OptionParser(usage=__doc__)
+op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="cmpv5v6.pdf")
+op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode: x, q, xq", default="x")
+op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, fracdiff", default="fracdiff")
+op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation", type=float, default=1e-3)
+# TODO: PID specification
+# TODO: Logx/y and limits control
+opts, args = op.parse_args()
+
+assert len(args) > 1
+assert all(os.path.exists(a) for a in args)
+
+
+import matplotlib.pyplot as plt
+plt.rcParams["font.family"] = "serif"
+# plt.rcParams["font.serif"] = "Computer Modern Roman"
+# plt.rcParams["text.usetex"] = True
+
+## Do correct sorting, and labels as file:label args
+fname_label = {}
+for a in args:
+    if ":" in a:
+        fname, label = a.split(":", maxsplit=1)
+    else:
+        fname = a
+        label = a.replace("_", " ")
+        # TODO: Do some automatic fiddling with the x/Q parts of the name
+    fname_label[fname] = label
+
+## Plot each line
+for fname, label in fname_label.iteritems():
+    f = open(fname)
+    xs, qs, vals = [], [], []
+    for line in f:
+        x, q, val = [float(a) for a in line.split()]
+        if opts.AXIS == "x":
+            xs.append(x)
+        elif opts.AXIS == "q":
+            xs.append(q)
+        else:
+            print "xq axis type (2D plotting) not yet supported"
+            exit(1)
+        vals.append(val)
+    # TODO: Line styles and colors (from cmd line? group by v5/v6)
+    plt.plot(xs, vals, label=label)
+
+## Set up axes with log scales
+plt.xscale("log")
+plt.yscale("log")
+plt.ylim(ymin=1e-5)
+
+## Set up axis labels and plot title
+if opts.AXIS == "xq":
+    ## 2D plotting
+    plt.xlabel("$x$")
+    plt.ylabel("$Q$")
+    # TODO: Implement!
+    print "xq axis type (2D plotting) not yet supported"
+    exit(1)
+else:
+    ## 1D plotting
+    if opts.TYPE == "xf":
+        plt.ylabel("$xf(x,Q)$")
+    elif opts.TYPE == "fracdiff":
+        plt.ylabel("$|f_6 - f_5| / |f_5|$")
+    if opts.AXIS == "x":
+        plt.xlabel("$x$")
+    elif opts.AXIS == "q":
+        plt.xlabel("$Q$")
+
+## Legend
+l = plt.legend(loc=0, ncol=2, frameon=False)
+for t in l.get_texts():
+    t.set_size("xx-small")
+
+## If plotting fractional deviations, draw the tolerance level
+if opts.TYPE == "fracdiff":
+    plt.axhline(opts.TOLERANCE, linewidth=1, color="r", linestyle="--")
+
+## Save the plot
+plt.savefig(opts.OUTPUT)

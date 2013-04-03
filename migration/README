@@ -8,25 +8,50 @@ To migrate a PDF, install LHAPDF5 (including the Python module) and call e.g.
 This will create the .info set metadata file and .lha grid data files in a (new)
 CT10 directory.
 
-To test querying and writing the new PDFs, one member at a time, build the
-testpdf program, e.g.:
+To test the new PDFs, build the dumpv5 and/or dumpv6 programs. These are
+compiled from the same source (with the appropriate preprocessor macro and
+LHAPDF library version installed) e.g.:
 
-g++ testpdf.cc -I$HOME/heplocal/include -L$HOME/heplocal/lib -lLHAPDF -lboost_filesystem -lboost_system -o testpdf
+g++ dumpv5v6.cc -DLHAVERSION=5 -o dumpv5 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
+and
+g++ dumpv5v6.cc -DLHAVERSION=6 -o dumpv6 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
 
-and run it with set and member ID as arguments, making sure to specify the paths
-to the lhapdf.conf and current dir:
+It is run like
+
+./dumpvX <setname> <member_num>
+
+with the setname being generally different between v5 and v6 (at the least, v5
+PDF names contain the .LHgrid/.LHpdf file extension). You may need to specify
+the data path to the preliminary v6 PDF data files:
 
 LHAPDF_DATA_PATH=$PWD ./testpdf CT10 0
 
-The cmppdfs script can be used to numerically compare dumped-out PDF values as written by testpdf:
+The cmpv5v6 script is used to numerically compare dumped-out PDF values between
+versions 5 and 6 of LHAPDF, and writes out the fractional deviations (with an
+"epsilon" parameter to excuse very small absolute deviations):
 
-./cmppdfs CT10-lha5/CT10_0_21.dat CT10-lha6/CT10_0_21.dat -o CT10_0_21_5vs6.dat
+./cmpv5v6 xf_v{5,6}_scanx100_21.dat
 
 (the optional output file is written in the same format as the PDF dumps, to
-allow the differences to be visualised with the same code as the PDF value
-dumps)
+allow the values and the differences to be visualised with the same code)
 
-g++ dumpv5.cc -o dumpv5 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
-g++ dumpv6.cc -o dumpv6 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
-LHAPDF_DATA_PATH=$PWD ./dumpv6 CT10 0
-./dumpv5 CT10.LHgrid 0
+The following commands (run in a subdir containing the dumped sample point
+files) are useful for batch running of the comparisons across all standard PID
+codes and for the available "discrete" x and Q values:
+
+for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do for x in 1e-08 1e-06 0.0001 0.01 0.1 0.2 0.5 0.8; do ../cmpv5v6 xf_v{5,6}_scanq_x${x}_${pid}.dat && mv accuracy{,_x${x}_${pid}}.dat; done; done
+for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do for q in 10 50 100 200 500 1000 2000 5000; do ../cmpv5v6 xf_v{5,6}_scanx_q${q}_${pid}.dat && mv accuracy{,_q${q}_${pid}}.dat; done; done
+
+The plotv5v6 script is useful for 1D comparison plotting of data files, either
+absolute PDF xf values or fractional deviations and with either x or Q on the
+x-axis of the plot. It requires the Python matplotlib library. plotv5v6 can be
+usefully used for batch plotting of PDF values or accuracies as follows, again
+run in a subdir in this example:
+
+## Plotting absolute PDF values (from the output of dumpv5v6) for all PIDs:
+for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do ../plotv5v6 xf_v*_scanq_x*_$pid.dat --type=xf --axis=q -o cmpv5v6_xf_qscan_$pid.pdf; done
+for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do ../plotv5v6 xf_v*_scanx_q*_$pid.dat --type=xf --axis=x -o cmpv5v6_xf_xscan_$pid.pdf; done
+
+## Plotting differences (from the output of cmpv5v6) for all PIDs:
+for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do ../plotv5v6 accuracy_q*_$pid.dat --axis=x -o cmpv5v6_accuracy_xscan_$pid.pdf; done
+for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do ../plotv5v6 accuracy_x*_$pid.dat --axis=q -o cmpv5v6_accuracy_qscan_$pid.pdf; done
