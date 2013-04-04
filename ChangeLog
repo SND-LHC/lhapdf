@@ -1,3 +1,8 @@
+2013-04-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Re-enabling the -Wno-long-long flag if possible, to avoid build
+	warnings stemming from yaml-cpp.
+
 2013-04-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* migration/: Many updates to comparison scripts, and adding a
