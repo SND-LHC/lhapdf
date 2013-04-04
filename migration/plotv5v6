@@ -12,7 +12,10 @@ op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="cmpv5v6.pdf")
 op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode: x, q, xq", default="x")
 op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, fracdiff", default="fracdiff")
+op.add_option("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy", default="xy")
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation", type=float, default=1e-3)
+op.add_option("--xmin", dest="XMIN", metavar="X", help="low edge of the PDF range in x", type=float, default=None)
+op.add_option("--qmax", dest="QMAX", metavar="Q", help="high edge of the PDF range in Q", type=float, default=None)
 # TODO: PID specification
 # TODO: Logx/y and limits control
 opts, args = op.parse_args()
@@ -55,9 +58,12 @@ for fname, label in fname_label.iteritems():
     plt.plot(xs, vals, label=label)
 
 ## Set up axes with log scales
-plt.xscale("log")
-plt.yscale("log")
-plt.ylim(ymin=1e-5)
+if "x" in opts.LOG:
+    plt.xscale("log")
+if "y" in opts.LOG:
+    plt.yscale("log")
+    if opts.TYPE == "fracdiff":
+        plt.ylim(ymin=1e-5)
 
 ## Set up axis labels and plot title
 if opts.AXIS == "xq":
@@ -73,10 +79,16 @@ else:
         plt.ylabel("$xf(x,Q)$")
     elif opts.TYPE == "fracdiff":
         plt.ylabel("$|f_6 - f_5| / |f_5|$")
+    #
     if opts.AXIS == "x":
         plt.xlabel("$x$")
+        if opts.XMIN:
+            plt.axvline(opts.XMIN, linewidth=1, color="black", linestyle=":")
     elif opts.AXIS == "q":
         plt.xlabel("$Q$")
+        if opts.QMAX:
+            plt.axvline(opts.QMAX, linewidth=1, color="black", linestyle=":")
+
 
 ## Legend
 l = plt.legend(loc=0, ncol=2, frameon=False)
@@ -85,7 +97,7 @@ for t in l.get_texts():
 
 ## If plotting fractional deviations, draw the tolerance level
 if opts.TYPE == "fracdiff":
-    plt.axhline(opts.TOLERANCE, linewidth=1, color="r", linestyle="--")
+    plt.axhline(opts.TOLERANCE, linewidth=1, color="red", linestyle="--")
 
 ## Save the plot
 plt.savefig(opts.OUTPUT)
