@@ -13,6 +13,8 @@
 #ifndef LHAVERSION
 #error Must specify -DLHAVERSION=[5|6]
 #endif
+#define _OUTPUT_PREFIX(V) "xf_v" #V
+#define OUTPUT_PREFIX _OUTPUT_PREFIX(LHAVERSION)
 
 #if LHAVERSION > 5
 #include <LHAPDF/PDF.h>
@@ -59,7 +61,7 @@ int main(int argc, const char* argv[]) {
     for (size_t iq = 0; iq < 8; ++iq) {
       const double q = qs[iq];
       std::stringstream filename;
-      filename << "xf_v6_scanx_q" << q << "_" << flavor << ".dat";
+      filename << OUTPUT_PREFIX << "_scanx_q" << q << "_" << flavor << ".dat";
       std::ofstream output(filename.str().c_str());
       for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
         const double x  = pow(10, logX);
@@ -73,7 +75,7 @@ int main(int argc, const char* argv[]) {
     for (size_t ix = 0; ix < 8; ++ix) {
       const double x = xs[ix];
       std::stringstream filename;
-      filename << "xf_v6_scanq_x" << x << "_" << flavor << ".dat";
+      filename << OUTPUT_PREFIX << "_scanq_x" << x << "_" << flavor << ".dat";
       std::ofstream output(filename.str().c_str());
       for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
         const double q = pow(10, logQ);
@@ -84,7 +86,7 @@ int main(int argc, const char* argv[]) {
 
     // (x,Q) 2D sampling
     std::stringstream filename;
-    filename << "xf_v6_scanxq" << flavor << ".dat";
+    filename << OUTPUT_PREFIX << "_scanxq" << flavor << ".dat";
     std::ofstream output(filename.str().c_str());
     for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
       for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
