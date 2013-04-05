@@ -13,7 +13,8 @@
 #ifndef LHAVERSION
 #error Must specify -DLHAVERSION=[5|6]
 #endif
-#define _OUTPUT_PREFIX(V) "xf_v" #V
+#define _STR(s) #s
+#define _OUTPUT_PREFIX(V) "xf_v" _STR(V)
 #define OUTPUT_PREFIX _OUTPUT_PREFIX(LHAVERSION)
 
 #if LHAVERSION > 5
@@ -48,12 +49,13 @@ int main(int argc, const char* argv[]) {
   #endif
 
   // Dump out points in (x,Q)
-  int flavors[] = {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 21};
-  for (int id = 0; id < 11; ++id) {
+  int flavors[] = {-5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5};
+  for (int i = 0; i < 11; ++i) {
+    const int flavor = flavors[i];
     #if LHAVERSION > 5
-    const int flavor = flavors[id];
+    const int id = i;
     #else
-    const int flavor = flavors[id+5];
+    const int id = i-5;
     #endif
 
     // x sampling for fixed Q

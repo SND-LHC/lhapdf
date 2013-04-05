@@ -1,3 +1,14 @@
+2013-04-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* migration/plotv5v6 improvements with line styles and labels.
+
+	* Improved/fixed migration/creategrid which excludes grid points
+	at x=0 (which screwed up handing over to extrapolation) and fixes
+	numpy array manipulation. Low-x behaviour is now good, high-x
+	needs some inspection: getting close to acceptable at last!
+
+	* Fixes to dumpv5v6.cc flavour ID and output filenames.
+
 2013-04-04  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Re-enabling the -Wno-long-long flag if possible, to avoid build

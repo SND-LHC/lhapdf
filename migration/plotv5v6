@@ -29,6 +29,9 @@ plt.rcParams["font.family"] = "serif"
 # plt.rcParams["font.serif"] = "Computer Modern Roman"
 # plt.rcParams["text.usetex"] = True
 
+STYLES = ["-", ":", "--", "-."]
+COLORS = ["red", "blue", "darkgreen", "orange", "purple"]
+
 ## Do correct sorting, and labels as file:label args
 fname_label = {}
 for a in args:
@@ -36,11 +39,12 @@ for a in args:
         fname, label = a.split(":", maxsplit=1)
     else:
         fname = a
-        label = a.replace("_", " ")
+        label = a.replace(".dat", "").replace("_", " ")
         # TODO: Do some automatic fiddling with the x/Q parts of the name
     fname_label[fname] = label
 
 ## Plot each line
+i = 0
 for fname, label in fname_label.iteritems():
     f = open(fname)
     xs, qs, vals = [], [], []
@@ -55,7 +59,10 @@ for fname, label in fname_label.iteritems():
             exit(1)
         vals.append(val)
     # TODO: Line styles and colors (from cmd line? group by v5/v6)
-    plt.plot(xs, vals, label=label)
+    color = COLORS[i % len(COLORS)]
+    style = STYLES[(i / len(COLORS)) % len(COLORS)]
+    i += 1
+    plt.plot(xs, vals, label=label, linestyle=style, color=color)
 
 ## Set up axes with log scales
 if "x" in opts.LOG:

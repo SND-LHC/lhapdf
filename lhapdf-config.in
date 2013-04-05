@@ -36,7 +36,7 @@ test -n "$tmp" && OUT="$OUT @prefix@"
 tmp=$( echo "$*" | egrep -- '--\<incdir\>')
 test -n "$tmp" && OUT="$OUT @includedir@"
 
-tmp=$( echo "$*" | egrep -- '--\<cppflags\>')
+tmp=$( echo "$*" | egrep -- '--\<cppflags|cxxflags\>')
 test -n "$tmp" && OUT="$OUT -I@includedir@ @BOOST_CPPFLAGS@ @YAMLCPP_CPPFLAGS@"
 
 tmp=$( echo "$*" | egrep -- '--\<libdir\>')

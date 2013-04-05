@@ -60,21 +60,27 @@ for lha5name in args:
         ## Get the x and Q anchor point arrays
         try:
             ## Use LHAPDF5 to get the exact x and q2 grid points (requires LHAPDF 5.9)
-            from ctypes import *
+            import ctypes
             try:
-                _lha = CDLL('libLHAPDF.so')
+                _lha = ctypes.CDLL('libLHAPDF.so')
             except:
-                _lha = CDLL('libLHAPDF.dylib')
-            nxgrid = c_uint()
-            nqgrid = c_uint()
-            gridx = (c_double * 500)()
-            gridq = (c_double * 500)()
+                _lha = ctypes.CDLL('libLHAPDF.dylib')
+            nxgrid = ctypes.c_uint()
+            nqgrid = ctypes.c_uint()
+            gridx = (ctypes.c_double * 500)()
+            gridq = (ctypes.c_double * 500)()
             _lha.getgrid_(byref(nxgrid), byref(nqgrid), gridx, gridq)
             xs, q2s = gridx[:nxgrid.value], gridq[:nqgrid.value]
+            ## Remove x == 0 points: they screw up the ipol/xpol separation
+            if xs[0] == 0.0:
+                del xs[0]
         except:
+            # TODO: support reading in a file of x and Q points to sample
+            # TODO: do linear sampling in the high-x region?
             xs = numpy.logspace(-8, -0.001, 30)
             q2s = numpy.logspace(0.1, 8, 50)
         qs = numpy.sqrt(numpy.array(q2s))
+        xs, qs = list(xs), list(qs)
 
         ## If there isn't an x = 1 point, create one
         # TODO: Remove this when LHAPDF ipol knows about x=1
