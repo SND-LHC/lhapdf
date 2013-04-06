@@ -14,8 +14,10 @@ op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode: x, q, xq",
 op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, fracdiff", default="fracdiff")
 op.add_option("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy", default="xy")
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation", type=float, default=1e-3)
-op.add_option("--xmin", dest="XMIN", metavar="X", help="low edge of the PDF range in x", type=float, default=None)
-op.add_option("--qmax", dest="QMAX", metavar="Q", help="high edge of the PDF range in Q", type=float, default=None)
+op.add_option("--pdfxmin", dest="PDFXMIN", metavar="X", help="low edge of the PDF range in x", type=float, default=None)
+op.add_option("--pdfqmax", dest="PDFQMAX", metavar="Q", help="high edge of the PDF range in Q", type=float, default=None)
+op.add_option("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated", default=None)
+op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated", default=None)
 # TODO: PID specification
 # TODO: Logx/y and limits control
 opts, args = op.parse_args()
@@ -31,21 +33,49 @@ plt.rcParams["font.family"] = "serif"
 
 STYLES = ["-", ":", "--", "-."]
 COLORS = ["red", "blue", "darkgreen", "orange", "purple"]
+PARTONS = {-5:r"$\bar{b}$",-4:r"$\bar{c}$",-3:r"$\bar{s}$",-2:r"$\bar{u}$",-1:r"$\bar{d}$",
+           1:r"$d$",2:r"$u$",3:r"$s$",4:r"$c$",5:r"$b$",21:r"$g$"}
+
+def latex_float(f):
+    float_str = "{0:.2g}".format(f)
+    if "e" in float_str:
+        mant, exp = float_str.split("e")
+        exp = int(exp)
+        return r"{0} \times 10^{{{1}}}".format(mant, exp)
+    else:
+        return float_str
 
 ## Do correct sorting, and labels as file:label args
+index_fname = {}
 fname_label = {}
-for a in args:
+for i, a in enumerate(args):
+    index = i
     if ":" in a:
         fname, label = a.split(":", maxsplit=1)
     else:
         fname = a
         label = a.replace(".dat", "").replace("_", " ")
-        # TODO: Do some automatic fiddling with the x/Q parts of the name
+        # try:
+        details = label.split()
+        if details[1].startswith("v"):
+            details[0] += " " + details[1]
+            del details[1] # remove v5/6
+            del details[1] # remove scanx/q
+            #print details
+        yvar = details[0]
+        xvar = details[1][0]
+        xval = float(details[1][1:])
+        pid = int(details[2])
+        label = r"{yvar}, flav = {flav}, ${xvar} = {xval}$".format(yvar=yvar, xvar=xvar, xval=latex_float(xval), flav=PARTONS.get(pid, pid))
+        index = xval
+        # except:
+        #     pass
+    index_fname[index] = fname
     fname_label[fname] = label
 
 ## Plot each line
 i = 0
-for fname, label in fname_label.iteritems():
+for _, fname in sorted(index_fname.iteritems()):
     f = open(fname)
     xs, qs, vals = [], [], []
     for line in f:
@@ -62,15 +92,23 @@ for fname, label in fname_label.iteritems():
     color = COLORS[i % len(COLORS)]
     style = STYLES[(i / len(COLORS)) % len(COLORS)]
     i += 1
-    plt.plot(xs, vals, label=label, linestyle=style, color=color)
+    plt.plot(xs, vals, label=fname_label[fname], linestyle=style, color=color)
 
 ## Set up axes with log scales
 if "x" in opts.LOG:
     plt.xscale("log")
+    if opts.XLIM:
+        xlow, xhigh = opts.XLIM.split(":")
+        if xlow: plt.xlim(xmin=float(xlow))
+        if xhigh: plt.xlim(xmax=float(xhigh))
 if "y" in opts.LOG:
     plt.yscale("log")
     if opts.TYPE == "fracdiff":
         plt.ylim(ymin=1e-5)
+    if opts.YLIM:
+        ylow, yhigh = opts.YLIM.split(":")
+        if ylow: plt.ylim(ymin=float(ylow))
+        if yhigh: plt.ylim(ymax=float(yhigh))
 
 ## Set up axis labels and plot title
 if opts.AXIS == "xq":
@@ -89,12 +127,12 @@ else:
     #
     if opts.AXIS == "x":
         plt.xlabel("$x$")
-        if opts.XMIN:
-            plt.axvline(opts.XMIN, linewidth=1, color="black", linestyle=":")
+        if opts.PDFXMIN:
+            plt.axvline(opts.PDFXMIN, linewidth=1, color="black", linestyle=":")
     elif opts.AXIS == "q":
         plt.xlabel("$Q$")
-        if opts.QMAX:
-            plt.axvline(opts.QMAX, linewidth=1, color="black", linestyle=":")
+        if opts.PDFQMAX:
+            plt.axvline(opts.PDFQMAX, linewidth=1, color="black", linestyle=":")
 
 
 ## Legend

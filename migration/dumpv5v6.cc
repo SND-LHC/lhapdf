@@ -29,8 +29,8 @@
 const double MINLOGX = -10;
 const double MINLOGQ = log10(10);
 const double MAXLOGQ = log10(5000);
-const double DX = 0.1;
-const double DQ = 0.1;
+const double DX = 0.01;
+const double DQ = 0.01;
 
 int main(int argc, const char* argv[]) {
 
