@@ -7,7 +7,34 @@
 
 using namespace std;
 
+
+// have to create and initialise some common blocks here for backwards compatibility
+
+//w50511 w50511_;
+
+struct w50512 {
+  double qcdl4, qcdl5;
+} ;
+
+w50512 w50512_;
+
+struct w50513{
+  double xmin, xmax, q2min, q2max;
+} ;
+
+w50513 w50513_;
+
+struct lhapdfr{
+  double qcdlha4, qcdlha5;
+  int nfllha;
+} ;
+
+lhapdfr lhapdfr_;
+
+
+
 namespace { //< Unnamed namespace to restrict visibility to this file
+
 
 
   /// @brief PDF object storage here is a smart pointer to ensure deletion of created PDFs
@@ -105,8 +132,6 @@ namespace { //< Unnamed namespace to restrict visibility to this file
 
 
 extern "C" {
-
-
   /// LHAPDF version
   void getlhapdfversion_(char *s, size_t len) {
     /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
@@ -277,9 +302,45 @@ extern "C" {
 
   /// PDFLIB initialisation function
   void pdfset_(const char* par, const double* value, int parlength) {
-    /// Take PDF ID from value[0]
-    ACTIVESETS[1] = PDFSetHandler(value[0]);
+
+
+    // initialise  struct equivalents to common blocks with sensible values.
+    w50512_= {0.215,0.165};
+    w50513_= {0.0,1.0,1.0,1.0e05};
+    lhapdfr_ = {0.0,0.0,4};
+
+    std::string my_par(par);
+    
+    if (my_par.find("NPTYPE",0,6) != -1){
+      std::cout<< "==== PYTHIA WILL USE LHAPDFv6 ====" << std::endl;
+    }
+
+    if (my_par.find("HWLHAPDF",0,8) != -1){
+      std::cout<< "==== HERWIG WILL USE LHAPDFv6 ====" << std::endl;
+    }
+
+    /// Take PDF ID from value[2]
+    ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
     /// @todo How to use the par string?... most important for PYTHIA6?
+    /// par strings do not seem to really be used
+
+    // need to extract parameters for common blocks
+    PDFPtr pdf = ACTIVESETS[1].activemember();
+
+    w50513_.xmin=pdf->info().metadata<double>("XMin");
+    w50513_.xmax=pdf->info().metadata<double>("XMax");
+    w50513_.q2min=pdf->info().metadata<double>("Q2Min");
+    w50513_.q2max=pdf->info().metadata<double>("Q2Max");
+    w50512_.qcdl4=pdf->info().metadata<double>("Lambda4");
+    w50512_.qcdl5=pdf->info().metadata<double>("Lambda5");
+    lhapdfr_.qcdlha4=pdf->info().metadata<double>("Lambda4");
+    lhapdfr_.qcdlha5=pdf->info().metadata<double>("Lambda5");
+    // BEGIN: used to test behaviour versus lhapdf 5.x
+    //    w50512_.qcdl4=0.192;
+    //    w50512_.qcdl5=0.192;
+    //    lhapdfr_.qcdlha4=0.192;
+    //    lhapdfr_.qcdlha5=0.192;
+    // END:  backwards compatibility test
   }
 
 
@@ -316,3 +377,5 @@ extern "C" {
 
 
 }
+
+
