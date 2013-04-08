@@ -18,6 +18,8 @@ import os, sys, optparse
 
 ## Parse the command line to get the set names for migration (in LHAPDF5 format)
 p = optparse.OptionParser(usage=__doc__)
+p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
+p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
 opts, args = p.parse_args()
 
 
@@ -49,7 +51,8 @@ for lha5name in args:
     f.write("ErrorType: \n")
     f.write("Format: lhagrid1\n")
     f.write("AlphaS_MZ: \n")
-    f.write("LambdaQCD: \n")
+    f.write("Lambda4: \n")
+    f.write("Lambda5: \n")
     f.write("OrderQcd: \n")
     f.close()
 
@@ -77,15 +80,22 @@ for lha5name in args:
         except:
             # TODO: support reading in a file of x and Q points to sample
             # TODO: do linear sampling in the high-x region?
-            xs = numpy.logspace(-8, -0.001, 30)
-            q2s = numpy.logspace(0.1, 8, 50)
-        qs = numpy.sqrt(numpy.array(q2s))
-        xs, qs = list(xs), list(qs)
+            xs = list(numpy.logspace(-8, -0.5, 30)) + list(numpy.linspace(0.5, 1.0, 6))
+            q2s = list(numpy.logspace(0.1, 8, 50))
+        qs = list(numpy.sqrt(numpy.array(q2s)))
+
+        ## Fill in extra sampling points if manually specified
+        if opts.EXTRAXS:
+            extraxs = [float(x) for x in opts.EXTRAXS.split(",")]
+            xs = sorted(xs + extraxs)
+        if opts.EXTRAQS:
+            extraqs = [float(q) for q in opts.EXTRAQS.split(",")]
+            qs = sorted(qs + extraqs)
 
         ## If there isn't an x = 1 point, create one
-        # TODO: Remove this when LHAPDF ipol knows about x=1
-        if xs[-1] != 1.0:
-            xs.append(1.0)
+        # TODO: Remove this when LHAPDF ipol knows about x=1?
+        # if xs[-1] != 1.0:
+        #     xs.append(1.0)
 
         ## Determine the active (non-zero) flavours in the grid (will be -5..5 or -6..6)
         # def active_flavours(xfxs):
@@ -100,12 +110,13 @@ for lha5name in args:
         xfs = []
         for x in xs:
             for q in qs:
-                if x != 1.0:
-                    xfs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
-                else:
-                    ## Force xf(x=1) = 0 for now, until ipol is improved
-                    # TODO: Remove this when LHAPDF ipol knows about x=1
-                    xfs.append([0.0 for pid in lhapids])
+                # if x != 1.0:
+                #     xfs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
+                # else:
+                #     ## Force xf(x=1) = 0 for now, until ipol is improved
+                #     # TODO: Remove this when LHAPDF ipol knows about x=1
+                #     xfs.append([0.0 for pid in lhapids])
+                xfs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
 
         ## Work out the member file path and open it for writing
         memname = setname + ('_%04d.lha' % member)

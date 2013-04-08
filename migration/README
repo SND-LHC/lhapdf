@@ -49,7 +49,7 @@ usefully used for batch plotting of PDF values or accuracies as follows, again
 run in a subdir in this example:
 
 ## Plotting absolute PDF values (from the output of dumpv5v6) for all PIDs:
-for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do ../plotv5v6 xf_v*_scanx_q*_$pid.dat --type=xf --axis=x -o cmpv5v6_xf_scanx_$pid.pdf; done
+for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do ../plotv5v6 xf_v*_scanx_q*_$pid.dat --type=xf --axis=x --log=x --ylim=0: -o cmpv5v6_xf_scanx_$pid.pdf; done
 for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do ../plotv5v6 xf_v*_scanq_x*_$pid.dat --type=xf --axis=q -o cmpv5v6_xf_scanq_$pid.pdf; done
 
 ## Plotting differences (from the output of cmpv5v6) for all PIDs:

@@ -18,6 +18,7 @@ op.add_option("--pdfxmin", dest="PDFXMIN", metavar="X", help="low edge of the PD
 op.add_option("--pdfqmax", dest="PDFQMAX", metavar="Q", help="high edge of the PDF range in Q", type=float, default=None)
 op.add_option("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated", default=None)
 op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated", default=None)
+op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE", default=None)
 # TODO: PID specification
 # TODO: Logx/y and limits control
 opts, args = op.parse_args()
@@ -97,18 +98,20 @@ for _, fname in sorted(index_fname.iteritems()):
 ## Set up axes with log scales
 if "x" in opts.LOG:
     plt.xscale("log")
-    if opts.XLIM:
-        xlow, xhigh = opts.XLIM.split(":")
-        if xlow: plt.xlim(xmin=float(xlow))
-        if xhigh: plt.xlim(xmax=float(xhigh))
 if "y" in opts.LOG:
     plt.yscale("log")
     if opts.TYPE == "fracdiff":
         plt.ylim(ymin=1e-5)
-    if opts.YLIM:
-        ylow, yhigh = opts.YLIM.split(":")
-        if ylow: plt.ylim(ymin=float(ylow))
-        if yhigh: plt.ylim(ymax=float(yhigh))
+
+## Set (override) axis limits
+if opts.XLIM:
+    xlow, xhigh = opts.XLIM.split(":")
+    if xlow: plt.xlim(xmin=float(xlow))
+    if xhigh: plt.xlim(xmax=float(xhigh))
+if opts.YLIM:
+    ylow, yhigh = opts.YLIM.split(":")
+    if ylow: plt.ylim(ymin=float(ylow))
+    if yhigh: plt.ylim(ymax=float(yhigh))
 
 ## Set up axis labels and plot title
 if opts.AXIS == "xq":
@@ -123,7 +126,8 @@ else:
     if opts.TYPE == "xf":
         plt.ylabel("$xf(x,Q)$")
     elif opts.TYPE == "fracdiff":
-        plt.ylabel("$|f_6 - f_5| / |f_5|$")
+        # plt.ylabel("$|f_6 - f_5| / |f_5|$")
+        plt.ylabel(r"$|f_6+\epsilon|/|f_5+\epsilon| - 1$")
     #
     if opts.AXIS == "x":
         plt.xlabel("$x$")
@@ -134,6 +138,12 @@ else:
         if opts.PDFQMAX:
             plt.axvline(opts.PDFQMAX, linewidth=1, color="black", linestyle=":")
 
+## Plot vertical lines from a file (e.g. for marking all knot values)
+if opts.VLINES:
+    f = open(opts.VLINES)
+    for line in f:
+        for xval in [float(x) for x in line.split()]:
+            plt.axvline(xval, linewidth=1, color="gray", linestyle=":")
 
 ## Legend
 l = plt.legend(loc=0, ncol=2, frameon=False)
@@ -142,7 +152,7 @@ for t in l.get_texts():
 
 ## If plotting fractional deviations, draw the tolerance level
 if opts.TYPE == "fracdiff":
-    plt.axhline(opts.TOLERANCE, linewidth=1, color="red", linestyle="--")
+    plt.axhline(opts.TOLERANCE, linewidth=1, color="red", linestyle=":")
 
 ## Save the plot
 plt.savefig(opts.OUTPUT)

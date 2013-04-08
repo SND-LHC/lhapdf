@@ -27,7 +27,8 @@ import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
-op.add_option("-e", dest="EPSILON", metavar="EPS", help="threshold below which differences are effectively zero", type=float, default=0)
+# op.add_option("-e", dest="EPSILON", metavar="EPS", help="threshold below which differences are effectively zero", type=float, default=0)
+op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser in calculation of relative deviations", type=float, default=1e-4)
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="pass/fail tolerance scale for accuracy", type=float, default=1e-3)
 opts, args = op.parse_args()
 
@@ -45,8 +46,8 @@ def fracdiff(a, b):
     return abs(a-b) / max(abs(a), abs(b))
 def accuracy(ref, test, epsilon=opts.EPSILON):
     if ref == 0 and test == 0: return 0.0
-    if abs(test-ref) < epsilon: return 0.0
-    return abs(test-ref) / abs(ref)
+    #if abs(test-ref) < epsilon: return 0.0
+    return abs((test + epsilon) / (ref + epsilon)) - 1.0
 
 while True:
     l5, l6 = f5.readline(), f6.readline()

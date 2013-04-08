@@ -8,46 +8,29 @@ LHAPDF6 TODO list
 NOW / FOR BETA 1
 ----------------
 
-- **Fix extrapolation (AB)**
+- **Add extra flavors line to grid format (AB)**
 
-   I'm seeing a hump just over the low-x boundary in CT10... addressing.
+   Anticipating demand for use of composite PDF parameterisations in future.
 
-- **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (SL,MR,DM,AB,BP,GW)**
+- **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (AB)**
 
-   The migration/creategrids script should work. pdfsets.index will need to be
-   populated for each set. Metadata will need to be set manually.
+   pdfsets.index and metadata need to be populated for each set (for
+   now). Errors looking pretty good now, except in a few high-x cases: maybe
+   just slightly denser high-x binning needed to handle that. Why aren't the
+   original grids being found and used?
 
-   Someone: update creategrids to create a sensible log-then-lin in x, log-in-Q
-   sampling of LHpdf sets, between the xmin/max and Qmin/max reported by
-   LHAPDFv5. Use for CTEQ6L1.
+- **Provide a way to find the number of members in a PDF set**
 
-   AB: re-dump CT10 using the improved CT10nlo set from LHAPDF5. We'll use
-   this as the new base for CT10 in v6. Wonder if we'll see accuracy differences
-   w.r.t. CT10.LHgrid...
+   People will want this! Just use a metadata key.
 
-   Martin, Steve: Make new log-space "heat map" plots for CT10.
+- **Clarify which config flags are optional and which are mandatory (AB)**
 
-   Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
-   all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
-   deserves specialisation beyond generic splines. Graeme will look at what's
-   done in the CTEQ code (other than interpolating in x**0.3!)
+   Also, OrderQcd -> OrderQCD and separate OrderQCD for PDF and Alpha_s evolution.
 
-- **Fortran compatibility functions (JF,KN,BP,AB)**
+- **Fortran compatibility (JF,KN,BP,AB)**
 
    James & Karl: test with PYTHIA6 and Herwig++, and test the ported CT10 with
    Pythias 8 & 6 and James' existing MC validation code.
-
-   Andy: add missing LHAPDF5 and PDFLIB Fortran subroutines... and common-block
-   populating? PDFSET_ function needs to read PYTHIA6 common block?
-
-   Triggering extrapolation from Fortran? We don't extrapolate, we either lock
-   to boundary values or throw an error.
-
-- **Provide ways to find the number of members in a PDF set and to identify a member's LHAPDF ID**
-
-   People will want this! Determine by counting member data files in the PDF set
-   directory (remember that the info file may not be present). How to do the
-   reverse LHAPDF ID lookup?
 
 
 FOR BETA 2
@@ -62,9 +45,18 @@ FOR BETA 2
    Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
    values robustly to implement 1D subgrids.
 
-- **Add extra flavors line to grid format (AB)**
+- **Improved x -> 1 (and Q -> 0?) evolution (GW,...)**
 
-   Anticipating demand for use of composite PDF parameterisations in future.
+   Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
+   all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
+   deserves specialisation beyond generic splines. Graeme will look at what's
+   done in the CTEQ code (other than interpolating in x**0.3!)
+
+- **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
+
+- **Provide a way to identify a member's LHAPDF ID**
+
+   How to do the reverse LHAPDF ID lookup?
 
 - **Re-introduce set-level Info singletons**
 

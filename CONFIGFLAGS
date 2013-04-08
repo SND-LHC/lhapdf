@@ -65,9 +65,9 @@ numbering scheme (quarks from 1 .. 6, antiquarks from -6 .. -1, and gluon = 21,
 as well as any "optional extras" such as photon = 22).
 
 
-OrderQcd
+OrderQCD
 --------
-(uint): 2 # or better to use text cf. lo, nlo, nnlo?
+(uint): e.g. 2
 
 Maximum number of loops considered in the QCD evolution of this set (i.e. 0 =
 LO, 1 = NLO, etc.)
@@ -75,9 +75,17 @@ LO, 1 = NLO, etc.)
 
 AlphaS_MZ
 ---------
-(float): 0.118
+(float): e.g. 0.118
 
 The value of alpha_s at Q = MZ.
+
+
+AlphaS_OrderQCD
+---------------
+(uint): e.g. 2
+
+Maximum number of loops considered in the QCD evolution of alpha_s corresponding
+to this PDF set (i.e. 0 = LO, 1 = NLO, etc.)
 
 
 AlphaS_Type
@@ -95,6 +103,15 @@ A pair of lists for interpolation-based alpha_s(Q) solving (i.e. Alphas_Type =
 ipol). The values of Q are in GeV, and the two lists must be the same length. If
 only one of these keys is defined, or if their lengths are different, a metadata
 exception will be thrown.
+
+
+Lambda4, Lambda5 (optional, both must be present if at all)
+-----------------------------------------------------------
+(float): e.g. 0.192
+
+The value of Lambda_QCD in 4 and 5 flavour schemes, can be used with
+AlphaS_OrderQCD in determining an alpha_s evolution corresponding
+to this PDF set.
 
 
 NumMembers

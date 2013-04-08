@@ -1,3 +1,14 @@
+2013-04-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Further improved creategrid, comparison, and plotting
+	scripts. Better high-xipol knots -> much better agreement. Nearly
+	done.
+
+2013-04-08  James Ferrando  <james.ferrando@cern.ch>
+
+	* Fortran PDFLIB function mapping works now: good agreement with
+	LHA5 via PYTHIA6.
+
 2013-04-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* migration/plotv5v6 improvements with line styles and labels.
