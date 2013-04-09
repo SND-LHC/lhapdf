@@ -86,18 +86,19 @@ int main(int argc, const char* argv[]) {
       output.close();
     }
 
-    // (x,Q) 2D sampling
-    std::stringstream filename;
-    filename << OUTPUT_PREFIX << "_scanxq" << flavor << ".dat";
-    std::ofstream output(filename.str().c_str());
-    for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
-      for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
-        const double x  = pow(10, logX);
-        const double q = pow(10, logQ);
-        output << x << " " << q << " " << XF(x, q) << std::endl;
-      }
-    }
-    output.close();
+    // // (x,Q) 2D sampling
+    // std::stringstream filename;
+    // filename << OUTPUT_PREFIX << "_scanxq" << flavor << ".dat";
+    // std::ofstream output(filename.str().c_str());
+    // for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
+    //   for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
+    //     const double x  = pow(10, logX);
+    //     const double q = pow(10, logQ);
+    //     output << x << " " << q << " " << XF(x, q) << std::endl;
+    //   }
+    // }
+    // output.close();
+
   }
 
   return 0;
