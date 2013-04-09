@@ -60,8 +60,12 @@ namespace LHAPDF {
             while (tokens >> token) xs.push_back(token);
           } else if (iblockline == 2) { // Q2 knots line
             while (tokens >> token) q2s.push_back(token);
+          } else if (iblockline == 3) { // internal flavor IDs line
+            // DO NOTHING FOR NOW: only handling this for prospective forward compatibility
+            /// @todo Handle internal partial flavour representations
+            //while (tokens >> token) intflavors.push_back(token);
           } else {
-            if (iblockline == 3) { // on the first line of the xf block, resize the arrays
+            if (iblockline == 4) { // on the first line of the xf block, resize the arrays
               for (size_t ipid = 0; ipid < npid; ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
             }
             size_t ipid = 0;

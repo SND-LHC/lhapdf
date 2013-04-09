@@ -8,10 +8,6 @@ LHAPDF6 TODO list
 NOW / FOR BETA 1
 ----------------
 
-- **Add extra flavors line to grid format (AB)**
-
-   Anticipating demand for use of composite PDF parameterisations in future.
-
 - **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (AB)**
 
    pdfsets.index and metadata need to be populated for each set (for

@@ -1,5 +1,9 @@
 2013-04-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding ignoring (and writing) of a 3rd grid block line, to
+	specify "internal flavor" ID codes. Not actually parsed or
+	used... yet.
+
 	* Cleaning up LHAGlue compilation warnings
 
 	* Config flag updates and clarifications, and adding API
