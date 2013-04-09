@@ -56,8 +56,8 @@ for lha5name in args:
     f.write("Lambda5: \n")
     f.close()
 
-    ## Iterate over each member in the set
-    for member in xrange(lhapdf.numberPDF()):
+    ## Iterate over each member in the set (central is not included)
+    for member in xrange(lhapdf.numberPDF() + 1):
         lhapdf.initPDF(member)
 
         ## Get the x and Q anchor point arrays
