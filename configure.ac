@@ -159,22 +159,22 @@ dnl AC_CONFIG_FILES([wrappers/octave/Makefile])
 AC_OUTPUT
 
 ## Message about getting PDF sets
-dnl pkgdatadir=`eval "echo $datarootdir/$PACKAGE_TARNAME"`
-dnl echo
-dnl echo "****************************************************************"
-dnl echo "IMPORTANT INFORMATION ABOUT PDF SETS"
-dnl echo
-dnl echo "Due to the increasing number and size of PDF data files, LHAPDF"
-dnl echo "no longer bundles PDF set data in the package tarball. The sets"
-dnl echo "are instead all stored online at"
-dnl echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/"
-dnl echo "and you should install those that you wish to use into"
-dnl echo "  $pkgdatadir"
-dnl echo
-dnl echo "The lhapdf-getdata script helps to automate the set download"
-dnl echo "and installation process: before installation you will find"
-dnl echo "it in the bin directory. Alternatively, download the sets by"
-dnl echo "hand from the URL given above, and place them in the PDF sets"
-dnl echo "directory (also given above.)"
-dnl echo "****************************************************************"
-dnl echo
+pkgdatadir=`eval "echo $datarootdir/$PACKAGE_TARNAME"`
+echo
+echo "****************************************************************"
+echo "IMPORTANT INFORMATION ABOUT PDF SETS"
+echo
+echo "LHAPDF no longer bundles PDF set data in the package tarball."
+echo "The sets are instead all stored online at"
+echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/"
+echo "and you should install those that you wish to use into"
+echo "  $pkgdatadir"
+echo
+echo "In LHAPDFv6, downloadable sets are packaged as tarballs, which"
+echo "must be expanded to be used. Here is an example of how to"
+echo "retrieve and install a PDF set from the command line:"
+echo
+echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/6.0.0a/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
+echo
+echo "****************************************************************"
+echo

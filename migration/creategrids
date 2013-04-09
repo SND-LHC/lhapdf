@@ -74,11 +74,14 @@ for lha5name in args:
             gridq = (ctypes.c_double * 500)()
             _lha.getgrid_(ctypes.byref(nxgrid), ctypes.byref(nqgrid), gridx, gridq)
             xs, q2s = gridx[:nxgrid.value], gridq[:nqgrid.value]
+
+            # TODO: get LHpdf limits and use them in constructing a suitable "manual" grid.
+
             ## Remove x == 0 points: they screw up the ipol/xpol separation
             if xs[0] == 0.0:
                 del xs[0]
         except Exception, e:
-            xs = list(numpy.logspace(-8, -0.5, 30)) + list(numpy.linspace(0.5, 1.0, 6))
+            xs = list(numpy.logspace(-8, -0.5, 50)) + list(numpy.linspace(0.5, 1.0, 16))
             q2s = list(numpy.logspace(0.1, 8, 50))
         qs = list(numpy.sqrt(numpy.array(q2s)))
 

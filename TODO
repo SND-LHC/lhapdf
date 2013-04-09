@@ -8,17 +8,17 @@ LHAPDF6 TODO list
 NOW / FOR BETA 1
 ----------------
 
-- **Migrate CTEQ6L1 and CT10 PDFs to new format and validate (AB)**
+- **Migrate CTEQ6L1 and CT10nlo PDFs to new format and validate (AB)**
 
-   pdfsets.index and metadata need to be populated for each set (for
-   now). Errors looking pretty good now, except in a few high-x cases: maybe
-   just slightly denser high-x binning needed to handle that. Why aren't the
-   original grids being found and used?
+   CT10nlo looks perfect now. CTEQ6L1 needs more care to respect the original
+   sampling limits and deal with whatever is going wrong at x ~
+   0.2. pdfsets.index and metadata still need to be populated for each set (for
+   now).
 
 - **Fortran compatibility (JF,KN,BP,AB)**
 
-   James & Karl: test with PYTHIA6 and Herwig++, and test the ported CT10 with
-   Pythias 8 & 6 and James' existing MC validation code.
+   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo (CTEQ6L1
+   is not quite ready yet).
 
 
 FOR BETA 2
@@ -30,7 +30,7 @@ FOR BETA 2
 
 - **NNPDF2.3 PDF migration (??)**
 
-   A big job! Automation required...
+   A big job! More automation required...
 
 - **Add interpolation-from-metadata implementation of AlphaS**
 
@@ -83,8 +83,6 @@ FOR BETA 2
 
    Should the param defaults be clearly invalid so that default AlphaS fields and
    throw an AlphaSException if the values are not in a physical range?
-
-- **Updated lhapdf-getdata, downloading PDFs as tarballs**
 
 - **Printing out banner info... needed by code that greps for it :-/**
 
