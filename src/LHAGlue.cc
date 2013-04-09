@@ -8,27 +8,21 @@
 using namespace std;
 
 
-// have to create and initialise some common blocks here for backwards compatibility
-
-//w50511 w50511_;
-
+// We have to create and initialise some common blocks here for backwards compatibility
 struct w50512 {
   double qcdl4, qcdl5;
-} ;
-
+};
 w50512 w50512_;
 
-struct w50513{
+struct w50513 {
   double xmin, xmax, q2min, q2max;
-} ;
-
+};
 w50513 w50513_;
 
-struct lhapdfr{
+struct lhapdfr {
   double qcdlha4, qcdlha5;
   int nfllha;
-} ;
-
+};
 lhapdfr lhapdfr_;
 
 
@@ -303,28 +297,30 @@ extern "C" {
   /// PDFLIB initialisation function
   void pdfset_(const char* par, const double* value, int parlength) {
 
+    // Initialise struct equivalents to common blocks with sensible values.
+    w50512_.qcdl4 = 0.215;
+    w50512_.qcdl5 = 0.165;
+    w50513_.xmin = 0.0;
+    w50513_.xmax = 1.0;
+    w50513_.q2min = 1.0;
+    w50513_.q2max = 1.0e5;
+    lhapdfr_.qcdlha4 = 0.0;
+    lhapdfr_.qcdlha5 = 0.0;
+    lhapdfr_.nfllha = 4;
 
-    // initialise  struct equivalents to common blocks with sensible values.
-    w50512_= {0.215,0.165};
-    w50513_= {0.0,1.0,1.0,1.0e05};
-    lhapdfr_ = {0.0,0.0,4};
-
-    std::string my_par(par);
-    
-    if (my_par.find("NPTYPE",0,6) != -1){
-      std::cout<< "==== PYTHIA WILL USE LHAPDFv6 ====" << std::endl;
+    string my_par(par);
+    if (my_par.find("NPTYPE") != string::npos) {
+      /// @todo Remove noisiness? Useful for now
+      cout << "==== PYTHIA WILL USE LHAPDFv6 ====" << endl;
+    } else if (my_par.find("HWLHAPDF") != string::npos) {
+      /// @todo Remove noisiness? Useful for now
+      cout << "==== HERWIG WILL USE LHAPDFv6 ====" << endl;
     }
 
-    if (my_par.find("HWLHAPDF",0,8) != -1){
-      std::cout<< "==== HERWIG WILL USE LHAPDFv6 ====" << std::endl;
-    }
-
-    /// Take PDF ID from value[2]
+    // Take PDF ID from value[2]
     ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
-    /// @todo How to use the par string?... most important for PYTHIA6?
-    /// par strings do not seem to really be used
 
-    // need to extract parameters for common blocks
+    // Need to extract parameters for common blocks
     PDFPtr pdf = ACTIVESETS[1].activemember();
 
     w50513_.xmin=pdf->info().metadata<double>("XMin");
