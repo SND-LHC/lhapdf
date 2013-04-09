@@ -11,11 +11,16 @@ is requested from a PDF member info and is not found, the search will fall
 back to first the PDF set and then to the global config.
 
 
+CONFIG LEVEL
+============
+
 Verbosity
 ---------
 (uint)
 
 Level of verbosity of the LHAPDF system.
+
+NOT YET IMPLEMENTED!
 
 
 ShowLHA5Banner
@@ -24,22 +29,6 @@ ShowLHA5Banner
 
 Whether or not to print out an LHAPDF5-style banner to stdout upon set
 initialisation.
-
-
-Interpolator
-------------
-(enum string): linear, cubic
-
-The factory name string of the PDF grid interpolator to use (if overriding the
-default)
-
-
-Extrapolator
-------------
-(enum string): error
-
-The factory name string of the PDF grid extrapolator to use (if overriding the
-default).
 
 
 ImplicitFlavorAction
@@ -51,13 +40,28 @@ return 0 (i.e. there is implicitly none of that parton in the hadron) or throw
 an error.
 
 
+PwdInSearchPath
+---------------
+(bool)
+
+Whether to implicitly include the current directory in the PDF set search path.
+
+NOT YET IMPLEMENTED!
+
+
+
+SET LEVEL
+=========
+
 SetDesc
 -------
+MANDATORY
 (free string): A human-readable description of this PDF set.
 
 
 Flavors
 -------
+MANDATORY
 (list<int> or int): [-5,-4,-3,-2,-1,1,2,3,4,5,21]
 
 List of supported (user-visible) parton flavors, using the PDG Monte Carlo
@@ -65,8 +69,53 @@ numbering scheme (quarks from 1 .. 6, antiquarks from -6 .. -1, and gluon = 21,
 as well as any "optional extras" such as photon = 22).
 
 
+NumMembers
+----------
+MANDATORY
+(uint): 1
+
+How many members there are in the set, including the central member(s) and error
+set members.
+
+Note: there is no guarantee that all members are installed or that they are
+consecutively numbered. This number is the official number of members in the
+released set.
+
+
+NumErrorMembers
+---------------
+OPTIONAL... may _become_ mandatory?
+(uint): e.g. 50
+
+How many members there are in the error part of this set, i.e. not counting any
+central member(s).
+
+Note: there is no guarantee that all members are installed or that they are
+consecutively numbered. This number is the official number of error set members
+in the released set.
+
+
+Interpolator
+------------
+MANDATORY
+(enum string): linear, cubic
+
+The factory name string of the PDF grid interpolator to use (if overriding the
+default)
+
+
+Extrapolator
+------------
+MANDATORY
+(enum string): error
+
+The factory name string of the PDF grid extrapolator to use (if overriding the
+default).
+
+
 OrderQCD
 --------
+MANDATORY
 (uint): e.g. 2
 
 Maximum number of loops considered in the QCD evolution of this set (i.e. 0 =
@@ -75,6 +124,7 @@ LO, 1 = NLO, etc.)
 
 AlphaS_MZ
 ---------
+MANDATORY
 (float): e.g. 0.118
 
 The value of alpha_s at Q = MZ.
@@ -82,6 +132,7 @@ The value of alpha_s at Q = MZ.
 
 AlphaS_OrderQCD
 ---------------
+MANDATORY
 (uint): e.g. 2
 
 Maximum number of loops considered in the QCD evolution of alpha_s corresponding
@@ -90,6 +141,7 @@ to this PDF set (i.e. 0 = LO, 1 = NLO, etc.)
 
 AlphaS_Type
 -----------
+MANDATORY
 (enum string): ode, analytic, ipol
 
 The method to be used to calculate alpha_s for this set (cf. the AlphaS class hierarchy).
@@ -97,6 +149,7 @@ The method to be used to calculate alpha_s for this set (cf. the AlphaS class hi
 
 AlphaS_Qs, AlphaS_vals
 ----------------------
+MANDATORY if AlphaS_Type = ipol
 (2 x list<float>)
 
 A pair of lists for interpolation-based alpha_s(Q) solving (i.e. Alphas_Type =
@@ -107,6 +160,7 @@ exception will be thrown.
 
 Lambda4, Lambda5 (optional, both must be present if at all)
 -----------------------------------------------------------
+MANDATORY if AlphaS_Type = analytic
 (float): e.g. 0.192
 
 The value of Lambda_QCD in 4 and 5 flavour schemes, can be used with
@@ -114,38 +168,73 @@ AlphaS_OrderQCD in determining an alpha_s evolution corresponding
 to this PDF set.
 
 
-NumMembers
-----------
-(uint): 1
+ErrorType
+---------
+OPTIONAL (but should be present if there is an error set)
+(enum string): replica, symmhessian, asymmhessian, none
 
-How many members there are in the set.
+A set-level declaration of the type of error treatment provided by this set.
 
-TODO: no guarantee that all members are installed or that they are consecutively
-numbered. Instead determine how many members are available by counting member
-data files in the PDF set directory.
+@todo Also specify the Hessian confidence interval... via a separate flag?
 
+
+CentralMember
+-------------
+MANDATORY
+(uint): e.g. 0
+
+The member ID in this PDF set of the main ("central") member. Usually 0.
+
+
+PosDefCentralMember
+-------------------
+OPTIONAL but should be present if there is a positive-definite central member
+(uint): e.g. 101
+
+The member ID in this PDF set of a main ("central") member with a positive
+definiteness constraint. Important for parton shower programs where negative (or
+even zero?) values in PDFs do not make sense in the ISR Sudakov emission
+probability interpretation.
+
+
+FirstErrorMember
+----------------
+OPTIONAL but should be present if there is an error set
+(uint): e.g. 1
+
+The member ID in this PDF set of the first member of an error set. Usually 1.
+
+
+MZ, MUp, MDown, MStrange, MCharm, MBottom, MTop
+-----------------------------------------------
+OPTIONAL
+(float)
+
+Masses of quarks and the Z0 boson in this PDF set's evolution. Default values
+are set in the global LHAPDF config.
+
+
+
+MEMBER LEVEL
+============
 
 Format
 ------
+MANDATORY
 (enum string): lhagrid1, ... the trailing number is for format versioning.
 
 Used to determine what parser should be instantiated to read the member file(s).
 
 
-ErrorType
----------
-(enum string): replica, symmhessian, asymmhessian
-
-@todo Also specify the Hessian confidence interval... via a separate flag?
-
-
 PdfDesc
 -------
+OPTIONAL
 (free string): Description of the role of this PDF member
 
 
 PdfType
 -------
+MANDATORY
 (enum string): central # or 'error' or 'replica'
 
 The type of this PDF, i.e. is it a central (canonical) PDF or is it meant for
@@ -153,21 +242,5 @@ use as either a Hessian error or a replica member of a statistical ensemble.
 
 @todo Treat "posdef" and other constructions as orthogonal to the "type"?
 
-
-MainMemberId
--------
-(uint):
-
-The member ID in this PDF set of the main ("central") member.
-
-
-PosDefMainMemberId
--------
-(uint):
-
-The member ID in this PDF set of a main ("central") member with a positive
-definiteness constraint. Important for parton shower programs where negative (or
-even zero?) values in PDFs do not make sense in the ISR Sudakov emission
-probability interpretation.
 
 */

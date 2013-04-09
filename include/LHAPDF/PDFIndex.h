@@ -52,11 +52,11 @@ namespace LHAPDF {
   }
 
 
-  /// Look up the LHAPDF index from the set name and member ID.
+  /// Look up the member's LHAPDF index from the set name and member ID.
   ///
   /// If lookup fails, -1 is returned, otherwise the LHAPDF ID code.
   /// NB. This function is relatively slow, since it requires std::map reverse lookup.
-  inline int lookupSetID(const std::string& setname, int memid) {
+  inline int lookupLHAPDFID(const std::string& setname, int memid) {
     // const map<int, string>& = getPDFIndex();
     typedef pair<int, string> MapPair;
     foreach (const MapPair& id_name, getPDFIndex()) {

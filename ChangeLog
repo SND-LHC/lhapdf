@@ -1,3 +1,10 @@
+2013-04-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Cleaning up LHAGlue compilation warnings
+
+	* Config flag updates and clarifications, and adding API
+	mechanisms for numMembers and LHAPDF ID lookup.
+
 2013-04-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Further improved creategrid, comparison, and plotting

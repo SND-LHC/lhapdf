@@ -48,12 +48,12 @@ for lha5name in args:
     f.write("SetDesc: \n")
     f.write("NumMembers: %d\n" % lhapdf.numberPDF())
     f.write("Flavors: [-5,-4,-3,-2,-1,1,2,3,4,5,21]\n")
+    f.write("OrderQCD: \n")
     f.write("ErrorType: \n")
-    f.write("Format: lhagrid1\n")
     f.write("AlphaS_MZ: \n")
+    f.write("AlpaS_OrderQCD: \n")
     f.write("Lambda4: \n")
     f.write("Lambda5: \n")
-    f.write("OrderQcd: \n")
     f.close()
 
     ## Iterate over each member in the set
@@ -122,8 +122,9 @@ for lha5name in args:
         memname = setname + ('_%04d.lha' % member)
         mempath = os.path.join(setname, memname)
         f = open(mempath, "w")
-        f.write("PdfDesc: \n")
+        #f.write("PdfDesc: \n")
         f.write("PdfType: %s\n" % ("central" if member == 0 else "error"))
+        f.write("Format: lhagrid1\n")
         f.write("---\n")
         ## Write x points
         line = " ".join("%2.6e" % x for x in xs)

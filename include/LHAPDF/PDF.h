@@ -250,7 +250,7 @@ namespace LHAPDF {
     //@}
 
 
-    /// @name Generic metadata
+    /// @name Generic member-level metadata (including cascaded metadata from set & config level)
     //@{
 
     /// Get the info class that actually stores and handles the metadata
@@ -259,31 +259,70 @@ namespace LHAPDF {
     /// Get the info class that actually stores and handles the metadata (const version)
     const Info& info() const { return _info; }
 
+    //@}
+
+
+    /// @name Set-level metadata
+    /// @todo Move all these into PDFSet (without the "set" prefixes) when/if it appears
+    //@{
+
     /// @brief PDF set name
     ///
     /// Obtained from the member file path, not Info-based metadata.
+    /// @todo Move into PDFSet when/if it appears
     std::string setname() const {
       return _mempath.parent_path().filename().string();
     }
 
-    /// @brief PDF member ID number
+    /// Description of the set
+    /// @todo Move into PDFSet when/if it appears
+    std::string setdescription() const {
+      return info().metadata("SetDesc");
+    }
+
+    /// Get the type of PDF errors in this set (replica, symmhessian, asymmhessian, none)
+    /// @todo Move into PDFSet when/if it appears
+    std::string errorType() const {
+      return to_lower_copy(info().metadata("ErrorType"));
+    }
+
+    /// Number of members in this set
+    /// @todo Move into PDFSet when/if it appears
+    int numMembers() const {
+      return info().metadata<int>("NumMembers");
+    }
+
+    //@}
+
+
+    /// @name Member-level metadata
+    //@{
+
+    /// @brief PDF member local ID number
     ///
     /// Obtained from the member file path, not Info-based metadata.
-    int memberid() const {
+    int memberID() const {
       const string memname = _mempath.stem().string();
       assert(memname.find(setname()) == 0);
       const int memid = lexical_cast<int>(memname.substr(memname.length()-4)); //< Last 4 chars should be the member number
       return memid;
     }
 
-    /// Description of the set
-    std::string description() const {
-      return info().metadata("SetDesc");
+    /// @brief PDF member global LHAPDF ID number
+    ///
+    /// Obtained from the member ID and the set's LHAPDF ID index
+    int lhapdfID() const {
+      return lookupLHAPDFID(setname(), memberID());
     }
 
-    /// Get the type of PDF error set (Hessian, replicas, etc.)
-    std::string errorType() const {
-      return to_lower_copy(info().metadata("ErrorType"));
+    /// Description of this PDF member
+    std::string description() const {
+      return info().metadata("PdfDesc");
+    }
+
+    /// Get the type of PDF member that this object represents (central, error)
+    std::string type() const {
+      return to_lower_copy(info().metadata("PdfType"));
     }
 
     //@}
@@ -335,6 +374,7 @@ namespace LHAPDF {
         // Configure the QCD params on this AlphaS
         if (info().has_key("MZ")) as->mz = info().metadata<double>("MZ");
         if (info().has_key("AlphaS_MZ")) as->alphas_mz = info().metadata<double>("AlphaS_MZ");
+        if (info().has_key("AlphaS_OrderQCD")) as->qcdorder = info().metadata<int>("AlphaS_OrderQCD");
         if (info().has_key("MUp")) as->setQmass(1, info().metadata<double>("MUp"));
         if (info().has_key("MDown")) as->setQmass(2, info().metadata<double>("MDown"));
         if (info().has_key("MStrange")) as->setQmass(3, info().metadata<double>("MStrange"));
@@ -343,7 +383,6 @@ namespace LHAPDF {
         if (info().has_key("MTop")) as->setQmass(6, info().metadata<double>("MTop"));
         if (info().has_key("Lambda4")) as->lambda4 = info().metadata<double>("Lambda4");
         if (info().has_key("Lambda5")) as->lambda5 = info().metadata<double>("Lambda5");
-        if (info().has_key("QCDOrder")) as->qcdorder = info().metadata<int>("QCDOrder");
         /// @todo How to do type triggering to set ipol points for Alphas_Ipol?
         /// @todo Throw an error if the QCD params are changed after a first alpha_s query? How?
         _alphas.reset(as);
