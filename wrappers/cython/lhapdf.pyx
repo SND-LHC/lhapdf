@@ -19,9 +19,54 @@ cdef class PDF:
         del self._ptr
 
     @property
-    def memberid(self):
+    def memberID(self):
         "The PDF set member number of this PDF."
-        return self._ptr.memberid()
+        return self._ptr.memberID()
+
+    @property
+    def lhapdfID(self):
+        "The LHAPDF ID number of this PDF member."
+        return self._ptr.lhapdfID()
+
+    @property
+    def numMembers(self):
+        "The total number of members in this set."
+        return self._ptr.numMembers()
+
+    # TODO: Need another name than "type" in Python?
+    @property
+    def type(self):
+        "The type of PDF member, e.g. central, error."
+        return self._ptr.type()
+
+    @property
+    def description(self):
+        "Description of this PDF member."
+        return self._ptr.description()
+
+    @property
+    def setdescription(self):
+        "Description of this PDF's set."
+        return self._ptr.setdescription()
+
+    @property
+    def setname(self):
+        "Name of this PDF's containing set."
+        return self._ptr.setname()
+
+    @property
+    def errorType(self):
+        "Type of error treatment in this PDF's set."
+        return self._ptr.errorType()
+
+    @property
+    def qcdOrder(self):
+        "Max number of loops involved in this PDF's evolution."
+        return self._ptr.qcdOrder()
+
+
+    # TODO: alphaS
+
 
     def xfxQ(self, pid, x, q):
         "Return the PDF xf(x,Q) value for the given parton ID, x, and Q."

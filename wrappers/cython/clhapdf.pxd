@@ -23,7 +23,15 @@ cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
         bool inRangeXQ2(double, double) except +
         bool hasFlavor(int) except +
         vector[int] flavors()
-        int memberid() except +
+        int numMembers() except +
+        int memberID() except +
+        int lhapdfID() except +
+        string type() except +
+        string setname() except +
+        string description() except +
+        string setdescription() except +
+        string errorType() except +
+        int qcdOrder() except +
 
 cdef extern from "../../include/LHAPDF/Factories.h" namespace "LHAPDF":
     cdef PDF* mkPDF(string, int)
