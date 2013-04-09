@@ -82,10 +82,10 @@ namespace LHAPDF {
         } else { // we *are* on a block separator line
 
           // Check that the expected number of data lines were seen in the last block
-          if (iblock > 0 && iblockline - 1 != int(xs.size()*q2s.size()) + 2)
+          if (iblock > 0 && iblockline - 1 != int(xs.size()*q2s.size()) + 3)
             throw ReadError("PDF grid data error on line " + to_str(iline) + ": " +
                             to_str(iblockline-1) + " data lines were seen in block " + to_str(iblock-1) +
-                            " but " + to_str(xs.size()*q2s.size() + 2) + " expected");
+                            " but " + to_str(xs.size()*q2s.size() + 3) + " expected");
 
           // Increment/reset the block and line counters
           iblock += 1;
