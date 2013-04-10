@@ -1,5 +1,9 @@
 2013-04-10  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Improving creategrids to use xmin and qmin/max when dumping
+	LHpdf files and to allow a manual override for LHgrid
+	dumps. CTEQ6L1 looking *almost* publicly acceptable now.
+
 	* examples/: Resurrecting old testpdf.cc as an example (used by Doxygen)
 
 	* migration/: Using compatibility stuff to improve dumpv5v6.cc
