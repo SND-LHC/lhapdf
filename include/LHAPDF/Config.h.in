@@ -10,6 +10,10 @@
 /* "LHAPDF version string" */
 #undef LHAPDF_VERSION
 
+// Separate int-valued macro for conditional compilation. Doesn't exist in LHAPDF5.
+// Use like "#if defined LHAPDF_MAJOR_VERSION && LHAPDF_MAJOR_VERSION == 6 ..."
+#define LHAPDF_MAJOR_VERSION 6
+
 namespace LHAPDF {
 
 

@@ -1,5 +1,7 @@
 2013-04-10  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding LHAPDF_MAJOR_VERSION macro and examples/compatibility.cc
+
 	* AUTHORS list tweak since James added substantial code for Fortran compatibility.
 
 	* Adding copyright etc. notices to each file header.

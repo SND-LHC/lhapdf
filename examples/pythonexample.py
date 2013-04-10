@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+
+## Python LHAPDF6 usage example
+
 import lhapdf
 
 ## Getting a PDF member object

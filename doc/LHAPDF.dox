@@ -168,6 +168,7 @@ See the following pages:
 
 @example ../migration/testpdf.cc
 @example ../examples/pythonexample.py
+@example ../examples/compatibility.cc
 @example ../tests/testgrid.cc
 @example ../tests/testinfo.cc
 @example ../tests/testindex.cc
