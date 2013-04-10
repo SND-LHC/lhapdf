@@ -9,20 +9,25 @@ This will create the .info set metadata file and .lha grid data files in a (new)
 CT10 directory.
 
 To test the new PDFs, build the dumpv5 and/or dumpv6 programs. These are
-compiled from the same source (with the appropriate preprocessor macro and
-LHAPDF library version installed) e.g.:
+compiled from the same source (with the appropriate LHAPDF library version
+installed) e.g.:
 
-g++ dumpv5v6.cc -DLHAVERSION=5 -o dumpv5 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
-and
-g++ dumpv5v6.cc -DLHAVERSION=6 -o dumpv6 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
+(cd /path/to/lhapdf5 && make install)
+g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv5
 
-It is run like
+or
+
+(cd /path/to/lhapdf6 && make install)
+g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv6
+
+These programs are run like
 
 ./dumpvX <setname> <member_num>
 
 with the setname being generally different between v5 and v6 (at the least, v5
-PDF names contain the .LHgrid/.LHpdf file extension). You may need to specify
-the data path to the preliminary v6 PDF data files:
+PDF names contain the .LHgrid/.LHpdf file extension). You need to specify
+the data path to the preliminary v6 PDF data files if they're not installed in
+$prefix/share/LHAPDF:
 
 LHAPDF_DATA_PATH=$PWD ./testpdf CT10 0
 

@@ -131,7 +131,7 @@ colon (`:`) characters, cf. standard system paths like `PATH`,
 The following examples should help you to get to grips with using LHAPDF from C++:
 
 **Using and testing PDFs in C++:**
-@include migration/testpdf.cc
+@include examples/testpdf.cc
 
 **Using and testing PDFs in Python:**
 @include examples/pythonexample.py

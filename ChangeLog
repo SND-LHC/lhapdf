@@ -1,5 +1,9 @@
 2013-04-10  Andy Buckley  <andy.buckley@cern.ch>
 
+	* examples/: Resurrecting old testpdf.cc as an example (used by Doxygen)
+
+	* migration/: Using compatibility stuff to improve dumpv5v6.cc
+
 	* Adding LHAPDF_MAJOR_VERSION macro and examples/compatibility.cc
 
 	* AUTHORS list tweak since James added substantial code for Fortran compatibility.

@@ -10,21 +10,19 @@
 #include <cmath>
 #include <cstdlib>
 
-#ifndef LHAVERSION
-#error Must specify -DLHAVERSION=[5|6]
+#include <LHAPDF/LHAPDF.h>
+
+#ifdef LHAPDF_MAJOR_VERSION
+#define LHAVERSION LHAPDF_MAJOR_VERSION
+#define XF(X, Q) pdf.xfxQ(flavor, X, Q)
+#else
+#define LHAVERSION 5
+#define XF(X, Q) LHAPDF::xfx(X, Q, id)
 #endif
+
 #define _STR(s) #s
 #define _OUTPUT_PREFIX(V) "xf_v" _STR(V)
 #define OUTPUT_PREFIX _OUTPUT_PREFIX(LHAVERSION)
-
-#if LHAVERSION > 5
-#include <LHAPDF/PDF.h>
-#include <LHAPDF/Factories.h>
-#define XF(X, Q) pdf.xfxQ(flavor, X, Q)
-#else
-#include <LHAPDF/LHAPDF.h>
-#define XF(X, Q) LHAPDF::xfx(X, Q, id)
-#endif
 
 const double MINLOGX = -10;
 const double MINLOGQ = log10(10);
