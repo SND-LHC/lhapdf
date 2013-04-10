@@ -1,11 +1,21 @@
+// -*- C++ -*-
+//
+// This file is part of LHAPDF
+// Copyright (C) 2012-2013 The LHAPDF collaboration (see AUTHORS for details)
+//
 #pragma once
+
+#include <string>
 
 /* "LHAPDF version string" */
 #undef LHAPDF_VERSION
 
-#include <string>
 namespace LHAPDF {
+
+
   inline std::string version() {
     return LHAPDF_VERSION;
   }
+
+
 }

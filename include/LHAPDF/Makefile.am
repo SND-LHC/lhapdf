@@ -1,6 +1,7 @@
 # TODO: Provide a convenience LHAPDF.h to include all the main API elements?
 
 pkginclude_HEADERS = \
+  LHAPDF.h \
   PDF.h \
   Info.h \
   Config.h \

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of LHAPDF
+// Copyright (C) 2012-2013 The LHAPDF collaboration (see AUTHORS for details)
+//
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Factories.h"

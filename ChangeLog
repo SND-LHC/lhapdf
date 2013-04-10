@@ -1,3 +1,11 @@
+2013-04-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* AUTHORS list tweak since James added substantial code for Fortran compatibility.
+
+	* Adding copyright etc. notices to each file header.
+
+	* Adding LHAPDF.h convenience header.
+
 2013-04-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix ctypes handling in creategrids
