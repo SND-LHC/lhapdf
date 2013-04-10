@@ -136,6 +136,9 @@ The following examples should help you to get to grips with using LHAPDF from C+
 **Using and testing PDFs in Python:**
 @include examples/pythonexample.py
 
+**Handling LHAPDF v5/v6 compatibility in C++:**
+@include examples/compatibility.cc
+
 **Using and testing PDF grids in C++:**
 @include tests/testgrid.cc
 
