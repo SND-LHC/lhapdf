@@ -1,17 +1,19 @@
 if WITH_CYTHON
 if WITH_PYTHON
 
+PYEXT_ENV = CC=$(CC) CXX=$(CXX)
+
 all-local:
-	$(ENV) $(PYTHON) setup.py install --install-lib=build/
+	$(PYEXT_ENV) $(PYTHON) setup.py install --install-lib=build/
 
 install-exec-local:
-	$(ENV) $(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
+	$(PYEXT_ENV) $(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
 
 uninstall-local:
 	rm -rf $(DESTDIR)$(PYTHON_PATH)/LHAPDF-$(PACKAGE_VERSION)*.egg-info
 
 clean-local:
-	$(ENV) $(PYTHON) setup.py clean --all
+	$(PYEXT_ENV) $(PYTHON) setup.py clean --all
 	@rm -f $(top_builddir)/*.pyc
 	@rm -rf $(builddir)/build
 	@rm -rf dist
