@@ -1,3 +1,10 @@
+2013-04-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Rename of wrapper dir from cython -> python (reflect the target,
+	not the way of achieving it).
+
+	* Python extension build env fix
+
 2013-04-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improving creategrids to use xmin and qmin/max when dumping

@@ -154,7 +154,7 @@ AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([doc/Makefile doc/Doxyfile])
 AC_CONFIG_FILES([lhapdf-config])
 AC_CONFIG_FILES([wrappers/Makefile])
-AC_CONFIG_FILES([wrappers/cython/Makefile wrappers/cython/setup.py])
+AC_CONFIG_FILES([wrappers/python/Makefile wrappers/python/setup.py])
 dnl AC_CONFIG_FILES([wrappers/octave/Makefile])
 AC_OUTPUT
 
