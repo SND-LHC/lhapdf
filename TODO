@@ -10,15 +10,14 @@ NOW / FOR BETA 1
 
 - **Migrate CTEQ6L1 and CT10nlo PDFs to new format and validate (AB)**
 
-   CT10nlo looks perfect now. CTEQ6L1 needs more care to respect the original
-   sampling limits and deal with whatever is going wrong at x ~
-   0.2. pdfsets.index and metadata still need to be populated for each set (for
-   now).
+   CT10nlo looks perfect now. CTEQ6L1 needs some tweaking to improve the log-lin
+   x grid transition and high-x behaviour. pdfsets.index and metadata still need
+   to be populated for each set (for now).
 
 - **Fortran compatibility (JF,KN,BP,AB)**
 
-   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo (CTEQ6L1
-   is not quite ready yet).
+   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1
+   once ready.
 
 
 FOR BETA 2
@@ -42,9 +41,14 @@ FOR BETA 2
    Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
    all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
    deserves specialisation beyond generic splines. Graeme will look at what's
-   done in the CTEQ code (other than interpolating in x**0.3!)
+   done in the CTEQ code (other than interpolating in x**0.3)
 
 - **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
+
+- **Cython mapping improvements**
+
+   Review to make sure that heap allocated PDFs are garbage collected (loop
+   repeated pdf = lhapdf.mkPDF(...) and run Massif). More method mappings.
 
 - **Re-introduce set-level Info singletons**
 
