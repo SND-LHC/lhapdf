@@ -8,7 +8,7 @@ The set names given are in the format required for initialisation in LHAPDF5, e.
   MSTW2008lo90cl_nf3.LHgrid, MSTW2008lo90cl.LHgrid, NNPDF23_nlo_as_0119.LHgrid,
   CT10.LHgrid, cteq66.LHgrid, cteq6ll.LHpdf, cteq6ll.LHgrid, ...
 
-It's also possible to rename sets from the HAPDF5 name to a new LHAPDF6 name, e.g.
+It's also possible to rename sets from the LHAPDF5 name to a new LHAPDF6 name, e.g.
 
   cteq6ll.LHpdf:CTEQ6L1 or cteq6ll.LHgrid:CTEQ6L1
 
@@ -45,24 +45,33 @@ for lha5name in args:
 
     ## Initialize LHAPDF for this set
     lhapdf.initPDFSetByName(lha5name)
+
     # TODO: Get alpha_s anchors here (for grid Qs?) to write into set metadata
+
+    numMembers = lhapdf.numberPDF() if lhapdf.numberPDF() != 0 else 1
 
     ## Create meta file for set
     metapath = os.path.join(setname, setname + '.info')
     f = open(metapath, "w")
     f.write("SetDesc: \n")
-    f.write("NumMembers: %d\n" % lhapdf.numberPDF())
+    f.write("Authors: \n")
+    f.write("Reference: \n")
+    f.write("NumMembers: %d\n" % numMembers)
     f.write("Flavors: [-5,-4,-3,-2,-1,1,2,3,4,5,21]\n")
-    f.write("OrderQCD: \n")
+    f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
+    f.write("EvolutionNf: %d\n" % lhapdf.getNf())
     f.write("ErrorType: \n")
-    f.write("AlphaS_MZ: \n")
-    f.write("AlpaS_OrderQCD: \n")
-    f.write("Lambda4: \n")
-    f.write("Lambda5: \n")
+    f.write("XMin: %g\n" % lhapdf.getXmin(1))
+    f.write("XMax: %g\n" % lhapdf.getXmax(1))
+    f.write("Q2Min: %g\n" % lhapdf.getQ2min(1))
+    f.write("Q2Max: %g\n" % lhapdf.getQ2max(1))
+    f.write("AlphaS_MZ: %g\n" % lhapdf.alphasPDF(91.2))
+    f.write("AlphaS_OrderQCD: %d\n" % lhapdf.getOrderAlphaS(1))
+    f.write("Lambda4: %g\n" % lhapdf.getLam4(1))
+    f.write("Lambda5: %g\n" % lhapdf.getLam5(1))
     f.close()
 
     ## Iterate over each member in the set (central is not included)
-    numMembers = lhapdf.numberPDF() if lhapdf.numberPDF() != 0 else 1
     for member in xrange(numMembers):
         lhapdf.initPDF(member)
 
@@ -92,8 +101,10 @@ for lha5name in args:
             xmin = lhapdf.getXmin(1)
             q2min = lhapdf.getQ2min(1)
             q2max = lhapdf.getQ2max(1)
-            xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.linspace(0.075, 0.2, 6)) + list(numpy.linspace(0.25, 1.0, 18))
-            #xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.logspace(math.log10(0.075), 0, 21))
+            # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.linspace(0.075, 0.2, 6)) + list(numpy.linspace(0.25, 1.0, 18))
+            # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.logspace(math.log10(0.075), 0, 21))
+            # xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + [1.0 - i for i in numpy.logspace(math.log10(0.002), math.log10(0.1), 18)])
+            xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + list(numpy.linspace(0.1, 0.99, 50)))
             qs = list(numpy.sqrt(numpy.logspace(math.log10(q2min), math.log10(q2max), 50)))
             print "Manual x grid: ", ", ".join("%0.2e" % x for x in xs)
             print "Manual Q grid: ", ", ".join("%0.2e" % q for q in qs)

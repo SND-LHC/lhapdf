@@ -69,6 +69,7 @@ cdef class PDF:
 
 
     def xfxQ(self, pid, x, q):
+        # TODO: allow 2-arg version without PID which returns a dict for all flavours
         "Return the PDF xf(x,Q) value for the given parton ID, x, and Q."
         try:
             return [self._ptr.xfxQ(pid, x, q) for x, q in izip(x, q)]
@@ -76,6 +77,7 @@ cdef class PDF:
             return self._ptr.xfxQ(pid, x, q)
 
     def xfxQ2(self, pid, x, q2):
+        # TODO: allow 2-arg version without PID which returns a dict for all flavours
         "Return the PDF xf(x,Q2) value for the given parton ID, x, and Q2."
         try:
             return [self._ptr.xfxQ2(pid, x, q2) for x, q2 in izip(x, q2)]

@@ -59,6 +59,19 @@ MANDATORY
 (free string): A human-readable description of this PDF set.
 
 
+Authors
+-------
+MANDATORY
+(free string): Authors of this PDF set.
+
+
+Reference
+---------
+OPTIONAL
+(free string): A reference to the paper that describes this PDF set. Use semicolons
+to separate a standard journal string, arXiv ID, DOI code, etc.
+
+
 Flavors
 -------
 MANDATORY
@@ -120,6 +133,16 @@ MANDATORY
 
 Maximum number of loops considered in the QCD evolution of this set (i.e. 0 =
 LO, 1 = NLO, etc.)
+
+
+EvolutionNf
+-----------
+MANDATORY
+(uint): e.g. 4 or 5
+
+Maximum number of flavours used in the fit
+
+@todo Need a separate variable for type of flavour scheme used, i.e. FFNS/VFNS/etc.?
 
 
 AlphaS_MZ
