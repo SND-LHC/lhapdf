@@ -32,8 +32,7 @@ PROJECT_NAME           = "LHAPDF"
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-# TODO: convert this to Doxyfile.in and use @PACKAGE_VERSION@
-PROJECT_NUMBER         = 6.0.0a0
+PROJECT_NUMBER         = @PACKAGE_VERSION@
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer
