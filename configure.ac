@@ -174,7 +174,7 @@ echo "In LHAPDFv6, downloadable sets are packaged as tarballs, which"
 echo "must be expanded to be used. Here is an example of how to"
 echo "retrieve and install a PDF set from the command line:"
 echo
-echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/6.0.0a/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
+echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/6.0.0/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
 echo
 echo "****************************************************************"
 echo

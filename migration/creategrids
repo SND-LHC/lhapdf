@@ -48,7 +48,7 @@ for lha5name in args:
 
     # TODO: Get alpha_s anchors here (for grid Qs?) to write into set metadata
 
-    numMembers = lhapdf.numberPDF() if lhapdf.numberPDF() != 0 else 1
+    numMembers = lhapdf.numberPDF() + 1 if lhapdf.numberPDF() != 1 else 1
 
     ## Create meta file for set
     metapath = os.path.join(setname, setname + '.info')
@@ -69,6 +69,7 @@ for lha5name in args:
     f.write("AlphaS_OrderQCD: %d\n" % lhapdf.getOrderAlphaS(1))
     f.write("Lambda4: %g\n" % lhapdf.getLam4(1))
     f.write("Lambda5: %g\n" % lhapdf.getLam5(1))
+    f.write("Format: lhagrid1\n")
     f.close()
 
     ## Iterate over each member in the set (central is not included)
