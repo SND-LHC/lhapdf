@@ -23,12 +23,14 @@ Level of verbosity of the LHAPDF system.
 NOT YET IMPLEMENTED!
 
 
-ShowLHA5Banner
---------------
+ShowBanner
+----------
 (bool)
 
-Whether or not to print out an LHAPDF5-style banner to stdout upon set
+Whether or not to print out an LHAPDF5-style banner to stdout upon PDF
 initialisation.
+
+NOT YET IMPLEMENTED
 
 
 ImplicitFlavorAction
@@ -63,6 +65,12 @@ Authors
 -------
 MANDATORY
 (free string): Authors of this PDF set.
+
+
+Year
+----
+OPTIONAL
+(uint): Year in which this PDF fit was made.
 
 
 Reference
