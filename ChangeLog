@@ -1,3 +1,7 @@
+2013-04-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a PDF set usage example (uses C++11 for now, for fun!)
+
 2013-04-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Rename of wrapper dir from cython -> python (reflect the target,
