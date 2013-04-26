@@ -158,6 +158,12 @@ The following examples should help you to get to grips with using LHAPDF from C+
 @include examples/analytic.cc
 
 
+Authors
+-------
+
+@include AUTHORS
+
+
 For developers
 --------------
 
