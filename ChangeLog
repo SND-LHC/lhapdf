@@ -1,3 +1,7 @@
+2013-05-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Tweaking and fixing tests and build config.
+
 2013-04-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a PDF set usage example (uses C++11 for now, for fun!)

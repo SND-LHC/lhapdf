@@ -98,8 +98,10 @@ dnl AM_CONDITIONAL(WITH_OCTAVE, [test x$OCTAVE != x && test x$MKOCTFILE != x])
 
 
 ## Set base compiler flags
-AM_CPPFLAGS=["$AM_CPPFLAGS -I\$(top_srcdir)/include -I\$(prefix)/include"]
+AM_CPPFLAGS=["$AM_CPPFLAGS -I$top_srcdir/include -I$prefix/include"]
+# TODO: don't *always* specify these paths... only needed to compile a very few files
 AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
+AM_LDFLAGS=["$AM_LDFLAGS -L$top_builddir/lib -L$prefix/lib"]
 AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98 "])
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
@@ -131,9 +133,13 @@ test "$with_yaml_cpp" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib -L$with_yaml_cpp/
 test "$with_yaml_cpp_lib" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp_lib"
 YAMLCPP_LIBS="-lyaml-cpp"
 oldCPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $YAMLCPP_CPPFLAGS -I$prefix/include"
+oldLDFLAGS=$LDFLAGS
+CPPFLAGS="$AM_CPPFLAGS $CPPFLAGS $YAMLCPP_CPPFLAGS"
+LDFLAGS="$AM_LDFLAGS $LDFLAGS $YAMLCPP_LDFLAGS"
 AC_CHECK_HEADER([yaml-cpp/yaml.h], [], [AC_MSG_ERROR([yaml-cpp/yaml.h header not found.])])
+# TODO: Check that YAML::LoadFile exists, i.e. API version is 0.5
 CPPFLAGS=$oldCPPFLAGS
+LDFLAGS=$oldLDFLAGS
 AC_SUBST(YAMLCPP_CPPFLAGS)
 AC_SUBST(YAMLCPP_LDFLAGS)
 AC_SUBST(YAMLCPP_LIBS)

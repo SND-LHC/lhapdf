@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-  const LHAPDF::Info& cfg = LHAPDF::Info::config();
+  const LHAPDF::Info& cfg = LHAPDF::config();
   cout << cfg.metadata("ImplicitFlavorAction") << endl;
   cout << cfg.metadata("Verbosity") << endl;
 

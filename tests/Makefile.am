@@ -1,4 +1,9 @@
-FLAGS = $(AM_CPPFLAGS) $(BOOST_CPPFLAGS) $(YAMLCPP_CPPFLAGS) $(AM_LDFLAGS) $(BOOST_LDFLAGS) $(YAMLCPP_LDFLAGS) -L$(top_srcdir)/src -lLHAPDF $(BOOST_LIBS) $(YAMLCPP_LIBS)
+FLAGS = $(AM_CPPFLAGS) $(BOOST_CPPFLAGS) $(YAMLCPP_CPPFLAGS) $(AM_LDFLAGS) $(BOOST_LDFLAGS) $(YAMLCPP_LDFLAGS) -L$(top_builddir)/src -lLHAPDF $(BOOST_LIBS) $(YAMLCPP_LIBS)
+
+.PHONY = all testalphas testgrid testindex testinfo testpaths
+
+all: testalphas testgrid testindex testinfo testpaths
+	@true
 
 testalphas: testalphas.cc
 	$(CXX) testalphas.cc $(FLAGS) -o testalphas
