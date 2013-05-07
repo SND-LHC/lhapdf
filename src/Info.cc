@@ -49,28 +49,30 @@ namespace LHAPDF {
     if (filepath.empty() || !exists(filepath))
       throw ReadError("PDF data file '" + filepath.string() + "' not found");
 
-    // Read the YAML file into the metadata map
+    // Read the YAML part of the file into the metadata map
     try {
-      std::ifstream info(filepath.c_str());
-      YAML::Parser parser(info);
-      YAML::Node doc;
-      parser.GetNextDocument(doc);
-      for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
-        string key, val;
-        it.first() >> key;
-        try {
-          // Assume the value is a scalar type -- it'll throw an exception if not
-          it.second() >> val;
-        } catch (const YAML::InvalidScalar& ex) {
-          // It's a list: process the entries individually into a comma-separated string
-          string subval;
-          for (size_t i = 0; i < it.second().size(); ++i) {
-            it.second()[i] >> subval;
-            val += subval + ((i < it.second().size()-1) ? "," : "");
-          }
+      // Do the parsing "manually" up to the first doc delimiter
+      std::ifstream file(filepath.c_str());
+      string docstr, line;
+      while (getline(file, line)) {
+        //cout << "@ " << line << endl;
+        if (line == "---") break;
+        docstr += line + "\n";
+      }
+      const YAML::Node doc = YAML::Load(docstr);
+      for (YAML::const_iterator it = doc.begin(); it != doc.end(); ++it) {
+        const string key = it->first.as<string>();
+        const YAML::Node& val = it->second;
+        if (val.IsScalar()) {
+          // Scalar value
+          _metadict[key] = val.as<string>();
+        } else {
+          // Process the sequence entries into a comma-separated string
+          string seqstr = "";
+          for (size_t i = 0; i < val.size(); ++i)
+            seqstr += val[i].as<string>() + ((i < val.size()-1) ? "," : "");
+          _metadict[key] = seqstr;
         }
-        //cout << key << ": " << val << endl;
-        _metadict[key] = val;
       }
     } catch (const YAML::ParserException& ex) {
       throw ReadError("YAML parse error in " + filepath.native() + " :" + ex.what());
