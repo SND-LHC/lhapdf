@@ -34,16 +34,6 @@ namespace LHAPDF {
     return _cfg;
   }
 
-  // bool Info::has_key(const std::string& key) const {
-  //   return has_key_local(key) || config().has_key_local(key);
-  // }
-
-  // const std::string& Info::metadata(const std::string& key) const {
-  //   if (has_key_local(key)) return _metadict.find(key)->second; //< value is defined locally -- return that
-  //   if (this != &config()) return config().metadata(key); //< if this isn't the global Config, ask that
-  //   throw MetadataError("Metadata for key: " + key + " not found."); //< this is the global Config and key is still not known
-  // }
-
 
   void Info::load(const path& filepath) {
     if (filepath.empty() || !exists(filepath))
@@ -53,13 +43,39 @@ namespace LHAPDF {
     try {
       // Do the parsing "manually" up to the first doc delimiter
       std::ifstream file(filepath.c_str());
+      YAML::Node doc;
+
+      #if YAMLCPP_API == 3
+
+      YAML::Parser parser(file);
+      parser.GetNextDocument(doc);
+      for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
+        string key, val;
+        it.first() >> key;
+        try {
+          // Assume the value is a scalar type -- it'll throw an exception if not
+          it.second() >> val;
+        } catch (const YAML::InvalidScalar& ex) {
+          // It's a list: process the entries individually into a comma-separated string
+          string subval;
+          for (size_t i = 0; i < it.second().size(); ++i) {
+            it.second()[i] >> subval;
+            val += subval + ((i < it.second().size()-1) ? "," : "");
+          }
+        }
+        //cout << key << ": " << val << endl;
+        _metadict[key] = val;
+      }
+
+      #elif YAMLCPP_API == 5
+
       string docstr, line;
       while (getline(file, line)) {
         //cout << "@ " << line << endl;
         if (line == "---") break;
         docstr += line + "\n";
       }
-      const YAML::Node doc = YAML::Load(docstr);
+      doc = YAML::Load(docstr);
       for (YAML::const_iterator it = doc.begin(); it != doc.end(); ++it) {
         const string key = it->first.as<string>();
         const YAML::Node& val = it->second;
@@ -74,6 +90,8 @@ namespace LHAPDF {
           _metadict[key] = seqstr;
         }
       }
+
+      #endif
     } catch (const YAML::ParserException& ex) {
       throw ReadError("YAML parse error in " + filepath.native() + " :" + ex.what());
     } catch (const LHAPDF::Exception& ex) {

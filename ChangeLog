@@ -1,3 +1,8 @@
+2013-05-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* configure.ac, src/Info.cc: Re-adding yaml-cpp 0.3.x support via
+	version detection in the configure script.
+
 2013-05-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* src/Info.cc: Converting the YAML reading to use the yaml-cpp v0.5.x API.
