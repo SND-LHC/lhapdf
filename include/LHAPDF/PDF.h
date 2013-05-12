@@ -131,21 +131,88 @@ namespace LHAPDF {
 
     /// @brief Get the PDF xf(x) value at (x,q2) for all supported PIDs.
     ///
-    /// All grids are defined in q2 rather than q since the natural value
-    /// in MC programs is squared, so we typically avoid an expensive sqrt() call.
+    /// This version fills a user-supplied map to avoid container construction
+    /// costs on every call.
+    ///
+    /// @param x Momentum fraction
+    /// @param q2 Squared energy (renormalization) scale
+    /// @return The value of xf(x,q2)
+    void xfxQ2(double x, double q2, std::map<int, double>& rtn) const {
+      rtn.clear();
+      foreach (int id, flavors()) rtn[id] = xfxQ2(id, x, q2);
+    }
+
+
+    /// @brief Get the PDF xf(x) value at (x,q) for all supported PIDs.
+    ///
+    /// This version fills a user-supplied map to avoid container construction
+    /// costs on every call.
+    ///
+    /// @param x Momentum fraction
+    /// @param q Energy (renormalization) scale
+    /// @return The value of xf(x,q)
+    void xfxQ(double x, double q, std::map<int, double>& rtn) const {
+      xfxQ2(x, q*q, rtn);
+    }
+
+
+    /// @brief Get the PDF xf(x) value at (x,q2) for "standard" PIDs.
+    ///
+    /// This version fills a user-supplied vector to avoid container
+    /// construction costs on every call.
+    ///
+    /// The filled vector follows the LHAPDF5 convention, with 13 entries
+    /// running in the PDF ID order [-6, -5, ..., -1, 21, 1, ... 5, 6], i.e.
+    /// quark PDF values will be at vector index pid+6 and the gluon at index 6.
+    ///
+    /// @param x Momentum fraction
+    /// @param q2 Squared energy (renormalization) scale
+    /// @return The value of xf(x,q2)
+    void xfxQ2(double x, double q2, std::vector<double>& rtn) const {
+      rtn.clear();
+      rtn.resize(13);
+      for (int i = 0; i < 13; ++i) {
+        int id = (i != 6) ? i+6 : 21;
+        rtn[i] = xfxQ2(id, x, q2);
+      }
+    }
+
+
+    /// @brief Get the PDF xf(x) value at (x,q) for "standard" PIDs.
+    ///
+    /// This version fills a user-supplied vector to avoid container
+    /// construction costs on every call.
+    ///
+    /// The filled vector follows the LHAPDF5 convention, with 13 entries
+    /// running in the PDF ID order [-6, -5, ..., -1, 21, 1, ... 5, 6], i.e.
+    /// quark PDF values will be at vector index pid+6 and the gluon at index 6.
+    ///
+    /// @param x Momentum fraction
+    /// @param q Energy (renormalization) scale
+    /// @return The value of xf(x,q)
+    void xfxQ(double x, double q, std::vector<double>& rtn) const {
+      xfxQ2(x, q*q, rtn);
+    }
+
+
+    /// @brief Get the PDF xf(x) value at (x,q2) for all supported PIDs.
+    ///
+    /// This version creates a new map on every call: prefer to use the
+    /// fill-in-place version with a user-supplied map for many calls.
     ///
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
     /// @return The value of xf(x,q2)
     std::map<int, double> xfxQ2(double x, double q2) const {
       std::map<int, double> rtn;
-      foreach (int id, flavors()) {
-        rtn[id] = xfxQ2(id, x, q2);
-      }
+      xfxQ2(x, q2, rtn);
       return rtn;
     }
 
     /// @brief Get the PDF xf(x) value at (x,q) for all supported PIDs.
+    ///
+    /// This version creates a new map on every call: prefer to use the
+    /// fill-in-place version with a user-supplied map for many calls.
     ///
     /// xfxQ will square the given q and return the value from xfxQ2.
     /// All grids are defined in q2 rather than q since the natural value
