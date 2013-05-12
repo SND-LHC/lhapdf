@@ -139,6 +139,9 @@ LDFLAGS="$AM_LDFLAGS $LDFLAGS $YAMLCPP_LDFLAGS"
 AC_CHECK_HEADER([yaml-cpp/yaml.h], [], [AC_MSG_ERROR([yaml-cpp/yaml.h header not found.])])
 AC_CHECK_HEADER([yaml-cpp/node.h], [YAMLCPP_MAJOR_VERSION=3])
 AC_CHECK_HEADER([yaml-cpp/node/node.h], [YAMLCPP_MAJOR_VERSION=5])
+if test "x$YAMLCPP_MAJOR_VERSION" = x; then
+  AC_MSG_ERROR([yaml-cpp API version could not be determined])
+fi
 AC_MSG_NOTICE([yaml-cpp API version = $YAMLCPP_MAJOR_VERSION])
 AC_SUBST(YAMLCPP_MAJOR_VERSION)
 CPPFLAGS=$oldCPPFLAGS
