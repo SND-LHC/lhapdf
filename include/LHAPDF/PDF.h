@@ -247,8 +247,40 @@ namespace LHAPDF {
 
   public:
 
-    /// @name Range checks
+    /// @name Ranges of validity
     //@{
+
+    /// Minimum valid x value for this PDF.
+    virtual double xMin() {
+      return info().metadata<double>("XMin");
+    }
+
+    /// Maximum valid x value for this PDF.
+    virtual double xMax() {
+      return info().metadata<double>("XMax");
+    }
+
+    /// Minimum valid Q2 value for this PDF (in GeV2).
+    virtual double q2Min() {
+      return info().metadata<double>("Q2Min");
+    }
+
+    /// Maximum valid Q2 value for this PDF (in GeV2).
+    virtual double q2Max() {
+      return info().metadata<double>("Q2Max");
+    }
+
+    /// Minimum valid Q value for this PDF (in GeV).
+    /// @note This function calls sqrt(q2Min()). For better CPU efficiency and accuracy use q2Min() directly.
+    virtual double qMin() {
+      return std::sqrt(this->q2Min());
+    }
+
+    /// @brief Maximum valid Q value for this PDF (in GeV).
+    /// @note This function calls sqrt(q2Max()). For better CPU efficiency and accuracy use q2Max() directly.
+    virtual double qMax() {
+      return std::sqrt(this->q2Max());
+    }
 
     /// @brief Check whether the given x is physically valid
     ///

@@ -1,5 +1,8 @@
 2013-05-12  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding x/Q2/Q min/max (virtual) functions to the PDF
+	interface. Default implementations use metadata keys only.
+
 	* Adding in-place filling functions for map and vector PDF value
 	containers, on the PDF interface.
 
