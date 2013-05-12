@@ -122,7 +122,7 @@ MANDATORY
 (enum string): linear, cubic
 
 The factory name string of the PDF grid interpolator to use (if overriding the
-default)
+default). Could also be member-specific.
 
 
 Extrapolator
@@ -131,7 +131,23 @@ MANDATORY
 (enum string): error
 
 The factory name string of the PDF grid extrapolator to use (if overriding the
-default).
+default). Could also be member-specific.
+
+
+XMin, XMax
+----------
+MANDATORY
+(float)
+
+Minimum and maximum values of x in the PDF set. Could also be member-specific.
+
+
+Q2Min, Q2Max
+------------
+MANDATORY
+(float)
+
+Minimum and maximum values of Q2 in the PDF set, in GeV2. Could also be member-specific.
 
 
 OrderQCD
