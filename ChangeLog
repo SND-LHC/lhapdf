@@ -1,3 +1,10 @@
+2013-05-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Treat a request for PID = 0 as if PID 21 (gluon) had been
+	requested. Useful for backward compatibility, but also just for
+	convenience since it's much easier to just loop from -6 to 6 than
+	to have to skip 0 and add 21 as a special case.
+
 2013-05-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding x/Q2/Q min/max (virtual) functions to the PDF

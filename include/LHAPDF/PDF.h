@@ -109,8 +109,10 @@ namespace LHAPDF {
       if (!hasFlavor(id)) {
         throw FlavorError("Undefined flavour requested: " + to_str(id));
       }
+      // Treat PID = 0 as always equivalent to a gluon: query as PID = 21
+      const int id2 = (id != 0) ? id : 21;
       // Call the delegated method in the concrete PDF object to calculate the in-range value
-      return _xfxQ2(id, x, q2);
+      return _xfxQ2(id2, x, q2);
     }
 
 
@@ -172,7 +174,7 @@ namespace LHAPDF {
       rtn.clear();
       rtn.resize(13);
       for (int i = 0; i < 13; ++i) {
-        int id = (i != 6) ? i+6 : 21;
+        const int id = i-6; // PID = 0 is automatically treated as PID = 21
         rtn[i] = xfxQ2(id, x, q2);
       }
     }

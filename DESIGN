@@ -43,12 +43,13 @@ addition of new handling code, nor even a new release of LHAPDF.
 @todo A data versioning standard will be needed for reproducibility: IDEAS?
 
 Flavours are identified by standard PDG ID codes. A PDF can contain arbitrarily
-many flavours.
+many flavours. A special case is ID = 0, which for backward compatibility and
+convenience is treated as equivalent to ID = 21 (this allows a for-loop from -6
+to +6 to cover all quarks and the gluon without need of special treatment to
+replace the 0 index with 21).
 
-There is (in the current envisioning) no explicit type specified for a PDF set,
-but the class name LHAPDF::PDFSet is reserved for possible future use.
-
-@todo Explicitly add this type to the API to block user attempts to define it?
+PDFSet objects are singletons used only for set-level metadata querying and for
+convenience loading of all PDFs in a set.
 
 Allow use of a "return zero" treatment for unsupported flavours, based on
 global, set-level, or member-level configuration.
@@ -60,7 +61,7 @@ of data points.
 binned in Q2, so that gradient discontinuities across flavour thresholds can be
 handled correctly (this is at least needed by the MSTW PDFs).
 
-@todo Subgrids in x have also been suggested, but just ensuring sufficient x knot
+@note Subgrids in x have also been suggested, but just ensuring sufficient x knot
 density seems preferable: unlike flavour thresholds, gradient continuity is important,
 and this is complex to implement, and anyway the benefit is more for evolution than
 for interpolation.
@@ -77,34 +78,37 @@ handle discontinuous transitions in Q2 across flavour mass thresholds. Log
 interpolation? Named interpolators overrideable in code, but with defaults
 specified in the set/member metadata.
 
-@todo Allow the interpolator to have access to multiple subgrids such that
-    interpolation on a boundary will use the average of both grid
-    interpolations?
-
 Caching: interpolators should be bound to a PDF object (and be unique, i.e. no
 singletons) so that they can cache looked-up/interpolated values. The main
 use-case for this is flavour caching, where all flavours in a PDF will be needed
-at a single (x,Q2) point. Since each flavour grid needs to be separately interpolated,
-ALWAYS calculating all flavours would be wasteful, so the best thing to cache is the
-indices of the surrounding grid points (including implicit identification of grid
-edges) so that the lookup need not be done multiple times as each flavour is defined
-on the same (sub)grid.
-
-@todo Make sure that the interaction of caching with implicitly zeroed PDF values works
+at a single (x,Q2) point. Since each flavour grid needs to be separately
+interpolated, ALWAYS calculating all flavours would be wasteful, so the indices
+of the surrounding grid points (including implicit identification of grid edges)
+may be cached so that the lookup need not be done for each flavour as they are
+all defined on the same (sub)grid: this can be done in the interpolator base
+class or calling code. The interpolation weights can also be cached, but this is
+specific to the interpolator algorithm.
 
 
 Extrapolators
 -------------
 
 Extrapolators: extrapolation may be required but is not advised. Essentially a
-damage minimisation exercise. Specification via metadata or explicit code cf. interpolators.
+damage minimisation exercise. Specification via metadata or explicit code
+as for interpolators.
 
-@todo Add detail
+The default behaviour is to "lock" or "freeze" the PDF value at the edge of the
+fitted grid, rather than to truly extrapolate. An alternative extrapolation
+handler is provided which throws an exception if extrapolation is
+required. Further extrapolators can be user-defined, but no extra "standard"
+extrapolators are currently planned.
 
-Extrapolators, like interpolators, are bound to a GridPDF object to allow
-PDF-specific lookup caching. This also makes it possible for an Extrapolator
-to use the currently bound Interpolator object in its calculation of the
-extrapolation beyond the grid.
+Extrapolators, like interpolators, are bound to a GridPDF object. This also
+makes it possible for an Extrapolator to use the currently bound Interpolator
+object in its calculation of the extrapolation: this is used by the default
+nearest-point extrapolator. In principle extrapolation could also allow
+PDF-specific lookup caching, but this is unlikely to be necessary (and to an
+extent will occur automatically via caching on the interpolator).
 
 
 Data format
@@ -206,16 +210,17 @@ tabulated datapoints in the set/member metadata. The 1D interpolation will again
 support subgrids across flavour thresholds, but expressed as "pure metadata" in
 the header for uniformity of treatment and to allow alpha_s calculation without
 being specific to the grid format. QCD params related to alpha_s to be specified
-in metadata: Lambda_4, Lambda_5, alpha_s_MZ, Nf, FFNS/VFNS, quark masses, QCD order
-(as int = nloops?), default alpha_s solver name.
+in metadata: Lambda_4, Lambda_5, alpha_s_MZ, Nf, FFNS/VFNS, quark masses, QCD
+order (as int = nloops?), default alpha_s solver name. See the CONFIGFLAGS
+document for the full list.
 
 @todo MUST specify alpha_s_mz? Lambda optional? Defaults?
 
 @todo Describe the AlphaS class hierarchy
 
-@todo Note that the AlphaS objects are all designed to have no dependence on
-  other LHAPDF objects: they can be happily used in non-PDF contexts. The default
-  parameters are overridden by the PDF objects when creating
+@note The AlphaS objects are all designed to have no dependence on other LHAPDF
+  objects: they can be happily used in non-PDF contexts. The default parameters
+  are overridden by the PDF objects when creating
 
 
 Laziness
@@ -228,8 +233,7 @@ will not be used. It also means that user-supplied versions of these objects may
 be passed without having to first create and delete a default as specified by the
 PDF's metadata fields.
 
-@todo Also be so lazy that GridPDFs don't read their data block until an xf value
-  is requested?!
+Other laziness may be added in time, e.g. lazy loading of PDF data blocks.
 
 
 Factories
@@ -265,27 +269,36 @@ is automatic via `std::auto_ptr` smart pointers. The LHAGLUE interface uses simi
 smart pointers to avoid memory leaks.
 
 
-Fortran backward compatibility
-------------------------------
+Backward compatibility
+----------------------
 
-LHAGLUE interface support will be provided for Fortran generators which won't
-change. LHAPDF5 ID codes will be supported and will continue to be assigned: PDF
-loading by these IDs will be possible and used as the back-end for the Fortran
-functions.
+LHAPDF5 and "LHAGLUE" (i.e. PDFLIB interface) Fortran API elements are provided
+for Fortran generators which won't/can't change their calling code. LHAPDF5 ID
+codes will be supported and will continue to be assigned: PDF loading by these
+IDs will be possible and used as the back-end for the Fortran functions.
 
-@todo Legacy support for the LHAPDF multiset (initpdfsetm, etc.) functions? Demand?
+The LHAPDF5 C++ and Python APIs are *not* supported in LHAPDF6, as codes which
+use these will generally be able to update. In C++, parallel support for LHAPDF5
+and LHAPDF6 (and potentially future versions) in calling code may be achieved by
+use of the LHAPDF_MAJOR_VERSION preprocessor macro, which is defined with the
+integer value 6 in LHAPDF6, and not at all in LHAPDF5. Python compatibility can
+be achieved more dynamically, e.g. by use of the hasattr() built-in function to
+test the capabilities of objects and modules.
 
 
 Migration and regression testing
 --------------------------------
 
-Continuous validation against Fortran LHAPDF5
-will be made using automated scripts. Maximum tolerated deviation: relative
-xf = 0.1% or abs xf = 10^-5, whichever is larger (i.e. a > 0.1% deviation will be
-tolerated in regions where the PDF's xf value is anyway so small that it is of no
-physical importance.
+Continuous validation against Fortran LHAPDF5 will be made using automated
+scripts. A nominal per-mille (0.1%) maximum deviation will be tolerated to
+consider a PDF as "validated".
 
-@todo Choose better-motivated thresholds!
+The deviation function may include a tolerance treatment so that larger
+fractional deviations can be tolerated in regions where the PDF's xf value is
+anyway so small that it is of no physical importance: an absolute tolerance
+value of O(10^-5) is suggested for these regions. [The current deviation
+function is defined as d = ((xf6 + epsilon) / (xf5 + epsilon)) - 1 with abs
+tolerance epsilon, so that d -> 0 as xf << epsilon.]
 
 
 The LHAPDF ID code and index system
