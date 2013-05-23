@@ -10,13 +10,14 @@ NOW / FOR BETA 2
 
 - **MSTW2008 PDF migration (GW)**
 
-   First attempt to use subgrids in anger.
+   First attempt to use subgrids in anger. Requires extension
 
 - **NNPDF2.3 PDF migration (??)**
 
-   A big job! More automation required...
+   Just the "main" sets for now. More automation of validation required... we
+   can't check thousands of plots so need a more compact performance metric.
 
-- **Improve CTEQ6L1 grid efficiency**
+- **Improve CTEQ6L1 grid efficiency (MR?)**
 
 - **Fortran compatibility**
 
@@ -30,10 +31,40 @@ NOW / FOR BETA 2
    Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
    values robustly to implement 1D subgrids.
 
-- **Re-introduce set-level Info singletons**
+- **Re-introduce set-level Info singletons (AB)**
 
    Will allow set-level config changes to propagate to all members of the set.
    Need to define the "lock time", for things like ipol/xpol/alphaS.
+
+- **Profile GridPDF (AB)**
+
+   Compare to LHA5 for same-member and multi-set random sampling. Where is the
+   limitation. Intend to compare to self once caching added.
+
+- **Provide setAlphaS methods cf. setInterpolator (AB)**
+
+   The setAlphaS method should set the params appropriate for the PDF it's being
+   attached to.
+
+- **AlphaS default params**
+
+   Should the param defaults be clearly invalid so that default AlphaS fields and
+   throw an AlphaSException if the values are not in a physical range?
+
+- **Treating missing flavours with error vs. return 0 (AB)**
+
+   Provide a switch to distinguish the two responses. Put ID check into
+   PDF::xfxQ2 function?
+
+- **Forbid PDF construction from a direct path to the data file? (AB)**
+
+   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
+   Same set of constructors for PDF (and derivatives) and Info?
+   Throw/assert if dir name and file name are inconsistent
+
+
+FOR BETA 3
+----------
 
 - **Improved x -> 1 (and Q -> 0?) evolution (GW,...)**
 
@@ -57,30 +88,7 @@ NOW / FOR BETA 2
    Fortran dependency, which we'd rather avoid. Maybe start with conversion to
    C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
-- **Improve the DESIGN document's coherence (AB)**
-
-- **Profile GridPDF and AlphaS_ODE**
-
-- **Provide setAlphaS methods cf. setInterpolator (AB)**
-
-   The setAlphaS method should set the params appropriate for the PDF it's being
-   attached to.
-
-- **AlphaS default params**
-
-   Should the param defaults be clearly invalid so that default AlphaS fields and
-   throw an AlphaSException if the values are not in a physical range?
-
-- **Treating missing flavours with error vs. return 0 (AB)**
-
-   Provide a switch to distinguish the two responses. Put ID check into
-   PDF::xfxQ2 function?
-
-- **Forbid PDF construction from a direct path to the data file? (AB)**
-
-   Rely on dir structure instead? Do PDFs _need_ to have a dir? (Maybe yes.)
-   Same set of constructors for PDF (and derivatives) and Info?
-   Throw/assert if dir name and file name are inconsistent
+- **Profile AlphaS_ODE**
 
 - **Printing out banner info... needed by code that greps for it :-/**
 
