@@ -33,13 +33,15 @@ initialisation.
 NOT YET IMPLEMENTED
 
 
-ImplicitFlavorAction
---------------------
+UndefFlavorAction
+-----------------
 (enum string): return_zero, error
 
 What to do if an xf value for an unsupported PID code is requested? Either
 return 0 (i.e. there is implicitly none of that parton in the hadron) or throw
 an error.
+
+NOT YET IMPLEMENTED: TOO MUCH OVERHEAD? (A METADATA STRING WOULD BE CHECKED FOR EVERY ACCESS TO 6/-6 UNLESS CACHING IS USED)
 
 
 PwdInSearchPath

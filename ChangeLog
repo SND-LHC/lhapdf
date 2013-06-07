@@ -1,5 +1,7 @@
 2013-06-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Rename ImplicitFlavorAction config flag to UndefFlavorAction
+
 	* More build system tweaks, including removal of yaml-cpp flags from build of example programs that link against libLHAPDF.
 
 	* Moving broken -I/-L and -D flag settings from configure.ac to selected Makefile.am's
