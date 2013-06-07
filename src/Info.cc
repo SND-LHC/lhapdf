@@ -13,7 +13,7 @@ namespace LHAPDF {
   /// Constructor from a set name and member ID.
   Info::Info(const std::string& setname, int member) {
     path searchpath = findFile(pdfmempath(setname, member));
-    loadFull(searchpath.native());
+    loadFull(searchpath.string());
   }
 
   /// Constructor from an LHAPDF ID code.
@@ -28,7 +28,7 @@ namespace LHAPDF {
 
   Info& config() {
     static Info _cfg;
-    string confpath = findFile("lhapdf.conf").native();
+    string confpath = findFile("lhapdf.conf").string();
     // cout << "CONFPATH = " << confpath.empty() << endl;
     if (!confpath.empty()) _cfg.load(confpath);
     return _cfg;
@@ -93,11 +93,11 @@ namespace LHAPDF {
 
       #endif
     } catch (const YAML::ParserException& ex) {
-      throw ReadError("YAML parse error in " + filepath.native() + " :" + ex.what());
+      throw ReadError("YAML parse error in " + filepath.string() + " :" + ex.what());
     } catch (const LHAPDF::Exception& ex) {
       throw;
     } catch (const std::exception& ex) {
-      throw ReadError("Trouble when reading " + filepath.native() + " :" + ex.what());
+      throw ReadError("Trouble when reading " + filepath.string() + " :" + ex.what());
     }
 
   }
@@ -108,15 +108,15 @@ namespace LHAPDF {
   void Info::loadFull(const path& mempath) { //< @todo Need a better method name!
     // Extract the set name from the member data file path
     const path memberdata = findFile(mempath);
-    if (memberdata.empty() || !exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath.native() + "'");
-    const string memname = memberdata.filename().native(); //< Can use this to alternatively work out the set name...
+    if (memberdata.empty() || !exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath.string() + "'");
+    const string memname = memberdata.filename().string(); //< Can use this to alternatively work out the set name...
     const path setdir = memberdata.parent_path();
-    const string setname = setdir.filename().native();
+    const string setname = setdir.filename().string();
     path setinfo = findpdfsetinfopath(setname);
     // Load the set info
-    if (exists(setinfo)) load(setinfo.native());
+    if (exists(setinfo)) load(setinfo.string());
     // Load the member info (possibly overriding the set-level metadata)
-    load(memberdata.native());
+    load(memberdata.string());
   }
 
 
