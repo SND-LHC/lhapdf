@@ -3,6 +3,7 @@
 pkginclude_HEADERS = \
   LHAPDF.h \
   PDF.h \
+  PDFSet.h \
   Info.h \
   Config.h \
   Utils.h \

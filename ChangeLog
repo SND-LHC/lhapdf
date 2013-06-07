@@ -1,3 +1,11 @@
+2013-06-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* More build system tweaks, including removal of yaml-cpp flags from build of example programs that link against libLHAPDF.
+
+	* Moving broken -I/-L and -D flag settings from configure.ac to selected Makefile.am's
+
+	* Adding PDFSet, and migrating examples/testpdfset.cc to use it.
+
 2013-05-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Treat a request for PID = 0 as if PID 21 (gluon) had been

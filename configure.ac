@@ -98,14 +98,15 @@ dnl AM_CONDITIONAL(WITH_OCTAVE, [test x$OCTAVE != x && test x$MKOCTFILE != x])
 
 
 ## Set base compiler flags
-AM_CPPFLAGS=["$AM_CPPFLAGS -I$top_srcdir/include -I$prefix/include"]
-# TODO: don't *always* specify these paths... only needed to compile a very few files
-AM_CPPFLAGS=["$AM_CPPFLAGS -DLHAPDF_INSTALL_PREFIX=\\\"$prefix\\\" -DLHAPDF_DATA_PREFIX=\\\"$datadir\\\" "]
-AM_LDFLAGS=["$AM_LDFLAGS -L$top_builddir/lib -L$prefix/lib"]
 AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98 "])
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
 AC_CEDAR_CHECKCXXFLAG([-Wno-long-long], [AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long "])
+
+
+## Include $prefix in the compiler flags for the rest of the configure run
+CPPFLAGS="$CPPFLAGS -I$prefix/include"
+LDFLAGS="$LDFLAGS -L$prefix/lib"
 
 
 ## Boost utility library
@@ -129,7 +130,9 @@ AC_ARG_WITH([yamp-cpp-lib], AS_HELP_STRING([--with-yaml-cpp-lib], [indicate the 
 AC_ARG_WITH([yaml-cpp-inc], AS_HELP_STRING([--with-yaml-cpp-inc], [indicate the position of the yaml-cpp include directory (the one *containing* the 'yaml-cpp' directory)]))
 test "$with_yaml_cpp" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp/include"
 test "$with_yaml_cpp_inc" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp_inc"
-test "$with_yaml_cpp" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib -L$with_yaml_cpp/lib64" # TODO: check the architecture for 64 bit before appending this variant
+YAMLCPP_LDFLAGS=
+test "$with_yaml_cpp" && test -d $with_yaml_cpp/lib && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib -R$with_yaml_cpp/lib"
+test "$with_yaml_cpp" && test -d $with_yaml_cpp/lib64 && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib64 -R$with_yaml_cpp/lib64"
 test "$with_yaml_cpp_lib" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp_lib"
 YAMLCPP_LIBS="-lyaml-cpp"
 oldCPPFLAGS=$CPPFLAGS
