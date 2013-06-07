@@ -69,6 +69,7 @@ namespace LHAPDF {
     void load(const path& filepath);
 
     /// Load properly cascaded info for a PDF member, including fallback to the set info if it exists
+    /// @todo Remove
     void loadFull(const path& mempath);
 
     //@}
@@ -122,7 +123,7 @@ namespace LHAPDF {
     //@}
 
 
-  private:
+  protected:
 
     /// The string -> string native metadata storage container
     map<string, string> _metadict;

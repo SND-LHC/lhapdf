@@ -26,9 +26,9 @@ namespace LHAPDF {
     // typedef AlphaS* AlphaSPtr;
     typedef auto_ptr<AlphaS> AlphaSPtr;
 
+
     /// @name Creation and deletion
     //@{
-
 
     /// Default constructor.
     PDF() { }
@@ -49,7 +49,8 @@ namespace LHAPDF {
     /// GridPDF.
     PDF(const std::string& setname, int member) {
       path searchpath = findFile(pdfmempath(setname, member));
-      _loadInfo(searchpath.native());
+      /// @todo Load info lazily?
+      _loadInfo(searchpath.string());
     }
 
     /// @brief Constructor from an LHAPDF ID code.
@@ -62,7 +63,8 @@ namespace LHAPDF {
       if (setname_memid.second == -1)
         throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
       path searchpath = pdfmempath(setname_memid.first, setname_memid.second);
-      _loadInfo(searchpath.native());
+      /// @todo Load info lazily?
+      _loadInfo(searchpath.string());
     }
 
 
@@ -105,12 +107,14 @@ namespace LHAPDF {
       if (!inPhysicalRangeQ2(q2)) {
         throw RangeError("Unphysical Q2 given: " + to_str(q2));
       }
-      // Undefined PIDs
-      if (!hasFlavor(id)) {
-        throw FlavorError("Undefined flavour requested: " + to_str(id));
-      }
       // Treat PID = 0 as always equivalent to a gluon: query as PID = 21
       const int id2 = (id != 0) ? id : 21;
+      // Undefined PIDs
+      if (!hasFlavor(id2)) {
+        /// @todo Should look up the UndefFlavourAction flag, but efficiency hit for top?
+        //throw FlavorError("Undefined flavour requested: " + to_str(id));
+        return 0.0;
+      }
       // Call the delegated method in the concrete PDF object to calculate the in-range value
       return _xfxQ2(id2, x, q2);
     }
