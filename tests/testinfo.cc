@@ -8,6 +8,7 @@
 using namespace std;
 
 int main() {
+
   const LHAPDF::Info cfg = LHAPDF::getConfig();
   cout << "UndefFlavorAction: " << cfg.metadata("UndefFlavorAction") << endl;
   cout << "Verbosity: " << cfg.metadata("Verbosity") << endl;
@@ -20,7 +21,6 @@ int main() {
   if (info.has_key("PdfDesc")) cout << "PdfDesc: " << info.metadata("PdfDesc") << endl;
   cout << "PdfType: " << info.metadata("PdfType") << endl;
   cout << "Verbosity from PDF: " << info.metadata("Verbosity") << endl;
-
   vector<int> pids = info.metadata_as< vector<int> >("Flavors");
   cout << "PIDs (1): "; foreach (int f, pids) { cout << f << " "; } cout << endl;
   cout << "PIDs (2): " << LHAPDF::to_str(pids) << endl;
