@@ -42,8 +42,8 @@ namespace LHAPDF {
     //@{
 
     void _loadInfo(const path& mempath) {
-      _mempath = findFile(mempath);
-      _info.load(mempath);
+      _mempath = mempath;
+      _info = PDFInfo(_setname(), memberID());
     }
 
     void _loadInfo(const std::string& setname, int member) {
@@ -346,37 +346,11 @@ namespace LHAPDF {
     /// Get the info class that actually stores and handles the metadata (const version)
     const PDFInfo& info() const { return _info; }
 
-    //@}
-
-
-    /// @name Set-level metadata
-    /// @todo Move all these into PDFSet (without the "set" prefixes) when/if it appears
-    //@{
-
-    /// @brief PDF set name
+    /// @brief Get the PDF set of which this is a member
     ///
     /// Obtained from the member file path, not Info-based metadata.
-    /// @todo Move into PDFSet when/if it appears
-    std::string setname() const {
-      return _mempath.parent_path().filename().string();
-    }
-
-    /// Description of the set
-    /// @todo Move into PDFSet when/if it appears
-    std::string setdescription() const {
-      return info().metadata("SetDesc");
-    }
-
-    /// Get the type of PDF errors in this set (replica, symmhessian, asymmhessian, none)
-    /// @todo Move into PDFSet when/if it appears
-    std::string errorType() const {
-      return to_lower_copy(info().metadata("ErrorType"));
-    }
-
-    /// Number of members in this set
-    /// @todo Move into PDFSet when/if it appears
-    int numMembers() const {
-      return info().metadata_as<int>("NumMembers");
+    PDFSet& set() const {
+      return getPDFSet(_setname());
     }
 
     //@}
@@ -390,7 +364,6 @@ namespace LHAPDF {
     /// Obtained from the member file path, not Info-based metadata.
     int memberID() const {
       const string memname = _mempath.stem().string();
-      assert(memname.find(setname()) == 0);
       const int memid = lexical_cast<int>(memname.substr(memname.length()-4)); //< Last 4 chars should be the member number
       return memid;
     }
@@ -399,7 +372,7 @@ namespace LHAPDF {
     ///
     /// Obtained from the member ID and the set's LHAPDF ID index
     int lhapdfID() const {
-      return lookupLHAPDFID(setname(), memberID());
+      return lookupLHAPDFID(_setname(), memberID());
     }
 
     /// Description of this PDF member
@@ -481,6 +454,11 @@ namespace LHAPDF {
 
 
   protected:
+
+    /// Get the set name from the member data file path (for internal use only)
+    std::string _setname() const {
+      return _mempath.parent_path().filename().string();
+    }
 
     /// Member data file path
     path _mempath;

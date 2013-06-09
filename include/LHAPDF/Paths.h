@@ -101,8 +101,8 @@ namespace LHAPDF {
     return setinfo;
   }
 
-  /// @todo Check that set info and mem=0 file are in same dir?
   inline path findpdfsetinfopath(const std::string& setname) {
+    /// @todo Check that set info and mem=0 file are in same dir?
     return findFile(pdfsetinfopath(setname));
   }
 

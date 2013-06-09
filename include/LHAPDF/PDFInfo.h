@@ -32,11 +32,16 @@ namespace LHAPDF {
     //@}
 
 
+    /// @name Metadata accessors
+    //@{
+
     /// Can this Info object return a value for the given key? (it may be defined non-locally)
     bool has_key(const std::string& key) const;
 
     /// Retrieve a metadata string by key name
     const std::string& metadata(const std::string& key) const;
+
+    //@}
 
 
   private:

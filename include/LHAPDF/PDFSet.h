@@ -30,8 +30,9 @@ namespace LHAPDF {
     /// @todo Remove?
     PDFSet(const std::string& setname) {
       _setname = setname;
-      // const path setdirpath = findFile(setname);
       const path setinfopath = findpdfsetinfopath(setname);
+      // std::cout << setinfopath.string() << std::endl;
+      /// @todo Complain if the set info file has not been found? Is that mandatory?
       if (exists(setinfopath)) load(setinfopath);
       /// @todo Check that some mandatory metadata keys have been set? _check() function.
       /// @todo If not, try to guess some info or just exit?
