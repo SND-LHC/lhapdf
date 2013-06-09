@@ -10,16 +10,6 @@
 namespace LHAPDF {
 
 
-  // /// @todo Move to Config.cc/.h
-  // Info& config() {
-  //   static Info _cfg;
-  //   string confpath = findFile("lhapdf.conf").string();
-  //   // cout << "CONFPATH = " << confpath.empty() << endl;
-  //   if (!confpath.empty()) _cfg.load(confpath);
-  //   return _cfg;
-  // }
-
-
   void Info::load(const path& filepath) {
     if (filepath.empty() || !exists(filepath))
       throw ReadError("PDF data file '" + filepath.string() + "' not found");
