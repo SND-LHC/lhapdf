@@ -130,7 +130,7 @@ namespace LHAPDF {
       const int id2 = (id != 0) ? id : 21;
       // Undefined PIDs
       if (!hasFlavor(id2)) {
-        /// @todo Should look up the UndefFlavourAction flag, but efficiency hit for top?
+        /// @todo Should look up the UndefFlavorAction flag, but efficiency hit for top?
         //throw FlavorError("Undefined flavour requested: " + to_str(id));
         return 0.0;
       }
@@ -383,10 +383,10 @@ namespace LHAPDF {
     //@{
 
     /// Get the info class that actually stores and handles the metadata
-    Info& info() { return _info; }
+    PDFInfo& info() { return _info; }
 
     /// Get the info class that actually stores and handles the metadata (const version)
-    const Info& info() const { return _info; }
+    const PDFInfo& info() const { return _info; }
 
     //@}
 
