@@ -328,14 +328,14 @@ extern "C" {
     // Need to extract parameters for common blocks
     PDFPtr pdf = ACTIVESETS[1].activemember();
 
-    w50513_.xmin=pdf->info().metadata<double>("XMin");
-    w50513_.xmax=pdf->info().metadata<double>("XMax");
-    w50513_.q2min=pdf->info().metadata<double>("Q2Min");
-    w50513_.q2max=pdf->info().metadata<double>("Q2Max");
-    w50512_.qcdl4=pdf->info().metadata<double>("Lambda4");
-    w50512_.qcdl5=pdf->info().metadata<double>("Lambda5");
-    lhapdfr_.qcdlha4=pdf->info().metadata<double>("Lambda4");
-    lhapdfr_.qcdlha5=pdf->info().metadata<double>("Lambda5");
+    w50513_.xmin=pdf->info().metadata_as<double>("XMin");
+    w50513_.xmax=pdf->info().metadata_as<double>("XMax");
+    w50513_.q2min=pdf->info().metadata_as<double>("Q2Min");
+    w50513_.q2max=pdf->info().metadata_as<double>("Q2Max");
+    w50512_.qcdl4=pdf->info().metadata_as<double>("Lambda4");
+    w50512_.qcdl5=pdf->info().metadata_as<double>("Lambda5");
+    lhapdfr_.qcdlha4=pdf->info().metadata_as<double>("Lambda4");
+    lhapdfr_.qcdlha5=pdf->info().metadata_as<double>("Lambda5");
     // BEGIN: used to test behaviour versus lhapdf 5.x
     //    w50512_.qcdl4=0.192;
     //    w50512_.qcdl5=0.192;

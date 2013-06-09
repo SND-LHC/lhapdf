@@ -101,7 +101,7 @@ namespace LHAPDF {
     /// Specialisations are defined below for unpacking of comma-separated lists
     /// of strings, ints, and doubles.
     template <typename T>
-    T metadata(const std::string& key) const {
+    T metadata_as(const std::string& key) const {
       const string& s = metadata(key);
       return lexical_cast<T>(s);
     }
@@ -134,7 +134,7 @@ namespace LHAPDF {
   //@{
 
   template <>
-  inline bool Info::metadata(const std::string& key) const {
+  inline bool Info::metadata_as(const std::string& key) const {
     const string& s = metadata(key);
     try {
       bool rtn = lexical_cast<bool>(s);
@@ -147,7 +147,7 @@ namespace LHAPDF {
   }
 
   template <>
-  inline std::vector<std::string> Info::metadata(const std::string& key) const {
+  inline std::vector<std::string> Info::metadata_as(const std::string& key) const {
     const string& s = metadata(key);
     vector<string> rtn;
     split(rtn, s, is_any_of(","), token_compress_on);
@@ -155,8 +155,8 @@ namespace LHAPDF {
   }
 
   template <>
-  inline std::vector<int> Info::metadata(const std::string& key) const {
-    const vector<string> strs = metadata< vector<string> >(key);
+  inline std::vector<int> Info::metadata_as(const std::string& key) const {
+    const vector<string> strs = metadata_as< vector<string> >(key);
     vector<int> rtn;
     rtn.reserve(strs.size());
     foreach (const string& s, strs) rtn.push_back( lexical_cast<int>(s) );
@@ -165,8 +165,8 @@ namespace LHAPDF {
   }
 
   template <>
-  inline std::vector<double> Info::metadata(const std::string& key) const {
-    const vector<string> strs = metadata< vector<string> >(key);
+  inline std::vector<double> Info::metadata_as(const std::string& key) const {
+    const vector<string> strs = metadata_as< vector<string> >(key);
     vector<double> rtn;
     rtn.reserve(strs.size());
     foreach (const string& s, strs) rtn.push_back( lexical_cast<double>(s) );

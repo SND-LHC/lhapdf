@@ -1,5 +1,9 @@
 2013-06-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Renaming return-type specialisations of Info::metadata() to
+	metadata_to(), to avoid nasty template/untemplated method
+	resolution errors once inheritance got involved.
+
 	* Removing various deprecated path constructors and general related API rehashing.
 
 	* Adding Info::metadata_local(key)

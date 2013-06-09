@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     safeprint(pdf, "PdfDesc");
     safeprint(pdf, "SetDesc");
     cout << "Flavors (str) = " << pdf.info().metadata("Flavors") << endl;
-    vector<int> pids = pdf.info().metadata< vector<int> >("Flavors");
+    vector<int> pids = pdf.info().metadata_as< vector<int> >("Flavors");
     cout << "Flavors (ints) = ";
     foreach (int f, pids) cout << f << " "; cout << endl;
     cout << "Flavors (vec<int>) = " << LHAPDF::to_str(pids) << endl;

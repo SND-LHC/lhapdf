@@ -15,14 +15,11 @@ int main() {
   if (info.has_key("PdfDesc")) cout << "PdfDesc: " << info.metadata("PdfDesc") << endl;
   cout << "PdfType: " << info.metadata("PdfType") << endl;
   cout << "Verbosity: " << info.metadata("Verbosity") << endl;
-  // info.metadata<std::string>("PdfType");
+  info.metadata_as<std::string>("PdfType");
 
-  const LHAPDF::Info& baseinfo = info;
-  baseinfo.metadata<std::string>("PdfType");
-
-  // vector<int> pids = info.metadata< vector<int> >("Flavors");
-  // cout << "PIDs (1): "; foreach (int f, pids) { cout << f << " "; } cout << endl;
-  // cout << "PIDs (2): " << LHAPDF::to_str(pids) << endl;
+  vector<int> pids = info.metadata_as< vector<int> >("Flavors");
+  cout << "PIDs (1): "; foreach (int f, pids) { cout << f << " "; } cout << endl;
+  cout << "PIDs (2): " << LHAPDF::to_str(pids) << endl;
 
   return 0;
 }

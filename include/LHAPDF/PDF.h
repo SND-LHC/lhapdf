@@ -277,22 +277,22 @@ namespace LHAPDF {
 
     /// Minimum valid x value for this PDF.
     virtual double xMin() {
-      return info().metadata<double>("XMin");
+      return info().metadata_as<double>("XMin");
     }
 
     /// Maximum valid x value for this PDF.
     virtual double xMax() {
-      return info().metadata<double>("XMax");
+      return info().metadata_as<double>("XMax");
     }
 
     /// Minimum valid Q2 value for this PDF (in GeV2).
     virtual double q2Min() {
-      return info().metadata<double>("Q2Min");
+      return info().metadata_as<double>("Q2Min");
     }
 
     /// Maximum valid Q2 value for this PDF (in GeV2).
     virtual double q2Max() {
-      return info().metadata<double>("Q2Max");
+      return info().metadata_as<double>("Q2Max");
     }
 
     /// Minimum valid Q value for this PDF (in GeV).
@@ -418,7 +418,7 @@ namespace LHAPDF {
     /// Number of members in this set
     /// @todo Move into PDFSet when/if it appears
     int numMembers() const {
-      return info().metadata<int>("NumMembers");
+      return info().metadata_as<int>("NumMembers");
     }
 
     //@}
@@ -470,7 +470,7 @@ namespace LHAPDF {
     /// @todo Make virtual for AnalyticPDF? Or allow manual setting of the Info?
     const std::vector<int>& flavors() const {
       if (_flavors.empty()) {
-        _flavors = info().metadata< vector<int> >("Flavors");
+        _flavors = info().metadata_as< vector<int> >("Flavors");
         sort(_flavors.begin(), _flavors.end());
       }
       return _flavors;
@@ -488,7 +488,7 @@ namespace LHAPDF {
     /// loops included in the matrix elements, in order to have an integer value
     /// for easy use in comparisons, as opposed to "LO", "NLO", etc. strings.
     int qcdOrder() const {
-      return info().metadata<int>("QcdOrder");
+      return info().metadata_as<int>("QcdOrder");
     }
 
     /// @brief Value of alpha_s(Q2) used by this PDF set.
@@ -501,17 +501,17 @@ namespace LHAPDF {
         AlphaS* as = mkAlphaS(info().metadata("AlphaS_Type"));
         /// @todo Move this into new setAlphaS method(s)
         // Configure the QCD params on this AlphaS
-        if (info().has_key("MZ")) as->mz = info().metadata<double>("MZ");
-        if (info().has_key("AlphaS_MZ")) as->alphas_mz = info().metadata<double>("AlphaS_MZ");
-        if (info().has_key("AlphaS_OrderQCD")) as->qcdorder = info().metadata<int>("AlphaS_OrderQCD");
-        if (info().has_key("MUp")) as->setQmass(1, info().metadata<double>("MUp"));
-        if (info().has_key("MDown")) as->setQmass(2, info().metadata<double>("MDown"));
-        if (info().has_key("MStrange")) as->setQmass(3, info().metadata<double>("MStrange"));
-        if (info().has_key("MCharm")) as->setQmass(4, info().metadata<double>("MCharm"));
-        if (info().has_key("MBottom")) as->setQmass(5, info().metadata<double>("MBottom"));
-        if (info().has_key("MTop")) as->setQmass(6, info().metadata<double>("MTop"));
-        if (info().has_key("Lambda4")) as->lambda4 = info().metadata<double>("Lambda4");
-        if (info().has_key("Lambda5")) as->lambda5 = info().metadata<double>("Lambda5");
+        if (info().has_key("MZ")) as->mz = info().metadata_as<double>("MZ");
+        if (info().has_key("AlphaS_MZ")) as->alphas_mz = info().metadata_as<double>("AlphaS_MZ");
+        if (info().has_key("AlphaS_OrderQCD")) as->qcdorder = info().metadata_as<int>("AlphaS_OrderQCD");
+        if (info().has_key("MUp")) as->setQmass(1, info().metadata_as<double>("MUp"));
+        if (info().has_key("MDown")) as->setQmass(2, info().metadata_as<double>("MDown"));
+        if (info().has_key("MStrange")) as->setQmass(3, info().metadata_as<double>("MStrange"));
+        if (info().has_key("MCharm")) as->setQmass(4, info().metadata_as<double>("MCharm"));
+        if (info().has_key("MBottom")) as->setQmass(5, info().metadata_as<double>("MBottom"));
+        if (info().has_key("MTop")) as->setQmass(6, info().metadata_as<double>("MTop"));
+        if (info().has_key("Lambda4")) as->lambda4 = info().metadata_as<double>("Lambda4");
+        if (info().has_key("Lambda5")) as->lambda5 = info().metadata_as<double>("Lambda5");
         /// @todo How to do type triggering to set ipol points for Alphas_Ipol?
         /// @todo Throw an error if the QCD params are changed after a first alpha_s query? How?
         _alphas.reset(as);

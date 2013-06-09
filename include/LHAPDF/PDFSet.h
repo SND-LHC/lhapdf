@@ -62,7 +62,7 @@ namespace LHAPDF {
 
     /// Number of members in this set
     int numMembers() const {
-      return Info::metadata<int>("NumMembers");
+      return Info::metadata_as<int>("NumMembers");
     }
 
     /// A shorter, more STL-like alias for the number of members in this set
