@@ -5,6 +5,7 @@
 //
 #include "LHAPDF/PDFInfo.h"
 #include "LHAPDF/PDFSet.h"
+#include "LHAPDF/Factories.h"
 
 namespace LHAPDF {
 

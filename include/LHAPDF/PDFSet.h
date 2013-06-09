@@ -32,6 +32,7 @@ namespace LHAPDF {
       _setname = setname;
       // const path setdirpath = findFile(setname);
       const path setinfopath = findpdfsetinfopath(setname);
+      cout << "SIP: " << setinfopath << endl;
       if (exists(setinfopath)) load(setinfopath);
       /// @todo Check that some mandatory metadata keys have been set? _check() function.
       /// @todo If not, try to guess some info or just exit?
