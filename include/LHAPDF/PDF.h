@@ -38,6 +38,8 @@ namespace LHAPDF {
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
     /// GridPDF.
+    ///
+    /// @todo Remove, and just use _loadInfo(path) in derived classes?
     PDF(const std::string& path) {
       _loadInfo(path);
     }
@@ -47,6 +49,8 @@ namespace LHAPDF {
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
     /// GridPDF.
+    ///
+    /// @todo Remove, and just use _loadInfo(setname, member) in derived classes?
     PDF(const std::string& setname, int member) {
       path searchpath = findFile(pdfmempath(setname, member));
       /// @todo Load info lazily?
@@ -58,6 +62,8 @@ namespace LHAPDF {
     /// This constructor reads the member, set, and global metadata and is hence
     /// most useful for being called from the constructors of derived PDF types, e.g.
     /// GridPDF.
+    ///
+    /// @todo Remove, and just use _loadInfo(lhaid) in derived classes?
     PDF(int lhaid) {
       const pair<string,int> setname_memid = lookupPDF(lhaid);
       if (setname_memid.second == -1)
@@ -80,7 +86,7 @@ namespace LHAPDF {
 
     void _loadInfo(const path& mempath) {
       _mempath = findFile(mempath);
-      _info.loadFull(mempath);
+      _info.load(mempath);
     }
 
 

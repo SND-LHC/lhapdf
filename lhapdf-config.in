@@ -38,12 +38,14 @@ test -n "$tmp" && OUT="$OUT @includedir@"
 
 tmp=$( echo "$*" | egrep -- '--\<cppflags|cxxflags\>')
 test -n "$tmp" && OUT="$OUT -I@includedir@ @BOOST_CPPFLAGS@ @YAMLCPP_CPPFLAGS@"
+# TODO: The yaml-cpp flags can be removed, right?
 
 tmp=$( echo "$*" | egrep -- '--\<libdir\>')
 test -n "$tmp" && OUT="$OUT @libdir@"
 
 tmp=$( echo "$*" | egrep -- '--\<ldflags\>')
 test -n "$tmp" && OUT="$OUT -L@libdir@ @BOOST_LDFLAGS@ @YAMLCPP_LDFLAGS@ -lLHAPDF @BOOST_LIBS@ @YAMLCPP_LIBS@"
+# TODO: Can the yaml-cpp flags be removed?
 
 tmp=$( echo "$*" | egrep -- '--\<datadir\>|--\<datarootdir\>')
 test -n "$tmp" && OUT="$OUT @datadir@/@PACKAGE_TARNAME@"

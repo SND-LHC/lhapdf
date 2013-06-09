@@ -10,29 +10,14 @@
 namespace LHAPDF {
 
 
-  /// Constructor from a set name and member ID.
-  Info::Info(const std::string& setname, int member) {
-    path searchpath = findFile(pdfmempath(setname, member));
-    loadFull(searchpath.string());
-  }
-
-  /// Constructor from an LHAPDF ID code.
-  Info::Info(int lhaid) {
-    const pair<string,int> setname_memid = lookupPDF(lhaid);
-    if (setname_memid.second == -1)
-      throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
-    path searchpath = pdfmempath(setname_memid.first, setname_memid.second);
-    loadFull(searchpath.native());
-  }
-
-
-  Info& config() {
-    static Info _cfg;
-    string confpath = findFile("lhapdf.conf").string();
-    // cout << "CONFPATH = " << confpath.empty() << endl;
-    if (!confpath.empty()) _cfg.load(confpath);
-    return _cfg;
-  }
+  // /// @todo Move to Config.cc/.h
+  // Info& config() {
+  //   static Info _cfg;
+  //   string confpath = findFile("lhapdf.conf").string();
+  //   // cout << "CONFPATH = " << confpath.empty() << endl;
+  //   if (!confpath.empty()) _cfg.load(confpath);
+  //   return _cfg;
+  // }
 
 
   void Info::load(const path& filepath) {
@@ -103,21 +88,22 @@ namespace LHAPDF {
   }
 
 
-  /// @todo Only support loading via PDF set name and member ID, not explicit paths
-  /// @todo Replace the loading of the set metadata into the member info with set-level Info singletons
-  void Info::loadFull(const path& mempath) { //< @todo Need a better method name!
-    // Extract the set name from the member data file path
-    const path memberdata = findFile(mempath);
-    if (memberdata.empty() || !exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath.string() + "'");
-    const string memname = memberdata.filename().string(); //< Can use this to alternatively work out the set name...
-    const path setdir = memberdata.parent_path();
-    const string setname = setdir.filename().string();
-    path setinfo = findpdfsetinfopath(setname);
-    // Load the set info
-    if (exists(setinfo)) load(setinfo.string());
-    // Load the member info (possibly overriding the set-level metadata)
-    load(memberdata.string());
-  }
+
+  // /// @todo Only support loading via PDF set name and member ID, not explicit paths
+  // /// @todo Replace the loading of the set metadata into the member info with set-level Info singletons
+  // void Info::loadFull(const path& mempath) { //< @todo Need a better method name!
+  //   // Extract the set name from the member data file path
+  //   const path memberdata = findFile(mempath);
+  //   if (memberdata.empty() || !exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath.string() + "'");
+  //   const string memname = memberdata.filename().string(); //< Can use this to alternatively work out the set name...
+  //   const path setdir = memberdata.parent_path();
+  //   const string setname = setdir.filename().string();
+  //   path setinfo = findpdfsetinfopath(setname);
+  //   // Load the set info
+  //   if (exists(setinfo)) load(setinfo.string());
+  //   // Load the member info (possibly overriding the set-level metadata)
+  //   load(memberdata.string());
+  // }
 
 
 }

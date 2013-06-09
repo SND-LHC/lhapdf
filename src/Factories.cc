@@ -3,6 +3,9 @@
 // This file is part of LHAPDF
 // Copyright (C) 2012-2013 The LHAPDF collaboration (see AUTHORS for details)
 //
+#include "LHAPDF/Info.h"
+#include "LHAPDF/PDFSet.h"
+#include "LHAPDF/PDF.h"
 #include "LHAPDF/GridPDF.h"
 #include "LHAPDF/BilinearInterpolator.h"
 #include "LHAPDF/BicubicInterpolator.h"
@@ -15,44 +18,49 @@
 namespace LHAPDF {
 
 
-  /// Create a new PDF from the given data file path.
-  ///
-  /// Returns a 'new'ed PDF by pointer.
-  /// The caller is responsible for deletion of the created object.
-  PDF* mkPDF(const std::string& path) {
+  Info& getConfig() {
+    static Info _cfg;
+    /// @todo Test for emptiness: only fill *once*
+    string confpath = findFile("lhapdf.conf").string();
+    if (!confpath.empty()) _cfg.load(confpath);
+    return _cfg;
+  }
+
+
+  PDFSet& getPDFSet(const string& setname) {
+    static map<string, PDFSet> _sets;
+    map<string, PDFSet>::iterator it = _sets.find(setname);
+    if (it == _sets.end()) return it->second;
+    _sets[setname] = PDFSet(setname);
+    return _sets[setname];
+  }
+
+
+  PDF* mkPDF(const string& setname, int member) {
     // First create an Info object to work out what format of PDF this is:
-    LHAPDF::Info info(path);
+    Info info(findpdfmempath(setname, member));
     const string fmt = info.metadata("Format");
     // Then use the format information to call the appropriate concrete PDF constructor:
-    if (fmt == "lhagrid1") return new GridPDF(path);
+    if (fmt == "lhagrid1") return new GridPDF(setname, member);
     /// @todo Throw a deprecation error if format version is too old or new
     throw FactoryError("No LHAPDF factory defined for format type '" + fmt + "'");
   }
 
-
-  /// Create a new PDF with the given PDF set name and member ID.
-  ///
-  /// Returns a 'new'ed PDF by pointer.
-  /// The caller is responsible for deletion of the created object.
-  PDF* mkPDF(const std::string& setname, int member) {
-    path mempath = pdfmempath(setname, member);
-    return mkPDF(mempath.native());
-  }
-
-  /// Create a new PDF with the given LHAPDF ID code.
-  ///
-  /// Returns a 'new'ed PDF by pointer.
-  /// The caller is responsible for deletion of the created object.
   PDF* mkPDF(int lhaid) {
     const pair<string,int> setname_memid = lookupPDF(lhaid);
     return mkPDF(setname_memid.first, setname_memid.second);
   }
 
 
-  /// Interpolator factory
-  ///
-  /// Returns a 'new'ed Interpolator by pointer. Unless passed to a GridPDF,
-  /// the caller is responsible for deletion of the created object.
+  void mkPDFs(const string& setname, vector<PDF*>& pdfs) {
+    getPDFSet(setname).mkPDFs(pdfs);
+  }
+
+  vector<PDF*> mkPDFs(const string& setname) {
+    return getPDFSet(setname).mkPDFs();
+  }
+
+
   Interpolator* mkInterpolator(const std::string& name) {
     // Convert name to lower case for comparisons
     const std::string iname = to_lower_copy(name);
@@ -69,10 +77,6 @@ namespace LHAPDF {
   }
 
 
-  /// Extrapolator factory
-  ///
-  /// Returns a 'new'ed Extrapolator by pointer. Unless passed to a GridPDF,
-  /// the caller is responsible for deletion of the created object.
   Extrapolator* mkExtrapolator(const std::string& name) {
     // Convert name to lower case for comparisons
     const std::string iname = to_lower_copy(name);
@@ -85,10 +89,6 @@ namespace LHAPDF {
   }
 
 
-  /// AlphaS factory
-  ///
-  /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
-  /// the caller is responsible for deletion of the created object.
   AlphaS* mkAlphaS(const std::string& name) {
     // Convert name to lower case for comparisons
     const std::string iname = to_lower_copy(name);

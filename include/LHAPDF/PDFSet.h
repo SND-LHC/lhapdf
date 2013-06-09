@@ -6,8 +6,13 @@
 #pragma once
 
 #include "LHAPDF/Info.h"
+#include "LHAPDF/Factories.h"
 
 namespace LHAPDF {
+
+
+  // Forward declaration
+  class PDF;
 
 
   /// Class for PDF set metadata and manipulation
@@ -17,22 +22,15 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
-    /// @todo Implement singleton-ness
-
-    // /// @brief Constructor from a path
-    // ///
-    // /// The argument is the path to a PDF set directory
-    // PDFSet(const path& setdirpath) {
-    //   _setdirpath = setdirpath;
-    //   const path setinfopath = _setdirpath / (name() + ".info");
-    //   if (exists(setinfopath)) load(setinfopath);
-    //   /// @todo Check that some mandatory metadata keys have been set? _check() function.
-    //   /// @todo If not, try to guess some info or just exit?
-    // }
+    /// Default constructor (needed to store in a map)
+    /// @todo Remove?
+    PDFSet() { }
 
     /// Constructor from a set name
+    /// @todo Remove?
     PDFSet(const std::string& setname) {
-      _setdirpath = findFile(setname);
+      _setname = setname;
+      // const path setdirpath = findFile(setname);
       const path setinfopath = findpdfsetinfopath(setname);
       if (exists(setinfopath)) load(setinfopath);
       /// @todo Check that some mandatory metadata keys have been set? _check() function.
@@ -49,7 +47,7 @@ namespace LHAPDF {
     ///
     /// @note _Not_ taken from the .info metadata file.
     std::string name() const {
-      return _setdirpath.filename().string();
+      return _setname;
     }
 
     /// Description of the set
@@ -64,7 +62,7 @@ namespace LHAPDF {
 
     /// Number of members in this set
     int numMembers() const {
-      return metadata<int>("NumMembers");
+      return Info::metadata<int>("NumMembers");
     }
 
     /// A shorter, more STL-like alias for the number of members in this set
@@ -110,10 +108,28 @@ namespace LHAPDF {
     //@}
 
 
+    /// @name Generic metadata cascading mechanism
+    //@{
+
+    /// Can this Info object return a value for the given key? (it may be defined non-locally)
+    bool has_key(const std::string& key) const {
+      return has_key_local(key) || getConfig().has_key(key);
+    }
+
+    /// Retrieve a metadata string by key name
+    /// Rerite this cascading so that each stage only knows about the level above it
+    const std::string& metadata(const std::string& key) const {
+      if (has_key_local(key)) return metadata_local(key); //< value is defined locally
+      return getConfig().metadata(key); //< fall back to the global config
+    }
+
+    //@}
+
+
   private:
 
     /// Name of this set
-    path _setdirpath;
+    std::string _setname;
 
   };
 

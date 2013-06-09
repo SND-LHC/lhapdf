@@ -1,3 +1,15 @@
+2013-06-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing various deprecated path constructors and general related API rehashing.
+
+	* Adding Info::metadata_local(key)
+
+	* Renaming config() to getConfig() and moving to Factories, to match getPDFSet(name).
+
+	* Using a new info cascading system including PDFSet.
+
+	* Adding singleton system for PDFSet, and a dedicated PDFInfo type for member info.
+
 2013-06-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Rename ImplicitFlavorAction config flag to UndefFlavorAction
