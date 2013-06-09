@@ -75,9 +75,15 @@ namespace LHAPDF {
     bool has_key_local(const std::string& key) const {
       return _metadict.find(key) != _metadict.end();
     }
-    /// Can this Info object return a value for the given key? (it may be defined non-locally)
+
+    /// Can this object return a value for the given key?
     ///
-    /// Default implementation is equivalent to the local version. This is appropriate for Config.
+    /// The given key may be defined non-locally, in which case the cascading
+    /// member -> set -> config info lookup is needed. These are implemented
+    /// using has_key_local() and metadata_local().
+    ///
+    /// The default implementation is equivalent to has_key_local(). This is
+    /// appropriate for Config.
     virtual bool has_key(const std::string& key) const {
       return has_key_local(key);
     }
@@ -86,11 +92,17 @@ namespace LHAPDF {
     /// Retrieve a metadata string by key name, as defined on this specific object
     const std::string& metadata_local(const std::string& key) const {
       if (has_key_local(key)) return _metadict.find(key)->second;
-      throw MetadataError("Local metadata for key: " + key + " not found.");
+      throw MetadataError("Metadata for key: " + key + " not found.");
     }
+
     /// Retrieve a metadata string by key name
     ///
-    /// Default implementation is equivalent to the local version. This is appropriate for Config.
+    /// The given key may be defined non-locally, in which case the cascading
+    /// member -> set -> config info lookup is needed. These are implemented
+    /// using has_key_local() and metadata_local().
+    ///
+    /// The default implementation is equivalent to metadata_local(). This is
+    /// appropriate for Config.
     virtual const std::string& metadata(const std::string& key) const {
       return metadata_local(key);
     }
