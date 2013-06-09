@@ -10,5 +10,6 @@
 #include "LHAPDF/Config.h"
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/PDFSet.h"
+#include "LHAPDF/PDFInfo.h"
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/PDFIndex.h"

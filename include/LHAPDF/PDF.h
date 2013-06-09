@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include "LHAPDF/Info.h"
+#include "LHAPDF/PDFInfo.h"
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/AlphaS.h"
@@ -30,48 +30,49 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
-    /// Default constructor.
+    /// Default constructor (for container compatibility)
+    /// @todo Remove?
     PDF() { }
 
-    /// @brief Constructor from a file path.
-    ///
-    /// This constructor reads the member, set, and global metadata and is hence
-    /// most useful for being called from the constructors of derived PDF types, e.g.
-    /// GridPDF.
-    ///
-    /// @todo Remove, and just use _loadInfo(path) in derived classes?
-    PDF(const std::string& path) {
-      _loadInfo(path);
-    }
+    // /// @brief Constructor from a file path.
+    // ///
+    // /// This constructor reads the member, set, and global metadata and is hence
+    // /// most useful for being called from the constructors of derived PDF types, e.g.
+    // /// GridPDF.
+    // ///
+    // /// @todo Remove, and just use _loadInfo(path) in derived classes?
+    // PDF(const std::string& path) {
+    //   _loadInfo(path);
+    // }
 
-    /// @brief Constructor from a set name and member ID.
-    ///
-    /// This constructor reads the member, set, and global metadata and is hence
-    /// most useful for being called from the constructors of derived PDF types, e.g.
-    /// GridPDF.
-    ///
-    /// @todo Remove, and just use _loadInfo(setname, member) in derived classes?
-    PDF(const std::string& setname, int member) {
-      path searchpath = findFile(pdfmempath(setname, member));
-      /// @todo Load info lazily?
-      _loadInfo(searchpath.string());
-    }
+    // /// @brief Constructor from a set name and member ID.
+    // ///
+    // /// This constructor reads the member, set, and global metadata and is hence
+    // /// most useful for being called from the constructors of derived PDF types, e.g.
+    // /// GridPDF.
+    // ///
+    // /// @todo Remove, and just use _loadInfo(setname, member) in derived classes?
+    // PDF(const std::string& setname, int member) {
+    //   path searchpath = findFile(pdfmempath(setname, member));
+    //   /// @todo Load info lazily?
+    //   _loadInfo(searchpath.string());
+    // }
 
-    /// @brief Constructor from an LHAPDF ID code.
-    ///
-    /// This constructor reads the member, set, and global metadata and is hence
-    /// most useful for being called from the constructors of derived PDF types, e.g.
-    /// GridPDF.
-    ///
-    /// @todo Remove, and just use _loadInfo(lhaid) in derived classes?
-    PDF(int lhaid) {
-      const pair<string,int> setname_memid = lookupPDF(lhaid);
-      if (setname_memid.second == -1)
-        throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
-      path searchpath = pdfmempath(setname_memid.first, setname_memid.second);
-      /// @todo Load info lazily?
-      _loadInfo(searchpath.string());
-    }
+    // /// @brief Constructor from an LHAPDF ID code.
+    // ///
+    // /// This constructor reads the member, set, and global metadata and is hence
+    // /// most useful for being called from the constructors of derived PDF types, e.g.
+    // /// GridPDF.
+    // ///
+    // /// @todo Remove, and just use _loadInfo(lhaid) in derived classes?
+    // PDF(int lhaid) {
+    //   const pair<string,int> setname_memid = lookupPDF(lhaid);
+    //   if (setname_memid.second == -1)
+    //     throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
+    //   path searchpath = pdfmempath(setname_memid.first, setname_memid.second);
+    //   /// @todo Load info lazily?
+    //   _loadInfo(searchpath.string());
+    // }
 
 
   public:
@@ -87,6 +88,18 @@ namespace LHAPDF {
     void _loadInfo(const path& mempath) {
       _mempath = findFile(mempath);
       _info.load(mempath);
+    }
+
+    void _loadInfo(const std::string& setname, int member) {
+      path searchpath = findFile(pdfmempath(setname, member));
+      _loadInfo(searchpath);
+    }
+
+    void _loadInfo(int lhaid) {
+      const pair<string,int> setname_memid = lookupPDF(lhaid);
+      if (setname_memid.second == -1)
+        throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
+      _loadInfo(setname_memid.first, setname_memid.second);
     }
 
 
@@ -515,7 +528,7 @@ namespace LHAPDF {
     path _mempath;
 
     /// Metadata container
-    Info _info;
+    PDFInfo _info;
 
     /// Locally cached list of supported PIDs
     mutable vector<int> _flavors;

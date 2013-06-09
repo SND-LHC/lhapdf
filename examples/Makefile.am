@@ -1,4 +1,4 @@
-bin_PROGRAMS = testpdf testpdfset analyticpdf compatibility
+noinst_PROGRAMS = testpdf testpdfset analyticpdf compatibility
 
 AM_CPPFLAGS += -I$(top_srcdir)/include -I$(prefix)/include $(BOOST_CPPFLAGS)
 AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib $(BOOST_LDFLAGS)

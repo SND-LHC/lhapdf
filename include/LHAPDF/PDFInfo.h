@@ -19,6 +19,10 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
+    /// Default constructor (for container compatibility)
+    /// @todo Remove?
+    PDFInfo() { }
+
     /// Constructor from a set name and member ID.
     PDFInfo(const std::string& setname, int member);
 

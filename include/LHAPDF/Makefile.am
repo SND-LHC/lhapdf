@@ -5,6 +5,7 @@ pkginclude_HEADERS = \
   PDF.h \
   PDFSet.h \
   Info.h \
+  PDFInfo.h \
   Config.h \
   Utils.h \
   Paths.h \

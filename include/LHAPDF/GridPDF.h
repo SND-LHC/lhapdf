@@ -21,23 +21,20 @@ namespace LHAPDF {
     //@{
 
     /// Constructor from a file path.
-    GridPDF(const std::string& path)
-      : PDF(path)
-    {
+    GridPDF(const std::string& path) {
+      _loadInfo(path);
       _loadData(_mempath);
     }
 
     /// Constructor from a set name and member ID.
-    GridPDF(const std::string& setname, int member)
-      : PDF(setname, member)
-    {
+    GridPDF(const std::string& setname, int member) {
+      _loadInfo(setname, member);
       _loadData(_mempath);
     }
 
     /// Constructor from a set name and member ID.
-    GridPDF(int lhaid)
-      : PDF(lhaid)
-    {
+    GridPDF(int lhaid) {
+      _loadInfo(lhaid);
       _loadData(_mempath);
     }
 

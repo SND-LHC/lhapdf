@@ -93,7 +93,6 @@ namespace LHAPDF {
     /// Default implementation is equivalent to the local version. This is appropriate for Config.
     virtual const std::string& metadata(const std::string& key) const {
       return metadata_local(key);
-      // throw MetadataError("Metadata for key: " + key + " not found.");
     }
 
 
@@ -120,6 +119,13 @@ namespace LHAPDF {
 
     /// The string -> string native metadata storage container
     std::map<std::string, std::string> _metadict;
+
+
+  // private:
+
+  //   /// Hide the copy constructor & copy assignment operator
+  //   Info(const Info&);
+  //   void operator= (const Info&);
 
   };
 

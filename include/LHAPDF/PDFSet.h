@@ -22,7 +22,7 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
-    /// Default constructor (needed to store in a map)
+    /// Default constructor (for container compatibility)
     /// @todo Remove?
     PDFSet() { }
 
