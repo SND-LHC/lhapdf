@@ -1,5 +1,7 @@
 2013-06-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding PDFSet::mkPDF(int).
+
 	* Renaming return-type specialisations of Info::metadata() to
 	metadata_to(), to avoid nasty template/untemplated method
 	resolution errors once inheritance got involved.

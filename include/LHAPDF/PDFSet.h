@@ -32,7 +32,6 @@ namespace LHAPDF {
       _setname = setname;
       // const path setdirpath = findFile(setname);
       const path setinfopath = findpdfsetinfopath(setname);
-      cout << "SIP: " << setinfopath << endl;
       if (exists(setinfopath)) load(setinfopath);
       /// @todo Check that some mandatory metadata keys have been set? _check() function.
       /// @todo If not, try to guess some info or just exit?
@@ -63,7 +62,7 @@ namespace LHAPDF {
 
     /// Number of members in this set
     int numMembers() const {
-      return Info::metadata_as<int>("NumMembers");
+      return metadata_as<int>("NumMembers");
     }
 
     /// A shorter, more STL-like alias for the number of members in this set
@@ -77,6 +76,17 @@ namespace LHAPDF {
     /// @name Creating PDF members
     //@{
 
+
+    /// Make the nth PDF member in this set, returned by pointer
+    ///
+    /// @note As with the mkPDF factory method, the PDF pointer returned by this
+    /// method is heap allocated and its memory management is now the
+    /// responsibility of the caller.
+    PDF* mkPDF(int member) const {
+      return LHAPDF::mkPDF(name(), member);
+    }
+
+
     /// Make all the PDFs in this set, filling a supplied vector with PDF pointers
     ///
     /// This version may be preferred in many circumstances, since it can avoid
@@ -84,22 +94,22 @@ namespace LHAPDF {
     ///
     /// @note The supplied vector will be cleared before filling!
     ///
-    /// @note As with the mkPDF factory method, the PDF pointers returned by
-    /// this method are heap allocated and their memory management is now the
-    /// responsibility of the caller.
+    /// @note As with the mkPDF method and factory function, the PDF pointers
+    /// returned by this method are heap allocated and their memory management
+    /// is now the responsibility of the caller.
     void mkPDFs(std::vector<PDF*>& pdfs) const {
       pdfs.clear();
       pdfs.reserve(numMembers());
       for (int i = 0; i < numMembers(); ++i) {
-        pdfs.push_back( mkPDF(name(), i) );
+        pdfs.push_back( mkPDF(i) );
       }
     }
 
     /// Make all the PDFs in this set, returning as a vector of PDF pointers
     ///
-    /// @note As with the mkPDF factory method, the PDF pointers returned by
-    /// this method are heap allocated and their memory management is now the
-    /// responsibility of the caller.
+    /// @note As with the mkPDF method and factory function, the PDF pointers
+    /// returned by this method are heap allocated and their memory management
+    /// is now the responsibility of the caller.
     std::vector<PDF*> mkPDFs() const {
       std::vector<PDF*> rtn;
       mkPDFs(rtn);
