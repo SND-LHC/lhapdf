@@ -6,9 +6,9 @@
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Factories.h"
-#include "LHAPDF/Config.h"
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
+#include "LHAPDF/Version.h"
 
 using namespace std;
 

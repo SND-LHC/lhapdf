@@ -5,7 +5,6 @@
 //
 #pragma once
 
-#include "LHAPDF/Config.h"
 #include "LHAPDF/Utils.h"
 #include "boost/filesystem.hpp"
 

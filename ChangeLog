@@ -1,5 +1,9 @@
 2013-06-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding an LHAPDF_VERSION_CODE macro for version detection.
+
+	* Moving contents of Config.h -> Version.h (leaving Config.h name free for potential Info subclass).
+
 	* Adding PDFSet::mkPDF(int).
 
 	* Renaming return-type specialisations of Info::metadata() to

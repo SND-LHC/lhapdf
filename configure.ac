@@ -15,6 +15,9 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 VERSIONFLAGS="-version-info 2:0:0" ## for 6.0.0
 AC_SUBST(VERSIONFLAGS)
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION, "$PACKAGE_VERSION", "LHAPDF version string")
+PACKAGE_VERSION_CODE=[`echo $PACKAGE_VERSION | sed -e 's/\./0/g' -e 's/\([0-9]\+\).*/\1/'`]
+echo $PACKAGE_VERSION_CODE
+AC_DEFINE_UNQUOTED(LHAPDF_VERSION_CODE, "$PACKAGE_VERSION_CODE", "LHAPDF version as an int")
 
 
 ## Mac OS X compatibility
@@ -34,7 +37,7 @@ fi
 ## Checks and config headers
 AC_LANG(C++)
 AC_CONFIG_SRCDIR([src/GridPDF.cc])
-AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Config.h])
+AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Version.h])
 
 ## Checks for programs
 AC_PROG_CXX

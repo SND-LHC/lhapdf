@@ -7,7 +7,7 @@
 
 /// @file Just a convenience header that pulls in the main functionality with a single #include
 
-#include "LHAPDF/Config.h"
+#include "LHAPDF/Version.h"
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/PDFSet.h"
 #include "LHAPDF/PDFInfo.h"

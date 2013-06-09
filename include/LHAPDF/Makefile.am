@@ -2,11 +2,11 @@
 
 pkginclude_HEADERS = \
   LHAPDF.h \
+  Version.h \
   PDF.h \
   PDFSet.h \
   Info.h \
   PDFInfo.h \
-  Config.h \
   Utils.h \
   Paths.h \
   Exceptions.h \
