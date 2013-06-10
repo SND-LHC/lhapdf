@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.0.0b1],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.0.0b2],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
