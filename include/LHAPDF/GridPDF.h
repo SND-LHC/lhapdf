@@ -20,8 +20,14 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
-    /// Constructor from a file path.
-    GridPDF(const std::string& path) {
+    /// @brief Constructor from a file path.
+    ///
+    /// We allow this to exist and be user-callable for testing and other
+    /// special case uses, since if you are explicitly instantiating a GridPDF
+    /// rather than acquiring it via a pointer/reference of PDF type, then you
+    /// probably (hopefully) know what you're doing and aren't putting it into
+    /// public production code!
+    GridPDF(const path& path) {
       _loadInfo(path);
       _loadData(_mempath);
     }
