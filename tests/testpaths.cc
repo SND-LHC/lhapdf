@@ -1,6 +1,5 @@
 // Test program for path searching machinery
 
-#include "LHAPDF/LHAPDF.h"
 #include "LHAPDF/Paths.h"
 #include <iostream>
 using namespace std;
