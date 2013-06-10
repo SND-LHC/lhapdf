@@ -13,29 +13,57 @@ NOW / FOR BETA 2
    Compare to LHA5 for same-member and multi-set random sampling. Where is the
    limitation? Intend to compare to self once caching added.
    => first profiling (no LHA5 comparison yet) indicates 70% of runtime in std::log!
+   => a second quick profiling has LHA6 about 4x slower than LHA5 with the
+     default logcubic interpolator, but about 20% _faster_ if a cubic
+     interpolation on linear x/Q space is used. Caching and/or representing the
+     grid entries in log space in the LHA6 format are obvious next steps.
 
 - **MSTW2008 PDF migration (GW)**
 
    First attempt to use subgrids in anger. Requires extension
+
+- **Uncontrolled bulk PDF migration**
+
+   Just migrate lots of major sets without explicit quality checking. It's a
+   beta, live with it...
+
+- **Complete and test analytic alpha_s running (KN,AB)**
+
+   Check for correctness and efficiency.
+
+- **Use Autoconf's more robust FC_* Fortran function name macros**
+
+   This would require testing for a Fortran compiler, which we would rather not
+   do... Test for a Fortran compiler unless told not to build LHAGLUE?
+
+
+
+FOR BETA 3
+----------
+
+- **Add interpolation-from-metadata implementation of AlphaS**
+
+   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
+   values robustly to implement 1D subgrids.
 
 - **NNPDF2.3 PDF migration (??)**
 
    Just the "main" sets for now. More automation of validation required... we
    can't check thousands of plots so need a more compact performance metric.
 
+- **Printing out banner info... needed by code that greps for it :-/**
+
+   e.g. ATLAS' Generate_trf.py. Implement the Fortran getdescription_() and
+   require it to be explicitly called? Or automatically call it from the Fortran
+   interface only.
+
 - **Improve CTEQ6L1 grid efficiency (MR?)**
 
 - **Fortran compatibility**
 
-   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1
-   once ready.
+   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1.
 
    Map remaining "metadata" functions such as alpha_s, Nf, min/max x and Q2, etc.
-
-- **Add interpolation-from-metadata implementation of AlphaS**
-
-   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
-   values robustly to implement 1D subgrids.
 
 - **Provide setAlphaS methods cf. setInterpolator (AB)**
 
@@ -47,8 +75,15 @@ NOW / FOR BETA 2
    Should the param defaults be clearly invalid so that default AlphaS fields and
    throw an AlphaSException if the values are not in a physical range?
 
+- **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
 
-FOR BETA 3
+- **Cython mapping improvements (AB)**
+
+   Review to make sure that heap allocated PDFs are garbage collected (loop
+   repeated pdf = lhapdf.mkPDF(...) and run Massif). More method mappings.
+
+
+FOR BETA 4
 ----------
 
 - **Improved x -> 1 (and Q -> 0?) evolution (GW,...)**
@@ -57,13 +92,6 @@ FOR BETA 3
    all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3)
-
-- **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
-
-- **Cython mapping improvements (AB)**
-
-   Review to make sure that heap allocated PDFs are garbage collected (loop
-   repeated pdf = lhapdf.mkPDF(...) and run Massif). More method mappings.
 
 - **Complete and test ODE and analytic alpha_s running (KN,SL,MR,GW)**
 
@@ -74,12 +102,6 @@ FOR BETA 3
    C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
 
 - **Profile AlphaS_ODE**
-
-- **Printing out banner info... needed by code that greps for it :-/**
-
-   e.g. ATLAS' Generate_trf.py. Implement the Fortran getdescription_() and
-   require it to be explicitly called? Or automatically call it from the Fortran
-   interface only.
 
 - **Separate the x and Q2 inter/extrapolation?**
 
@@ -123,7 +145,7 @@ AS AND WHEN
    "internal" PDG ID list needs to become part of the grid data header, or can
    the metadata be used?
 
-- **Make GridPDFs not read their data block until an xf value is requested?!**
+- **Make GridPDFs not read their info or data blocks until an xf value is requested?!**
 
    Super-laziness!
 
@@ -157,12 +179,6 @@ AS AND WHEN
 
    To come from Phil Ilten
 
-- **Use Autoconf's more robust FC_* Fortran function name macros**
-
-   This would require testing for a Fortran compiler, which we would rather
-   not do... but so do tests for Fortran array pointer handling, etc. Test for
-   the Fortran compiler unless told not to build LHAGLUE?
-
 - **Add helper functions for calculating PDF errors on observables**
 
    Certainly a good thing to provide an example for... maybe it should just be
@@ -170,10 +186,5 @@ AS AND WHEN
    ErrorType metadata entry for each PDF set, working out the appropriate error
    treatment should be easy (I think it's best to not use words like
    "infallible"!)
-
-- **Support the new yaml-cpp API... *and* the old one?**
-
-   Would be better to only support one API in HEP... i.e. we can move when Rivet
-   does. Getting rid of `yaml-cpp` doesn't seem a good option.
 
 */
