@@ -46,7 +46,11 @@ namespace LHAPDF {
 
   private:
 
+    /// Name of the set in which this PDF is contained (for PDFSet lookup)
     std::string _setname;
+
+    /// Member ID in PDF set
+    /// @note Not currently used, but could be useful if a memberID method is exposed.
     int _member;
 
   };

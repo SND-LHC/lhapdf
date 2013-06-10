@@ -119,7 +119,7 @@ namespace LHAPDF {
     ///
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
-    /// @return The value of xf(x,q2)
+    /// @param rtn Map of PDF xf(x,q2) values, to be filled
     void xfxQ2(double x, double q2, std::map<int, double>& rtn) const {
       rtn.clear();
       foreach (int id, flavors()) rtn[id] = xfxQ2(id, x, q2);
@@ -133,7 +133,7 @@ namespace LHAPDF {
     ///
     /// @param x Momentum fraction
     /// @param q Energy (renormalization) scale
-    /// @return The value of xf(x,q)
+    /// @param rtn Map of PDF xf(x,q) values, to be filled
     void xfxQ(double x, double q, std::map<int, double>& rtn) const {
       xfxQ2(x, q*q, rtn);
     }
@@ -150,7 +150,7 @@ namespace LHAPDF {
     ///
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
-    /// @return The value of xf(x,q2)
+    /// @param rtn Vector of PDF xf(x,q2) values, to be filled
     void xfxQ2(double x, double q2, std::vector<double>& rtn) const {
       rtn.clear();
       rtn.resize(13);
@@ -172,7 +172,7 @@ namespace LHAPDF {
     ///
     /// @param x Momentum fraction
     /// @param q Energy (renormalization) scale
-    /// @return The value of xf(x,q)
+    /// @param rtn Vector of PDF xf(x,q) values, to be filled
     void xfxQ(double x, double q, std::vector<double>& rtn) const {
       xfxQ2(x, q*q, rtn);
     }
@@ -185,7 +185,7 @@ namespace LHAPDF {
     ///
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
-    /// @return The value of xf(x,q2)
+    /// @return A map of PDF xf(x,q2) values
     std::map<int, double> xfxQ2(double x, double q2) const {
       std::map<int, double> rtn;
       xfxQ2(x, q2, rtn);
@@ -203,7 +203,7 @@ namespace LHAPDF {
     ///
     /// @param x Momentum fraction
     /// @param q Energy (renormalization) scale
-    /// @return The value of xf(x,q2)
+    /// @return A map of PDF xf(x,q) values
     std::map<int, double> xfxQ(double x, double q) const {
       return xfxQ2(x, q*q);
     }

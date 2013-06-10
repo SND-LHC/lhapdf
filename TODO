@@ -8,6 +8,8 @@ LHAPDF6 TODO list
 NOW / FOR BETA 2
 ----------------
 
+- **Add PDFSet to Cython mapping (AB)**
+
 - **Profile GridPDF (AB)**
 
    Compare to LHA5 for same-member and multi-set random sampling. Where is the

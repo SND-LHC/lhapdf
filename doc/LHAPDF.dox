@@ -78,9 +78,6 @@ want to install to `/usr/local`, which is the default) and perhaps where to find
 the `Boost` (http://www.boost.org) and `yaml-cpp`
 (http://code.google.com/p/yaml-cpp/) libraries that LHAPDF6 requires.
 
-@note For now you must use `yaml-cpp` version 0.3.x, *not* the new API in
-version 0.5 and higher.
-
 @note Also make sure that your build of `yaml-cpp` has installed a *shared*
 library (with a file extension of `.so` on Linux, or `.dylib` on Mac,
 e.g. `libyaml-cpp.so`) as well as the default `libyaml-cpp.a` static library.
@@ -92,7 +89,7 @@ An example call to configure might look like:
     ./configure --prefix=$HOME/local --with-yaml-cpp=$HOME/local
 
 (this should be appropriate if you have installed Boost in `/usr` via your
-machine's packaging system, and have privately installed yaml-cpp 0.3 into
+machine's packaging system, and have privately installed yaml-cpp into
 `~/local` via the `-DCMAKE_INSTALL_PATH=...` described above.)
 
 If you want to use an alternative C++ compiler, then you can specify the CXX
@@ -106,7 +103,7 @@ stopping due to an error then all is well.
 
 Then just call `make` to build the library (or e.g. `make -j4` to compile 4
 files in parallel -- if your machine has enough processor cores to do so, even
--j2 will speed up the build quite a bit). To install LHAPDF to the `--prefix`
+`-j2` will speed up the build quite a bit). To install LHAPDF to the `--prefix`
 location that you specified, call `make install`. You will (or at least
 *should(!) find installed files in `$prefix/lib`, `$prefix/include/LHAPDF`, and
 `$prefix/share/LHAPDF`.
@@ -132,6 +129,7 @@ The following examples should help you to get to grips with using LHAPDF from C+
 
 **Using and testing PDFs in C++:**
 @include examples/testpdf.cc
+@include tests/testperf.cc
 
 **Using and testing PDFs in Python:**
 @include examples/pythonexample.py
