@@ -109,4 +109,33 @@ namespace LHAPDF {
   //@}
 
 
+  /// @brief Get the names of all available PDF sets in the search path
+  ///
+  /// @note Taken from scanning the directories in the search path
+  /// (i.e. LHAPDF_DATA_PATH) for viable PDF sets.
+  ///
+  /// @note The result is cached when first called, to avoid repeated filesystem
+  /// walking. It's assumed that new PDFs will not appear on the filesystem
+  /// during a run: please let the authors know if that's not a good assumption!
+  inline const std::vector<std::string>& availablePDFSets() {
+    static vector<string> rtn;
+    if (rtn.empty()) {
+      foreach (const path& p, paths()) {
+        if (exists(p) && is_directory(p)) {
+          directory_iterator idir(p), iend;
+          while (idir != iend) {
+            const path infopath = idir->path() / (idir->path().filename().string() + ".info");
+            if (is_directory(*idir) && exists(infopath)) {
+              rtn.push_back(idir->path().filename().string());
+            }
+            idir++;
+          }
+        }
+      }
+      sort(rtn.begin(), rtn.end());
+    }
+    return rtn;
+  }
+
+
 }
