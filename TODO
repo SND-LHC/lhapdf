@@ -10,6 +10,15 @@ NOW / FOR BETA 2
 
 - **Add PDFSet to Cython mapping (AB)**
 
+- **Check Config instantiation/caching and programmatic settings overrides (AB)**
+
+   Test whether calling config_or_set.setMetadata("Interpolator", "cubic") works.
+
+- **"Uncontrolled" bulk PDF migration**
+
+   Just migrate lots of major sets without explicit quality checking. It's a
+   beta, live with it...
+
 - **Profile GridPDF (AB)**
 
    Compare to LHA5 for same-member and multi-set random sampling. Where is the
@@ -23,11 +32,6 @@ NOW / FOR BETA 2
 - **MSTW2008 PDF migration (GW)**
 
    First attempt to use subgrids in anger. Requires extension
-
-- **Uncontrolled bulk PDF migration**
-
-   Just migrate lots of major sets without explicit quality checking. It's a
-   beta, live with it...
 
 - **Complete and test analytic alpha_s running (KN,AB)**
 
