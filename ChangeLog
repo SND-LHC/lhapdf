@@ -1,3 +1,7 @@
+2013-06-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding an availablePDFSets() function.
+
 2013-06-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding an LHAPDF_VERSION_CODE macro for version detection.

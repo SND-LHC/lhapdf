@@ -1,8 +1,8 @@
 // Test program for path searching machinery
 
+#include "LHAPDF/LHAPDF.h"
 #include "LHAPDF/Paths.h"
 #include <iostream>
-
 using namespace std;
 
 int main() {
@@ -10,5 +10,11 @@ int main() {
     cout << p << endl;
   }
   cout << "@" << LHAPDF::findFile("lhapdf.conf") << "@" << endl;
+
+  cout << "List of available PDFs:" << endl;
+  foreach (const string& s, LHAPDF::availablePDFSets()) {
+    cout << " " << s << endl;
+  }
+
   return 0;
 }
