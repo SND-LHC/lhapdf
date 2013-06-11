@@ -28,11 +28,6 @@ cdef class PDF:
         "The LHAPDF ID number of this PDF member."
         return self._ptr.lhapdfID()
 
-    @property
-    def numMembers(self):
-        "The total number of members in this set."
-        return self._ptr.numMembers()
-
     # TODO: Need another name than "type" in Python?
     @property
     def type(self):
@@ -45,24 +40,30 @@ cdef class PDF:
         return self._ptr.description()
 
     @property
-    def setdescription(self):
-        "Description of this PDF's set."
-        return self._ptr.setdescription()
-
-    @property
-    def setname(self):
-        "Name of this PDF's containing set."
-        return self._ptr.setname()
-
-    @property
-    def errorType(self):
-        "Type of error treatment in this PDF's set."
-        return self._ptr.errorType()
-
-    @property
     def qcdOrder(self):
         "Max number of loops involved in this PDF's evolution."
         return self._ptr.qcdOrder()
+
+
+    @property
+    def xMin(self):
+        "Minimum valid value of x to be used with this PDF"
+        return self._ptr.xMin()
+
+    @property
+    def xMax(self):
+        "Maximum valid value of x to be used with this PDF"
+        return self._ptr.xMax()
+
+    @property
+    def q2Min(self):
+        "Minimum valid value of x to be used with this PDF"
+        return self._ptr.q2Min()
+
+    @property
+    def q2Max(self):
+        "Maximum valid value of x to be used with this PDF"
+        return self._ptr.q2Max()
 
 
     # TODO: alphaS
@@ -117,6 +118,54 @@ cdef class PDF:
     # TODO: Map the rest of the metadata functions (including the generic metadata() -> str)
 
 
+cdef class PDFSet:
+    """\
+    A collection of PDFs with related fits, most typically a central PDF and a
+    set of extra ones representing different aspects of systematic errors in the
+    fit.
+    """
+    cdef c.PDFSet* _ptr
+    cdef set_ptr(self, c.PDFSet* ptr):
+        self._ptr = ptr
+
+    # def __dealloc__(self):
+    #     del self._ptr
+
+    # @property
+    # def numMembers(self):
+    #     "The total number of members in this set."
+    #     return self._ptr.numMembers()
+
+    def __len__(self):
+        "The total number of members in this set."
+        return self._ptr.size()
+
+    @property
+    def name(self):
+        "Name of this PDF's containing set."
+        return self._ptr.name()
+
+    @property
+    def description(self):
+        "Description of this PDF's set."
+        return self._ptr.description()
+
+    @property
+    def errorType(self):
+        "Type of error treatment in this PDF's set."
+        return self._ptr.errorType()
+
+    def mkPDFs(self):
+        cdef vector[c.PDF*] ptrs = self._ptr.mkPDFs()
+        cdef PDF obj
+        objs = []
+        for ptr in ptrs:
+            obj = PDF.__new__(PDF)
+            obj.set_ptr(ptr)
+            objs.append(obj)
+        return objs
+
+
 cdef mkPDF_setmem(char* setname, int memid):
     "Factory function to make a PDF object from the set name and member number."
     cdef PDF obj = PDF.__new__(PDF)
@@ -128,6 +177,23 @@ cdef mkPDF_lhaid(int lhaid):
     cdef PDF obj = PDF.__new__(PDF)
     obj.set_ptr(c.mkPDF(lhaid))
     return obj
+
+def getPDFSet(setname):
+    """Factory function to get the specified PDF set."""
+    cdef c.PDFSet* ptr = &c.getPDFSet(setname)
+    cdef PDFSet obj = PDFSet.__new__(PDFSet)
+    obj.set_ptr(ptr)
+    return obj
+
+def mkPDFs(setname):
+    """Factory function to make all the PDF objects in the specified set."""
+    cdef vector[c.PDF*] ptrs = c.mkPDFs(setname)
+    cdef PDF obj
+    objs = []
+    for ptr in ptrs:
+        obj = PDF.__new__(PDF)
+        obj.set_ptr(ptr)
+        objs.append(obj)
 
 def mkPDF(*args):
     """Factory function to make a PDF object from the set name and member number
@@ -142,8 +208,14 @@ def mkPDF(*args):
 
 def version():
     "Return the LHAPDF library version."
-    return str(c.version().c_str())
+    return c.version()
+
 __version__ = version()
+
+
+def availablePDFSets():
+    "Get the names of all the available PDF sets on this system."
+    return c.availablePDFSets()
 
 
 def paths():
@@ -160,6 +232,7 @@ cdef _setPaths(newpaths):
         cs = s
         vect.push_back(string(cs))
     c.setPaths(vect)
+
 def setPaths(newpaths):
     "Set the list of current PDF data search paths."
     _setPaths(newpaths)
@@ -168,6 +241,7 @@ cdef _pathsPrepend(char* newpath):
     # TODO: Use Cython >= 0.17 STL type coercion when available
     cdef string s = string(newpath)
     c.pathsPrepend(s)
+
 def pathsPrepend(newpath):
     "Prepend to the list of current PDF data search paths."
     _pathsPrepend(newpath)
@@ -176,6 +250,7 @@ cdef _pathsAppend(char* newpath):
     # TODO: Use Cython >= 0.17 STL type coercion when available
     cdef string s = string(newpath)
     c.pathsAppend(s)
+
 def pathsAppend(newpath):
     "Append to the list of current PDF data search paths."
     _pathsAppend(newpath)

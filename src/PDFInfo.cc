@@ -29,9 +29,9 @@ namespace LHAPDF {
 
 
   bool PDFInfo::has_key(const string& key) const {
-    cout << key << " in PDF: " << boolalpha << has_key_local(key) << endl;
-    cout << key << " in Set: " << boolalpha << getPDFSet(_setname).has_key(key) << endl;
-    cout << key << " in Cfg: " << boolalpha << getConfig().has_key(key) << endl;
+    // cout << key << " in PDF: " << boolalpha << has_key_local(key) << endl;
+    // cout << key << " in Set: " << boolalpha << getPDFSet(_setname).has_key(key) << endl;
+    // cout << key << " in Cfg: " << boolalpha << getConfig().has_key(key) << endl;
     return has_key_local(key) || getPDFSet(_setname).has_key(key);
   }
 

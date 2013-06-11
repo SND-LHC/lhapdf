@@ -61,14 +61,14 @@ namespace LHAPDF {
       return to_lower_copy(metadata("ErrorType"));
     }
 
-    /// Number of members in this set
-    int numMembers() const {
-      return metadata_as<int>("NumMembers");
-    }
+    // /// Number of members in this set
+    // int numMembers() const {
+    //   return metadata_as<int>("NumMembers");
+    // }
 
-    /// A shorter, more STL-like alias for the number of members in this set
+    // /// Number of members in this set
     size_t size() const {
-      return numMembers();
+      return metadata_as<unsigned int>("NumMembers");
     }
 
     //@}
@@ -100,8 +100,8 @@ namespace LHAPDF {
     /// is now the responsibility of the caller.
     void mkPDFs(std::vector<PDF*>& pdfs) const {
       pdfs.clear();
-      pdfs.reserve(numMembers());
-      for (int i = 0; i < numMembers(); ++i) {
+      pdfs.reserve(size());
+      for (size_t i = 0; i < size(); ++i) {
         pdfs.push_back( mkPDF(i) );
       }
     }
@@ -118,6 +118,9 @@ namespace LHAPDF {
     }
 
     //@}
+
+
+    /// @todo Add AlphaS getter for set-level alphaS?
 
 
     /// @name Generic metadata cascading mechanism
