@@ -235,22 +235,30 @@ namespace LHAPDF {
 
     /// Minimum valid x value for this PDF.
     virtual double xMin() {
-      return info().metadata_as<double>("XMin");
+      if (info().has_key("XMin"))
+        return info().metadata_as<double>();
+      return numeric_limits<double>::epsilon();
     }
 
     /// Maximum valid x value for this PDF.
     virtual double xMax() {
-      return info().metadata_as<double>("XMax");
+      if (info().has_key("XMax"))
+        return info().metadata_as<double>("XMax");
+      return 1.0;
     }
 
     /// Minimum valid Q2 value for this PDF (in GeV2).
     virtual double q2Min() {
-      return info().metadata_as<double>("Q2Min");
+      if (info().has_key("Q2Min"))
+        return info().metadata_as<double>("Q2Min");
+      return 0.0;
     }
 
     /// Maximum valid Q2 value for this PDF (in GeV2).
     virtual double q2Max() {
-      return info().metadata_as<double>("Q2Max");
+      if (info().has_key("Q2Max"))
+        return info().metadata_as<double>("Q2Max");
+      return numeric_limits<double>::max();
     }
 
     /// Minimum valid Q value for this PDF (in GeV).
