@@ -236,7 +236,7 @@ namespace LHAPDF {
     /// Minimum valid x value for this PDF.
     virtual double xMin() {
       if (info().has_key("XMin"))
-        return info().metadata_as<double>();
+        return info().metadata_as<double>("XMin");
       return numeric_limits<double>::epsilon();
     }
 
