@@ -23,6 +23,7 @@ namespace LHAPDF {
     lambda4 = 0.215;
     lambda5 = 0.165;
     qcdorder = 1;
+    maxnf = 6;
   }
 
 

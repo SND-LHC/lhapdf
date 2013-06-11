@@ -70,6 +70,9 @@ namespace LHAPDF {
     /// Order of QCD (expressed as number of loops)
     int qcdorder;
 
+    /// Max number of flavours
+    int maxnf;
+
     //@}
 
   protected:

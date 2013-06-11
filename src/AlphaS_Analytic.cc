@@ -13,7 +13,7 @@ namespace LHAPDF {
   double AlphaS_Analytic::alphasQ2(double q2) const {
     /// Get the number of active flavours and corresponding LambdaQCD
     /// @todo Also respect an explicit nfmax flag
-    const int nf = nf_Q2(q2);
+    const int nf = (nf_Q2(q2) > maxnf) ? maxnf : nf_Q2(q2);
     const double lambdaQCD = (nf < 5) ? lambda4 : lambda5;
 
     // Get beta coeffs for the number of active (above threshold) quark flavours at energy Q
