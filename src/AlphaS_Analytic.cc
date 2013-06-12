@@ -30,7 +30,7 @@ namespace LHAPDF {
 
     // Calculate and combine expansion terms Ay[a_0*y^0 - a_1*y^1 + By^2[a_20 + a_21 - a_22]]
     // where a_ij are series coefficients. Avoid calculating more than is needed, although it's a bit messy.
-    const double A = 4 * M_PI / beta[0];
+    const double A = 1 / beta[0];
     const double a_0 = 1;
     double tmp = a_0;
     if (qcdorder > 0) {

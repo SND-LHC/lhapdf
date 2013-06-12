@@ -37,9 +37,9 @@ namespace LHAPDF {
 
   // Calculate a beta function given the number of active flavours
   double AlphaS::beta(int i, int nf) const {
-    if (i == 0) return 11 - (2 / 3.0)*nf;
-    if (i == 1) return 51 - (19 / 3.0)*nf;
-    if (i == 2) return 2857 - (5033 / 9.0)*nf + (325 / 27.0)*sqr(nf);
+    if (i == 0) return (33 - 2*nf)/(12*M_PI);
+    if (i == 1) return (153 - 19*nf)/(24*M_PI*M_PI);
+    if (i == 2) return (2857 - (5033 / 9.0)*nf + (325 / 27.0)*sqr(nf))/(128*M_PI*M_PI*M_PI);
     throw Exception("Invalid index " + to_str(i) + " for requested beta function");
   }
 
