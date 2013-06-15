@@ -13,6 +13,7 @@ namespace LHAPDF {
   // Forward declarations to avoid circular dependencies
   class PDF;
   class PDFSet;
+  class Config;
   class Interpolator;
   class Extrapolator;
   class AlphaS;
@@ -27,6 +28,7 @@ namespace LHAPDF {
   /// @note The LHAPDF system is responsible for deletion of the returned
   /// object. Do NOT delete it yourself! Hence the return by reference rather
   /// than pointer.
+  // Config& getConfig();
   Info& getConfig();
 
 

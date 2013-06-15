@@ -1,3 +1,10 @@
+2013-06-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding Config.h, the Config class, and improved singleton
+	mechanism for getting the global configuration object. Plus some
+	testing of the globalness and persistency of config settings in
+	tests/testinfo.cc
+
 2013-06-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Mapping addition of PDFSet, more factory functions, and related changes into Python.

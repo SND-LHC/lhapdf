@@ -4,6 +4,7 @@
 // Copyright (C) 2012-2013 The LHAPDF collaboration (see AUTHORS for details)
 //
 #include "LHAPDF/Info.h"
+#include "LHAPDF/Config.h"
 #include "LHAPDF/PDFSet.h"
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/GridPDF.h"
@@ -19,11 +20,7 @@ namespace LHAPDF {
 
 
   Info& getConfig() {
-    static Info _cfg;
-    /// @todo Test for emptiness: only fill *once*
-    string confpath = findFile("lhapdf.conf").string();
-    if (!confpath.empty()) _cfg.load(confpath);
-    return _cfg;
+    return Config::get();
   }
 
 

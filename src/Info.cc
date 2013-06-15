@@ -11,8 +11,11 @@ namespace LHAPDF {
 
 
   void Info::load(const path& filepath) {
-    if (filepath.empty() || !exists(filepath))
-      throw ReadError("PDF data file '" + filepath.string() + "' not found");
+    // Silently do nothing if the provided path is empty
+    if (filepath.empty()) return;
+
+    // But complain if a non-empty path is provided, but it's invalid
+    if (!exists(filepath)) throw ReadError("PDF data file '" + filepath.string() + "' not found");
 
     // Read the YAML part of the file into the metadata map
     try {
