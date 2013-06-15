@@ -8,14 +8,7 @@ LHAPDF6 TODO list
 NOW / FOR BETA 2
 ----------------
 
-- **Check Config instantiation/caching and programmatic settings overrides (AB)**
-
-   Test whether calling config_or_set.setMetadata("Interpolator", "cubic") works.
-
-- **"Uncontrolled" bulk PDF migration**
-
-   Just migrate lots of major sets without explicit quality checking. It's a
-   beta, live with it...
+- **Test build on lxplus6 (AB)**
 
 - **Complete and test analytic alpha_s running (KN,AB)**
 
@@ -25,6 +18,11 @@ NOW / FOR BETA 2
 
 FOR BETA 3
 ----------
+
+- **"Uncontrolled" bulk PDF migration**
+
+   Just migrate lots of major sets without explicit quality checking. It's a
+   beta, live with it...
 
 - **Add lookup and log caching, and reprofile GridPDF (AB)**
 
