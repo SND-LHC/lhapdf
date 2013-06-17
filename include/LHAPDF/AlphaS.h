@@ -37,20 +37,11 @@ namespace LHAPDF {
     /// Calculate the number of active flavours at energy scale Q2
     int nf_Q2(double q2) const;
 
-    /// Calculate the i'th beta function given the number of active flavours
-    ///
-    /// Currently limited to 0 <= i <= 2.
-    double beta(int i, int nf) const;
-
-    /// Calculate a vector of beta functions given the number of active flavours
-    ///
-    /// Currently returns a 3-element vector of beta0 -- beta2.
-    std::vector<double> betas(int nf) const;
-
-    /// Get quark masses by PDG code
-    double qmass(int id) const { return _qmasses[abs(id)-1]; }
     /// Set quark masses by PDG code
     void setQmass(int id, double value) { _qmasses[abs(id)-1] = value; }
+
+    /// Set lambda_i
+    void setLambda(int i, double lambda);
 
   public:
 
@@ -62,18 +53,8 @@ namespace LHAPDF {
     /// Value of alpha_s(MZ)
     double alphas_mz;
 
-    /// LambdaQCD value for 3 flavour regime
-    double lambda3;
-    /// LambdaQCD value for 4 flavour regime
-    double lambda4;
-    /// LambdaQCD value for 5 flavour regime
-    double lambda5;
-
     /// Order of QCD (expressed as number of loops)
     int qcdorder;
-
-    /// Max number of flavours
-    int maxnf;
 
     //@}
 
@@ -81,6 +62,35 @@ namespace LHAPDF {
 
     /// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
     double _qmasses[6];
+
+    /// LambdaQCD value for 3 flavour regime
+    double _lambda3;
+    /// LambdaQCD value for 4 flavour regime
+    double _lambda4;
+    /// LambdaQCD value for 5 flavour regime
+    double _lambda5;
+
+    /// Max/min number of flavors
+    int _nfmax;
+    int _nfmin;
+
+    /// Get lambdaQCD for nf
+    double _lambdaQCD(int nf) const;
+
+    /// Recalculate min/max flavors in case lambdas have changed
+    void _setFlavors();
+
+    /// Calculate the i'th beta function given the number of active flavours
+    /// Currently limited to 0 <= i <= 2.
+    double _beta(int i, int nf) const;
+
+    /// Calculate a vector of beta functions given the number of active flavours
+    /// Currently returns a 3-element vector of beta0 -- beta2.
+    std::vector<double> _betas(int nf) const;
+
+    /// Get quark masses by PDG code
+    double _qmass(int id) const { return _qmasses[abs(id)-1]; }
+
 
   };
 

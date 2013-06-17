@@ -51,7 +51,7 @@ namespace LHAPDF {
     double y = alphas_mz; // starting value
     while (fabs(q2 - t) > accuracy) {
       // Calculate beta functions based on the number of active flavours at Q2=t
-      const vector<double> bs = betas(nf_Q2(t));
+      const vector<double> bs = _betas(nf_Q2(t));
 
       /// Mechanism to shrink the steps if accuracy < stepsize and we are close to Q2
       if (fabs(h) > accuracy && fabs(q2 - t)/h < 10) h = accuracy/2.0;

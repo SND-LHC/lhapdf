@@ -14,20 +14,14 @@ namespace LHAPDF {
     /// Get the number of active flavours and corresponding LambdaQCD
     /// @todo support any number of active flavours?
     /// Only supports active nf=3-5 at the moment
-    // actual_nf = no. of flavours before maxnf is applied
-    // taking the above mentioned limit into account
-    const int active_nf = nf_Q2(q2);
-    const int actual_nf = (active_nf > 2) ? active_nf : 3;
-    const int nf = (actual_nf > maxnf) ? maxnf : actual_nf;
-    double lambdaQCD;
-    if(nf > 4)       {lambdaQCD = lambda5;}
-    else if(nf == 4) {lambdaQCD = lambda4;}
-    else             {lambdaQCD = lambda3;}
 
-    if(q2 < lambdaQCD * lambdaQCD)return std::numeric_limits<double>::max();
+    const int nf = nf_Q2(q2);
+    const double lambdaQCD = _lambdaQCD(nf);
+
+    if(q2 <= lambdaQCD * lambdaQCD){return std::numeric_limits<double>::max();}
 
     // Get beta coeffs for the number of active (above threshold) quark flavours at energy Q
-    const std::vector<double> beta = betas(nf);
+    const std::vector<double> beta = _betas(nf);
     const double beta02 = sqr(beta[0]);
     const double beta12 = sqr(beta[1]);
 

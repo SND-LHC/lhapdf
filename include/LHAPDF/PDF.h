@@ -449,8 +449,9 @@ namespace LHAPDF {
         if (info().has_key("MCharm")) as->setQmass(4, info().metadata_as<double>("MCharm"));
         if (info().has_key("MBottom")) as->setQmass(5, info().metadata_as<double>("MBottom"));
         if (info().has_key("MTop")) as->setQmass(6, info().metadata_as<double>("MTop"));
-        if (info().has_key("Lambda4")) as->lambda4 = info().metadata_as<double>("Lambda4");
-        if (info().has_key("Lambda5")) as->lambda5 = info().metadata_as<double>("Lambda5");
+        if (info().has_key("Lambda3")) as->setLambda(3, info().metadata_as<double>("Lambda3"));
+        if (info().has_key("Lambda4")) as->setLambda(4, info().metadata_as<double>("Lambda4"));
+        if (info().has_key("Lambda5")) as->setLambda(5, info().metadata_as<double>("Lambda5"));
         /// @todo How to do type triggering to set ipol points for Alphas_Ipol?
         /// @todo Throw an error if the QCD params are changed after a first alpha_s query? How?
         _alphas.reset(as);
