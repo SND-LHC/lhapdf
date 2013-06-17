@@ -24,6 +24,8 @@ namespace LHAPDF {
     else if(nf == 4) {lambdaQCD = lambda4;}
     else             {lambdaQCD = lambda3;}
 
+    if(q2 < lambdaQCD * lambdaQCD)return std::numeric_limits<double>::max();
+
     // Get beta coeffs for the number of active (above threshold) quark flavours at energy Q
     const std::vector<double> beta = betas(nf);
     const double beta02 = sqr(beta[0]);
