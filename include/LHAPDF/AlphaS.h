@@ -63,6 +63,8 @@ namespace LHAPDF {
     double alphas_mz;
 
     /// LambdaQCD value for 4 flavour regime
+    double lambda3;
+    /// LambdaQCD value for 4 flavour regime
     double lambda4;
     /// LambdaQCD value for 5 flavour regime
     double lambda5;

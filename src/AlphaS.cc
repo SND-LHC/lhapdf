@@ -20,8 +20,9 @@ namespace LHAPDF {
     setQmass(6, 172.5);
     mz = 91.1876;
     alphas_mz = 0.118;
-    lambda4 = 0.215;
-    lambda5 = 0.165;
+    lambda5 = 0.213;
+    lambda4 = 0.296;
+    lambda3 = 0.339;
     qcdorder = 1;
     maxnf = 6;
   }
