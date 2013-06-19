@@ -12,6 +12,7 @@ namespace LHAPDF {
 
   // Forward declarations to avoid circular dependencies
   class PDF;
+  class Info;
   class PDFSet;
   class Config;
   class Interpolator;
@@ -101,9 +102,24 @@ namespace LHAPDF {
 
   /// AlphaS factory
   ///
+  /// The type and configuration of the returned AlphaS is chosen based on the
+  /// PDF metadata Info object given as the argument.
+  ///
   /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
   /// the caller is responsible for deletion of the created object.
-  AlphaS* mkAlphaS(const std::string& name);
+  AlphaS* mkAlphaS(const Info& info);
+
+
+  /// AlphaS factory
+  ///
+  /// Get an unconfigured AlphaS of the type whose name is given as the
+  /// argument.
+  ///
+  /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
+  /// the caller is responsible for deletion of the created object.
+  ///
+  /// @todo Remove? Is this useful except internally?
+  AlphaS* mkAlphaS(const std::string& type);
 
   //@}
 

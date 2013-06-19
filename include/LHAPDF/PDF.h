@@ -430,30 +430,29 @@ namespace LHAPDF {
       return info().metadata_as<int>("QcdOrder");
     }
 
+    //@}
+
+
+    /// @name QCD running coupling calculation
+    //@{
+
+    /// @brief Set the AlphaS calculator by pointer
+    ///
+    /// The provided AlphaS must have been new'd, as it will not be copied
+    /// and ownership passes to this GridPDF: delete will be called on this ptr
+    /// when this PDF goes out of scope or another setAlphaS call is made.
+    void setInterpolator(AlphaS* alphas) {
+      _alphas.reset(alphas);
+    }
+
+
     /// @brief Value of alpha_s(Q2) used by this PDF set.
     ///
     /// Calculated numerically, analytically, or interpolated according to
     /// metadata, using the AlphaS classes.
     double alphaS(double q2) const {
-      /// @todo Treat like Ipol/Xpol objects, with lazy default loading and set methods
       if (_alphas.get() == 0) {
-        AlphaS* as = mkAlphaS(info().metadata("AlphaS_Type"));
-        /// @todo Move this into new setAlphaS method(s)
-        // Configure the QCD params on this AlphaS
-        if (info().has_key("MZ")) as->mz = info().metadata_as<double>("MZ");
-        if (info().has_key("AlphaS_MZ")) as->alphas_mz = info().metadata_as<double>("AlphaS_MZ");
-        if (info().has_key("AlphaS_OrderQCD")) as->qcdorder = info().metadata_as<int>("AlphaS_OrderQCD");
-        if (info().has_key("MUp")) as->setQmass(1, info().metadata_as<double>("MUp"));
-        if (info().has_key("MDown")) as->setQmass(2, info().metadata_as<double>("MDown"));
-        if (info().has_key("MStrange")) as->setQmass(3, info().metadata_as<double>("MStrange"));
-        if (info().has_key("MCharm")) as->setQmass(4, info().metadata_as<double>("MCharm"));
-        if (info().has_key("MBottom")) as->setQmass(5, info().metadata_as<double>("MBottom"));
-        if (info().has_key("MTop")) as->setQmass(6, info().metadata_as<double>("MTop"));
-        if (info().has_key("Lambda3")) as->setLambda(3, info().metadata_as<double>("Lambda3"));
-        if (info().has_key("Lambda4")) as->setLambda(4, info().metadata_as<double>("Lambda4"));
-        if (info().has_key("Lambda5")) as->setLambda(5, info().metadata_as<double>("Lambda5"));
-        /// @todo How to do type triggering to set ipol points for Alphas_Ipol?
-        /// @todo Throw an error if the QCD params are changed after a first alpha_s query? How?
+        AlphaS* as = mkAlphaS(info());
         _alphas.reset(as);
       }
       return _alphas->alphasQ2(q2);

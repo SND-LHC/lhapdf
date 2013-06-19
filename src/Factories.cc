@@ -58,9 +58,9 @@ namespace LHAPDF {
   }
 
 
-  Interpolator* mkInterpolator(const std::string& name) {
+  Interpolator* mkInterpolator(const string& name) {
     // Convert name to lower case for comparisons
-    const std::string iname = to_lower_copy(name);
+    const string iname = to_lower_copy(name);
     if (iname == "linear")
       return new BilinearInterpolator();
     else if (iname == "cubic")
@@ -74,9 +74,9 @@ namespace LHAPDF {
   }
 
 
-  Extrapolator* mkExtrapolator(const std::string& name) {
+  Extrapolator* mkExtrapolator(const string& name) {
     // Convert name to lower case for comparisons
-    const std::string iname = to_lower_copy(name);
+    const string iname = to_lower_copy(name);
     if (iname == "nearest")
       return new NearestPointExtrapolator();
     else if (iname == "error")
@@ -86,18 +86,37 @@ namespace LHAPDF {
   }
 
 
-  AlphaS* mkAlphaS(const std::string& name) {
+  AlphaS* mkAlphaS(const string& type) {
     // Convert name to lower case for comparisons
-    const std::string iname = to_lower_copy(name);
-    if (iname == "analytic") //< Need a better name (and class name) if we implement more than one analytic approximation
+    const string itype = to_lower_copy(type);
+    if (itype == "analytic") //< Need a better name (and class name) if we implement more than one analytic approximation
       return new AlphaS_Analytic();
-    else if (iname == "ode")
+    else if (itype == "ode")
       return new AlphaS_ODE();
-    /// @todo Reinstate
-    // else if (iname == "ipol")
-    //   return new AlphaS_Ipol();
+    else if (itype == "ipol")
+      return new AlphaS_Ipol();
     else
-      throw FactoryError("Undeclared AlphaS requested: " + name);
+      throw FactoryError("Undeclared AlphaS requested: " + type);
+  }
+
+
+
+  AlphaS* mkAlphaS(const Info& info) {
+    AlphaS* as = mkAlphaS(info.metadata("AlphaS_Type"));
+    // Configure the QCD params on this AlphaS
+    if (info.has_key("MZ")) as->mz = info.metadata_as<double>("MZ");
+    if (info.has_key("AlphaS_MZ")) as->alphas_mz = info.metadata_as<double>("AlphaS_MZ");
+    if (info.has_key("AlphaS_OrderQCD")) as->qcdorder = info.metadata_as<int>("AlphaS_OrderQCD");
+    if (info.has_key("MUp")) as->setQmass(1, info.metadata_as<double>("MUp"));
+    if (info.has_key("MDown")) as->setQmass(2, info.metadata_as<double>("MDown"));
+    if (info.has_key("MStrange")) as->setQmass(3, info.metadata_as<double>("MStrange"));
+    if (info.has_key("MCharm")) as->setQmass(4, info.metadata_as<double>("MCharm"));
+    if (info.has_key("MBottom")) as->setQmass(5, info.metadata_as<double>("MBottom"));
+    if (info.has_key("MTop")) as->setQmass(6, info.metadata_as<double>("MTop"));
+    if (info.has_key("Lambda3")) as->setLambda(3, info.metadata_as<double>("Lambda3"));
+    if (info.has_key("Lambda4")) as->setLambda(4, info.metadata_as<double>("Lambda4"));
+    if (info.has_key("Lambda5")) as->setLambda(5, info.metadata_as<double>("Lambda5"));
+    /// @todo How to do type triggering to set ipol points for Alphas_Ipol?
   }
 
 
