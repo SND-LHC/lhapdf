@@ -213,6 +213,11 @@ def mkPDF(*args):
         raise Exception("Unknown call signature")
 
 
+
+## TODO: map AlphaS and Info/Config
+
+
+
 def version():
     "Return the LHAPDF library version."
     return c.version()
