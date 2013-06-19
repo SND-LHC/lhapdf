@@ -155,6 +155,13 @@ cdef class PDFSet:
         "Type of error treatment in this PDF's set."
         return self._ptr.errorType()
 
+    def mkPDF(self, mem):
+        cdef c.PDF* ptr = self._ptr.mkPDF(mem)
+        cdef PDF obj
+        obj = PDF.__new__(PDF)
+        obj.set_ptr(ptr)
+        return obj
+
     def mkPDFs(self):
         cdef vector[c.PDF*] ptrs = self._ptr.mkPDFs()
         cdef PDF obj
