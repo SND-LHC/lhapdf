@@ -1,6 +1,15 @@
 2013-06-19  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Reworking the connection of AlphaS to the Factory and PDF system a bit, and tweaking the tests.
+	* 6.0.0b2 release.
+
+	* TODO list updated.
+
+	* Adding PDFSet.mkPDF(mem) to the Python wrapper.
+
+	* Various build tweaks for lxplus6 compatibility.
+
+	* Reworking the connection of AlphaS to the Factory and PDF system
+	a bit, and tweaking the tests.
 
 2013-06-15  Andy Buckley  <andy.buckley@cern.ch>
 
