@@ -42,6 +42,11 @@ int main(int argc, char* argv[]) {
     f.close();
   }
 
+  for (double log10q2 = MINLOGQ2; log10q2 <= MAXLOGQ2; log10q2 += 0.2) {
+    const double q2 = pow(10, log10q2);
+    cout << "alpha_s(" << setprecision(1) << fixed << sqrt(q2) << " GeV) = " << pdf->alphasQ2(q2) << endl;
+  }
+
   delete pdf;
   return 0;
 }

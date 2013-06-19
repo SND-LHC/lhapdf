@@ -1,3 +1,7 @@
+2013-06-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Reworking the connection of AlphaS to the Factory and PDF system a bit, and tweaking the tests.
+
 2013-06-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding Config.h, the Config class, and improved singleton

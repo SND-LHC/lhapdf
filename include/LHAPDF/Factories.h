@@ -109,18 +109,6 @@ namespace LHAPDF {
   /// the caller is responsible for deletion of the created object.
   AlphaS* mkAlphaS(const Info& info);
 
-
-  /// AlphaS factory
-  ///
-  /// Get an unconfigured AlphaS of the type whose name is given as the
-  /// argument.
-  ///
-  /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
-  /// the caller is responsible for deletion of the created object.
-  ///
-  /// @todo Remove? Is this useful except internally?
-  AlphaS* mkAlphaS(const std::string& type);
-
   //@}
 
 

@@ -40,8 +40,12 @@ namespace LHAPDF {
     /// Set quark masses by PDG code
     void setQmass(int id, double value) { _qmasses[abs(id)-1] = value; }
 
-    /// Set lambda_i
+    /// Set lambda_i (for i = flavour number)
     void setLambda(int i, double lambda);
+
+    /// Get the implementation type of this AlphaS
+    virtual std::string type() const = 0;
+
 
   public:
 
@@ -99,6 +103,7 @@ namespace LHAPDF {
   /// Calculate alpha_s(Q2) by an analytic approximation
   class AlphaS_Analytic : public AlphaS {
   public:
+    std::string type() const { return "analytic"; }
     double alphasQ2(double q2) const;
   };
 
@@ -106,6 +111,7 @@ namespace LHAPDF {
   /// Solve the differential equation in alphaS using an implementation of RK4
   class AlphaS_ODE : public AlphaS {
   public:
+    std::string type() const { return "ode"; }
     double alphasQ2(double q2) const;
   };
 
@@ -113,6 +119,7 @@ namespace LHAPDF {
   /// Interpolate alpha_s from tabulated points in Q2 via metadata
   class AlphaS_Ipol : public AlphaS {
   public:
+    std::string type() const { return "ipol"; }
     double alphasQ2(double q2) const;
   };
 

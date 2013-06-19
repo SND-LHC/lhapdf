@@ -441,20 +441,31 @@ namespace LHAPDF {
     /// The provided AlphaS must have been new'd, as it will not be copied
     /// and ownership passes to this GridPDF: delete will be called on this ptr
     /// when this PDF goes out of scope or another setAlphaS call is made.
-    void setInterpolator(AlphaS* alphas) {
+    void setAlphaS(AlphaS* alphas) {
       _alphas.reset(alphas);
     }
 
+
+    /// @brief Check if an AlphaS calculator is set
+    bool hasAlphaS() const {
+      return _alphas.get() != 0;
+    }
 
     /// @brief Value of alpha_s(Q2) used by this PDF set.
     ///
     /// Calculated numerically, analytically, or interpolated according to
     /// metadata, using the AlphaS classes.
-    double alphaS(double q2) const {
-      if (_alphas.get() == 0) {
-        AlphaS* as = mkAlphaS(info());
-        _alphas.reset(as);
-      }
+    double alphasQ(double q) const {
+      return alphasQ2(q*q);
+    }
+
+    /// @brief Value of alpha_s(Q2) used by this PDF set.
+    ///
+    /// Calculated numerically, analytically, or interpolated according to
+    /// metadata, using the AlphaS classes.
+    double alphasQ2(double q2) const {
+      if (!hasAlphaS())
+        _alphas.reset( mkAlphaS(info()) );
       return _alphas->alphasQ2(q2);
     }
 

@@ -86,23 +86,13 @@ namespace LHAPDF {
   }
 
 
-  AlphaS* mkAlphaS(const string& type) {
-    // Convert name to lower case for comparisons
-    const string itype = to_lower_copy(type);
-    if (itype == "analytic") //< Need a better name (and class name) if we implement more than one analytic approximation
-      return new AlphaS_Analytic();
-    else if (itype == "ode")
-      return new AlphaS_ODE();
-    else if (itype == "ipol")
-      return new AlphaS_Ipol();
-    else
-      throw FactoryError("Undeclared AlphaS requested: " + type);
-  }
-
-
-
   AlphaS* mkAlphaS(const Info& info) {
-    AlphaS* as = mkAlphaS(info.metadata("AlphaS_Type"));
+    AlphaS* as = 0;
+    const string itype = to_lower_copy(info.metadata("AlphaS_Type"));
+    if (itype == "analytic") as = new AlphaS_Analytic();
+    else if (itype == "ode") as = new AlphaS_ODE();
+    else if (itype == "ipol") as = new AlphaS_Ipol();
+    else throw FactoryError("Undeclared AlphaS requested: " + itype);
     // Configure the QCD params on this AlphaS
     if (info.has_key("MZ")) as->mz = info.metadata_as<double>("MZ");
     if (info.has_key("AlphaS_MZ")) as->alphas_mz = info.metadata_as<double>("AlphaS_MZ");
@@ -116,7 +106,8 @@ namespace LHAPDF {
     if (info.has_key("Lambda3")) as->setLambda(3, info.metadata_as<double>("Lambda3"));
     if (info.has_key("Lambda4")) as->setLambda(4, info.metadata_as<double>("Lambda4"));
     if (info.has_key("Lambda5")) as->setLambda(5, info.metadata_as<double>("Lambda5"));
-    /// @todo How to do type triggering to set ipol points for Alphas_Ipol?
+    if (as->type() == "ipol") { /* populate interpolation vector */ }
+    return as;
   }
 
 

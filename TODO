@@ -10,11 +10,6 @@ NOW / FOR BETA 2
 
 - **Test build on lxplus6 (AB)**
 
-- **Complete and test analytic alpha_s running (KN,AB)**
-
-   Check for correctness and efficiency.
-
-
 
 FOR BETA 3
 ----------
@@ -23,6 +18,12 @@ FOR BETA 3
 
    Just migrate lots of major sets without explicit quality checking. It's a
    beta, live with it...
+
+- **Clarify relationship of AlphaS to PDF(Set)**
+
+   Do we insist that all AlphaS are bound to PDF level, or can PDFSets have an
+   AlphaS? At the moment an AlphaS can be made from an Info object of any level:
+   maybe that is enough.
 
 - **Add lookup and log caching, and reprofile GridPDF (AB)**
 
