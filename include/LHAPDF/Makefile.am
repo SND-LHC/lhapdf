@@ -1,17 +1,16 @@
-# TODO: Provide a convenience LHAPDF.h to include all the main API elements?
-
 pkginclude_HEADERS = \
   LHAPDF.h \
   Version.h \
-  PDF.h \
-  PDFSet.h \
   Info.h \
+  Config.h \
+  PDFSet.h \
   PDFInfo.h \
   Utils.h \
   Paths.h \
   Exceptions.h \
   Factories.h \
   PDFIndex.h \
+  PDF.h \
   GridPDF.h \
   KnotArray.h \
   Interpolator.h \
