@@ -71,20 +71,27 @@ AM_CONDITIONAL(ENABLE_LHAGLUE, [test x$enable_lhaglue == xyes])
 AC_PATH_PROG(PDFLATEX, pdflatex)
 AM_CONDITIONAL(WITH_PDFLATEX, [test x$PDFLATEX != x])
 
+
 ## Find Doxygen if possible
 AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, [test x$DOXYGEN != x])
 
+
 ## Find Python and Cython if possible
-AC_PATH_PROG(PYTHON, python)
-AM_CONDITIONAL(WITH_PYTHON, [test x$PYTHON != x])
-if test x$PYTHON != x; then
-  PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
-  AC_SUBST(PYTHON_VERSION)
-  PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
-  AC_SUBST(PYTHON_PATH)
+AC_ARG_ENABLE([python],
+  [AC_HELP_STRING(--disable-python, [build with debugging symbols (default=no)])],
+  [], [enable_python=yes])
+if test x$enable_python == xyes; then
+  AC_PATH_PROG(PYTHON, python)
+  AC_PATH_PROG(CYTHON, cython)
+  if test x$PYTHON != x; then
+    PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
+    AC_SUBST(PYTHON_VERSION)
+    PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
+    AC_SUBST(PYTHON_PATH)
+  fi
 fi
-AC_PATH_PROG(CYTHON, cython)
+AM_CONDITIONAL(WITH_PYTHON, [test x$PYTHON != x])
 AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON != x])
 
 
