@@ -173,7 +173,7 @@ See the following pages:
 - @ref config
 - @ref codingstyle
 
-@example ../migration/testpdf.cc
+@example ../examples/testpdf.cc
 @example ../examples/pythonexample.py
 @example ../examples/compatibility.cc
 @example ../tests/testgrid.cc

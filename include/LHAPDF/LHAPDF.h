@@ -5,7 +5,8 @@
 //
 #pragma once
 
-/// @file Just a convenience header that pulls in the main functionality with a single #include
+/// @file LHAPDF.h
+/// Just a convenience header that pulls in the main functionality with a single include
 
 #include "LHAPDF/Version.h"
 #include "LHAPDF/PDF.h"
