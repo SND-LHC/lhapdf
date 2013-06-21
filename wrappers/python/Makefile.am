@@ -1,4 +1,4 @@
-EXTRA_DIST = lhapdf.pyx
+EXTRA_DIST = lhapdf.pyx clhapdf.pxd
 
 if WITH_CYTHON
 if WITH_PYTHON

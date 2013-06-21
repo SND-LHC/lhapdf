@@ -14,9 +14,19 @@ FOR BETA 3
    Just migrate lots of major sets without explicit quality checking. It's a
    beta, live with it...
 
+- **Bundle Cython generated files if possible so Cython isn't needed for a tarball build**
+
+   If possible. I think this is actually important: every dependency will put
+   off a large fraction of potential users. Although, cf. Rivet, a pre-supplied
+   build will be important for reducing that social/technical problem.
+
 - **Add AlphaS and Info/Config mappings to Cython (AB)**
 
 - **Improve CTEQ6L1 grid efficiency (MR?)**
+
+- **Clarify / sort out tests vs. examples separation**
+
+   And maybe disable buiding of these from the default top-level make target.
 
 - **Add interpolation-from-metadata implementation of AlphaS (MR,KN)**
 
