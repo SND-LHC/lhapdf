@@ -22,16 +22,17 @@ int main() {
   as_ana.setQmass(1.29);
   as_ana.setQmass(4.1);
   as_ana.setQmass(172.5);
-  as_ana.setQmass(0.0017);
-  as_ana.setQmass(0.0041);
-  as_ana.setQmass(0.1);
+  as_ana.setQmass(0.5);
+  as_ana.setQmass(1.0);
+  as_ana.setQmass(1.2);
 
   as_ana.setLambda(3, 0.339);
+  as_ana.setLambda(2, 0.400);
   as_ana.setLambda(4, 0.296);
   as_ana.setLambda(5, 0.213);
 
   ofstream fa("alphas_ana.dat");//, fo("alphas_ode.dat");
-  for (double log10q = 0; log10q < 2.5; log10q += 0.05) {
+  for (double log10q = -0.5; log10q < 2.5; log10q += 0.05) {
     const double q = pow(10, log10q);
     const double as_ana_q = as_ana.alphasQ(q);
     //cout << "alpha_s(Q=" << q << ")_ana = " << as_ana_q << endl;

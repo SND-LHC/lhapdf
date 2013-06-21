@@ -47,7 +47,7 @@ namespace LHAPDF {
     void setQmass(double value);
 
     /// Set lambda_i (for i = flavour number)
-    void setLambda(int i, double lambda);
+    void setLambda(unsigned int i, double lambda);
 
     /// Get the implementation type of this AlphaS
     virtual std::string type() const = 0;
@@ -73,12 +73,8 @@ namespace LHAPDF {
     /// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
     vector<double> _qmasses;
 
-    /// LambdaQCD value for 3 flavour regime
-    double _lambda3;
-    /// LambdaQCD value for 4 flavour regime
-    double _lambda4;
-    /// LambdaQCD value for 5 flavour regime
-    double _lambda5;
+    /// LambdaQCD values. Stored as lambdaQCD^nf = _lambdas[nf-1]
+    vector<double> _lambdas;
 
     /// Max/min number of flavors
     int _nfmax;
