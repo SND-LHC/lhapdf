@@ -1,3 +1,5 @@
+EXTRA_DIST = lhapdf.pyx
+
 if WITH_CYTHON
 if WITH_PYTHON
 
