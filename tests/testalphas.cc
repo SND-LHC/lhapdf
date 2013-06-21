@@ -13,12 +13,18 @@ using namespace std;
 int main() {
   AlphaS_Analytic as_ana;
 
-  as_ana.setQmass(1, 0.0017);
-  as_ana.setQmass(2, 0.0041);
-  as_ana.setQmass(3, 0.1);
-  as_ana.setQmass(4, 1.29);
-  as_ana.setQmass(5, 4.1);
-  as_ana.setQmass(6, 172.5);
+//  as_ana.setQmass(1, 0.0017);
+//  as_ana.setQmass(2, 0.0041);
+//  as_ana.setQmass(3, 0.1);
+//  as_ana.setQmass(4, 1.29);
+//  as_ana.setQmass(5, 4.1);
+//  as_ana.setQmass(4, 172.5);
+  as_ana.setQmass(1.29);
+  as_ana.setQmass(4.1);
+  as_ana.setQmass(172.5);
+  as_ana.setQmass(0.0017);
+  as_ana.setQmass(0.0041);
+  as_ana.setQmass(0.1);
 
   as_ana.setLambda(3, 0.339);
   as_ana.setLambda(4, 0.296);

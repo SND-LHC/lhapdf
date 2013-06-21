@@ -38,7 +38,13 @@ namespace LHAPDF {
     int nf_Q2(double q2) const;
 
     /// Set quark masses by PDG code
-    void setQmass(int id, double value) { _qmasses[abs(id)-1] = value; }
+    void setQmass(int id, double value);
+
+    /// Set a quark mass (without PDG code).
+    /// This allows for more/less than six quarks,
+    /// but can not be used together with the other
+    /// way of setting quark masses
+    void setQmass(double value);
 
     /// Set lambda_i (for i = flavour number)
     void setLambda(int i, double lambda);
@@ -65,7 +71,7 @@ namespace LHAPDF {
   protected:
 
     /// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
-    double _qmasses[6];
+    vector<double> _qmasses;
 
     /// LambdaQCD value for 3 flavour regime
     double _lambda3;
@@ -77,6 +83,9 @@ namespace LHAPDF {
     /// Max/min number of flavors
     int _nfmax;
     int _nfmin;
+
+    /// This makes sure you can't mix the two ways of setting masses
+    int _masstype;
 
     /// Get lambdaQCD for nf
     double _lambdaQCD(int nf) const;
