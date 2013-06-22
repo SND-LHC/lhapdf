@@ -8,6 +8,10 @@
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Exceptions.h"
 
+// Riemann zeta function \zeta(3)
+// used for calculating the third beta coefficient
+#define ZETA_3 1.2020569031
+
 namespace LHAPDF {
 
 

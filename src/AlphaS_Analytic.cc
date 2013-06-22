@@ -30,10 +30,12 @@ namespace LHAPDF {
     const double lnx = log(x);
     const double lnlnx = log(lnx);
     const double lnlnx2 = lnlnx * lnlnx;
+    const double lnlnx3 = lnlnx * lnlnx * lnlnx;
     const double y = 1 / lnx;
 
-    // Calculate and combine expansion terms Ay[a_0*y^0 - a_1*y^1 + By^2[a_20 + a_21 - a_22]]
-    // where a_ij are series coefficients. Avoid calculating more than is needed, although it's a bit messy.
+    // Calculate terms up to qcdorder = 3
+    // A bit messy because the actual expressions are
+    // quite messy...
     const double A = 1 / beta[0];
     const double a_0 = 1;
     double tmp = a_0;
@@ -47,6 +49,13 @@ namespace LHAPDF {
       const double a_21 = beta[2] * beta[0] / beta12;
       const double a_22 = 1;
       tmp += B * y*y * (a_20 + a_21 - a_22);
+    }
+    if (qcdorder > 2) {
+      const double C = 1. / (beta02 * beta02 * beta02);
+      const double a_30 = (beta12 * beta[1]) * (lnlnx3 - (5/2.) * lnlnx2 - 2 * lnlnx + 0.5);
+      const double a_31 = 3 * beta[0] * beta[1] * beta[2] * lnlnx;
+      const double a_32 = 0.5 * beta02 * beta[3];
+      tmp -= C * y*y*y * (a_30 + a_31 - a_32);
     }
     const double alphaS = A * y * tmp;
     return alphaS;

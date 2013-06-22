@@ -31,9 +31,11 @@ namespace LHAPDF {
 
   // Calculate a beta function given the number of active flavours
   double AlphaS::_beta(int i, int nf) const {
-    if (i == 0) return (33 - 2*nf)/(12*M_PI);
-    if (i == 1) return (153 - 19*nf)/(24*M_PI*M_PI);
-    if (i == 2) return (2857 - (5033 / 9.0)*nf + (325 / 27.0)*sqr(nf))/(128*M_PI*M_PI*M_PI);
+    if (i == 0) return (double) (33 - 2*nf)/(12*M_PI);
+    if (i == 1) return (double) (153 - 19*nf)/(24*sqr(M_PI));
+    if (i == 2) return (double) (2857 - (5033 / 9.0)*nf + (325 / 27.0)*sqr(nf))/(128*sqr(M_PI)*M_PI);
+    if (i == 3) return (double) ( (149753/6.) + 3564*ZETA_3 - ((1078361/162.) + (6502/27.)*ZETA_3)*nf +
+                                ((50065/162.) + (6472/81.)*ZETA_3)*sqr(nf) + (1093/729.)*sqr(nf)*nf)/(256*sqr(nf)*sqr(nf));
     throw Exception("Invalid index " + to_str(i) + " for requested beta function");
   }
 
@@ -41,7 +43,7 @@ namespace LHAPDF {
   // Calculate beta functions given the number of active flavours
   vector<double> AlphaS::_betas(int nf) const {
     vector<double> rtn; rtn.reserve(3);
-    for (int i = 0; i < 3; ++i) rtn.push_back(_beta(i, nf));
+    for (int i = 0; i < 4; ++i) rtn.push_back(_beta(i, nf));
     return rtn;
   }
 
