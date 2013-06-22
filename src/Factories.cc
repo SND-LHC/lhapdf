@@ -94,18 +94,27 @@ namespace LHAPDF {
     else if (itype == "ipol") as = new AlphaS_Ipol();
     else throw FactoryError("Undeclared AlphaS requested: " + itype);
     // Configure the QCD params on this AlphaS
-    if (info.has_key("MZ")) as->mz = info.metadata_as<double>("MZ");
-    if (info.has_key("AlphaS_MZ")) as->alphas_mz = info.metadata_as<double>("AlphaS_MZ");
-    if (info.has_key("AlphaS_OrderQCD")) as->qcdorder = info.metadata_as<int>("AlphaS_OrderQCD");
-    if (info.has_key("MUp")) as->setQmass(1, info.metadata_as<double>("MUp"));
-    if (info.has_key("MDown")) as->setQmass(2, info.metadata_as<double>("MDown"));
-    if (info.has_key("MStrange")) as->setQmass(3, info.metadata_as<double>("MStrange"));
-    if (info.has_key("MCharm")) as->setQmass(4, info.metadata_as<double>("MCharm"));
-    if (info.has_key("MBottom")) as->setQmass(5, info.metadata_as<double>("MBottom"));
-    if (info.has_key("MTop")) as->setQmass(6, info.metadata_as<double>("MTop"));
-    if (info.has_key("Lambda3")) as->setLambda(3, info.metadata_as<double>("Lambda3"));
-    if (info.has_key("Lambda4")) as->setLambda(4, info.metadata_as<double>("Lambda4"));
-    if (info.has_key("Lambda5")) as->setLambda(5, info.metadata_as<double>("Lambda5"));
+    if (info.has_key("AlphaS_OrderQCD")) as->setQCDorder(info.metadata_as<int>("AlphaS_OrderQCD"));
+    if (!as->type() == "ipol") {
+      if (info.has_key("MUp")) as->setQmass(1, info.metadata_as<double>("MUp"));
+      if (info.has_key("MDown")) as->setQmass(2, info.metadata_as<double>("MDown"));
+      if (info.has_key("MStrange")) as->setQmass(3, info.metadata_as<double>("MStrange"));
+      if (info.has_key("MCharm")) as->setQmass(4, info.metadata_as<double>("MCharm"));
+      if (info.has_key("MBottom")) as->setQmass(5, info.metadata_as<double>("MBottom"));
+      if (info.has_key("MTop")) as->setQmass(6, info.metadata_as<double>("MTop"));
+    }
+    if (as->type() == "ode") {
+      if( !(info.has_key("AlphaS_MZ")) || !(info.has_key("MZ")) )throw Exception("Requested ODE AlphaS without giving parameters for solving ODE.");
+      as->setAlphaSMZ(info.metadata_as<double>("AlphaS_MZ"));
+      as->setMZ(info.metadata_as<double>("MZ"));
+    }
+    if (as->type() == "analytic") {
+      if( !(info.has_key("Lambda5")) && !(info.has_key("Lambda4")) &&
+          !(info.has_key("Lambda3")) )throw Exception("Requested analytic AlphaS without setting a lambdaQCD.");
+      if (info.has_key("Lambda3")) as->setLambda(3, info.metadata_as<double>("Lambda3"));
+      if (info.has_key("Lambda4")) as->setLambda(4, info.metadata_as<double>("Lambda4"));
+      if (info.has_key("Lambda5")) as->setLambda(5, info.metadata_as<double>("Lambda5"));
+    }
     if (as->type() == "ipol") { /* populate interpolation vector */ }
     return as;
   }

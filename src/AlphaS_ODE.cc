@@ -8,6 +8,15 @@
 
 namespace LHAPDF {
 
+  void AlphaS_ODE::setLambda(unsigned int i, double lambda){throw Exception ("Can't set lambdas for ODE solver.");}
+
+  // Calculate the number of active quark flavours at energy scale Q2
+  int AlphaS_ODE::nf_Q2(double q2) const {
+    int nf = 0;
+    for (int it = 0; it < (int)_qmasses.size(); ++it)
+      if (q2 > sqr(_qmass(it))) nf = it;
+    return nf;
+  }
 
   namespace { // unnamed namespace
 
@@ -47,8 +56,8 @@ namespace LHAPDF {
     ///       Then choose to start from last or MZ, whichever is closer.
 
     // Run in Q2 using RK4 algorithm until we are within our defined accuracy
-    double t = sqr(mz); // starting point
-    double y = alphas_mz; // starting value
+    double t = sqr(_mz); // starting point
+    double y = _alphas_mz; // starting value
     while (fabs(q2 - t) > accuracy) {
       // Calculate beta functions based on the number of active flavours at Q2=t
       const vector<double> bs = _betas(nf_Q2(t));

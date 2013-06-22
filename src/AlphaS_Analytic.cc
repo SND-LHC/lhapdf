@@ -8,6 +8,48 @@
 
 namespace LHAPDF {
 
+  void AlphaS_Analytic::setAlphaSMZ(double alphas) {throw Exception ("Can't set AlphaS_MZ for analytic AlphaS.");}
+  void AlphaS_Analytic::setMZ(double alphas) {throw Exception ("Can't set MZ for analytic AlphaS.");}
+
+  // Calculate the number of active quark flavours at energy scale Q2
+  int AlphaS_Analytic::nf_Q2(double q2) const {
+    int nf = _nfmin;
+    for (int it = _nfmin; it < (int)_qmasses.size(); ++it)
+      if (q2 > sqr(_qmass(it))) nf = it;
+    return (nf > _nfmax) ? _nfmax : nf;
+  }
+
+  // Set lambda_i && recalculate nfmax and nfmin
+  void AlphaS_Analytic::setLambda(unsigned int i, double lambda) {
+    if(_lambdas.size() < i)_lambdas.resize(i);
+    _lambdas[i-1] = lambda;
+    _setFlavors();
+  }
+
+  // Recalculate nfmax and nfmin after a new lambda has been set
+  // Relies on vector<double> initialising all elements to 0 by
+  // default, I *think* this should work even though I am comparing
+  // floats since 0 has a precise representation
+  void AlphaS_Analytic::_setFlavors() {
+    for(unsigned int it = 0; it < _lambdas.size(); ++it) {
+      if(_lambdas[it] != 0.){_nfmin = it+1; break;}
+    }
+    for(unsigned int it = _lambdas.size() - 1; it >= 0; --it) {
+      if(_lambdas[it] != 0.){_nfmax = it+1; break;}
+    }
+    if(_nfmin != _nfmax) {
+      for(int it = _nfmin; it < _nfmax - 1; ++it){
+        if(_lambdas[it] == 0)throw Exception ("Need to set intermediate lambdas.");
+      }
+    }
+  }
+
+  // Return the correct lambda for a given number of active flavours
+  double AlphaS_Analytic::_lambdaQCD(int nf) const {
+    double lambda = _lambdas[nf-1];
+    if(lambda == 0)throw Exception("Invalid nf " + to_str(nf) + " requested for lambdaQCD");
+    return lambda;
+  }
 
   // Calculate alpha_s(Q2) by an analytic approximation
   double AlphaS_Analytic::alphasQ2(double q2) const {
@@ -39,18 +81,18 @@ namespace LHAPDF {
     const double A = 1 / beta[0];
     const double a_0 = 1;
     double tmp = a_0;
-    if (qcdorder > 0) {
+    if (_qcdorder > 0) {
       const double a_1 = beta[1] * lnlnx / beta02;
       tmp -= a_1 * y;
     }
-    if (qcdorder > 1) {
+    if (_qcdorder > 1) {
       const double B = beta12 / (beta02 * beta02);
       const double a_20 = lnlnx2 - lnlnx;
       const double a_21 = beta[2] * beta[0] / beta12;
       const double a_22 = 1;
       tmp += B * y*y * (a_20 + a_21 - a_22);
     }
-    if (qcdorder > 2) {
+    if (_qcdorder > 2) {
       const double C = 1. / (beta02 * beta02 * beta02);
       const double a_30 = (beta12 * beta[1]) * (lnlnx3 - (5/2.) * lnlnx2 - 2 * lnlnx + 0.5);
       const double a_31 = 3 * beta[0] * beta[1] * beta[2] * lnlnx;

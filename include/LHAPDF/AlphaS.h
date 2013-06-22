@@ -28,6 +28,8 @@ namespace LHAPDF {
     /// Base class constructor for default param setup
     AlphaS();
 
+    ~AlphaS();
+
     /// Calculate alphaS(Q)
     double alphasQ(double q) const { return alphasQ2(q*q); }
 
@@ -39,7 +41,7 @@ namespace LHAPDF {
     int nf_Q(double q) const { return nf_Q2(q*q); }
 
     /// Calculate the number of active flavours at energy scale Q2
-    int nf_Q2(double q2) const;
+    virtual int nf_Q2(double q2) const = 0;
 
     /// Set quark masses by PDG code
     void setQmass(int id, double value);
@@ -50,48 +52,25 @@ namespace LHAPDF {
     /// way of setting quark masses
     void setQmass(double value);
 
-    /// Set lambda_i (for i = flavour number)
-    void setLambda(unsigned int i, double lambda);
-
     /// Get the implementation type of this AlphaS
     virtual std::string type() const = 0;
 
+    void setQCDorder(int order) { _qcdorder = order - 1; }
 
-  public:
-
-    /// @name Public properties -- no get/set methods needed
-    //@{
-
-    /// Mass of the Z-boson in GeV
-    double mz;
-    /// Value of alpha_s(MZ)
-    double alphas_mz;
-
-    /// Order of QCD (expressed as number of loops)
-    int qcdorder;
-
-    //@}
+    // These are virtual to avoid problems with declaring a general
+    // AlphaS pointer and then making it a specific type
+    virtual void setMZ(double mz) = 0;
+    virtual void setAlphaSMZ(double alphas) = 0;
+    virtual void setLambda(unsigned int i, double lambda) = 0;
 
   protected:
 
-    /// Masses of quarks in GeV.  Used to calculate the number of quarks that are active at a given energy range Q2
+    /// Masses of quarks in GeV.  Used to calculate the number
+    /// of quarks that are active at a given energy range Q2
     vector<double> _qmasses;
-
-    /// LambdaQCD values. Stored as lambdaQCD^nf = _lambdas[nf-1]
-    vector<double> _lambdas;
-
-    /// Max/min number of flavors
-    int _nfmax;
-    int _nfmin;
 
     /// This makes sure you can't mix the two ways of setting masses
     int _masstype;
-
-    /// Get lambdaQCD for nf
-    double _lambdaQCD(int nf) const;
-
-    /// Recalculate min/max flavors in case lambdas have changed
-    void _setFlavors();
 
     /// Calculate the i'th beta function given the number of active flavours
     /// Currently limited to 0 <= i <= 2.
@@ -104,7 +83,8 @@ namespace LHAPDF {
     /// Get quark masses by PDG code
     double _qmass(int id) const { return _qmasses[abs(id)-1]; }
 
-
+    /// Order of QCD (expressed as number of loops)
+    int _qcdorder;
   };
 
 
@@ -114,6 +94,26 @@ namespace LHAPDF {
   public:
     std::string type() const { return "analytic"; }
     double alphasQ2(double q2) const;
+    int nf_Q2(double q2) const;
+
+    /// Set lambda_i (for i = flavour number)
+    void setLambda(unsigned int i, double lambda);
+
+    /// Get lambdaQCD for nf
+    double _lambdaQCD(int nf) const;
+
+    /// LambdaQCD values. Stored as lambdaQCD^nf = _lambdas[nf-1]
+    vector<double> _lambdas;
+
+    /// Recalculate min/max flavors in case lambdas have changed
+    void _setFlavors();
+
+    /// Max/min number of flavors
+    int _nfmax;
+    int _nfmin;
+
+    void setMZ(double mz);
+    void setAlphaSMZ(double alphas);
   };
 
 
@@ -122,6 +122,16 @@ namespace LHAPDF {
   public:
     std::string type() const { return "ode"; }
     double alphasQ2(double q2) const;
+    int nf_Q2(double q2) const;
+    void setMZ(double mz) { _mz = mz; }
+    void setAlphaSMZ(double alphas) { _alphas_mz = alphas; }
+    void setLambda(unsigned int i, double lambda);
+
+  private:
+    /// Mass of the Z-boson in GeV
+    double _mz;
+    /// Value of alpha_s(MZ)
+    double _alphas_mz;
   };
 
 
@@ -130,6 +140,11 @@ namespace LHAPDF {
   public:
     std::string type() const { return "ipol"; }
     double alphasQ2(double q2) const;
+    int nf_Q2(double q2) const;
+
+    void setMZ(double mz);
+    void setAlphaSMZ(double alphas);
+    void setLambda(unsigned int i, double lambda);
   };
 
 
