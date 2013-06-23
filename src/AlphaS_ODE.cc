@@ -8,16 +8,6 @@
 
 namespace LHAPDF {
 
-  void AlphaS_ODE::setLambda(unsigned int i, double lambda){throw Exception ("Can't set lambdas for ODE solver.");}
-
-  // Calculate the number of active quark flavours at energy scale Q2
-  int AlphaS_ODE::nf_Q2(double q2) const {
-    int nf = 0;
-    for (int it = 0; it < (int)_qmasses.size(); ++it)
-      if (q2 > sqr(_qmass(it))) nf = it;
-    return nf;
-  }
-
   namespace { // unnamed namespace
 
     // Calculate first order derivative, dy/dt, as it appears in the differential equation

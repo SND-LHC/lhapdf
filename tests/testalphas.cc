@@ -13,6 +13,8 @@ using namespace std;
 int main() {
   AlphaS_Analytic as_ana;
 
+  as_ana.setQCDorder(4);
+
 //  as_ana.setQmass(1, 0.0017);
 //  as_ana.setQmass(2, 0.0041);
 //  as_ana.setQmass(3, 0.1);
@@ -35,7 +37,7 @@ int main() {
   for (double log10q = -0.5; log10q < 2.5; log10q += 0.05) {
     const double q = pow(10, log10q);
     const double as_ana_q = as_ana.alphasQ(q);
-    //cout << "alpha_s(Q=" << q << ")_ana = " << as_ana_q << endl;
+    cout << "alpha_s(Q=" << q << ")_ana = " << as_ana_q << endl;
     fa << q << " " << as_ana_q << endl;
     cout << "Q = " << setprecision(1) << fixed << q
          << ",  nf = " << as_ana.nf_Q(q) << endl;

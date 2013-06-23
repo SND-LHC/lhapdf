@@ -28,7 +28,7 @@ namespace LHAPDF {
     /// Base class constructor for default param setup
     AlphaS();
 
-    ~AlphaS();
+    ~AlphaS() {};
 
     /// Calculate alphaS(Q)
     double alphasQ(double q) const { return alphasQ2(q*q); }
@@ -41,7 +41,7 @@ namespace LHAPDF {
     int nf_Q(double q) const { return nf_Q2(q*q); }
 
     /// Calculate the number of active flavours at energy scale Q2
-    virtual int nf_Q2(double q2) const = 0;
+    virtual int nf_Q2(double q2) const;
 
     /// Set quark masses by PDG code
     void setQmass(int id, double value);
@@ -55,34 +55,33 @@ namespace LHAPDF {
     /// Get the implementation type of this AlphaS
     virtual std::string type() const = 0;
 
+    /// Set the order of QCD (expressed as number of loops)
     void setQCDorder(int order) { _qcdorder = order - 1; }
 
-    // These are virtual to avoid problems with declaring a general
-    // AlphaS pointer and then making it a specific type
-    virtual void setMZ(double mz) = 0;
-    virtual void setAlphaSMZ(double alphas) = 0;
-    virtual void setLambda(unsigned int i, double lambda) = 0;
+    // These are defined to avoid problems with
+    // for example mkAlphaS... Is there a nicer way to do this?
+    // And if not, should these throw an exception/compile time error
+    // if used when they are not needed instead of just doing nothing?
+    virtual void setMZ(double mz) {};
+    virtual void setAlphaSMZ(double alphas) {};
+    virtual void setLambda(unsigned int i, double lambda) {};
 
   protected:
 
     /// Masses of quarks in GeV.  Used to calculate the number
     /// of quarks that are active at a given energy range Q2
     vector<double> _qmasses;
-
     /// This makes sure you can't mix the two ways of setting masses
     int _masstype;
-
     /// Calculate the i'th beta function given the number of active flavours
-    /// Currently limited to 0 <= i <= 2.
+    /// Currently limited to 0 <= i <= 3
+    /// Calculated using the MSbar scheme
     double _beta(int i, int nf) const;
-
     /// Calculate a vector of beta functions given the number of active flavours
-    /// Currently returns a 3-element vector of beta0 -- beta2.
+    /// Currently returns a 3-element vector of beta0 -- beta3
     std::vector<double> _betas(int nf) const;
-
     /// Get quark masses by PDG code
     double _qmass(int id) const { return _qmasses[abs(id)-1]; }
-
     /// Order of QCD (expressed as number of loops)
     int _qcdorder;
   };
@@ -94,26 +93,23 @@ namespace LHAPDF {
   public:
     std::string type() const { return "analytic"; }
     double alphasQ2(double q2) const;
+    /// Analytic has its own nf_Q2 which respects the
+    /// min/max nf set by lambdas
     int nf_Q2(double q2) const;
-
     /// Set lambda_i (for i = flavour number)
     void setLambda(unsigned int i, double lambda);
 
+  private:
+
     /// Get lambdaQCD for nf
     double _lambdaQCD(int nf) const;
-
     /// LambdaQCD values. Stored as lambdaQCD^nf = _lambdas[nf-1]
     vector<double> _lambdas;
-
     /// Recalculate min/max flavors in case lambdas have changed
     void _setFlavors();
-
     /// Max/min number of flavors
     int _nfmax;
     int _nfmin;
-
-    void setMZ(double mz);
-    void setAlphaSMZ(double alphas);
   };
 
 
@@ -122,10 +118,8 @@ namespace LHAPDF {
   public:
     std::string type() const { return "ode"; }
     double alphasQ2(double q2) const;
-    int nf_Q2(double q2) const;
     void setMZ(double mz) { _mz = mz; }
     void setAlphaSMZ(double alphas) { _alphas_mz = alphas; }
-    void setLambda(unsigned int i, double lambda);
 
   private:
     /// Mass of the Z-boson in GeV
@@ -141,10 +135,6 @@ namespace LHAPDF {
     std::string type() const { return "ipol"; }
     double alphasQ2(double q2) const;
     int nf_Q2(double q2) const;
-
-    void setMZ(double mz);
-    void setAlphaSMZ(double alphas);
-    void setLambda(unsigned int i, double lambda);
   };
 
 

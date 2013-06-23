@@ -8,14 +8,12 @@
 
 namespace LHAPDF {
 
-  void AlphaS_Analytic::setAlphaSMZ(double alphas) {throw Exception ("Can't set AlphaS_MZ for analytic AlphaS.");}
-  void AlphaS_Analytic::setMZ(double alphas) {throw Exception ("Can't set MZ for analytic AlphaS.");}
-
-  // Calculate the number of active quark flavours at energy scale Q2
+  // Calculate the number of active quark flavours at energy scale Q2.
+  // Respects min/max nf
   int AlphaS_Analytic::nf_Q2(double q2) const {
     int nf = _nfmin;
     for (int it = _nfmin; it < (int)_qmasses.size(); ++it)
-      if (q2 > sqr(_qmass(it))) nf = it;
+      if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it+1;
     return (nf > _nfmax) ? _nfmax : nf;
   }
 

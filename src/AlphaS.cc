@@ -15,7 +15,13 @@ namespace LHAPDF {
     _masstype = 0;
   }
 
-  AlphaS::~AlphaS() {}
+  // Calculate the number of active quark flavours at energy scale Q2
+  int AlphaS::nf_Q2(double q2) const {
+    int nf = 0;
+    for (int it = 0; it < (int)_qmasses.size(); ++it)
+      if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it+1;
+    return nf;
+  }
 
   // Calculate a beta function given the number of active flavours
   double AlphaS::_beta(int i, int nf) const {
@@ -23,14 +29,14 @@ namespace LHAPDF {
     if (i == 1) return (double) (153 - 19*nf)/(24*sqr(M_PI));
     if (i == 2) return (double) (2857 - (5033 / 9.0)*nf + (325 / 27.0)*sqr(nf))/(128*sqr(M_PI)*M_PI);
     if (i == 3) return (double) ( (149753/6.) + 3564*ZETA_3 - ((1078361/162.) + (6502/27.)*ZETA_3)*nf +
-                                ((50065/162.) + (6472/81.)*ZETA_3)*sqr(nf) + (1093/729.)*sqr(nf)*nf)/(256*sqr(nf)*sqr(nf));
+                                ((50065/162.) + (6472/81.)*ZETA_3)*sqr(nf) + (1093/729.)*sqr(nf)*nf)/(256*sqr(M_PI)*sqr(M_PI));
     throw Exception("Invalid index " + to_str(i) + " for requested beta function");
   }
 
 
   // Calculate beta functions given the number of active flavours
   vector<double> AlphaS::_betas(int nf) const {
-    vector<double> rtn; rtn.reserve(3);
+    vector<double> rtn; rtn.reserve(4);
     for (int i = 0; i < 4; ++i) rtn.push_back(_beta(i, nf));
     return rtn;
   }
