@@ -25,8 +25,8 @@
 #define OUTPUT_PREFIX _OUTPUT_PREFIX(LHAVERSION)
 
 const double MINLOGX = -10;
-const double MINLOGQ = log10(10);
-const double MAXLOGQ = log10(5000);
+const double MINLOGQ = log10(1);
+const double MAXLOGQ = log10(10000);
 const double DX = 0.01;
 const double DQ = 0.01;
 

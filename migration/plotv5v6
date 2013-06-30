@@ -19,8 +19,6 @@ op.add_option("--pdfqmax", dest="PDFQMAX", metavar="Q", help="high edge of the P
 op.add_option("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated", default=None)
 op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated", default=None)
 op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE", default=None)
-# TODO: PID specification
-# TODO: Logx/y and limits control
 opts, args = op.parse_args()
 
 assert len(args) > 1
@@ -33,7 +31,7 @@ plt.rcParams["font.family"] = "serif"
 # plt.rcParams["text.usetex"] = True
 
 STYLES = ["-", ":", "--", "-."]
-COLORS = ["red", "blue", "darkgreen", "orange", "purple"]
+COLORS = ["red", "blue", "darkgreen", "orange", "purple", "magenta", "gray", "cyan"]
 PARTONS = {-5:r"$\bar{b}$",-4:r"$\bar{c}$",-3:r"$\bar{s}$",-2:r"$\bar{u}$",-1:r"$\bar{d}$",
            1:r"$d$",2:r"$u$",3:r"$s$",4:r"$c$",5:r"$b$",21:r"$g$"}
 
@@ -50,6 +48,7 @@ def latex_float(f):
 index_fname = {}
 fname_label = {}
 for i, a in enumerate(args):
+    #print i, a
     index = i
     if ":" in a:
         fname, label = a.split(":", maxsplit=1)
@@ -68,7 +67,7 @@ for i, a in enumerate(args):
         xval = float(details[1][1:])
         pid = int(details[2])
         label = r"{yvar}, flav = {flav}, ${xvar} = {xval}$".format(yvar=yvar, xvar=xvar, xval=latex_float(xval), flav=PARTONS.get(pid, pid))
-        index = xval
+        index = (yvar, xval)
         # except:
         #     pass
     index_fname[index] = fname
