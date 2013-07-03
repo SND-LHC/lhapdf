@@ -9,33 +9,12 @@ LHAPDF6 TODO list
 FOR BETA 3
 ----------
 
-- **Add lookup and log caching, and reprofile GridPDF (AB)**
-
-   Compare to LHA5 for same-member and multi-set random sampling. Where is the
-   limitation? Intend to compare to self once caching added.
-   => first profiling (no LHA5 comparison yet) indicates 70% of runtime in std::log!
-   => a second quick profiling has LHA6 about 4x slower than LHA5 with the
-     default logcubic interpolator, but about 20% _faster_ if a cubic
-     interpolation on linear x/Q space is used. Caching and/or representing the
-     grid entries in log space in the LHA6 format are obvious next steps.
-   Make KnotArrayNF a proper class, with accessors for xs and q2s and easier 1F
-   lookup. Maybe put x and q2 arrays on the NF class and pre-emptively log() them?
-
-
-- **"Uncontrolled" bulk PDF migration (AB)**
+- **Uncontrolled bulk PDF migration (AB)**
 
    Just migrate lots of major sets without explicit quality checking. It's a
-   beta, live with it...
-
-- **Bundle Cython generated files if possible so Cython isn't needed for a tarball build**
-
-   If possible. I think this is actually important: every dependency will put
-   off a large fraction of potential users. Although, cf. Rivet, a pre-supplied
-   build will be important for reducing that social/technical problem.
+   beta, live with it... Include CT10 and CT10nlo
 
 - **Add AlphaS and Info/Config mappings to Cython (AB)**
-
-- **Improve CTEQ6L1 grid efficiency (MR?)**
 
 - **Clarify / sort out tests vs. examples separation**
 
@@ -52,11 +31,19 @@ FOR BETA 3
 
    Map remaining "metadata" functions such as alpha_s, Nf, min/max x and Q2, etc.
 
-- **Clarify relationship of AlphaS to PDF(Set)**
+- **Versioning scheme for PDF data**
 
-   Do we insist that all AlphaS are bound to PDF level, or can PDFSets have an
-   AlphaS? At the moment an AlphaS can be made from an Info object of any level:
-   maybe that is enough.
+   In metadata and tarball filenames?
+
+
+FOR RELEASE CANDIDATE
+---------------------
+
+- **Check why MSTW2008NNLO interpolation goes so wild at low Q**
+
+   The original PDF goes negative around here... can the cubic interpolation cope?
+
+- **Improve CTEQ6L1 grid efficiency (MR?)**
 
 - **MSTW2008 PDF migration (GW)**
 
@@ -67,45 +54,6 @@ FOR BETA 3
    Just the "main" sets for now. More automation of validation required... we
    can't check thousands of plots so need a more compact performance metric.
 
-- **Use Autoconf's more robust FC_* Fortran function name macros**
-
-   This would require testing for a Fortran compiler, which we would rather not
-   do... Test for a Fortran compiler unless told not to build LHAGLUE?
-
-- **Printing out banner info... needed by code that greps for it :-/**
-
-   e.g. ATLAS' Generate_trf.py. Implement the Fortran getdescription_() and
-   require it to be explicitly called? Or automatically call it from the Fortran
-   interface only.
-
-- **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
-
-
-FOR BETA 4
-----------
-
-- **Improved x -> 1 (and Q -> 0?) evolution (GW,...)**
-
-   Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
-   all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
-   deserves specialisation beyond generic splines. Graeme will look at what's
-   done in the CTEQ code (other than interpolating in x**0.3)
-
-- **Complete and test ODE and analytic alpha_s running (KN,SL,MR,GW)**
-
-   The ODE solver needs serious optimisation, and numerically the results look
-   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
-   evolution... looks like we can't borrow their ODE code without introducing a
-   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
-   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
-
-- **Profile AlphaS_ODE**
-
-- **Separate the x and Q2 inter/extrapolation?**
-
-   Allow mix & match combinations. Would this simplify the code since the
-   1D interpolation methods are very simple and the 2D is built from them?
-
 
 FOR STABLE 6.0.0 RELEASE
 ------------------------
@@ -114,13 +62,26 @@ FOR STABLE 6.0.0 RELEASE
 
    Target at EPJC Tools or CPC?
 
-- **Versioning scheme for PDF data**
+- **Print out banner info?... needed by code that greps for it :-/**
 
-   In metadata and tarball filenames?
+   e.g. ATLAS' Generate_trf.py. Implement the Fortran getdescription_() and
+   require it to be explicitly called? Or automatically call it from the Fortran
+   interface only. *Or provide a C++ function to return the current PDF identity
+   and call that explicitly.*
+
+- **Bundle Cython generated files if possible so Cython isn't needed for a tarball build**
+
+   If possible. I think this is actually important: every dependency will put
+   off a large fraction of potential users. Although, cf. Rivet, a pre-supplied
+   build will be important for reducing that social/technical problem.
 
 
 AS AND WHEN
 -----------
+
+- **Expose LHAGLUE slots system for C++ use**
+
+   Automatic memory management can be nice for everyone.
 
 - **Support photon structure functions**
 
@@ -132,7 +93,36 @@ AS AND WHEN
    probably nuclear PDFs will inherit from PDF (since they are PDFs) and
    _contain_ a nucleon PDF whose values will be modified before returning.
 
-- **Allow use of valence/sea etc. decompostions**
+- **Improved x -> 1 (and Q -> 0?) evolution (GW,...)**
+
+   Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
+   all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
+   deserves specialisation beyond generic splines. Graeme will look at what's
+   done in the CTEQ code (other than interpolating in x**0.3)
+
+- **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
+
+- **Complete and test ODE and analytic alpha_s running (KN,SL,MR,GW)**
+
+   The ODE solver needs serious optimisation, and numerically the results look
+   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
+   evolution... looks like we can't borrow their ODE code without introducing a
+   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
+   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
+
+- **Profile AlphaS_ODE**
+
+- **Use Autoconf's more robust FC_* Fortran function name macros**
+
+   This would require testing for a Fortran compiler, which we would rather not
+   do... Test for a Fortran compiler unless told not to build LHAGLUE?
+
+- **Separate the x and Q2 inter/extrapolation?**
+
+   Allow mix & match combinations. Would this simplify the code since the
+   1D interpolation methods are very simple and the 2D is built from them?
+
+- **Allow use of valence/sea etc. decompositions**
 
    GridPDF may be inherited from to allow the returned values to be built from
    separate interpolations of component PDFs such as interpolated valence, sea,
