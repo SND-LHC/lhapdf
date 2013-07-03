@@ -9,6 +9,7 @@
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Version.h"
+#include "LHAPDF/LHAGlue.h"
 
 using namespace std;
 
@@ -378,5 +379,36 @@ extern "C" {
 
 
 }
+// LHAPDF namespace compatibility code
 
+int LHAPDF::numberPDF(){
+  int nmem;
+  numberpdf_(nmem);
+  return nmem;
+}
 
+int LHAPDF::numberPDF(int nset){
+  int nmem;
+  numberpdfm_(nset,nmem);
+  return nmem;
+}
+
+void LHAPDF::initPDF( int memset){
+    int nset1 = 1;
+    initpdfm_(nset1, memset);
+}
+
+void LHAPDF::initPDF(int nset, int memset){
+    initpdfm_(nset, memset);
+}
+
+double LHAPDF::xfx(double x, double Q, int fl) {
+    vector<double> r(13);
+    evolvepdf_(x, Q, &r[0]);
+    return r[fl+6];
+}
+double LHAPDF::xfx(int nset, double x, double Q, int fl) {
+    vector<double> r(13);
+   evolvepdfm_(nset, x, Q, &r[0]);
+    return r[fl+6];
+}

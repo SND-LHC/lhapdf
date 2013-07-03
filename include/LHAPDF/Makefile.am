@@ -1,5 +1,6 @@
 pkginclude_HEADERS = \
   LHAPDF.h \
+  LHAGlue.h \
   Version.h \
   Info.h \
   Config.h \

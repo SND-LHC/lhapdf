@@ -15,3 +15,4 @@
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Paths.h"
+#include "LHAPDF/LHAGlue.h"
