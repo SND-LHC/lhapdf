@@ -1,3 +1,7 @@
+2013-07-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Converting the KnotArrayNF typedef to be a fully-fledged class.
+
 2013-06-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 6.0.0b2 release.

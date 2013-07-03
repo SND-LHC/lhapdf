@@ -181,8 +181,7 @@ namespace LHAPDF {
 
     /// Get the 1-flavour subgrid for PID=id containing Q2 = q2
     const KnotArray1F& subgrid(int id, double q2) const {
-      if (!hasFlavor(id)) throw FlavorError("Undefined particle ID requested: " + to_str(id));
-      return subgrid(q2).find(id)->second;
+      return subgrid(q2).get_pid(id);
     }
 
     /// @brief Return a representative list of interpolation knots in x
@@ -190,7 +189,7 @@ namespace LHAPDF {
     /// The x knot array for the first flavor grid of the lowest-Q2 subgrid is returned.
     const vector<double>& xKnots() const {
       const KnotArrayNF& subgrid1 = _knotarrays.begin()->second;
-      const KnotArray1F& grid1 = subgrid1.begin()->second;
+      const KnotArray1F& grid1 = subgrid1.get_first();
       return grid1.xs();
     }
 
@@ -203,7 +202,7 @@ namespace LHAPDF {
         /// @todo Roll on C++11... range-based for and auto :-)
         for (map<double, KnotArrayNF>::const_iterator isub = _knotarrays.begin(); isub != _knotarrays.end(); ++isub) {
           const KnotArrayNF& subgrid = isub->second;
-          const KnotArray1F& grid1 = subgrid.begin()->second;
+          const KnotArray1F& grid1 = subgrid.get_first();
           if (grid1.q2s().empty()) continue;
           foreach (const double& q2, grid1.q2s()) {
             if (_q2knots.empty() || q2 != _q2knots.back()) _q2knots.push_back(q2);
