@@ -57,7 +57,7 @@ namespace LHAPDF {
     virtual std::string type() const = 0;
 
     /// Set the order of QCD (expressed as number of loops)
-    void setQCDorder(int order) { _qcdorder = order - 1; }
+    void setQCDorder(int order) { _qcdorder = order; }
 
     // These are defined to avoid problems with
     // for example mkAlphaS... Is there a nicer way to do this?
@@ -83,7 +83,7 @@ namespace LHAPDF {
     /// Calculated using the MSbar scheme
     double _beta(int i, int nf) const;
     /// Calculate a vector of beta functions given the number of active flavours
-    /// Currently returns a 3-element vector of beta0 -- beta3
+    /// Currently returns a 4-element vector of beta0 -- beta3
     std::vector<double> _betas(int nf) const;
     /// Get quark masses by PDG code
     double _qmass(int id) const { return _qmasses[abs(id)-1]; }
@@ -131,6 +131,10 @@ namespace LHAPDF {
     double _mz;
     /// Value of alpha_s(MZ)
     double _alphas_mz;
+    /// Calculate the derivative at Q2 = t, alpha_S = y
+    double _derivative(double t, double y, const std::vector<double>& beta) const;
+    /// Calculate the next step using RK4 with adaptive step size
+    vector<double> _rk4(double t, double y, double h, const double allowed_change) const;
   };
 
 

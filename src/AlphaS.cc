@@ -25,11 +25,13 @@ namespace LHAPDF {
 
   // Calculate a beta function given the number of active flavours
   double AlphaS::_beta(int i, int nf) const {
-    if (i == 0) return (double) (33 - 2*nf)/(12*M_PI);
-    if (i == 1) return (double) (153 - 19*nf)/(24*sqr(M_PI));
-    if (i == 2) return (double) (2857 - (5033 / 9.0)*nf + (325 / 27.0)*sqr(nf))/(128*sqr(M_PI)*M_PI);
-    if (i == 3) return (double) ( (149753/6.) + 3564*ZETA_3 - ((1078361/162.) + (6502/27.)*ZETA_3)*nf +
-                                ((50065/162.) + (6472/81.)*ZETA_3)*sqr(nf) + (1093/729.)*sqr(nf)*nf)/(256*sqr(M_PI)*sqr(M_PI));
+    if (i == 0) return (double) 0.875352187 - 0.053051647*nf; //(33 - 2*nf)/(12*M_PI)
+    if (i == 1) return (double) 0.6459225457 - 0.0802126037*nf; //(153 - 19*nf)/(24*sqr(M_PI))
+    if (i == 2) return (double) 0.719864327 - 0.140904490*nf + 0.00303291339*nf*nf; //(2857 - (5033 / 9.0)*nf + (325 / 27.0)*sqr(nf))/(128*sqr(M_PI)*M_PI)
+    if (i == 3) return (double) 1.172686 - 0.2785458*nf + 0.01624467*nf*nf + 0.0000601247*nf*nf*nf;
+    // ( (149753/6.) + 3564*ZETA_3 - ((1078361/162.) + (6502/27.)*ZETA_3)*nf +
+    // ((50065/162.) + (6472/81.)*ZETA_3)*sqr(nf) + (1093/729.)*sqr(nf)*nf)/(256*sqr(M_PI)*sqr(M_PI))
+
     throw Exception("Invalid index " + to_str(i) + " for requested beta function");
   }
 
