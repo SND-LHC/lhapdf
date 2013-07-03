@@ -106,23 +106,13 @@ namespace LHAPDF {
           assert(ipid_xfs.size() > 0);
 
           // Register data from the previous (>0th) block into the GridPDF data structure
-          // KnotArrayNF arraynf;
           KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
           for (size_t ipid = 0; ipid < npid; ++ipid) {
             const int pid = flavors()[ipid];
-            arraynf[pid] = KnotArray1F(xs, q2s); // create the 2D array with the x and Q2 knot positions
-            // Populate the xf data array (version 1: neat but portability not guaranteed?)
+            // Create the 2D array with the x and Q2 knot positions
+            arraynf[pid] = KnotArray1F(xs, q2s);
+            // Populate the xf data array
             arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end());
-            // // Populate the xf data array (version 2: one loop across list, converting to 2 subindices)
-            // for (size_t i = 0; i < ipid_xfs[ipid].size(); ++i) {
-            //   arraynf[pid].xfs()[i / q2s.size()][i % q2s.size()] = ipid_xfs[ipid][i];
-            // }
-            // // Populate the xf data array (version 3: two loops across subindices, constructing list index)
-            // for (ix = 0; ix < xs.size(); ++ix) {
-            //   for (iq = 0; iq < q2s.size(); ++iq) {
-            //     arraynf[pid].xfs()[ix][iq] = ipid_xfs[ipid][iq*q2s.size() + ix];
-            //   }
-            // }
           }
           //cout << _knotarrays.size() << endl;
           xs.clear(); q2s.clear();
