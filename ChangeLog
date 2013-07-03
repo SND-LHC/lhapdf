@@ -1,5 +1,9 @@
 2013-07-03  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Using the cached/precomputed log(x) and log(Q2) values in the
+	log-bicubic interpolator. Looks like an immediate factor of 5
+	speed-up :-D
+
 	* Adding log(x) and log(Q2) knot position accessors to KnotArray1F and KnotArrayNF.
 
 	* Adding log(x) and log(Q2) knot position arrays to KnotArray1F.
