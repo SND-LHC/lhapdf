@@ -9,10 +9,15 @@ LHAPDF6 TODO list
 FOR BETA 3
 ----------
 
-- **Add interpolation-from-metadata implementation of AlphaS (MR,KN)**
+- **.lha -> .dat to avoid confusion with LHA archives (AB)**
 
-   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
-   values robustly to implement 1D subgrids.
+- **Test the interpolation AlphaS system (MR,KN)**
+
+   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays.
+
+   To do: use doubled Q2 values to implement 1D subgrids.
+
+- **AlphaS interface tidying and FFNS/VFNS metadata**
 
 - **Fortran compatibility**
 
@@ -23,11 +28,18 @@ FOR BETA 3
 - **Uncontrolled bulk PDF migration (AB)**
 
    Just migrate lots of major sets without explicit quality checking. It's a
-   beta, live with it... Include CT10 and CT10nlo
+   beta, live with it... Include:
+     CT10, CT10nlo, CT10nnlo
+     HERAPDF15NNLO_EIG, HERAPDF15NNLO_VAR
+     HERAPDF15NLO_EIG, HERAPDF15NLO_VAR
+     MSTW2008lo68cl, MSTW2008lo90cl
+     MSTW2008nlo68cl, MSTW2008nlo90cl
+     MSTW2008nnlo68cl, MSTW2008nnlo90cl
+     MRSTMCal, MRST2007lomod
+     NNPDF23_nlo_as_0114 .. 0124
+     NNPDF23_nnlo_as_0114 .. 0124
 
-- **.lha -> .dat or .grid to avoid confusion with LHA archives? (AB)**
-
-- **Add AlphaS and Info/Config mappings to Cython (AB)**
+- **Add Info/Config mappings to Cython (AB)**
 
 - **Clarify / sort out tests vs. examples separation**
 
@@ -81,9 +93,13 @@ FOR STABLE 6.0.0 RELEASE
 AS AND WHEN
 -----------
 
+- **Add AlphaS mappings to Cython (AB)**
+
 - **Expose LHAGLUE slots system for C++ use**
 
    Automatic memory management can be nice for everyone.
+
+- **MRST2004qed migration**
 
 - **Support photon structure functions**
 
