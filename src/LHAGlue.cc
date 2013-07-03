@@ -412,3 +412,27 @@ double LHAPDF::xfx(int nset, double x, double Q, int fl) {
    evolvepdfm_(nset, x, Q, &r[0]);
     return r[fl+6];
 }
+
+#define SIZE 999
+void initPDFSetByName(const string& filename) {
+  char cfilename[SIZE+1];
+  strncpy(cfilename, filename.c_str(), SIZE);
+  initpdfsetbyname_(cfilename, filename.length());
+}
+
+void initPDFSetByName(int nset, const string& filename) {
+  char cfilename[SIZE+1];
+  strncpy(cfilename, filename.c_str(), SIZE);
+  initpdfsetbynamem_(nset, cfilename, filename.length());
+}
+
+
+double LHAPDF::alphasPDF(double Q) {
+  return LHAPDF::alphasPDF(1, Q) ;
+}
+double LHAPDF::alphasPDF(int nset, double Q) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // return alphaS for the requested set
+    return ACTIVESETS[nset].activemember()->alphasQ(Q);
+}

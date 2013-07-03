@@ -8,6 +8,12 @@
 /// @file LHAGlue.h
 /// A file that provides backwards compatibility for some C functions from lhapdf 5.x
 
+
+/// The PDF set by filename, see subdir @c PDFsets of LHAPDF for choices.
+void initPDFSetByName(const std::string& filename);
+/// The PDF set by filename, see subdir @c PDFsets of LHAPDF for choices.
+void initPDFSetByName(int nset, const std::string& filename);
+
 namespace LHAPDF {
   /// Number of members available in the current set.
   int numberPDF();
@@ -29,6 +35,10 @@ namespace LHAPDF {
   /// @arg 0 = \f$ g \f$
   /// @arg 1..6 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
   double xfx(int nset, double x, double Q, int fl);
+  /// \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
+  double alphasPDF(double Q);
+  /// \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
+  double alphasPDF(int nset, double Q);
 
 
   /// @brief Distinction between evolution or interpolation PDF sets.
