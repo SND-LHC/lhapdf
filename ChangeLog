@@ -1,5 +1,7 @@
 2013-07-03  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding log(x) and log(Q2) knot position arrays to KnotArray1F.
+
 	* Converting the KnotArrayNF typedef to be a fully-fledged class.
 
 2013-06-19  Andy Buckley  <andy.buckley@cern.ch>

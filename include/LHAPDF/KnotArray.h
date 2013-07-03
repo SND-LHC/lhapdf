@@ -17,8 +17,13 @@ namespace LHAPDF {
   /// The "1F" means that this is a single-flavour array
   class KnotArray1F {
   public:
+
     /// Use the Boost multi_array for efficiency and ease of indexing
     typedef boost::multi_array<double, 2> valarray;
+
+
+    /// @name Construction etc.
+    //@{
 
     /// Default constructor just for std::map insertability
     KnotArray1F() {}
@@ -26,24 +31,49 @@ namespace LHAPDF {
     /// Constructor from x and Q2 knot values, and an xf value grid
     KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots, const valarray& xfs)
       : _xs(xknots), _q2s(q2knots), _xfs(xfs)
-    { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
+    {
+      assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size());
+      _sync();
+    }
 
     /// Constructor from x and Q2 knot values
-    /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
     KnotArray1F(const std::vector<double>& xknots, const std::vector<double>& q2knots)
-      : _xs(xknots), _q2s(q2knots), _xfs(boost::extents[xknots.size()][q2knots.size()])
-    { assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size()); }
+      : _xs(xknots), _q2s(q2knots),
+        _xfs(boost::extents[xknots.size()][q2knots.size()])
+    {
+      assert(_xfs.shape()[0] == xknots.size() && _xfs.shape()[1] == q2knots.size());
+      _sync();
+    }
+
+    /// Constructor from another KnotArray1F
+    ///
+    /// An explicit copy constructor is needed due to the Boost multi_array copy semantics
+    KnotArray1F(const KnotArray1F& other)
+      : _xs(other._xs), _q2s(other._q2s),
+        _logxs(other._logxs), _logq2s(other._logq2s)
+    {
+      _xfs.resize(boost::extents[other._xfs.shape()[0]][other._xfs.shape()[1]]);
+      _xfs = other._xfs;
+      assert(_xfs.shape()[0] == _xs.size() && _xfs.shape()[1] == _q2s.size());
+    }
 
     /// An explicit operator= is needed due to the Boost multi_array copy semantics
     KnotArray1F& operator=(const KnotArray1F& other) {
       _xs = other._xs;
       _q2s = other._q2s;
-      /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
+      _logxs = other._logxs;
+      _logq2s = other._logq2s;
       _xfs.resize(boost::extents[other._xfs.shape()[0]][other._xfs.shape()[1]]);
       _xfs = other._xfs;
       assert(_xfs.shape()[0] == _xs.size() && _xfs.shape()[1] == _q2s.size());
       return *this;
     }
+
+    //@}
+
+
+    /// @name x stuff
+    //@{
 
     /// x knot accessor
     const std::vector<double>& xs() const { return _xs; }
@@ -65,6 +95,11 @@ namespace LHAPDF {
       return i;
     }
 
+    //@}
+
+
+    /// @name Q2 stuff
+    //@{
 
     /// Q2 knot accessor
     const std::vector<double>& q2s() const { return _q2s; }
@@ -86,6 +121,11 @@ namespace LHAPDF {
       return i;
     }
 
+    //@}
+
+
+    /// @name PDF values at (x, Q2) points
+    //@{
 
     /// xf value accessor (const)
     const valarray& xfs() const { return _xfs; }
@@ -98,25 +138,27 @@ namespace LHAPDF {
     /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
     const double& xf(size_t ix, size_t iq2) const { return _xfs[ix][iq2]; }
 
-
-    // /// @brief Transform a (ix, iQ2) pair into a 1D "raw" index
-    // ///
-    // /// @todo Rework to use the multi-grid system
-    // size_t ptindex(size_t ix, size_t iq2) const {
-    //   if (ix >= xKnots().size()) throw GridError("Invalid x index");
-    //   if (iq2 >= q2Knots().size()) throw GridError("Invalid Q2 index");
-    //   return ix + iq2 * xKnots().size();
-    // }
+    //@}
 
 
   private:
 
+    /// Synchronise log(x) and log(Q2) arrays from the x and Q2 ones
+    void _sync() {
+      _logxs.resize(_xs.size());
+      _logq2s.resize(_q2s.size());
+      for (size_t i = 0; i < _xs.size(); ++i) _logxs[i] = log(_xs[i]);
+      for (size_t i = 0; i < _q2s.size(); ++i) _logq2s[i] = log(_q2s[i]);
+    }
+
     /// List of x knots
-    /// @todo Add log(x) knots
     vector<double> _xs;
     /// List of Q2 knots
-    /// @todo Add log(Q2) knots
     vector<double> _q2s;
+    /// List of log(x) knots
+    vector<double> _logxs;
+    /// List of log(Q2) knots
+    vector<double> _logq2s;
     /// List of xf values across the knot array
     valarray _xfs;
 
