@@ -75,11 +75,14 @@ namespace LHAPDF {
     /// @name x stuff
     //@{
 
+    /// x knot setter
+    void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
     /// x knot accessor
     const std::vector<double>& xs() const { return _xs; }
-    /// x knot setter
-    /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
-    void setxs(const std::vector<double>& xs) { _xs = xs; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
+    /// log(x) knot accessor
+    const std::vector<double>& logxs() const { return _logxs; }
 
     /// @brief Get the index of the closest x knot row <= x
     ///
@@ -101,11 +104,14 @@ namespace LHAPDF {
     /// @name Q2 stuff
     //@{
 
+    /// Q2 knot setter
+    void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
     /// Q2 knot accessor
     const std::vector<double>& q2s() const { return _q2s; }
-    /// Q2 knot setter
-    /// @todo Reverse the order of lookup here to reverse the order of x and Q2 strides in the data file
-    void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
+    /// log(Q2) knot accessor
+    const std::vector<double>& logq2s() const { return _logq2s; }
 
     /// Get the index of the closest Q2 knot row <= q2
     ///
@@ -152,13 +158,13 @@ namespace LHAPDF {
     }
 
     /// List of x knots
-    vector<double> _xs;
+    std::vector<double> _xs;
     /// List of Q2 knots
-    vector<double> _q2s;
+    std::vector<double> _q2s;
     /// List of log(x) knots
-    vector<double> _logxs;
+    std::vector<double> _logxs;
     /// List of log(Q2) knots
-    vector<double> _logq2s;
+    std::vector<double> _logq2s;
     /// List of xf values across the knot array
     valarray _xfs;
 
@@ -204,11 +210,15 @@ namespace LHAPDF {
 
     /// Access the xs array
     const std::vector<double>& xs() const { return get_first().xs(); }
-    /// Access the Q2s array
-    const std::vector<double>& q2s() const { return get_first().q2s(); }
-
+    /// Access the log(x)s array
+    const std::vector<double>& logxs() const { return get_first().logxs(); }
     /// Get the index of the closest x knot column <= x (see KnotArray1F)
     size_t ixbelow(double x) const { return get_first().ixbelow(x); }
+
+    /// Access the Q2s array
+    const std::vector<double>& q2s() const { return get_first().q2s(); }
+    /// Access the log(Q2)s array
+    const std::vector<double>& logq2s() const { return get_first().logq2s(); }
     /// Get the index of the closest Q2 knot row <= q2 (see KnotArray1F)
     size_t iq2below(double q2) const { return get_first().iq2below(q2); }
 
@@ -216,6 +226,7 @@ namespace LHAPDF {
 
     /// Storage
     std::map<int, KnotArray1F> _map;
+
   };
 
 
