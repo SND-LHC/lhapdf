@@ -20,6 +20,9 @@ namespace LHAPDF {
   class AlphaS;
 
 
+  /// @name Factory functions for various Info objects
+  //@{
+
   /// Get the global configuration object
   ///
   /// The global config is populated by reading from lhapdf.conf if it is found
@@ -49,6 +52,21 @@ namespace LHAPDF {
   /// object. Do NOT delete it yourself! Hence the return by reference rather
   /// than pointer.
   PDFSet& getPDFSet(const std::string& setname);
+
+
+  /// Create a new Info object for the given set name and member number.
+  ///
+  /// Returns a 'new'ed Info by pointer.
+  /// The caller is responsible for deletion of the created object.
+  Info* mkPDFInfo(const std::string& setname, int member);
+
+  /// Create a new Info object with the given LHAPDF ID code.
+  ///
+  /// Returns a 'new'ed Info by pointer.
+  /// The caller is responsible for deletion of the created object.
+  Info* mkPDFInfo(int lhaid);
+
+  //@}
 
 
   /// @name Factory functions for making single PDF members

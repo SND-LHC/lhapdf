@@ -28,7 +28,8 @@ namespace LHAPDF {
     /// Base class constructor for default param setup
     AlphaS();
 
-    ~AlphaS() {};
+    /// Destructor
+    virtual ~AlphaS() {};
 
     /// Calculate alphaS(Q)
     double alphasQ(double q) const { return alphasQ2(q*q); }

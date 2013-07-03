@@ -33,6 +33,16 @@ namespace LHAPDF {
   }
 
 
+  Info* mkPDFInfo(const std::string& setname, int member) {
+    return new Info(findpdfmempath(setname, member));
+  }
+
+  Info* mkPDFInfo(int lhaid) {
+    const pair<string,int> setname_memid = lookupPDF(lhaid);
+    return mkPDFInfo(setname_memid.first, setname_memid.second);
+  }
+
+
   PDF* mkPDF(const string& setname, int member) {
     // First create an Info object to work out what format of PDF this is:
     Info info(findpdfmempath(setname, member));

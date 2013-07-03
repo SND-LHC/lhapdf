@@ -9,17 +9,6 @@ LHAPDF6 TODO list
 FOR BETA 3
 ----------
 
-- **Uncontrolled bulk PDF migration (AB)**
-
-   Just migrate lots of major sets without explicit quality checking. It's a
-   beta, live with it... Include CT10 and CT10nlo
-
-- **Add AlphaS and Info/Config mappings to Cython (AB)**
-
-- **Clarify / sort out tests vs. examples separation**
-
-   And maybe disable buiding of these from the default top-level make target.
-
 - **Add interpolation-from-metadata implementation of AlphaS (MR,KN)**
 
    Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays. Hope we can use doubled Q2
@@ -31,9 +20,22 @@ FOR BETA 3
 
    Map remaining "metadata" functions such as alpha_s, Nf, min/max x and Q2, etc.
 
+- **Uncontrolled bulk PDF migration (AB)**
+
+   Just migrate lots of major sets without explicit quality checking. It's a
+   beta, live with it... Include CT10 and CT10nlo
+
+- **.lha -> .dat or .grid to avoid confusion with LHA archives? (AB)**
+
+- **Add AlphaS and Info/Config mappings to Cython (AB)**
+
+- **Clarify / sort out tests vs. examples separation**
+
+   And maybe disable building of these from the default top-level make target.
+
 - **Versioning scheme for PDF data**
 
-   In metadata and tarball filenames?
+   In metadata _and_ in tarball filenames?
 
 
 FOR RELEASE CANDIDATE

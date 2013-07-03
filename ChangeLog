@@ -1,5 +1,7 @@
 2013-07-03  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding two PDF-level Info factory functions.
+
 	* Using the cached/precomputed log(x) and log(Q2) values in the
 	log-bicubic interpolator. Looks like an immediate factor of 5
 	speed-up :-D
