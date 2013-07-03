@@ -49,7 +49,7 @@ AC_PROG_LIBTOOL
 ## Enable debugging symbols.
 AC_ARG_ENABLE([debug],
   [AC_HELP_STRING(--enable-debug, [build with debugging symbols (default=no)])],
-  [], [enable_debug=no])
+  [enable_debug=yes], [enable_debug=no])
 if test x$enable_debug == xyes; then
   [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
 fi
@@ -137,6 +137,7 @@ AC_SUBST(BOOST_LIBS)
 AC_ARG_WITH([yaml-cpp], AS_HELP_STRING([--with-yaml-cpp], [indicate the position of the yaml-cpp library]))
 AC_ARG_WITH([yamp-cpp-lib], AS_HELP_STRING([--with-yaml-cpp-lib], [indicate the position of the yaml-cpp lib directory (the one containing libyaml-cpp.so)]))
 AC_ARG_WITH([yaml-cpp-inc], AS_HELP_STRING([--with-yaml-cpp-inc], [indicate the position of the yaml-cpp include directory (the one *containing* the 'yaml-cpp' directory)]))
+YAMLCPP_CPPFLAGS=
 test "$with_yaml_cpp" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp/include"
 test "$with_yaml_cpp_inc" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp_inc"
 YAMLCPP_LDFLAGS=

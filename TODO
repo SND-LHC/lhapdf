@@ -9,6 +9,19 @@ LHAPDF6 TODO list
 FOR BETA 3
 ----------
 
+- **Add lookup and log caching, and reprofile GridPDF (AB)**
+
+   Compare to LHA5 for same-member and multi-set random sampling. Where is the
+   limitation? Intend to compare to self once caching added.
+   => first profiling (no LHA5 comparison yet) indicates 70% of runtime in std::log!
+   => a second quick profiling has LHA6 about 4x slower than LHA5 with the
+     default logcubic interpolator, but about 20% _faster_ if a cubic
+     interpolation on linear x/Q space is used. Caching and/or representing the
+     grid entries in log space in the LHA6 format are obvious next steps.
+   Make KnotArrayNF a proper class, with accessors for xs and q2s and easier 1F
+   lookup. Maybe put x and q2 arrays on the NF class and pre-emptively log() them?
+
+
 - **"Uncontrolled" bulk PDF migration (AB)**
 
    Just migrate lots of major sets without explicit quality checking. It's a
@@ -44,16 +57,6 @@ FOR BETA 3
    Do we insist that all AlphaS are bound to PDF level, or can PDFSets have an
    AlphaS? At the moment an AlphaS can be made from an Info object of any level:
    maybe that is enough.
-
-- **Add lookup and log caching, and reprofile GridPDF (AB)**
-
-   Compare to LHA5 for same-member and multi-set random sampling. Where is the
-   limitation? Intend to compare to self once caching added.
-   => first profiling (no LHA5 comparison yet) indicates 70% of runtime in std::log!
-   => a second quick profiling has LHA6 about 4x slower than LHA5 with the
-     default logcubic interpolator, but about 20% _faster_ if a cubic
-     interpolation on linear x/Q space is used. Caching and/or representing the
-     grid entries in log space in the LHA6 format are obvious next steps.
 
 - **MSTW2008 PDF migration (GW)**
 
