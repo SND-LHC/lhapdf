@@ -123,7 +123,12 @@ namespace LHAPDF {
       if (info.has_key("Lambda4")) as->setLambda(4, info.metadata_as<double>("Lambda4"));
       if (info.has_key("Lambda5")) as->setLambda(5, info.metadata_as<double>("Lambda5"));
     }
-    if (as->type() == "ipol") { /* populate interpolation vector */ }
+    if (as->type() == "ipol") {
+      if( !(info.has_key("AlphaS_Q2")) && !(info.has_key("AlphaS_V")) )
+          throw Exception("ERROR ALPHAS_IPOL");
+      if (info.has_key("AlphaS_Q2")) as->setQ2Values( info.metadata_as<std::vector<double> >("AlphaS_Q2"));
+      if (info.has_key("AlphaS_V")) as->setAlphaSValues( info.metadata_as<std::vector<double> >("AlphaS_V"));
+    }
     return as;
   }
 

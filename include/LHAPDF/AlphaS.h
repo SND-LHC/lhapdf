@@ -67,6 +67,10 @@ namespace LHAPDF {
     virtual void setAlphaSMZ(double alphas) {};
     virtual void setLambda(unsigned int i, double lambda) {};
 
+    //added for AlphaS_Ipol
+    virtual void setQ2Values( std::vector<double> ) {};
+    virtual void setAlphaSValues( std::vector<double> ) {};
+
   protected:
 
     /// Masses of quarks in GeV.  Used to calculate the number
@@ -136,6 +140,18 @@ namespace LHAPDF {
     std::string type() const { return "ipol"; }
     double alphasQ2(double q2) const;
     int nf_Q2(double q2) const;
+
+    void setQ2Values( std::vector<double> q2s ) { _q2s = q2s; }
+    void setAlphaSValues( std::vector<double> as ) { _as = as; }
+
+  private:
+    double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH ) const;
+    double _ddq_central( size_t i ) const;
+    double _ddq_forward( size_t i ) const;
+    double _ddq_backward( size_t i ) const;
+
+    std::vector<double> _q2s;
+    std::vector<double> _as;
   };
 
 
