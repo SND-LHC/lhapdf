@@ -258,12 +258,15 @@ extern "C" {
   }
 
 
-  /// @todo What does this do?
   void numberpdfm_(int& nset, int& numpdf) {
-    /// @todo Implement me!
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // set equal to the number of members  for the requested set
+    numpdf=  ACTIVESETS[nset].activemember()->info().metadata_as<int>("NumMembers");
+    // reproduce old lhapdf v5 behaviour , subtract 1 if more than 1 member set
+    if (numpdf > 1) numpdf-=1;
   }
 
-  /// @todo What does this do?
   void numberpdf_(int& numpdf) {
     int nset1 = 1;
     numberpdfm_(nset1, numpdf);
