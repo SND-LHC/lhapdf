@@ -112,22 +112,24 @@ namespace LHAPDF {
     if (info.has_key("MBottom")) as->setQmass(5, info.get_entry_as<double>("MBottom"));
     if (info.has_key("MTop")) as->setQmass(6, info.get_entry_as<double>("MTop"));
     if (as->type() == "ode") {
-      if( !(info.has_key("AlphaS_MZ")) || !(info.has_key("MZ")) )throw Exception("Requested ODE AlphaS but the required parameters are not defined.");
+      if (!(info.has_key("AlphaS_MZ")) || !(info.has_key("MZ")) )
+        throw MetadataError("Requested ODE AlphaS but the required parameters are not defined.");
       as->setAlphaSMZ(info.get_entry_as<double>("AlphaS_MZ"));
       as->setMZ(info.get_entry_as<double>("MZ"));
     }
-    if (as->type() == "analytic") {
-      if( !(info.has_key("Lambda5")) && !(info.has_key("Lambda4")) &&
-          !(info.has_key("Lambda3")) )throw Exception("Requested analytic AlphaS but the required parameters are not defined.");
+    else if (as->type() == "analytic") {
+      /// @todo Handle FFNS / VFNS
+      if (!(info.has_key("Lambda5")) || !(info.has_key("Lambda4")) || !(info.has_key("Lambda3")) )
+        throw MetadataError("Requested analytic AlphaS but the required parameters are not defined.");
       if (info.has_key("Lambda3")) as->setLambda(3, info.get_entry_as<double>("Lambda3"));
       if (info.has_key("Lambda4")) as->setLambda(4, info.get_entry_as<double>("Lambda4"));
       if (info.has_key("Lambda5")) as->setLambda(5, info.get_entry_as<double>("Lambda5"));
     }
-    if (as->type() == "ipol") {
-      if( !(info.has_key("AlphaS_Q2")) && !(info.has_key("AlphaS_V")) )
-          throw Exception("ERROR ALPHAS_IPOL");
-      if (info.has_key("AlphaS_Q2")) as->setQ2Values( info.get_entry_as< vector<double> >("AlphaS_Q2"));
-      if (info.has_key("AlphaS_V")) as->setAlphaSValues( info.get_entry_as< vector<double> >("AlphaS_V"));
+    else if (as->type() == "ipol") {
+      if (!(info.has_key("AlphaS_Q2")) || !(info.has_key("AlphaS_V")) )
+        throw MetadataError("Requested ipol AlphaS but the required parameters are not defined.");
+      if (info.has_key("AlphaS_Qs")) as->setQValues( info.get_entry_as< vector<double> >("AlphaS_Qs"));
+      if (info.has_key("AlphaS_Vals")) as->setAlphaSValues( info.get_entry_as< vector<double> >("AlphaS_Vals"));
     }
     return as;
   }

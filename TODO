@@ -13,8 +13,6 @@ FOR BETA 3
 
 - **Define ConfidenceLevel flag for use with Hessian error sets**
 
-- **Use negative DataVersion numbers to indicate prelim instead of Status**
-
 - **Uncontrolled bulk PDF migration (AB)**
 
    Just migrate lots of major sets without explicit quality checking. It's a
@@ -30,10 +28,6 @@ FOR BETA 3
      NNPDF23_nnlo_as_0114 .. 0124
 
 - **Test the interpolation AlphaS system (MR,KN)**
-
-   Migrate to Q rather than Q2
-
-   Specify with AlphaS_Qs, and AlphaS_Vals metadata arrays.
 
    To do: use doubled Q values to implement 1D subgrids.
 

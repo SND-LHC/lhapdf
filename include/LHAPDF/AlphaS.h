@@ -8,11 +8,13 @@
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Exceptions.h"
 
-// Riemann zeta function \zeta(3)
-// used for calculating the third beta coefficient
+// Riemann zeta function \zeta(3) used for calculating the third beta coefficient
 #define ZETA_3 1.2020569031
 
 namespace LHAPDF {
+
+
+  /// @todo Tidy interface for RC
 
 
   /// @brief Calculator interface for computing alpha_s(Q2) in various ways
@@ -51,6 +53,8 @@ namespace LHAPDF {
     /// This allows for more/less than six quarks,
     /// but can not be used together with the other
     /// way of setting quark masses
+    ///
+    /// @todo Replace with a 6-arg function -- this is too vague/dangerous
     void setQmass(double value);
 
     /// Get the implementation type of this AlphaS
@@ -63,13 +67,14 @@ namespace LHAPDF {
     // for example mkAlphaS... Is there a nicer way to do this?
     // And if not, should these throw an exception/compile time error
     // if used when they are not needed instead of just doing nothing?
+    //
+    /// @todo Fix this design. Yuck :-(
     virtual void setMZ(double mz) {};
     virtual void setAlphaSMZ(double alphas) {};
     virtual void setLambda(unsigned int i, double lambda) {};
-
-    //added for AlphaS_Ipol
-    virtual void setQ2Values( std::vector<double> ) {};
-    virtual void setAlphaSValues( std::vector<double> ) {};
+    virtual void setQValues(const std::vector<double>& ) {};
+    virtual void setQ2Values(const std::vector<double>& ) {};
+    virtual void setAlphaSValues(const std::vector<double>& ) {};
 
   protected:
 
@@ -139,14 +144,20 @@ namespace LHAPDF {
 
 
   /// Interpolate alpha_s from tabulated points in Q2 via metadata
+  /// @todo Add Doxygen strings
   class AlphaS_Ipol : public AlphaS {
   public:
     std::string type() const { return "ipol"; }
     double alphasQ2(double q2) const;
     int nf_Q2(double q2) const;
 
-    void setQ2Values( std::vector<double> q2s ) { _q2s = q2s; }
-    void setAlphaSValues( std::vector<double> as ) { _as = as; }
+    void setQValues(const std::vector<double>& qs) {
+      std::vector<double> q2s;
+      foreach (double q, qs) q2s.push_back(q*q);
+      setQ2Values(q2s);
+    }
+    void setQ2Values(const std::vector<double>& q2s) { _q2s = q2s; }
+    void setAlphaSValues(const std::vector<double>& as) { _as = as; }
 
   private:
     double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH ) const;
