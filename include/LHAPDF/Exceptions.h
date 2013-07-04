@@ -88,6 +88,14 @@ namespace LHAPDF {
   };
 
 
+  /// @brief Error to be raised when an newer LHAPDF version is needed
+  class VersionError : public Exception {
+  public:
+    /// Constructor with error description string
+    VersionError(const std::string& what) : Exception(what) {}
+  };
+
+
   /// Problem exists between keyboard and chair.
   class UserError : public Exception {
   public:

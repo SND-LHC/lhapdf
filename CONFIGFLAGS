@@ -263,6 +263,32 @@ Masses of quarks and the Z0 boson in this PDF set's evolution. Default values
 are set in the global LHAPDF config.
 
 
+MinLHAPDFVersion
+----------------
+OPTIONAL but should be present if some LHAPDF6 versions are incompatible.
+(int): e.g. 600001
+
+Minimal LHAPDF version code (integerised) needed to use this PDF.
+
+
+# Status
+# ------
+# OPTIONAL
+# (enum str: approved/prelim)
+
+# Set this to 'prelim' if you want to flag this PDF as unsuitable for production use.
+# The LHAPDF system will produce a warning printout in that case.
+
+
+DataVersion
+-----------
+OPTIONAL
+(int)
+
+The version of this PDF's data file. Use a negative value to flag this PDF as
+unsuitable for production use. The LHAPDF system will produce a warning printout
+in that case.
+
 
 MEMBER LEVEL
 ============

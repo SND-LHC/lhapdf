@@ -1,5 +1,13 @@
 2013-07-04  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Write out AlphaS_Ipol info from creategrids if possible.
+
+	* Use a more accurate MZ in lhapdf.conf and creategrids.
+
+	* Add handling of MinLHAPDFVersion and DataVersion flags if present.
+
+	* Fix LHAPDF_VERSION_CODE to be an int rather than string.
+
 	* Renaming Info::metadata() to Info::get_entry(), plus Info::get_entry_as(), etc.
 
 2013-07-03  Andy Buckley  <andy.buckley@cern.ch>

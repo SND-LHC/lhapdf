@@ -9,15 +9,11 @@ LHAPDF6 TODO list
 FOR BETA 3
 ----------
 
-- **.lha -> .dat to avoid confusion with LHA archives (AB)**
+- **.lha -> .dat (AB)**
 
-- **Clarify / sort out tests vs. examples separation**
+- **Define ConfidenceLevel flag for use with Hessian error sets**
 
-   And maybe disable building of these from the default top-level make target.
-
-- **Versioning scheme for PDF data**
-
-   In metadata _and_ in tarball filenames?
+- **Use negative DataVersion numbers to indicate prelim instead of Status**
 
 - **Uncontrolled bulk PDF migration (AB)**
 
@@ -35,9 +31,15 @@ FOR BETA 3
 
 - **Test the interpolation AlphaS system (MR,KN)**
 
-   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays.
+   Migrate to Q rather than Q2
 
-   To do: use doubled Q2 values to implement 1D subgrids.
+   Specify with AlphaS_Qs, and AlphaS_Vals metadata arrays.
+
+   To do: use doubled Q values to implement 1D subgrids.
+
+   Define behaviour below/above the grid range.
+
+   Add subgrids
 
 - **AlphaS interface tidying and FFNS/VFNS metadata**
 
@@ -193,5 +195,7 @@ AS AND WHEN
    ErrorType metadata entry for each PDF set, working out the appropriate error
    treatment should be easy (I think it's best to not use words like
    "infallible"!)
+
+- ** **
 
 */

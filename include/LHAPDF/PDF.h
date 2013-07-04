@@ -12,6 +12,7 @@
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
+#include "LHAPDF/Version.h"
 
 namespace LHAPDF {
 
@@ -44,6 +45,18 @@ namespace LHAPDF {
     void _loadInfo(const path& mempath) {
       _mempath = mempath;
       _info = PDFInfo(_setname(), memberID());
+      /// Check that this is a sufficient version LHAPDF for this PDF
+      if (_info.has_key("MinLHAPDFVersion")) {
+        if (_info.get_entry_as<int>("MinLHAPDFVersion") > LHAPDF_VERSION_CODE) {
+          throw VersionError("Current LHAPDF version " + to_str(LHAPDF_VERSION_CODE)
+                             + " less than required " + _info.get_entry("MinLHAPDFVersion"));
+        }
+      }
+      /// Print out a warning message if this PDF data is unvalidated
+      if (_info.has_key("DataVersion") && _info.get_entry_as<int>("DataVersion") < 0) {
+        std::cerr << "WARNING: PDF #" << lhapdfID() << " is preliminary, unvalidated, "
+                  << "and not for production use!" << std::endl;
+      }
     }
 
     void _loadInfo(const std::string& setname, int member) {
