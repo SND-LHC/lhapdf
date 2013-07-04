@@ -15,8 +15,9 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 VERSIONFLAGS="-version-info 2:0:0" ## for 6.0.0
 AC_SUBST(VERSIONFLAGS)
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION, "$PACKAGE_VERSION", "LHAPDF version string")
+# TODO: improve this sed'ing so that it'll work with version digits > 9
 PACKAGE_VERSION_CODE=[`echo $PACKAGE_VERSION | sed -e 's/\./0/g' -e 's/\([0-9]\+\).*/\1/'`]
-AC_DEFINE_UNQUOTED(LHAPDF_VERSION_CODE, "$PACKAGE_VERSION_CODE", "LHAPDF version as an int")
+AC_DEFINE_UNQUOTED(LHAPDF_VERSION_CODE, $PACKAGE_VERSION_CODE, "LHAPDF version as an int")
 
 
 ## Mac OS X compatibility
