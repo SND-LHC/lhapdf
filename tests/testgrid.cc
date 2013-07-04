@@ -6,9 +6,10 @@
 using namespace LHAPDF;
 using namespace std;
 
+
 void safeprint(const PDF& pdf, const string& key) {
   if (pdf.info().has_key(key))
-    cout << key << " = " << pdf.info().metadata(key) << endl;
+    cout << key << " = " << pdf.info().get_entry(key) << endl;
 }
 
 
@@ -24,8 +25,8 @@ int main(int argc, char* argv[]) {
     safeprint(pdf, "Verbosity");
     safeprint(pdf, "PdfDesc");
     safeprint(pdf, "SetDesc");
-    cout << "Flavors (str) = " << pdf.info().metadata("Flavors") << endl;
-    vector<int> pids = pdf.info().metadata_as< vector<int> >("Flavors");
+    cout << "Flavors (str) = " << pdf.info().get_entry("Flavors") << endl;
+    vector<int> pids = pdf.info().get_entry_as< vector<int> >("Flavors");
     cout << "Flavors (ints) = ";
     foreach (int f, pids) cout << f << " "; cout << endl;
     cout << "Flavors (vec<int>) = " << LHAPDF::to_str(pids) << endl;

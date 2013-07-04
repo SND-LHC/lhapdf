@@ -236,28 +236,28 @@ namespace LHAPDF {
     /// Minimum valid x value for this PDF.
     virtual double xMin() {
       if (info().has_key("XMin"))
-        return info().metadata_as<double>("XMin");
+        return info().get_entry_as<double>("XMin");
       return numeric_limits<double>::epsilon();
     }
 
     /// Maximum valid x value for this PDF.
     virtual double xMax() {
       if (info().has_key("XMax"))
-        return info().metadata_as<double>("XMax");
+        return info().get_entry_as<double>("XMax");
       return 1.0;
     }
 
     /// Minimum valid Q2 value for this PDF (in GeV2).
     virtual double q2Min() {
       if (info().has_key("Q2Min"))
-        return info().metadata_as<double>("Q2Min");
+        return info().get_entry_as<double>("Q2Min");
       return 0.0;
     }
 
     /// Maximum valid Q2 value for this PDF (in GeV2).
     virtual double q2Max() {
       if (info().has_key("Q2Max"))
-        return info().metadata_as<double>("Q2Max");
+        return info().get_entry_as<double>("Q2Max");
       return numeric_limits<double>::max();
     }
 
@@ -385,12 +385,12 @@ namespace LHAPDF {
 
     /// Description of this PDF member
     std::string description() const {
-      return info().metadata("PdfDesc");
+      return info().get_entry("PdfDesc");
     }
 
     /// Get the type of PDF member that this object represents (central, error)
     std::string type() const {
-      return to_lower_copy(info().metadata("PdfType"));
+      return to_lower_copy(info().get_entry("PdfType"));
     }
 
     //@}
@@ -409,7 +409,7 @@ namespace LHAPDF {
     /// @todo Make virtual for AnalyticPDF? Or allow manual setting of the Info?
     const std::vector<int>& flavors() const {
       if (_flavors.empty()) {
-        _flavors = info().metadata_as< vector<int> >("Flavors");
+        _flavors = info().get_entry_as< vector<int> >("Flavors");
         sort(_flavors.begin(), _flavors.end());
       }
       return _flavors;
@@ -427,7 +427,7 @@ namespace LHAPDF {
     /// loops included in the matrix elements, in order to have an integer value
     /// for easy use in comparisons, as opposed to "LO", "NLO", etc. strings.
     int qcdOrder() const {
-      return info().metadata_as<int>("QcdOrder");
+      return info().get_entry_as<int>("QcdOrder");
     }
 
     //@}

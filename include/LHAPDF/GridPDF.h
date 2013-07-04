@@ -99,7 +99,7 @@ namespace LHAPDF {
     const Interpolator& interpolator() const {
       if (_interpolator.get() == 0) { // Load the default interpolator lazily
         // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
-        const string ipolname = info().metadata("Interpolator");
+        const string ipolname = info().get_entry("Interpolator");
         Interpolator* ipol = mkInterpolator(ipolname);
         _interpolator.reset(ipol);
         _interpolator->bind(this);
@@ -147,7 +147,7 @@ namespace LHAPDF {
     const Extrapolator& extrapolator() const {
       if (_extrapolator.get() == 0) { // Load the default extrapolator lazily
         // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
-        const string xpolname = info().metadata("Extrapolator");
+        const string xpolname = info().get_entry("Extrapolator");
         Extrapolator* xpol = mkExtrapolator(xpolname);
         _extrapolator.reset(xpol);
         _extrapolator->bind(this);

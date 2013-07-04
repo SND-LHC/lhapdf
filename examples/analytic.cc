@@ -10,7 +10,7 @@ using namespace std;
 struct AnalyticPDF : public LHAPDF::PDF {
 
   AnalyticPDF() {
-    info().setMetadata("Flavors", "-5,-4,-3,-2,-1,21,1,2,3,4,5");
+    info().set_entry("Flavors", "-5,-4,-3,-2,-1,21,1,2,3,4,5");
   }
 
   double _xfxQ2(int id, double x, double q2) const {

@@ -90,7 +90,7 @@ namespace LHAPDF {
 
 
     /// Retrieve a metadata string by key name, as defined on this specific object
-    const std::string& metadata_local(const std::string& key) const {
+    const std::string& get_entry_local(const std::string& key) const {
       if (has_key_local(key)) return _metadict.find(key)->second;
       throw MetadataError("Metadata for key: " + key + " not found.");
     }
@@ -99,28 +99,28 @@ namespace LHAPDF {
     ///
     /// The given key may be defined non-locally, in which case the cascading
     /// member -> set -> config info lookup is needed. These are implemented
-    /// using has_key_local() and metadata_local().
+    /// using has_key_local() and get_entry_local().
     ///
-    /// The default implementation is equivalent to metadata_local(). This is
+    /// The default implementation is equivalent to get_entry_local(). This is
     /// appropriate for Config.
-    virtual const std::string& metadata(const std::string& key) const {
-      return metadata_local(key);
+    virtual const std::string& get_entry(const std::string& key) const {
+      return get_entry_local(key);
     }
 
 
-    /// Retrieve a metadata string by key name, with an inline type cast
+    /// Retrieve a metadata entry by key name, with an inline type cast
     ///
     /// Specialisations are defined below for unpacking of comma-separated lists
     /// of strings, ints, and doubles.
     template <typename T>
-    T metadata_as(const std::string& key) const {
-      const string& s = metadata(key);
+    T get_entry_as(const std::string& key) const {
+      const string& s = get_entry(key);
       return lexical_cast<T>(s);
     }
 
     /// Set a keyed value entry
     template <typename T>
-    void setMetadata(const std::string& key, const T& val) {
+    void set_entry(const std::string& key, const T& val) {
       _metadict[key] = to_str(val);
     }
 
@@ -132,22 +132,15 @@ namespace LHAPDF {
     /// The string -> string native metadata storage container
     std::map<std::string, std::string> _metadict;
 
-
-  // private:
-
-  //   /// Hide the copy constructor & copy assignment operator
-  //   Info(const Info&);
-  //   void operator= (const Info&);
-
   };
 
 
-  /// @name Info::metadata function template specialisations
+  /// @name Info metadata function template specialisations
   //@{
 
   template <>
-  inline bool Info::metadata_as(const std::string& key) const {
-    const string& s = metadata(key);
+  inline bool Info::get_entry_as(const std::string& key) const {
+    const string& s = get_entry(key);
     try {
       bool rtn = lexical_cast<bool>(s);
       return rtn;
@@ -159,16 +152,16 @@ namespace LHAPDF {
   }
 
   template <>
-  inline std::vector<std::string> Info::metadata_as(const std::string& key) const {
-    const string& s = metadata(key);
+  inline std::vector<std::string> Info::get_entry_as(const std::string& key) const {
+    const string& s = get_entry(key);
     vector<string> rtn;
     split(rtn, s, is_any_of(","), token_compress_on);
     return rtn;
   }
 
   template <>
-  inline std::vector<int> Info::metadata_as(const std::string& key) const {
-    const vector<string> strs = metadata_as< vector<string> >(key);
+  inline std::vector<int> Info::get_entry_as(const std::string& key) const {
+    const vector<string> strs = get_entry_as< vector<string> >(key);
     vector<int> rtn;
     rtn.reserve(strs.size());
     foreach (const string& s, strs) rtn.push_back( lexical_cast<int>(s) );
@@ -177,8 +170,8 @@ namespace LHAPDF {
   }
 
   template <>
-  inline std::vector<double> Info::metadata_as(const std::string& key) const {
-    const vector<string> strs = metadata_as< vector<string> >(key);
+  inline std::vector<double> Info::get_entry_as(const std::string& key) const {
+    const vector<string> strs = get_entry_as< vector<string> >(key);
     vector<double> rtn;
     rtn.reserve(strs.size());
     foreach (const string& s, strs) rtn.push_back( lexical_cast<double>(s) );

@@ -53,22 +53,22 @@ namespace LHAPDF {
 
     /// Description of the set
     std::string description() const {
-      return metadata("SetDesc");
+      return get_entry("SetDesc");
     }
 
     /// Get the type of PDF errors in this set (replica, symmhessian, asymmhessian, none)
     std::string errorType() const {
-      return to_lower_copy(metadata("ErrorType"));
+      return to_lower_copy(get_entry("ErrorType"));
     }
 
     // /// Number of members in this set
     // int numMembers() const {
-    //   return metadata_as<int>("NumMembers");
+    //   return get_entry_as<int>("NumMembers");
     // }
 
     // /// Number of members in this set
     size_t size() const {
-      return metadata_as<unsigned int>("NumMembers");
+      return get_entry_as<unsigned int>("NumMembers");
     }
 
     //@}
@@ -132,10 +132,9 @@ namespace LHAPDF {
     }
 
     /// Retrieve a metadata string by key name
-    /// Rerite this cascading so that each stage only knows about the level above it
-    const std::string& metadata(const std::string& key) const {
-      if (has_key_local(key)) return metadata_local(key); //< value is defined locally
-      return getConfig().metadata(key); //< fall back to the global config
+    const std::string& get_entry(const std::string& key) const {
+      if (has_key_local(key)) return get_entry_local(key); //< value is defined locally
+      return getConfig().get_entry(key); //< fall back to the global config
     }
 
     //@}

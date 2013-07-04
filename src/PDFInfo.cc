@@ -36,27 +36,10 @@ namespace LHAPDF {
   }
 
 
-  const std::string& PDFInfo::metadata(const string& key) const {
-    if (has_key_local(key)) return metadata_local(key); //< value is defined locally
-    return getPDFSet(_setname).metadata(key); //< fall back to the set-level info... or beyond
+  const std::string& PDFInfo::get_entry(const string& key) const {
+    if (has_key_local(key)) return get_entry_local(key); //< value is defined locally
+    return getPDFSet(_setname).get_entry(key); //< fall back to the set-level info... or beyond
   }
-
-
-  // /// @todo Only support loading via PDF set name and member ID, not explicit paths
-  // /// @todo Replace the loading of the set metadata into the member info with set-level Info singletons
-  // void Info::loadFull(const path& mempath) {
-  //   // Extract the set name from the member data file path
-  //   const path memberdata = findFile(mempath);
-  //   if (memberdata.empty() || !exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath.string() + "'");
-  //   const string memname = memberdata.filename().string(); //< Can use this to alternatively work out the set name...
-  //   const path setdir = memberdata.parent_path();
-  //   const string setname = setdir.filename().string();
-  //   path setinfo = findpdfsetinfopath(setname);
-  //   // Load the set info
-  //   if (exists(setinfo)) load(setinfo.string());
-  //   // Load the member info (possibly overriding the set-level metadata)
-  //   load(memberdata.string());
-  // }
 
 
 }

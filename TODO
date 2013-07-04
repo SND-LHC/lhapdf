@@ -11,19 +11,13 @@ FOR BETA 3
 
 - **.lha -> .dat to avoid confusion with LHA archives (AB)**
 
-- **Test the interpolation AlphaS system (MR,KN)**
+- **Clarify / sort out tests vs. examples separation**
 
-   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays.
+   And maybe disable building of these from the default top-level make target.
 
-   To do: use doubled Q2 values to implement 1D subgrids.
+- **Versioning scheme for PDF data**
 
-- **AlphaS interface tidying and FFNS/VFNS metadata**
-
-- **Fortran compatibility**
-
-   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1.
-
-   Map remaining "metadata" functions such as alpha_s, Nf, min/max x and Q2, etc.
+   In metadata _and_ in tarball filenames?
 
 - **Uncontrolled bulk PDF migration (AB)**
 
@@ -39,15 +33,20 @@ FOR BETA 3
      NNPDF23_nlo_as_0114 .. 0124
      NNPDF23_nnlo_as_0114 .. 0124
 
-- **Add Info/Config mappings to Cython (AB)**
+- **Test the interpolation AlphaS system (MR,KN)**
 
-- **Clarify / sort out tests vs. examples separation**
+   Specify with AlphaS_Q2s, and AlphaS_Vals metadata arrays.
 
-   And maybe disable building of these from the default top-level make target.
+   To do: use doubled Q2 values to implement 1D subgrids.
 
-- **Versioning scheme for PDF data**
+- **AlphaS interface tidying and FFNS/VFNS metadata**
 
-   In metadata _and_ in tarball filenames?
+- **Fortran compatibility**
+
+   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1.
+
+   Map remaining "metadata" functions such as alpha_s, Nf, min/max x and Q2, etc.
+
 
 
 FOR RELEASE CANDIDATE
@@ -56,6 +55,8 @@ FOR RELEASE CANDIDATE
 - **Check why MSTW2008NNLO interpolation goes so wild at low Q**
 
    The original PDF goes negative around here... can the cubic interpolation cope?
+
+- **Add Info/Config mappings to Cython (AB)**
 
 - **Improve CTEQ6L1 grid efficiency (MR?)**
 

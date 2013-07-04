@@ -39,7 +39,7 @@ namespace LHAPDF {
     bool has_key(const std::string& key) const;
 
     /// Retrieve a metadata string by key name
-    const std::string& metadata(const std::string& key) const;
+    const std::string& get_entry(const std::string& key) const;
 
     //@}
 

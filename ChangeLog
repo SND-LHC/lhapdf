@@ -1,3 +1,7 @@
+2013-07-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Renaming Info::metadata() to Info::get_entry(), plus Info::get_entry_as(), etc.
+
 2013-07-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding two PDF-level Info factory functions.

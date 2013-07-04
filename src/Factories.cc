@@ -46,7 +46,7 @@ namespace LHAPDF {
   PDF* mkPDF(const string& setname, int member) {
     // First create an Info object to work out what format of PDF this is:
     Info info(findpdfmempath(setname, member));
-    const string fmt = info.metadata("Format");
+    const string fmt = info.get_entry("Format");
     // Then use the format information to call the appropriate concrete PDF constructor:
     if (fmt == "lhagrid1") return new GridPDF(setname, member);
     /// @todo Throw a deprecation error if format version is too old or new
@@ -98,36 +98,36 @@ namespace LHAPDF {
 
   AlphaS* mkAlphaS(const Info& info) {
     AlphaS* as = 0;
-    const string itype = to_lower_copy(info.metadata("AlphaS_Type"));
+    const string itype = to_lower_copy(info.get_entry("AlphaS_Type"));
     if (itype == "analytic") as = new AlphaS_Analytic();
     else if (itype == "ode") as = new AlphaS_ODE();
     else if (itype == "ipol") as = new AlphaS_Ipol();
     else throw FactoryError("Undeclared AlphaS requested: " + itype);
     // Configure the QCD params on this AlphaS
-    if (info.has_key("AlphaS_OrderQCD")) as->setQCDorder(info.metadata_as<int>("AlphaS_OrderQCD"));
-    if (info.has_key("MUp")) as->setQmass(1, info.metadata_as<double>("MUp"));
-    if (info.has_key("MDown")) as->setQmass(2, info.metadata_as<double>("MDown"));
-    if (info.has_key("MStrange")) as->setQmass(3, info.metadata_as<double>("MStrange"));
-    if (info.has_key("MCharm")) as->setQmass(4, info.metadata_as<double>("MCharm"));
-    if (info.has_key("MBottom")) as->setQmass(5, info.metadata_as<double>("MBottom"));
-    if (info.has_key("MTop")) as->setQmass(6, info.metadata_as<double>("MTop"));
+    if (info.has_key("AlphaS_OrderQCD")) as->setQCDorder(info.get_entry_as<int>("AlphaS_OrderQCD"));
+    if (info.has_key("MUp")) as->setQmass(1, info.get_entry_as<double>("MUp"));
+    if (info.has_key("MDown")) as->setQmass(2, info.get_entry_as<double>("MDown"));
+    if (info.has_key("MStrange")) as->setQmass(3, info.get_entry_as<double>("MStrange"));
+    if (info.has_key("MCharm")) as->setQmass(4, info.get_entry_as<double>("MCharm"));
+    if (info.has_key("MBottom")) as->setQmass(5, info.get_entry_as<double>("MBottom"));
+    if (info.has_key("MTop")) as->setQmass(6, info.get_entry_as<double>("MTop"));
     if (as->type() == "ode") {
       if( !(info.has_key("AlphaS_MZ")) || !(info.has_key("MZ")) )throw Exception("Requested ODE AlphaS but the required parameters are not defined.");
-      as->setAlphaSMZ(info.metadata_as<double>("AlphaS_MZ"));
-      as->setMZ(info.metadata_as<double>("MZ"));
+      as->setAlphaSMZ(info.get_entry_as<double>("AlphaS_MZ"));
+      as->setMZ(info.get_entry_as<double>("MZ"));
     }
     if (as->type() == "analytic") {
       if( !(info.has_key("Lambda5")) && !(info.has_key("Lambda4")) &&
           !(info.has_key("Lambda3")) )throw Exception("Requested analytic AlphaS but the required parameters are not defined.");
-      if (info.has_key("Lambda3")) as->setLambda(3, info.metadata_as<double>("Lambda3"));
-      if (info.has_key("Lambda4")) as->setLambda(4, info.metadata_as<double>("Lambda4"));
-      if (info.has_key("Lambda5")) as->setLambda(5, info.metadata_as<double>("Lambda5"));
+      if (info.has_key("Lambda3")) as->setLambda(3, info.get_entry_as<double>("Lambda3"));
+      if (info.has_key("Lambda4")) as->setLambda(4, info.get_entry_as<double>("Lambda4"));
+      if (info.has_key("Lambda5")) as->setLambda(5, info.get_entry_as<double>("Lambda5"));
     }
     if (as->type() == "ipol") {
       if( !(info.has_key("AlphaS_Q2")) && !(info.has_key("AlphaS_V")) )
           throw Exception("ERROR ALPHAS_IPOL");
-      if (info.has_key("AlphaS_Q2")) as->setQ2Values( info.metadata_as<std::vector<double> >("AlphaS_Q2"));
-      if (info.has_key("AlphaS_V")) as->setAlphaSValues( info.metadata_as<std::vector<double> >("AlphaS_V"));
+      if (info.has_key("AlphaS_Q2")) as->setQ2Values( info.get_entry_as< vector<double> >("AlphaS_Q2"));
+      if (info.has_key("AlphaS_V")) as->setAlphaSValues( info.get_entry_as< vector<double> >("AlphaS_V"));
     }
     return as;
   }

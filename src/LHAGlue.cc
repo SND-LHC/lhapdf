@@ -262,7 +262,7 @@ extern "C" {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // set equal to the number of members  for the requested set
-    numpdf=  ACTIVESETS[nset].activemember()->info().metadata_as<int>("NumMembers");
+    numpdf=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumMembers");
     // reproduce old lhapdf v5 behaviour , subtract 1 if more than 1 member set
     if (numpdf > 1) numpdf-=1;
   }
@@ -332,14 +332,14 @@ extern "C" {
     // Need to extract parameters for common blocks
     PDFPtr pdf = ACTIVESETS[1].activemember();
 
-    w50513_.xmin=pdf->info().metadata_as<double>("XMin");
-    w50513_.xmax=pdf->info().metadata_as<double>("XMax");
-    w50513_.q2min=pdf->info().metadata_as<double>("Q2Min");
-    w50513_.q2max=pdf->info().metadata_as<double>("Q2Max");
-    w50512_.qcdl4=pdf->info().metadata_as<double>("Lambda4");
-    w50512_.qcdl5=pdf->info().metadata_as<double>("Lambda5");
-    lhapdfr_.qcdlha4=pdf->info().metadata_as<double>("Lambda4");
-    lhapdfr_.qcdlha5=pdf->info().metadata_as<double>("Lambda5");
+    w50513_.xmin=pdf->info().get_entry_as<double>("XMin");
+    w50513_.xmax=pdf->info().get_entry_as<double>("XMax");
+    w50513_.q2min=pdf->info().get_entry_as<double>("Q2Min");
+    w50513_.q2max=pdf->info().get_entry_as<double>("Q2Max");
+    w50512_.qcdl4=pdf->info().get_entry_as<double>("Lambda4");
+    w50512_.qcdl5=pdf->info().get_entry_as<double>("Lambda5");
+    lhapdfr_.qcdlha4=pdf->info().get_entry_as<double>("Lambda4");
+    lhapdfr_.qcdlha5=pdf->info().get_entry_as<double>("Lambda5");
     // BEGIN: used to test behaviour versus lhapdf 5.x
     //    w50512_.qcdl4=0.192;
     //    w50512_.qcdl5=0.192;
