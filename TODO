@@ -25,13 +25,11 @@ FOR BETA 3 / RELEASE CANDIDATE
 
 - **Test the interpolation AlphaS system (MR,KN)**
 
-   To do: use doubled Q values to implement 1D subgrids.
+   Use doubled Q values to implement 1D subgrids.
 
    Define behaviour below/above the grid range.
 
-   Add subgrids
-
-- **Fortran compatibility**
+- **Finish Fortran/C++ legacy compatibility**
 
    James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1.
 
