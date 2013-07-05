@@ -1,5 +1,9 @@
 2013-07-05  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Many improvements to the creategrids migration script.
+
+	* Populating many of the for-migration PDF entries in pdfsets.index.
+
 	* Changing .lha data file extension to .dat to avoid clashing with LHA archive format.
 
 2013-07-04  Andy Buckley  <andy.buckley@cern.ch>

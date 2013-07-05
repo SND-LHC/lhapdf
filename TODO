@@ -45,18 +45,26 @@ FOR BETA 3 / RELEASE CANDIDATE
 
 - **Improve CTEQ6L1 grid efficiency (MR?)**
 
+- **Non-visual PDF validation (AB)**
+
+   More automation of validation is required... we can't check thousands of
+   plots so need a more compact performance metric for printout in the event of
+   comparison failure. Needs to be silent 99% of the time.
+
 - **MSTW2008 PDF migration (GW,AB)**
 
    First attempt to use subgrids in anger. Also subgrid in alpha_s.
 
    Check why MSTW2008NNLO interpolation goes so wild at low Q:
    Related to the eps = 10^-6 GeV treatment combined with value discontinuity at
-   Q = m_c => ~infinite gradient term entering the interpolation? Fix with subgrids?
+   Q = m_c => ~infinite gradient term entering the interpolation? Fix with
+   subgrids? Epsilon separations can't be allowed in LHAPDF: subgrids should be
+   absolutely contiguous.
 
 - **NNPDF2.3 PDF migration (AB)**
 
-   More automation of validation required... we can't check thousands of plots
-   so need a more compact performance metric.
+   Includes non-zero top PDFs? Still many >> 1e-3 deviations. Why do -1, -2 PDFs
+   look valence-like?
 
 
 FOR STABLE 6.0.0 RELEASE
@@ -171,6 +179,10 @@ AS AND WHEN
    e.g. playing with PyTables. Sounds good in principle: I prefer a *real world*
    standard to ROOT, anyway ;-) Does it have any string/typed annotation
    mechanism that we could use?
+
+- **Gradient extrapolator**
+
+   Keep extrapolating linearly outside the range.
 
 - **Updated Octave wrapper**
 
