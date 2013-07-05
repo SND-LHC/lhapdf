@@ -86,7 +86,7 @@ namespace LHAPDF {
   //@{
 
   inline path pdfmempath(const std::string& setname, int member) {
-    const string memname = setname + "_" + to_str_zeropad(member) + ".lha";
+    const string memname = setname + "_" + to_str_zeropad(member) + ".dat";
     path mempath = setname / memname;
     return mempath;
   }

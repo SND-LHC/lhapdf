@@ -132,7 +132,7 @@ for lha5name in args:
                 xfs.append([lhapdf.xfx(x, q, pid) for pid in lhapids])
 
         ## Work out the member file path and open it for writing
-        memname = setname + ('_%04d.lha' % member)
+        memname = setname + ('_%04d.dat' % member)
         mempath = os.path.join(setname, memname)
         f = open(mempath, "w")
         #f.write("PdfDesc: \n")
@@ -152,7 +152,7 @@ for lha5name in args:
             line = ""
             for xf in xfs_xq:
                 if xf == 0.0: xf = 0.0 # remove occurences of negative zero
-                line += "%2.6e " % xf
+                line += "%2.8e " % xf
             f.write(line.strip() + "\n")
 
         f.write("---\n")

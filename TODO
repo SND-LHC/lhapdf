@@ -6,12 +6,8 @@ LHAPDF6 TODO list
 =================
 
 
-FOR BETA 3
-----------
-
-- **.lha -> .dat (AB)**
-
-- **Define ConfidenceLevel flag for use with Hessian error sets**
+FOR BETA 3 / RELEASE CANDIDATE
+------------------------------
 
 - **Uncontrolled bulk PDF migration (AB)**
 
@@ -35,35 +31,34 @@ FOR BETA 3
 
    Add subgrids
 
-- **AlphaS interface tidying and FFNS/VFNS metadata**
-
 - **Fortran compatibility**
 
    James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1.
 
    Map remaining "metadata" functions such as alpha_s, Nf, min/max x and Q2, etc.
 
+- **AlphaS interface tidying**
 
+- **AlphaS FFNS/VFNS metadata**
 
-FOR RELEASE CANDIDATE
----------------------
-
-- **Check why MSTW2008NNLO interpolation goes so wild at low Q**
-
-   The original PDF goes negative around here... can the cubic interpolation cope?
+- **Define ConfidenceLevel flag for use with Hessian error sets**
 
 - **Add Info/Config mappings to Cython (AB)**
 
 - **Improve CTEQ6L1 grid efficiency (MR?)**
 
-- **MSTW2008 PDF migration (GW)**
+- **MSTW2008 PDF migration (GW,AB)**
 
-   First attempt to use subgrids in anger. Requires extension
+   First attempt to use subgrids in anger. Also subgrid in alpha_s.
 
-- **NNPDF2.3 PDF migration (??)**
+   Check why MSTW2008NNLO interpolation goes so wild at low Q:
+   Related to the eps = 10^-6 GeV treatment combined with value discontinuity at
+   Q = m_c => ~infinite gradient term entering the interpolation? Fix with subgrids?
 
-   Just the "main" sets for now. More automation of validation required... we
-   can't check thousands of plots so need a more compact performance metric.
+- **NNPDF2.3 PDF migration (AB)**
+
+   More automation of validation required... we can't check thousands of plots
+   so need a more compact performance metric.
 
 
 FOR STABLE 6.0.0 RELEASE
@@ -71,7 +66,8 @@ FOR STABLE 6.0.0 RELEASE
 
 - **Write-up**
 
-   Target at EPJC Tools or CPC?
+   Target at EPJC Tools or CPC? Can put on arXiv before October, but delay
+   publication submission to aim (hope) for for eligibility in *next* REF.
 
 - **Print out banner info?... needed by code that greps for it :-/**
 
