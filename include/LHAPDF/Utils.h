@@ -83,7 +83,8 @@ namespace LHAPDF {
 
   //@}
 
-
+  template <typename N>
+  inline bool cmpDescend(N a, N b) { return a>b; }
 
   /// @name Container handling helpers
   //@{

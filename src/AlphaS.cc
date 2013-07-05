@@ -12,7 +12,6 @@ namespace LHAPDF {
   // Base class constructor for default param setup
   AlphaS::AlphaS() {
     _qcdorder = 0;
-    _masstype = 0;
   }
 
   // Calculate the number of active quark flavours at energy scale Q2
@@ -43,20 +42,10 @@ namespace LHAPDF {
     return rtn;
   }
 
-  // Set a quark mass, and sort the mass vector accordingly
-  void AlphaS::setQmass(double value) {
-    if(_masstype == 2)throw Exception("Not allowed to mix the two ways of adding quark masses");
-    _qmasses.push_back(value);
-    sort( _qmasses.begin(), _qmasses.end() );
-    _masstype = 1;
-  }
-
   // Set a quark mass, explicitly giving its id
   void AlphaS::setQmass(int id, double value) {
-    if(_masstype == 1)throw Exception ("Not allowed to mix the two ways of adding quark masses");
     if(abs(id) > 6 || id == 0)throw Exception("Invalid id for quark given (should be 1-6).");
     if(_qmasses.size() != 6)_qmasses.resize(6);
     _qmasses[abs(id)-1] = value;
-    _masstype = 2;
   }
 }

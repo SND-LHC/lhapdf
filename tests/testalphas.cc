@@ -1,4 +1,4 @@
-// Example program to test alpha_s calculation
+ // Example program to test alpha_s calculation
 
 #include "LHAPDF/AlphaS.h"
 #include "LHAPDF/Factories.h"
@@ -30,12 +30,13 @@ int main() {
   AlphaS_ODE as_ode;
   as_ode.setMZ(91);
   as_ode.setAlphaSMZ(0.118);
-  as_ode.setQmass(1.29);
-  as_ode.setQmass(4.1);
-  as_ode.setQmass(172.5);
-  as_ode.setQmass(0.0017);
-  as_ode.setQmass(0.0041);
-  as_ode.setQmass(0.1);
+  as_ode.setQmass(1, 0.0017);
+  as_ode.setQmass(2, 0.0041);
+  as_ode.setQmass(3, 0.1);
+  as_ode.setQmass(4, 1.29);
+  as_ode.setQmass(5, 4.1);
+  as_ode.setQmass(6, 172.5);
+  as_ode.solve();
 
   ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat");
   for (double log10q = -0.5; log10q < 2.5; log10q += 0.01) {

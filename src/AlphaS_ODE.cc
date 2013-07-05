@@ -20,10 +20,10 @@ namespace LHAPDF {
   }
 
   // Calculate the next step, using recursion to achieve
-  // adaptive step size
-  vector<double> AlphaS_ODE::_rk4(double t, double y, double h, const double allowed_change) const {
-    // Get beta coefficients
-    const vector<double> bs = _betas(nf_Q2(t));
+  // adaptive step size. Passing be reference explained
+  // below.
+  void AlphaS_ODE::_rk4(double& t, double& y, double h,
+    const double allowed_change, const std::vector<double>& bs) const {
 
     // Determine increments in y based on the slopes of the function at the
     // beginning, midpoint, and end of the interval
@@ -31,28 +31,75 @@ namespace LHAPDF {
     const double k2 = h * _derivative(t + h/2.0, y + k1/2.0, bs);
     const double k3 = h * _derivative(t + h/2.0, y + k2/2.0, bs);
     const double k4 = h * _derivative(t + h, y + k3, bs);
-    const double next = (k1 + 2*k2 + 2*k3 + k4) / 6.0;
+    const double change = (k1 + 2*k2 + 2*k3 + k4) / 6.0;
 
     // Only call recursively if Q2 > 1 GeV (constant step
     // size after this)
-    if(fabs(next) > allowed_change && t > 1.) return _rk4(t, y, h/2., allowed_change);
+    if(t > 1. && fabs(change) > allowed_change) { _rk4(t, y, h/2., allowed_change, bs);
+    } else {
+      y += change;
+      t += h;
+    }
+  }
 
-    vector<double> ret;
-    ret.push_back(y + next);
-    ret.push_back(t + h);
-    return ret;
+  // Solve for alpha_s(q2) using alpha_s = y and Q2 = t as starting points
+  // Pass y and t by reference and change them to avoid having to
+  // return them in a container -- bit confusing but should be more
+  // efficient
+  void AlphaS_ODE::_solve(double q2, double& t, double& y,
+    const double& allowed_relative, double h, double accuracy) const {
+    while(fabs(q2 - t) > accuracy) {
+      /// Make the allowed change smaller as the q2 scale gets greater
+      const double allowed_change = allowed_relative / t;
+
+      /// Mechanism to shrink the steps if accuracy < stepsize and we are close to Q2
+      if (fabs(h) > accuracy && fabs(q2 - t)/h < 10 && t > 1.) h = accuracy/2.1;
+      /// Take constant steps for Q2 < 1 GeV
+      if (fabs(h) > 0.01 && t < 1.) {accuracy = 0.00051; h = 0.001;}
+      // Check if we are going to run forward or backwards in energy scale towards target Q2.
+      /// @todo C++11's std::copysign would be perfect here
+      if ((q2 < t && sgn(h) > 0) || (q2 > t && sgn(h) < 0)) h *= -1;
+
+      // Get beta coefficients
+      const std::vector<double> bs = _betas(nf_Q2(t));
+
+      // Calculate next step
+      _rk4(t, y, h, allowed_change, bs);
+
+      if(y > 20.) { y = std::numeric_limits<double>::max(); break; }
+    }
   }
 
 
-  // Solve the differential equation in alphaS using an implementation of RK4
+  /// Interpolate to get Alpha_S if the ODE has been solved,
+  /// otherwise solve ODE from scratch
   double AlphaS_ODE::alphasQ2(double q2) const {
+    if( _calculated ) { return _ipol.alphasQ2(q2);
+    } else {
+      // See below for explanation
+      double h = 2;
+      const double allowed_relative = 0.01;
+      const double faccuracy = 0.01;
+      double accuracy = faccuracy;
+      double t = sqr(_mz); // starting point
+      double y = _alphas_mz; // starting value
+      _solve(q2, t, y, allowed_relative, h, accuracy);
+      return y;
+    }
+  }
 
+  // Solve the differential equation in alphaS using an implementation of RK4
+  void AlphaS_ODE::_interpolate() {
     /// @todo Make these class members
     // Initial step size
     /// @todo Use an adaptive step size -- stepping in log space? It needs to be *much* faster!
+    /// -- Done, but still not fast
     /// @todo Stepping also needs to get much smaller as we approach LambdaQCD
-    double h = 1;
-    const double allowed_relative = 0.05;
+    /// -- Can't use adaptive step size close to lambdaQCD effectively (since changes will be large)
+    /// -- Do they really need to be *very* small (since errors always will get large there)?
+    double h = 2;
+    /// This the the relative error allowed for the adaptive step size. Should be optimised.
+    const double allowed_relative = 0.01;
     // Fractional threshold to which we run in Q2 scale
     /// @todo Need a mechanism to shrink the steps if accuracy < stepsize?
     /// @todo Is the accuracy in Q or Q2? Q is better, I think.
@@ -71,28 +118,50 @@ namespace LHAPDF {
     double t = sqr(_mz); // starting point
     double y = _alphas_mz; // starting value
 
-    while (fabs(q2 - t) > accuracy) {
-
-      /// Make the allowed change smaller as the q2 scale gets greater
-      const double allowed_change = allowed_relative / sqrt(t);
-
-      /// Mechanism to shrink the steps if accuracy < stepsize and we are close to Q2
-      if (fabs(h) > accuracy && fabs(q2 - t)/h < 10 && t > 1.) h = accuracy/2.1;
-      /// Take constant steps for Q2 < 1 GeV
-      if (fabs(h) > 0.01 && t < 1.) {accuracy = 0.0051; h = 0.01;}
-
-      // Check if we are going to run forward or backwards in energy scale towards target Q2.
-      /// @todo C++11's std::copysign would be perfect here
-      if ((q2 < t && sgn(h) > 0) || (q2 > t && sgn(h) < 0)) h *= -1;
-
-      // Calculate next step
-      vector<double> step = _rk4(t, y, h, allowed_change);
-
-      y = step[0];
-      if(y > 2.) return std::numeric_limits<double>::max();
-      t = step[1];
+    std::vector<double> q2s;
+    std::vector<double> alphas;
+    if( _q2s.size() != 0 ) {
+      q2s = _q2s;
+      std::sort(q2s.begin(), q2s.end());
+      foreach(double Q2, q2s){
+        _solve(Q2, t, y, allowed_relative, h, accuracy);
+        alphas.push_back(y);
+        if(y > 20.) { t = sqr(_mz); y = _alphas_mz; }
+      }
+      _ipol.setQ2Values(q2s);
+      _ipol.setAlphaSValues(alphas);
+      _calculated = true;
     }
-    return y;
+
+    double tmp = sqr(_mz);
+
+    while(tmp > 0.25) {
+      _solve(tmp, t, y, allowed_relative, h, accuracy);
+      q2s.push_back(t);
+      alphas.push_back(y);
+      if (y > 20.) break;
+      tmp -= (10 * accuracy * t);
+    }
+
+    t = sqr(_mz); // starting point
+    y = _alphas_mz; // starting value
+    tmp = sqr(_mz);
+
+    while(tmp < 1000*1000) {
+      tmp += (10 * accuracy * t);
+      _solve(tmp, t, y, allowed_relative, h, accuracy);
+      q2s.push_back(t);
+      alphas.push_back(y);
+    }
+
+    std::sort(q2s.begin(), q2s.end());
+    std::sort(alphas.begin(), alphas.end(), cmpDescend<double>);
+
+    _ipol.setQ2Values(q2s);
+    _ipol.setAlphaSValues(alphas);
+//    for(size_t i = 0; i < q2s.size(); ++i) {
+//      cout << "Q: " << sqrt(q2s[i]) << "    a_s: " << alphas[i] << endl;
+//    }
   }
 
 }

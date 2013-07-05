@@ -8,9 +8,6 @@
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Exceptions.h"
 
-// Riemann zeta function \zeta(3) used for calculating the third beta coefficient
-#define ZETA_3 1.2020569031
-
 namespace LHAPDF {
 
 
@@ -47,15 +44,7 @@ namespace LHAPDF {
     virtual int nf_Q2(double q2) const;
 
     /// Set quark masses by PDG code
-    void setQmass(int id, double value);
-
-    /// Set a quark mass (without PDG code).
-    /// This allows for more/less than six quarks,
-    /// but can not be used together with the other
-    /// way of setting quark masses
-    ///
-    /// @todo Replace with a 6-arg function -- this is too vague/dangerous
-    void setQmass(double value);
+    virtual void setQmass(int id, double value);
 
     /// Get the implementation type of this AlphaS
     virtual std::string type() const = 0;
@@ -80,9 +69,7 @@ namespace LHAPDF {
 
     /// Masses of quarks in GeV.  Used to calculate the number
     /// of quarks that are active at a given energy range Q2
-    vector<double> _qmasses;
-    /// This makes sure you can't mix the two ways of setting masses
-    int _masstype;
+    std::vector<double> _qmasses;
     /// Calculate the i'th beta function given the number of active flavours
     /// Currently limited to 0 <= i <= 3
     /// Calculated using the MSbar scheme
@@ -114,34 +101,13 @@ namespace LHAPDF {
     /// Get lambdaQCD for nf
     double _lambdaQCD(int nf) const;
     /// LambdaQCD values. Stored as lambdaQCD^nf = _lambdas[nf-1]
-    vector<double> _lambdas;
+    std::vector<double> _lambdas;
     /// Recalculate min/max flavors in case lambdas have changed
     void _setFlavors();
     /// Max/min number of flavors
     int _nfmax;
     int _nfmin;
   };
-
-
-  /// Solve the differential equation in alphaS using an implementation of RK4
-  class AlphaS_ODE : public AlphaS {
-  public:
-    std::string type() const { return "ode"; }
-    double alphasQ2(double q2) const;
-    void setMZ(double mz) { _mz = mz; }
-    void setAlphaSMZ(double alphas) { _alphas_mz = alphas; }
-
-  private:
-    /// Mass of the Z-boson in GeV
-    double _mz;
-    /// Value of alpha_s(MZ)
-    double _alphas_mz;
-    /// Calculate the derivative at Q2 = t, alpha_S = y
-    double _derivative(double t, double y, const std::vector<double>& beta) const;
-    /// Calculate the next step using RK4 with adaptive step size
-    vector<double> _rk4(double t, double y, double h, const double allowed_change) const;
-  };
-
 
   /// Interpolate alpha_s from tabulated points in Q2 via metadata
   /// @todo Add Doxygen strings
@@ -167,6 +133,39 @@ namespace LHAPDF {
 
     std::vector<double> _q2s;
     std::vector<double> _as;
+  };
+
+  /// Solve the differential equation in alphaS using an implementation of RK4
+  class AlphaS_ODE : public AlphaS {
+  public:
+    std::string type() const { return "ode"; }
+    double alphasQ2( double q2 ) const;
+    void setMZ( double mz ) { _mz = mz; _calculated = false; }
+    void setAlphaSMZ( double alphas ) { _alphas_mz = alphas; _calculated = false; }
+    void setQ2Values( std::vector<double> q2s ) { _q2s = q2s; _calculated = false; }
+    void solve() { _interpolate(); _calculated = true; }
+
+  private:
+    /// Whether or not the ODE has been solved yet
+    bool _calculated;
+    /// Mass of the Z-boson in GeV
+    double _mz;
+    /// Value of alpha_s(MZ)
+    double _alphas_mz;
+    /// Calculate the derivative at Q2 = t, alpha_S = y
+    double _derivative(double t, double y, const std::vector<double>& beta) const;
+    /// Calculate the next step using RK4 with adaptive step size
+    void _rk4(double& t, double& y, double h,
+      const double allowed_change, const vector<double>& bs) const;
+    /// Solve alpha_s for q2 using RK4
+    void _solve(double q2, double& t, double& y,
+      const double& allowed_relative, double h, double accuracy) const;
+    /// Vector of Q2s in case specific anchor points are used
+    std::vector<double> _q2s;
+    /// Create interpolation grid
+    void _interpolate();
+    /// The interpolation used to get Alpha_s after the ODE has been solved
+    AlphaS_Ipol _ipol;
   };
 
 
