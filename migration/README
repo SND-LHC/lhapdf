@@ -29,7 +29,7 @@ PDF names contain the .LHgrid/.LHpdf file extension). You need to specify
 the data path to the preliminary v6 PDF data files if they're not installed in
 $prefix/share/LHAPDF:
 
-LHAPDF_DATA_PATH=$PWD ./testpdf CT10 0
+LHAPDF_DATA_PATH=$PWD ./dumpv6 CT10 0
 
 The cmpv5v6 script is used to numerically compare dumped-out PDF values between
 versions 5 and 6 of LHAPDF, and writes out the fractional deviations (with an
