@@ -189,8 +189,8 @@ for lha5name in args:
     f.write("AlphaS_OrderQCD: %d\n" % lhapdf.getOrderAlphaS(1))
     if qs is None:
         f.write("AlphaS_Type: ipol\n")
-        f.write("AlphaS_Qs: [%s]\n" % ",".join(qs)
-        f.write("AlphaS_Vals: [%s]\n" % ",".join(alphasPDF(1, q) for q in qs)
+        f.write("AlphaS_Qs: [%s]\n" % ",".join(qs))
+        f.write("AlphaS_Vals: [%s]\n" % ",".join(alphasPDF(1, q) for q in qs))
     else:
         f.write("AlphaS_Type: analytic\n")
         if lhapdf.getLam4(1) > 0:
