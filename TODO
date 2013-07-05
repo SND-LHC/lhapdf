@@ -23,27 +23,30 @@ FOR BETA 3 / RELEASE CANDIDATE
      NNPDF23_nlo_as_0114 .. 0124
      NNPDF23_nnlo_as_0114 .. 0124
 
-- **Test the interpolation AlphaS system (MR,KN)**
+- **Define ConfidenceLevel flag for use with Hessian error sets**
+
+- **FFNS/VFNS metadata**
+
+   Define (AlphaS_)FlavorScheme = fixed/variable. NumFlavors only applies in the
+   'fixed' case?
+
+- **Complete and test AlphaS system (MR,KN)**
 
    Use doubled Q values to implement 1D subgrids.
 
    Define behaviour below/above the grid range.
 
+   AlphaS interface tidying.
+
+   ODE implementation ~finished?
+
+   Need to respect FFNS/VFNS flags.
+
 - **Finish Fortran/C++ legacy compatibility**
 
-   James & Karl: test with PYTHIA6, Pythia8 and Herwig++ using CT10nlo & CTEQ6L1.
+   Test with various gens: Py8, Py6, H++, Sherpa, Top++.
 
-   Map remaining "metadata" functions such as alpha_s, Nf, min/max x and Q2, etc.
-
-- **AlphaS interface tidying**
-
-- **AlphaS FFNS/VFNS metadata**
-
-- **Define ConfidenceLevel flag for use with Hessian error sets**
-
-- **Add Info/Config mappings to Cython (AB)**
-
-- **Improve CTEQ6L1 grid efficiency (MR?)**
+   Any "metadata" functions remaining to be mapped?
 
 - **Non-visual PDF validation (AB)**
 
@@ -88,6 +91,10 @@ FOR STABLE 6.0.0 RELEASE
    off a large fraction of potential users. Although, cf. Rivet, a pre-supplied
    build will be important for reducing that social/technical problem.
 
+- **Add Info/Config mappings to Cython (AB)**
+
+- **Improve CTEQ6L1 grid efficiency if possible (MR)**
+
 
 AS AND WHEN
 -----------
@@ -119,17 +126,7 @@ AS AND WHEN
 
 - **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
 
-- **Complete and test ODE and analytic alpha_s running (KN,SL,MR,GW)**
-
-   The ODE solver needs serious optimisation, and numerically the results look
-   dubious for both the analytic and ODE versions. Compare to HOPPET/QCD-PEGASUS
-   evolution... looks like we can't borrow their ODE code without introducing a
-   Fortran dependency, which we'd rather avoid. Maybe start with conversion to
-   C++ of this: https://mstwpdf.hepforge.org/code/alphaS.f
-
-- **Profile AlphaS_ODE**
-
-- **Use Autoconf's more robust FC_* Fortran function name macros**
+- **Use Autoconf's more robust FC_* Fortran function name macros?**
 
    This would require testing for a Fortran compiler, which we would rather not
    do... Test for a Fortran compiler unless told not to build LHAGLUE?
