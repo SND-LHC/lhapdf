@@ -35,21 +35,47 @@ namespace LHAPDF {
   /// @arg 0 = \f$ g \f$
   /// @arg 1..6 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
   double xfx(int nset, double x, double Q, int fl);
+  /// Nucleon PDF: fills primitive 13 element array pointed at by @a results with
+  /// \f$ x f(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
+  void xfx(double x, double Q, double* results);
+  /// Nucleon PDF: fills primitive 13 element array pointed at by @a results with
+  /// \f$ x f(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
+  void xfx(int nset, double x, double Q, double* results);
+
+  /// Nucleon PDF: returns a vector \f$ x f_i(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
+  std::vector<double> xfx(double x, double Q);
+  /// Nucleon PDF: returns a vector @c x f_i(x, Q) with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
+  std::vector<double> xfx(int nset, double x, double Q);
+
   /// \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
   double alphasPDF(double Q);
   /// \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
   double alphasPDF(int nset, double Q);
 
-
-  /// @brief Distinction between evolution or interpolation PDF sets.
-  /// Enum to choose whether evolution (i.e. @c LHpdf data file) or
-  /// interpolation (i.e. @c LHgrid data file) is used.
-  enum SetType {
-    EVOLVE = 0, LHPDF = 0,
-    INTERPOLATE = 1, LHGRID = 1
-  };
-
-
-
+  /// @brief Use @a member in current PDF set.
+  /// This operation is computationally cheap.
+  void usePDFMember(int member);
+  /// @brief Use @a member in PDF set @a nset (multi-set version).
+  /// This operation is computationally cheap.
+  void usePDFMember(int nset, int member);
+  //@
+  /// Initialise @a member in PDF set @a setid.
+  void initPDFSet(const std::string& name);
 }
+
+
+
+
 

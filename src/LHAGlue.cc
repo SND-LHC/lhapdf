@@ -170,6 +170,7 @@ extern "C" {
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "CTEQ6L1";
     // Create the PDF set with index nset
+    std::cout << "JF: initpdfsetbyname: " << nset << " " << setname << " " << setnamelength << std::endl;
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       ACTIVESETS[nset] = PDFSetHandler(name);
   }
@@ -410,11 +411,39 @@ double LHAPDF::xfx(double x, double Q, int fl) {
     evolvepdf_(x, Q, &r[0]);
     return r[fl+6];
 }
+
 double LHAPDF::xfx(int nset, double x, double Q, int fl) {
-    vector<double> r(13);
-   evolvepdfm_(nset, x, Q, &r[0]);
-    return r[fl+6];
+  vector<double> r(13);
+  evolvepdfm_(nset, x, Q, &r[0]);
+  return r[fl+6];
 }
+
+vector<double> LHAPDF::xfx(double x, double Q) {
+  vector<double> r(13);
+  evolvepdf_(x, Q, &r[0]);
+  return r;
+}
+
+vector<double> LHAPDF::xfx(int nset, double x, double Q) {
+  vector<double> r(13);
+  evolvepdfm_(nset, x, Q, &r[0]);
+    return r;
+}
+
+void LHAPDF::xfx(double x, double Q, double* results) {
+    evolvepdf_(x, Q, results);
+}
+
+void LHAPDF::xfx(int nset, double x, double Q, double* results) {
+    evolvepdfm_(nset, x, Q, results);
+}
+
+
+void LHAPDF::initPDFSet(const string& filename){
+  initPDFSetByName(filename);
+}
+
+
 
 #define SIZE 999
 void initPDFSetByName(const string& filename) {
@@ -433,9 +462,18 @@ void initPDFSetByName(int nset, const string& filename) {
 double LHAPDF::alphasPDF(double Q) {
   return LHAPDF::alphasPDF(1, Q) ;
 }
+
 double LHAPDF::alphasPDF(int nset, double Q) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // return alphaS for the requested set
     return ACTIVESETS[nset].activemember()->alphasQ(Q);
+}
+
+void LHAPDF::usePDFMember(int member) {
+  initpdf_(member);
+}
+
+void LHAPDF::usePDFMember(int nset, int member) {
+    initpdfm_(nset, member);
 }
