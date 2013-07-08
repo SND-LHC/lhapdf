@@ -30,11 +30,11 @@ namespace LHAPDF {
 
 
   double AlphaS_Ipol::_ddq_forward( size_t i ) const {
-    return (_as[i+1] - _as[i]) / (_q2s[i+1] - _q2s[i]);
+    return (_as[i+1] - _as[i]) / (_logq2s[i+1] - _logq2s[i]);
   }
 
   double AlphaS_Ipol::_ddq_backward( size_t i ) const {
-    return (_as[i] - _as[i-1]) / (_q2s[i] - _q2s[i-1]);
+    return (_as[i] - _as[i-1]) / (_logq2s[i] - _logq2s[i-1]);
   }
 
   double AlphaS_Ipol::_ddq_central( size_t i ) const {
@@ -44,36 +44,38 @@ namespace LHAPDF {
 
   // Interpolate alpha_s from tabulated points in Q2 via metadata
   double AlphaS_Ipol::alphasQ2(double q2) const {
+    // Actually we operate in log space
+    const double logq2 = log(q2);
 
     // Make sure the values to interpolate from have the same dimensions
-    assert(_as.size() == _q2s.size());
+    assert(_as.size() == _logq2s.size());
 
     // Use a basic constant extrapolation in case we go out of range
-    if (q2 <= _q2s.front()) return _as.front();
-    if (q2 >= _q2s.back()) return _as.back();
+    if (logq2 <= _logq2s.front()) return _as.front();
+    if (logq2 >= _logq2s.back()) return _as.back();
 
     // Cubic interpolation of std::vector<double> q2 and as
-    size_t i = std::upper_bound( _q2s.begin(), _q2s.end(), q2 ) - _q2s.begin();
-    if (i == _q2s.size()) i -= 1;
+    size_t i = std::upper_bound( _logq2s.begin(), _logq2s.end(), logq2 ) - _logq2s.begin();
+    if (i == _logq2s.size()) i -= 1;
     i -= 1;
 
     // Calculate derivatives
-    double didq2, di1dq2;
+    double didlogq2, di1dlogq2;
     if ( i == 0 ) {
-      didq2 = _ddq_forward(i);
-      di1dq2 = _ddq_central(i+1);
-    } else if ( i == _q2s.size()-2 ) {
-      didq2 = _ddq_central(i);
-      di1dq2 = _ddq_backward(i+1);
+      didlogq2 = _ddq_forward(i);
+      di1dlogq2 = _ddq_central(i+1);
+    } else if ( i == _logq2s.size()-2 ) {
+      didlogq2 = _ddq_central(i);
+      di1dlogq2 = _ddq_backward(i+1);
     } else {
-      didq2 = _ddq_central(i);
-      di1dq2 = _ddq_central(i+1);
+      didlogq2 = _ddq_central(i);
+      di1dlogq2 = _ddq_central(i+1);
     }
 
     // Calculate alpha_s
-    double dq2 = _q2s[i+1] - _q2s[i];
-    double tq2 = (q2 - _q2s[i]) / dq2;
-    return _interpolateCubic( tq2, _as[i], didq2, _as[i+1], di1dq2 );
+    double dlogq2 = _logq2s[i+1] - _logq2s[i];
+    double tlogq2 = (logq2 - _logq2s[i]) / dlogq2;
+    return _interpolateCubic( tlogq2, _as[i], didlogq2, _as[i+1], di1dlogq2 );
   }
 
 

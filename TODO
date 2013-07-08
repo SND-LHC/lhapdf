@@ -23,22 +23,18 @@ FOR BETA 3 / RELEASE CANDIDATE
      NNPDF23_nlo_as_0114 .. 0124
      NNPDF23_nnlo_as_0114 .. 0124
 
-- **Define ConfidenceLevel flag for use with Hessian error sets**
+- **Flavour scheme metadata (AB)**
 
-- **FFNS/VFNS metadata**
+   Define FlavorScheme = fixed/variable. NumFlavors only applies in the 'fixed'
+   case?
 
-   Define (AlphaS_)FlavorScheme = fixed/variable. NumFlavors only applies in the
-   'fixed' case?
+
+FOR STABLE 6.0.0 RELEASE
+------------------------
 
 - **Complete and test AlphaS system (MR,KN)**
 
    Use doubled Q values to implement 1D subgrids.
-
-   Define behaviour below/above the grid range.
-
-   AlphaS interface tidying.
-
-   ODE implementation ~finished?
 
    Need to respect FFNS/VFNS flags.
 
@@ -46,12 +42,6 @@ FOR BETA 3 / RELEASE CANDIDATE
    in 99% of cases?)
 
    Include alpha_s raw and deviation plotting in the migration dump/comparison scripts.
-
-- **Finish Fortran/C++ legacy compatibility**
-
-   Test with various gens: Py8, Py6, H++, Sherpa, Top++.
-
-   Any "metadata" functions remaining to be mapped?
 
 - **Non-visual PDF validation (AB)**
 
@@ -74,9 +64,7 @@ FOR BETA 3 / RELEASE CANDIDATE
    Includes non-zero top PDFs? Still many >> 1e-3 deviations. Why do -1, -2 PDFs
    look valence-like?
 
-
-FOR STABLE 6.0.0 RELEASE
-------------------------
+- **Improve CTEQ6L1 grid efficiency if possible (MR)**
 
 - **Write-up**
 
@@ -97,8 +85,6 @@ FOR STABLE 6.0.0 RELEASE
    build will be important for reducing that social/technical problem.
 
 - **Add Info/Config mappings to Cython (AB)**
-
-- **Improve CTEQ6L1 grid efficiency if possible (MR)**
 
 
 AS AND WHEN

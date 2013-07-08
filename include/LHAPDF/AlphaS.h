@@ -11,9 +11,6 @@
 namespace LHAPDF {
 
 
-  /// @todo Tidy interface for RC
-
-
   /// @brief Calculator interface for computing alpha_s(Q2) in various ways
   ///
   /// The design of the AlphaS classes is that they are substitutible
@@ -75,7 +72,7 @@ namespace LHAPDF {
     /// Used explicitly in the ODE solver.
     virtual void setAlphaSMZ(double alphas) { _alphas_mz = alphas; }
 
-    /// @brief Set the @a {i}th Lamda constant for @a i active flavors
+    /// @brief Set the @a {i}th Lambda constant for @a i active flavors
     ///
     /// Used explicitly in the analytic solver.
     virtual void setLambda(unsigned int i, double lambda) {};
@@ -172,6 +169,8 @@ namespace LHAPDF {
     double alphasQ2(double q2) const;
 
     /// Set the array of Q values for interpolation
+    ///
+    /// Writes to the same internal arrays as setQ2Values, appropriately transformed.
     void setQValues(const std::vector<double>& qs) {
       std::vector<double> q2s;
       foreach (double q, qs) q2s.push_back(q*q);
@@ -179,22 +178,27 @@ namespace LHAPDF {
     }
 
     /// @brief Set the array of Q2 values for interpolation
-    ///
-    /// Writes to the same internal array as setQValues, appropriately transformed.
-    void setQ2Values(const std::vector<double>& q2s) { _q2s = q2s; }
+    void setQ2Values(const std::vector<double>& q2s) {
+      foreach (double q2, q2s) _logq2s.push_back(log(q2));
+    }
 
     /// Set the array of alpha_s(Q2) values for interpolation
     void setAlphaSValues(const std::vector<double>& as) { _as = as; }
 
   private:
 
+    /// Standard cubic interpolation formula
     double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH) const;
+    /// Get the gradient for a patch in the middle of the grid
     double _ddq_central( size_t i ) const;
+    /// Get the gradient for a patch at the low end of the grid
     double _ddq_forward( size_t i ) const;
+    /// Get the gradient for a patch at the high end of the grid
     double _ddq_backward( size_t i ) const;
 
-    std::vector<double> _q2s;
+    /// Array of ipol knots in log(Q2)
     std::vector<double> _logq2s;
+    /// Array of alpha_s values for the Q2 knots
     std::vector<double> _as;
 
   };
@@ -251,7 +255,6 @@ namespace LHAPDF {
     mutable bool _calculated;
 
     /// The interpolation used to get Alpha_s after the ODE has been solved
-    /// @todo Make mutable: only interesting for caching reasons
     mutable AlphaS_Ipol _ipol;
 
   };

@@ -1,5 +1,9 @@
 2013-07-08  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Updated ipol alpha_s solver to operate in log space: smoother behaviour now.
+
+	* Karl made ODE and interpolation alpha_s solvers work nicely.
+
 	* Adding fallback/default-return variants of the Info get_entry and get_entry_as methods.
 
 2013-07-05  Andy Buckley  <andy.buckley@cern.ch>
