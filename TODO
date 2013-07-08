@@ -42,6 +42,11 @@ FOR BETA 3 / RELEASE CANDIDATE
 
    Need to respect FFNS/VFNS flags.
 
+   Making an AlphaS object from the PDFSet interface (why have to make a member
+   in 99% of cases?)
+
+   Include alpha_s raw and deviation plotting in the migration dump/comparison scripts.
+
 - **Finish Fortran/C++ legacy compatibility**
 
    Test with various gens: Py8, Py6, H++, Sherpa, Top++.

@@ -55,9 +55,11 @@ namespace LHAPDF {
 
   // Interpolate alpha_s from tabulated points in Q2 via metadata
   double AlphaS_Ipol::alphasQ2(double q2) const {
+    // cout << "Using ipol alpha_s evolution" << endl;
+
     // Cubic interpolation of std::vector<double> q2 and as
     size_t i = std::upper_bound( _q2s.begin(), _q2s.end(), q2 ) - _q2s.begin();
-    if( i == _q2s.size()) i -= 1;
+    if (i == _q2s.size()) i -= 1;
     i -= 1;
 
     // Calculate derivatives

@@ -458,6 +458,8 @@ namespace LHAPDF {
       _alphas.reset(alphas);
     }
 
+    /// @todo Add a const AlphaS& alphaS() const function.
+
 
     /// @brief Check if an AlphaS calculator is set
     bool hasAlphaS() const {
