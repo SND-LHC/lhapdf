@@ -31,13 +31,12 @@ int main() {
   as_ode.setQMass(4, 1.29);
   as_ode.setQMass(5, 4.1);
   as_ode.setQMass(6, 172.5);
-  as_ode.solve();
 
   AlphaS_Ipol as_ipol;
-  std::vector<double> qs;
+  vector<double> qs;
   qs.push_back(1);
   qs.push_back(91);
-  std::vector<double> alphas;
+  vector<double> alphas;
   alphas.push_back(0.5);
   alphas.push_back(0.118);
   as_ipol.setQValues(qs);

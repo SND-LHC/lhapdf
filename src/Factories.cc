@@ -121,6 +121,10 @@ namespace LHAPDF {
         throw MetadataError("Requested ODE AlphaS but the required parameters are not defined.");
       as->setAlphaSMZ(info.get_entry_as<double>("AlphaS_MZ"));
       as->setMZ(info.get_entry_as<double>("MZ"));
+      if (info.has_key("AlphaS_Qs")) {
+        AlphaS_ODE* as_o = dynamic_cast<AlphaS_ODE*>(as);
+        if (info.has_key("AlphaS_Qs")) as_o->setQValues( info.get_entry_as< vector<double> >("AlphaS_Qs"));
+      }
     }
     else if (as->type() == "analytic") {
       /// @todo Handle FFNS / VFNS
@@ -133,8 +137,9 @@ namespace LHAPDF {
     else if (as->type() == "ipol") {
       if (!info.has_key("AlphaS_Qs") || !info.has_key("AlphaS_Vals") )
         throw MetadataError("Requested ipol AlphaS but the required parameters are not defined.");
-      if (info.has_key("AlphaS_Qs")) as->setQValues( info.get_entry_as< vector<double> >("AlphaS_Qs"));
-      if (info.has_key("AlphaS_Vals")) as->setAlphaSValues( info.get_entry_as< vector<double> >("AlphaS_Vals"));
+      AlphaS_Ipol* as_i = dynamic_cast<AlphaS_Ipol*>(as);
+      if (info.has_key("AlphaS_Qs")) as_i->setQValues( info.get_entry_as< vector<double> >("AlphaS_Qs"));
+      if (info.has_key("AlphaS_Vals")) as_i->setAlphaSValues( info.get_entry_as< vector<double> >("AlphaS_Vals"));
     }
 
     return as;

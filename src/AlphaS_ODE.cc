@@ -25,7 +25,7 @@ namespace LHAPDF {
   // adaptive step size. Passing be reference explained
   // below.
   void AlphaS_ODE::_rk4(double& t, double& y, double h,
-    const double allowed_change, const vector<double>& bs) const {
+                        const double allowed_change, const vector<double>& bs) const {
 
     // Determine increments in y based on the slopes of the function at the
     // beginning, midpoint, and end of the interval
@@ -51,7 +51,7 @@ namespace LHAPDF {
   // return them in a container -- bit confusing but should be more
   // efficient
   void AlphaS_ODE::_solve(double q2, double& t, double& y,
-    const double& allowed_relative, double h, double accuracy) const {
+                          const double& allowed_relative, double h, double accuracy) const {
     while (fabs(q2 - t) > accuracy) {
       /// Make the allowed change smaller as the q2 scale gets greater
       const double allowed_change = allowed_relative / t;
@@ -78,19 +78,18 @@ namespace LHAPDF {
   /// Interpolate to get Alpha_S if the ODE has been solved,
   /// otherwise solve ODE from scratch
   double AlphaS_ODE::alphasQ2(double q2) const {
-    if ( _calculated ) {
-      return _ipol.alphasQ2(q2);
-    } else {
-      // See below for explanation
-      double h = 2;
-      const double allowed_relative = 0.01;
-      const double faccuracy = 0.01;
-      double accuracy = faccuracy;
-      double t = sqr(_mz); // starting point
-      double y = _alphas_mz; // starting value
-      _solve(q2, t, y, allowed_relative, h, accuracy);
-      return y;
-    }
+    // Tabulate ODE solutions for interpolation and return interpolated value
+    _interpolate();
+    return _ipol.alphasQ2(q2);
+    // // Or directly return the ODE result (for testing)
+    // double h = 2;
+    // const double allowed_relative = 0.01;
+    // const double faccuracy = 0.01;
+    // double accuracy = faccuracy;
+    // double t = sqr(_mz); // starting point
+    // double y = _alphas_mz; // starting value
+    // _solve(q2, t, y, allowed_relative, h, accuracy); // solve ODE
+    // return y;
   }
 
 
@@ -99,7 +98,9 @@ namespace LHAPDF {
   /// @todo Stepping also needs to get much smaller as we approach LambdaQCD
   /// -- Can't use adaptive step size close to lambdaQCD effectively (since changes will be large)
   /// -- Do they really need to be *very* small (since errors always will get large there)?
-  void AlphaS_ODE::_interpolate() {
+  void AlphaS_ODE::_interpolate() const {
+    if ( _calculated ) return;
+
     // Initial step size
     double h = 2.0;
     /// This the the relative error allowed for the adaptive step size. Should be optimised.
@@ -121,55 +122,54 @@ namespace LHAPDF {
     double t = sqr(_mz); // starting point
     double y = _alphas_mz; // starting value
 
-    vector<double> q2s;
-    vector<double> alphas;
-    // If a vector of anchor points in q2 has been given, solve for those
-    // Else decide own anchor points
-    if ( _q2s.size() != 0 ) {
-      q2s = _q2s;
-      std::sort(q2s.begin(), q2s.end());
-      foreach (double Q2, q2s) {
-        _solve(Q2, t, y, allowed_relative, h, accuracy);
+    // If a vector of anchor points in q2 has been given, solve for those.
+    if ( !_q2s.empty() ) {
+
+      vector<double> alphas;
+      foreach (double q2, _q2s) {
+        _solve(q2, t, y, allowed_relative, h, accuracy);
         alphas.push_back(y);
         // If alpha_s goes over 20 the ODE diverges too fast, so go back to start
         // rather than using this point as a starting point for the next one
         if (y > 20.) { t = sqr(_mz); y = _alphas_mz; }
       }
+      _ipol.setQ2Values(_q2s);
+      _ipol.setAlphaSValues(alphas);
+
+    } else {
+
+      // Start evolution in Q at MZ, and assemble a grid of anchor points.
+      vector<double> q2s, alphas;
+
+      // To save time we solve from MZ down to Q=0.5, then go back to MZ and solve up to Q=1000
+      double tmp = sqr(_mz); //< @todo Use a better variable name to indicate that this is the scale evolution variable
+      while (tmp > sqr(0.5)) {
+        _solve(tmp, t, y, allowed_relative, h, accuracy);
+        q2s.push_back(t);
+        alphas.push_back(y);
+        if (y > 20.) break;
+        tmp -= (10 * accuracy * t);
+      }
+      t = sqr(_mz); // starting point
+      y = _alphas_mz; // starting value
+      tmp = sqr(_mz);
+      while (tmp < sqr(1000)) {
+        tmp += (10 * accuracy * t);
+        _solve(tmp, t, y, allowed_relative, h, accuracy);
+        q2s.push_back(t);
+        alphas.push_back(y);
+      }
+
+      // We assume alpha_s is monotonic
+      std::sort(q2s.begin(), q2s.end());
+      std::sort(alphas.begin(), alphas.end(), cmpDescend<double>);
+
+      // Set interpolation knots and values
       _ipol.setQ2Values(q2s);
       _ipol.setAlphaSValues(alphas);
-      return;
     }
 
-    // Start evolution in Q at MZ
-    // To save time we solve from MZ down to Q=0.5,
-    // then go back to MZ and solve up to Q=1000
-    double tmp = sqr(_mz); //< @todo Use a better variable name to indicate that this is the scale evolution variable
-
-    while (tmp > 0.25) {
-      _solve(tmp, t, y, allowed_relative, h, accuracy);
-      q2s.push_back(t);
-      alphas.push_back(y);
-      if (y > 20.) break;
-      tmp -= (10 * accuracy * t);
-    }
-
-    t = sqr(_mz); // starting point
-    y = _alphas_mz; // starting value
-    tmp = sqr(_mz);
-
-    while (tmp < 1000*1000) { //< @todo Explain! For Q less than 1 TeV?
-      tmp += (10 * accuracy * t);
-      _solve(tmp, t, y, allowed_relative, h, accuracy);
-      q2s.push_back(t);
-      alphas.push_back(y);
-    }
-
-    // We assume alpha_s is monotonic
-    std::sort(q2s.begin(), q2s.end());
-    std::sort(alphas.begin(), alphas.end(), cmpDescend<double>);
-
-    _ipol.setQ2Values(q2s);
-    _ipol.setAlphaSValues(alphas);
+    _calculated = true;
   }
 
 
