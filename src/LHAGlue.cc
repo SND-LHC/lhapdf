@@ -170,7 +170,6 @@ extern "C" {
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "CTEQ6L1";
     // Create the PDF set with index nset
-    std::cout << "JF: initpdfsetbyname: " << nset << " " << setname << " " << setnamelength << std::endl;
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       ACTIVESETS[nset] = PDFSetHandler(name);
   }
