@@ -23,11 +23,6 @@ FOR BETA 3 / RELEASE CANDIDATE
      NNPDF23_nlo_as_0114 .. 0124
      NNPDF23_nnlo_as_0114 .. 0124
 
-- **Flavour scheme metadata (AB)**
-
-   Define FlavorScheme = fixed/variable. NumFlavors only applies in the 'fixed'
-   case?
-
 
 FOR STABLE 6.0.0 RELEASE
 ------------------------

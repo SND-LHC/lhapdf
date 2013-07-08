@@ -9,6 +9,9 @@
 namespace LHAPDF {
 
 
+  /// @todo Respect the NumFlavors + FlavorScheme metadata
+
+
   // Calculate the number of active quark flavours at energy scale Q2.
   // Respects min/max nf
   int AlphaS_Analytic::numFlavorsQ2(double q2) const {

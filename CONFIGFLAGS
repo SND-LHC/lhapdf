@@ -113,6 +113,10 @@ OPTIONAL... may _become_ mandatory?
 How many members there are in the error part of this set, i.e. not counting any
 central member(s).
 
+TODO: Default to NumMembers - 1?
+
+Assumed structure of PDF sets has first error member at Nmem = 1?
+
 Note: there is no guarantee that all members are installed or that they are
 consecutively numbered. This number is the official number of error set members
 in the released set.
@@ -120,7 +124,7 @@ in the released set.
 
 Interpolator
 ------------
-MANDATORY
+MANDATORY (for grid PDFs)
 (enum string): linear, cubic
 
 The factory name string of the PDF grid interpolator to use (if overriding the
@@ -129,7 +133,7 @@ default). Could also be member-specific.
 
 Extrapolator
 ------------
-MANDATORY
+MANDATORY (for grid PDFs)
 (enum string): error
 
 The factory name string of the PDF grid extrapolator to use (if overriding the
@@ -161,14 +165,21 @@ Maximum number of loops considered in the QCD evolution of this set (i.e. 0 =
 LO, 1 = NLO, etc.)
 
 
-EvolutionNf
------------
+FlavorScheme
+------------
+(enum string): fixed/variable
+
+The flavour treatment scheme used in PDF/alpha_s evolution.
+
+
+NumFlavors
+----------
 MANDATORY
 (uint): e.g. 4 or 5
 
-Maximum number of flavours used in the fit
+TODO: Rename as
 
-@todo Need a separate variable for type of flavour scheme used, i.e. FFNS/VFNS/etc.?
+Maximum/fixed number of flavors used in the fit. Used explicitly in alpha_s evolution.
 
 
 AlphaS_MZ

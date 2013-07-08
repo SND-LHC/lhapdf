@@ -1,5 +1,7 @@
 2013-07-08  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding/updating NumFlavors + FlavorScheme metadata flags and add TODOs to respect them.
+
 	* Updated ipol alpha_s solver to operate in log space: smoother behaviour now.
 
 	* Karl made ODE and interpolation alpha_s solvers work nicely.

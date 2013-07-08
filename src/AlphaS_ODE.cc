@@ -9,6 +9,9 @@
 namespace LHAPDF {
 
 
+  /// @todo Respect the NumFlavors + FlavorScheme metadata
+
+
   // Calculate first order derivative, dy/dt, as it appears in the differential equation
   double AlphaS_ODE::_derivative(double t, double y, const vector<double>& beta) const {
     /// @todo Respect the _order member variable

@@ -17,6 +17,7 @@ namespace LHAPDF {
 
   // Calculate the number of active quark flavours at energy scale Q2
   int AlphaS::numFlavorsQ2(double q2) const {
+    /// @todo Respect the NumFlavors + FlavorScheme metadata
     int nf = 0;
     for (int it = 0; it < (int)_qmasses.size(); ++it)
       // if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it + 1;
