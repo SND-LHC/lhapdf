@@ -43,24 +43,26 @@ int main() {
   as_ipol.setQValues(qs);
   as_ipol.setAlphaSValues(alphas);
 
-//  PDF* pdf = mkPDF("CT10nlo", 0);
+  PDF* pdf = mkPDF("CT10nlo", 0);
 
-  ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat"), fi("alphas_ipol.dat");
+  ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat"), fi("alphas_ipol.dat"), fc("alphas_ct10nlo.dat");
   for (double log10q = -0.5; log10q < 3; log10q += 0.05) {
     const double q = pow(10, log10q);
     const double as_ana_q = as_ana.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ana = " << as_ana_q << endl;
     fa << q << " " << as_ana_q << endl;
-    // cout << "Q = " << setprecision(1) << fixed << q << ",  nf = " << as_ode.nf_Q(q) << endl;
     const double as_ode_q = as_ode.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ODE = " << as_ode_q << endl;
     fo << q << " " << as_ode_q << endl;
     const double as_ipol_q = as_ipol.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ipol = " << as_ipol_q << endl;
     fi << q << " " << as_ipol_q << endl;
+    const double as_ct10_q = pdf->alphasQ(q);
+    cout << "alpha_s(Q=" << q << ")_CT10nlo = " << as_ct10_q << endl;
+    fc << q << " " << as_ct10_q << endl;
   }
-  fa.close(); fo.close(); fi.close();
+  fa.close(); fo.close(); fi.close(); fc.close();
 
-//  delete pdf;
+  delete pdf;
   return 0;
 }
