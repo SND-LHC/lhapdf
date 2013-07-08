@@ -33,7 +33,17 @@ int main() {
   as_ode.setQmass(6, 172.5);
   as_ode.solve();
 
-  PDF* pdf = mkPDF("CT10nlo", 0);
+  AlphaS_Ipol as_ipol;
+  std::vector<double> qs;
+  qs.push_back(1);
+  qs.push_back(91);
+  std::vector<double> alphas;
+  alphas.push_back(0.5);
+  alphas.push_back(0.118);
+  as_ipol.setQValues(qs);
+  as_ipol.setAlphaSValues(alphas);
+
+//  PDF* pdf = mkPDF("CT10nlo", 0);
 
   ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat"), fi("alphas_ipol.dat");
   for (double log10q = -0.5; log10q < 3; log10q += 0.05) {
@@ -45,12 +55,12 @@ int main() {
     const double as_ode_q = as_ode.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ODE = " << as_ode_q << endl;
     fo << q << " " << as_ode_q << endl;
-    const double as_ipol_q = pdf->alphasQ(q);
+    const double as_ipol_q = as_ipol.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ipol = " << as_ipol_q << endl;
     fi << q << " " << as_ipol_q << endl;
   }
   fa.close(); fo.close(); fi.close();
 
-  delete pdf;
+//  delete pdf;
   return 0;
 }

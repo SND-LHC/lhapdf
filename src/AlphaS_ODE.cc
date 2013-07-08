@@ -120,19 +120,25 @@ namespace LHAPDF {
 
     std::vector<double> q2s;
     std::vector<double> alphas;
+    // If a vector of anchor points in q2 has been given, solve for those
+    // Else decide own anchor points
     if( _q2s.size() != 0 ) {
       q2s = _q2s;
       std::sort(q2s.begin(), q2s.end());
       foreach(double Q2, q2s){
         _solve(Q2, t, y, allowed_relative, h, accuracy);
         alphas.push_back(y);
+        // If alpha_s goes over 20 the ODE diverges too fast, so go back to start
+        // rather than using this point as a starting point for the next one
         if(y > 20.) { t = sqr(_mz); y = _alphas_mz; }
       }
       _ipol.setQ2Values(q2s);
       _ipol.setAlphaSValues(alphas);
-      _calculated = true;
+      return;
     }
 
+    // To save time we solve from MZ down to Q=0.5,
+    // then go back to MZ and solve up to Q=1000
     double tmp = sqr(_mz);
 
     while(tmp > 0.25) {
@@ -154,14 +160,13 @@ namespace LHAPDF {
       alphas.push_back(y);
     }
 
+    // We assume alpha_s is monotonic
     std::sort(q2s.begin(), q2s.end());
     std::sort(alphas.begin(), alphas.end(), cmpDescend<double>);
 
     _ipol.setQ2Values(q2s);
     _ipol.setAlphaSValues(alphas);
-//    for(size_t i = 0; i < q2s.size(); ++i) {
-//      cout << "Q: " << sqrt(q2s[i]) << "    a_s: " << alphas[i] << endl;
-//    }
+    return;
   }
 
 }

@@ -56,6 +56,13 @@ namespace LHAPDF {
   // Interpolate alpha_s from tabulated points in Q2 via metadata
   double AlphaS_Ipol::alphasQ2(double q2) const {
     // cout << "Using ipol alpha_s evolution" << endl;
+    // Make sure the values to interpolate from have the same
+    // dimensions
+    assert(_as.size() == _q2s.size());
+    // Use a basic constant extrapolation in case we go out
+    // of range
+    if(q2 <= _q2s.front()) return _as.front();
+    if(q2 >= _q2s.back()) return _as.back();
 
     // Cubic interpolation of std::vector<double> q2 and as
     size_t i = std::upper_bound( _q2s.begin(), _q2s.end(), q2 ) - _q2s.begin();
@@ -67,7 +74,7 @@ namespace LHAPDF {
     if ( i == 0 ) {
       didq2 = _ddq_forward(i);
       di1dq2 = _ddq_central(i+1);
-    } else if ( i == _q2s.size()-1 ) {
+    } else if ( i == _q2s.size()-2 ) {
       didq2 = _ddq_central(i);
       di1dq2 = _ddq_backward(i+1);
     } else {
@@ -78,7 +85,7 @@ namespace LHAPDF {
     // Calculate alpha_s
     double dq2 = _q2s[i+1] - _q2s[i];
     double tq2 = (q2 - _q2s[i]) / dq2;
-    return _interpolateCubic( tq2, _q2s[i], didq2, _q2s[i+1], di1dq2 );
+    return _interpolateCubic( tq2, _as[i], didq2, _as[i+1], di1dq2 );
   }
 
 
