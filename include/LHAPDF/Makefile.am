@@ -1,6 +1,5 @@
 pkginclude_HEADERS = \
   LHAPDF.h \
-  LHAGlue.h \
   Version.h \
   Info.h \
   Config.h \
@@ -23,3 +22,7 @@ pkginclude_HEADERS = \
   ErrExtrapolator.h \
   NearestPointExtrapolator.h \
   AlphaS.h
+
+if ENABLE_LHAGLUE
+  pkginclude_HEADERS += LHAGlue.h
+endif

@@ -56,9 +56,9 @@ if test x$enable_debug == xyes; then
 fi
 
 
-## Enable LHAGLUE compatibility fns for Fortran
+## Enable LHAGLUE compatibility fns for Fortran and the old C++ interface
 AC_ARG_ENABLE([lhaglue],
-  [AC_HELP_STRING(--disable-lhaglue, [build without PDFLIB/LHAPDF5 compatibility routines])],
+  [AC_HELP_STRING(--disable-lhaglue, [build without LHAPDF5 compatibility routines])],
   [], [enable_lhaglue=yes])
 if test x$enable_lhaglue == xyes; then
    AC_MSG_NOTICE(Building LHAGLUE wrappers)
