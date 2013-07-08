@@ -98,39 +98,45 @@ namespace LHAPDF {
 
   AlphaS* mkAlphaS(const Info& info) {
     AlphaS* as = 0;
+
     const string itype = to_lower_copy(info.get_entry("AlphaS_Type"));
     if (itype == "analytic") as = new AlphaS_Analytic();
     else if (itype == "ode") as = new AlphaS_ODE();
     else if (itype == "ipol") as = new AlphaS_Ipol();
     else throw FactoryError("Undeclared AlphaS requested: " + itype);
+
     // Configure the QCD params on this AlphaS
-    if (info.has_key("AlphaS_OrderQCD")) as->setQCDorder(info.get_entry_as<int>("AlphaS_OrderQCD"));
-    if (info.has_key("MUp")) as->setQmass(1, info.get_entry_as<double>("MUp"));
-    if (info.has_key("MDown")) as->setQmass(2, info.get_entry_as<double>("MDown"));
-    if (info.has_key("MStrange")) as->setQmass(3, info.get_entry_as<double>("MStrange"));
-    if (info.has_key("MCharm")) as->setQmass(4, info.get_entry_as<double>("MCharm"));
-    if (info.has_key("MBottom")) as->setQmass(5, info.get_entry_as<double>("MBottom"));
-    if (info.has_key("MTop")) as->setQmass(6, info.get_entry_as<double>("MTop"));
+    if (info.has_key("AlphaS_OrderQCD")) as->setOrderQCD(info.get_entry_as<int>("AlphaS_OrderQCD"));
+    if (info.has_key("MUp")) as->setQMass(1, info.get_entry_as<double>("MUp"));
+    if (info.has_key("MDown")) as->setQMass(2, info.get_entry_as<double>("MDown"));
+    if (info.has_key("MStrange")) as->setQMass(3, info.get_entry_as<double>("MStrange"));
+    if (info.has_key("MCharm")) as->setQMass(4, info.get_entry_as<double>("MCharm"));
+    if (info.has_key("MBottom")) as->setQMass(5, info.get_entry_as<double>("MBottom"));
+    if (info.has_key("MTop")) as->setQMass(6, info.get_entry_as<double>("MTop"));
+
+    // Required parameter settings for each calculation mode
     if (as->type() == "ode") {
-      if (!(info.has_key("AlphaS_MZ")) || !(info.has_key("MZ")) )
+      /// @todo Handle FFNS / VFNS
+      if (!info.has_key("AlphaS_MZ") || !info.has_key("MZ") )
         throw MetadataError("Requested ODE AlphaS but the required parameters are not defined.");
       as->setAlphaSMZ(info.get_entry_as<double>("AlphaS_MZ"));
       as->setMZ(info.get_entry_as<double>("MZ"));
     }
     else if (as->type() == "analytic") {
       /// @todo Handle FFNS / VFNS
-      if (!(info.has_key("Lambda5")) && !(info.has_key("Lambda4")) && !(info.has_key("Lambda3")) )
+      if (!info.has_key("Lambda5") && !info.has_key("Lambda4") && !info.has_key("Lambda3") )
         throw MetadataError("Requested analytic AlphaS but the required parameters are not defined.");
       if (info.has_key("Lambda3")) as->setLambda(3, info.get_entry_as<double>("Lambda3"));
       if (info.has_key("Lambda4")) as->setLambda(4, info.get_entry_as<double>("Lambda4"));
       if (info.has_key("Lambda5")) as->setLambda(5, info.get_entry_as<double>("Lambda5"));
     }
     else if (as->type() == "ipol") {
-      if (!(info.has_key("AlphaS_Q2")) || !(info.has_key("AlphaS_V")) )
+      if (!info.has_key("AlphaS_Qs") || !info.has_key("AlphaS_Vals") )
         throw MetadataError("Requested ipol AlphaS but the required parameters are not defined.");
       if (info.has_key("AlphaS_Qs")) as->setQValues( info.get_entry_as< vector<double> >("AlphaS_Qs"));
       if (info.has_key("AlphaS_Vals")) as->setAlphaSValues( info.get_entry_as< vector<double> >("AlphaS_Vals"));
     }
+
     return as;
   }
 

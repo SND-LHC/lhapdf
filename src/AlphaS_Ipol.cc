@@ -9,18 +9,7 @@
 namespace LHAPDF {
 
 
-  /// @todo What do we do at high/low Q2, outside the ipol range? Freeze at both?
-
   /// @todo Add subgrid support
-
-
-  // Calculate the number of active quark flavours at energy scale Q2
-  int AlphaS_Ipol::nf_Q2(double q2) const {
-    int nf = 0;
-    for (size_t it = 0; it < _qmasses.size(); ++it)
-      if (q2 > sqr(_qmass(it))) nf = it;
-    return nf;
-  }
 
 
   double AlphaS_Ipol::_interpolateCubic(double T, double VL, double VDL, double VH, double VDH) const {
@@ -55,14 +44,13 @@ namespace LHAPDF {
 
   // Interpolate alpha_s from tabulated points in Q2 via metadata
   double AlphaS_Ipol::alphasQ2(double q2) const {
-    // cout << "Using ipol alpha_s evolution" << endl;
-    // Make sure the values to interpolate from have the same
-    // dimensions
+
+    // Make sure the values to interpolate from have the same dimensions
     assert(_as.size() == _q2s.size());
-    // Use a basic constant extrapolation in case we go out
-    // of range
-    if(q2 <= _q2s.front()) return _as.front();
-    if(q2 >= _q2s.back()) return _as.back();
+
+    // Use a basic constant extrapolation in case we go out of range
+    if (q2 <= _q2s.front()) return _as.front();
+    if (q2 >= _q2s.back()) return _as.back();
 
     // Cubic interpolation of std::vector<double> q2 and as
     size_t i = std::upper_bound( _q2s.begin(), _q2s.end(), q2 ) - _q2s.begin();

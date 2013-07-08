@@ -10,13 +10,13 @@ using namespace std;
 
 int main() {
   AlphaS_Analytic as_ana;
-  as_ana.setQCDorder(4);
-  as_ana.setQmass(1, 0.0017);
-  as_ana.setQmass(2, 0.0041);
-  as_ana.setQmass(3, 0.1);
-  as_ana.setQmass(4, 1.29);
-  as_ana.setQmass(5, 4.1);
-  as_ana.setQmass(6, 172.5);
+  as_ana.setOrderQCD(4);
+  as_ana.setQMass(1, 0.0017);
+  as_ana.setQMass(2, 0.0041);
+  as_ana.setQMass(3, 0.1);
+  as_ana.setQMass(4, 1.29);
+  as_ana.setQMass(5, 4.1);
+  as_ana.setQMass(6, 172.5);
   // as_ana.setLambda(2, 0.400);
   as_ana.setLambda(3, 0.339);
   as_ana.setLambda(4, 0.296);
@@ -25,12 +25,12 @@ int main() {
   AlphaS_ODE as_ode;
   as_ode.setMZ(91);
   as_ode.setAlphaSMZ(0.118);
-  as_ode.setQmass(1, 0.0017);
-  as_ode.setQmass(2, 0.0041);
-  as_ode.setQmass(3, 0.1);
-  as_ode.setQmass(4, 1.29);
-  as_ode.setQmass(5, 4.1);
-  as_ode.setQmass(6, 172.5);
+  as_ode.setQMass(1, 0.0017);
+  as_ode.setQMass(2, 0.0041);
+  as_ode.setQMass(3, 0.1);
+  as_ode.setQMass(4, 1.29);
+  as_ode.setQMass(5, 4.1);
+  as_ode.setQMass(6, 172.5);
   as_ode.solve();
 
   AlphaS_Ipol as_ipol;

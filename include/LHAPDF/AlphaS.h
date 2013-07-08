@@ -38,49 +38,83 @@ namespace LHAPDF {
     virtual double alphasQ2(double q2) const = 0;
 
     /// Calculate the number of active flavours at energy scale Q
-    int nf_Q(double q) const { return nf_Q2(q*q); }
+    int numFlavorsQ(double q) const { return numFlavorsQ2(q*q); }
 
     /// Calculate the number of active flavours at energy scale Q2
-    virtual int nf_Q2(double q2) const;
+    virtual int numFlavorsQ2(double q2) const;
 
     /// Set quark masses by PDG code
-    virtual void setQmass(int id, double value);
+    virtual double qMass(int id);
+
+    /// Set quark masses by PDG code
+    virtual void setQMass(int id, double value);
+
+    /// Set the order of QCD (expressed as number of loops)
+    void setOrderQCD(int order) { _qcdorder = order; }
+
+    /// @brief Set the Z mass used in this alpha_s
+    ///
+    /// Used in the ODE solver.
+    virtual void setMZ(double mz) {};
+
+    /// @brief Set the alpha_s(MZ) used in this alpha_s
+    ///
+    /// Used in the ODE solver.
+    virtual void setAlphaSMZ(double alphas) {};
+
+    /// @brief Set the @a {i}th Lamda constant for @a i active flavors
+    ///
+    /// Used in the analytic solver.
+    virtual void setLambda(unsigned int i, double lambda) {};
+
+    /// @brief Set the array of Q values for interpolation
+    ///
+    /// Used in the interpolation solver.
+    virtual void setQValues(const std::vector<double>& qs) {};
+
+    /// @brief Set the array of Q2 values for interpolation
+    ///
+    /// Writes to the same internal array as setQValues, appropriately transformed.
+    /// Used in the interpolation solver.
+    virtual void setQ2Values(const std::vector<double>& q2s) {};
+
+    /// @brief Set the array of alpha_s(Q2) values for interpolation
+    ///
+    /// Used in the interpolation solver.
+    virtual void setAlphaSValues(const std::vector<double>& alphas) {};
 
     /// Get the implementation type of this AlphaS
     virtual std::string type() const = 0;
 
-    /// Set the order of QCD (expressed as number of loops)
-    void setQCDorder(int order) { _qcdorder = order; }
-
-    // These are defined to avoid problems with
-    // for example mkAlphaS... Is there a nicer way to do this?
-    // And if not, should these throw an exception/compile time error
-    // if used when they are not needed instead of just doing nothing?
-    //
-    /// @todo Fix this design. Yuck :-(
-    virtual void setMZ(double mz) {};
-    virtual void setAlphaSMZ(double alphas) {};
-    virtual void setLambda(unsigned int i, double lambda) {};
-    virtual void setQValues(const std::vector<double>& ) {};
-    virtual void setQ2Values(const std::vector<double>& ) {};
-    virtual void setAlphaSValues(const std::vector<double>& ) {};
 
   protected:
 
-    /// Masses of quarks in GeV.  Used to calculate the number
-    /// of quarks that are active at a given energy range Q2
-    std::vector<double> _qmasses;
+    /// @name Calculating beta function values
+    //@{
+
     /// Calculate the i'th beta function given the number of active flavours
     /// Currently limited to 0 <= i <= 3
     /// Calculated using the MSbar scheme
     double _beta(int i, int nf) const;
+
     /// Calculate a vector of beta functions given the number of active flavours
     /// Currently returns a 4-element vector of beta0 -- beta3
     std::vector<double> _betas(int nf) const;
-    /// Get quark masses by PDG code
-    double _qmass(int id) const { return _qmasses[abs(id)-1]; }
-    /// Order of QCD (expressed as number of loops)
+
+    //@}
+
+
+  protected:
+
+    /// Order of QCD evolution (expressed as number of loops)
     int _qcdorder;
+
+    /// Masses of quarks in GeV
+    ///
+    /// Used for working out flavor thresholds and the number of quarks that are
+    /// active at energy scale Q.
+    std::vector<double> _qmasses;
+
   };
 
 
@@ -88,11 +122,14 @@ namespace LHAPDF {
   /// Calculate alpha_s(Q2) by an analytic approximation
   class AlphaS_Analytic : public AlphaS {
   public:
+
     std::string type() const { return "analytic"; }
+
     double alphasQ2(double q2) const;
-    /// Analytic has its own nf_Q2 which respects the
-    /// min/max nf set by lambdas
-    int nf_Q2(double q2) const;
+
+    /// Analytic has its own numFlavorsQ2 which respects the min/max nf set by the Lambdas
+    int numFlavorsQ2(double q2) const;
+
     /// Set lambda_i (for i = flavour number)
     void setLambda(unsigned int i, double lambda);
 
@@ -100,72 +137,102 @@ namespace LHAPDF {
 
     /// Get lambdaQCD for nf
     double _lambdaQCD(int nf) const;
+
     /// LambdaQCD values. Stored as lambdaQCD^nf = _lambdas[nf-1]
     std::vector<double> _lambdas;
+
     /// Recalculate min/max flavors in case lambdas have changed
     void _setFlavors();
-    /// Max/min number of flavors
+
+    /// Max number of flavors
     int _nfmax;
+    /// Min number of flavors
     int _nfmin;
   };
+
 
   /// Interpolate alpha_s from tabulated points in Q2 via metadata
   /// @todo Add Doxygen strings
   class AlphaS_Ipol : public AlphaS {
   public:
+
     std::string type() const { return "ipol"; }
+
     double alphasQ2(double q2) const;
-    int nf_Q2(double q2) const;
 
     void setQValues(const std::vector<double>& qs) {
       std::vector<double> q2s;
       foreach (double q, qs) q2s.push_back(q*q);
       setQ2Values(q2s);
     }
+
     void setQ2Values(const std::vector<double>& q2s) { _q2s = q2s; }
+
     void setAlphaSValues(const std::vector<double>& as) { _as = as; }
 
   private:
-    double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH ) const;
+
+    double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH) const;
     double _ddq_central( size_t i ) const;
     double _ddq_forward( size_t i ) const;
     double _ddq_backward( size_t i ) const;
 
     std::vector<double> _q2s;
     std::vector<double> _as;
+
   };
+
 
   /// Solve the differential equation in alphaS using an implementation of RK4
   class AlphaS_ODE : public AlphaS {
   public:
+
     std::string type() const { return "ode"; }
+
     double alphasQ2( double q2 ) const;
+
     void setMZ( double mz ) { _mz = mz; _calculated = false; }
+
     void setAlphaSMZ( double alphas ) { _alphas_mz = alphas; _calculated = false; }
+
     void setQ2Values( std::vector<double> q2s ) { _q2s = q2s; _calculated = false; }
+
     void solve() { _interpolate(); _calculated = true; }
 
   private:
-    /// Whether or not the ODE has been solved yet
-    bool _calculated;
-    /// Mass of the Z-boson in GeV
-    double _mz;
-    /// Value of alpha_s(MZ)
-    double _alphas_mz;
+
     /// Calculate the derivative at Q2 = t, alpha_S = y
     double _derivative(double t, double y, const std::vector<double>& beta) const;
+
     /// Calculate the next step using RK4 with adaptive step size
-    void _rk4(double& t, double& y, double h,
-      const double allowed_change, const vector<double>& bs) const;
+    void _rk4(double& t, double& y, double h, const double allowed_change, const vector<double>& bs) const;
+
     /// Solve alpha_s for q2 using RK4
-    void _solve(double q2, double& t, double& y,
-      const double& allowed_relative, double h, double accuracy) const;
+    void _solve(double q2, double& t, double& y, const double& allowed_relative, double h, double accuracy) const;
+
     /// Vector of Q2s in case specific anchor points are used
     std::vector<double> _q2s;
+
     /// Create interpolation grid
     void _interpolate();
+
+  private:
+
+    /// Whether or not the ODE has been solved yet
+    bool _calculated;
+
+    /// Mass of the Z boson in GeV
+    /// @todo Can't we use the value from the interface?
+    double _mz;
+
+    /// Value of alpha_s(MZ)
+    /// @todo Can't we use the value from the interface?
+    double _alphas_mz;
+
     /// The interpolation used to get Alpha_s after the ODE has been solved
+    /// @todo Make mutable: only interesting for caching reasons
     AlphaS_Ipol _ipol;
+
   };
 
 

@@ -8,46 +8,52 @@
 
 namespace LHAPDF {
 
+
   // Calculate the number of active quark flavours at energy scale Q2.
   // Respects min/max nf
-  int AlphaS_Analytic::nf_Q2(double q2) const {
+  int AlphaS_Analytic::numFlavorsQ2(double q2) const {
     int nf = _nfmin;
     for (int it = _nfmin; it < (int)_qmasses.size(); ++it)
       if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it+1;
     return (nf > _nfmax) ? _nfmax : nf;
   }
 
+
   // Set lambda_i && recalculate nfmax and nfmin
   void AlphaS_Analytic::setLambda(unsigned int i, double lambda) {
-    if(_lambdas.size() < i)_lambdas.resize(i);
+    if (_lambdas.size() < i)_lambdas.resize(i);
     _lambdas[i-1] = lambda;
     _setFlavors();
   }
+
 
   // Recalculate nfmax and nfmin after a new lambda has been set
   // Relies on vector<double> initialising all elements to 0 by
   // default, I *think* this should work even though I am comparing
   // floats since 0 has a precise representation
   void AlphaS_Analytic::_setFlavors() {
-    for(unsigned int it = 0; it < _lambdas.size(); ++it) {
-      if(_lambdas[it] != 0.){_nfmin = it+1; break;}
+    for (size_t it = 0; it < _lambdas.size(); ++it) {
+      if (_lambdas[it] != 0.) { _nfmin = it+1; break; }
     }
-    for(unsigned int it = _lambdas.size() - 1; it >= 0; --it) {
-      if(_lambdas[it] != 0.){_nfmax = it+1; break;}
+    for (size_t it = _lambdas.size() - 1; it >= 0; --it) {
+      if (_lambdas[it] != 0.) { _nfmax = it+1; break; }
     }
-    if(_nfmin != _nfmax) {
-      for(int it = _nfmin; it < _nfmax - 1; ++it){
-        if(_lambdas[it] == 0)throw Exception ("Need to set intermediate lambdas.");
+    if (_nfmin != _nfmax) {
+      for (int it = _nfmin; it < _nfmax - 1; ++it) {
+        if (_lambdas[it] == 0) throw Exception ("Need to set intermediate lambdas.");
       }
     }
   }
 
+
   // Return the correct lambda for a given number of active flavours
   double AlphaS_Analytic::_lambdaQCD(int nf) const {
     double lambda = _lambdas[nf-1];
-    if(lambda == 0)throw Exception("Invalid nf " + to_str(nf) + " requested for lambdaQCD");
+    if (lambda == 0)
+      throw Exception("Invalid nf " + to_str(nf) + " requested for lambdaQCD");
     return lambda;
   }
+
 
   // Calculate alpha_s(Q2) by an analytic approximation
   double AlphaS_Analytic::alphasQ2(double q2) const {
@@ -55,10 +61,10 @@ namespace LHAPDF {
     /// @todo support any number of active flavours?
     /// Only supports active nf=3-5 at the moment
 
-    const int nf = nf_Q2(q2);
+    const int nf = numFlavorsQ2(q2);
     const double lambdaQCD = _lambdaQCD(nf);
 
-    if(q2 <= lambdaQCD * lambdaQCD){return std::numeric_limits<double>::max();}
+    if (q2 <= lambdaQCD * lambdaQCD) return std::numeric_limits<double>::max();
 
     // Get beta coeffs for the number of active (above threshold) quark flavours at energy Q
     const std::vector<double> beta = _betas(nf);

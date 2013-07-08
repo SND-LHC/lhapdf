@@ -8,8 +8,9 @@
 
 namespace LHAPDF {
 
+
   // Calculate first order derivative, dy/dt, as it appears in the differential equation
-  double AlphaS_ODE::_derivative(double t, double y, const std::vector<double>& beta) const {
+  double AlphaS_ODE::_derivative(double t, double y, const vector<double>& beta) const {
     /// @todo Respect the _order member variable
     const double b0 = beta[0];
     const double b1 = beta[1];
@@ -19,11 +20,12 @@ namespace LHAPDF {
     return - d / t;
   }
 
+
   // Calculate the next step, using recursion to achieve
   // adaptive step size. Passing be reference explained
   // below.
   void AlphaS_ODE::_rk4(double& t, double& y, double h,
-    const double allowed_change, const std::vector<double>& bs) const {
+    const double allowed_change, const vector<double>& bs) const {
 
     // Determine increments in y based on the slopes of the function at the
     // beginning, midpoint, and end of the interval
@@ -35,12 +37,14 @@ namespace LHAPDF {
 
     // Only call recursively if Q2 > 1 GeV (constant step
     // size after this)
-    if(t > 1. && fabs(change) > allowed_change) { _rk4(t, y, h/2., allowed_change, bs);
+    if (t > 1. && fabs(change) > allowed_change) {
+      _rk4(t, y, h/2., allowed_change, bs);
     } else {
       y += change;
       t += h;
     }
   }
+
 
   // Solve for alpha_s(q2) using alpha_s = y and Q2 = t as starting points
   // Pass y and t by reference and change them to avoid having to
@@ -48,7 +52,7 @@ namespace LHAPDF {
   // efficient
   void AlphaS_ODE::_solve(double q2, double& t, double& y,
     const double& allowed_relative, double h, double accuracy) const {
-    while(fabs(q2 - t) > accuracy) {
+    while (fabs(q2 - t) > accuracy) {
       /// Make the allowed change smaller as the q2 scale gets greater
       const double allowed_change = allowed_relative / t;
 
@@ -61,12 +65,12 @@ namespace LHAPDF {
       if ((q2 < t && sgn(h) > 0) || (q2 > t && sgn(h) < 0)) h *= -1;
 
       // Get beta coefficients
-      const std::vector<double> bs = _betas(nf_Q2(t));
+      const vector<double> bs = _betas(numFlavorsQ2(t));
 
       // Calculate next step
       _rk4(t, y, h, allowed_change, bs);
 
-      if(y > 20.) { y = std::numeric_limits<double>::max(); break; }
+      if (y > 20.) { y = std::numeric_limits<double>::max(); break; }
     }
   }
 
@@ -74,7 +78,8 @@ namespace LHAPDF {
   /// Interpolate to get Alpha_S if the ODE has been solved,
   /// otherwise solve ODE from scratch
   double AlphaS_ODE::alphasQ2(double q2) const {
-    if( _calculated ) { return _ipol.alphasQ2(q2);
+    if ( _calculated ) {
+      return _ipol.alphasQ2(q2);
     } else {
       // See below for explanation
       double h = 2;
@@ -88,21 +93,19 @@ namespace LHAPDF {
     }
   }
 
+
   // Solve the differential equation in alphaS using an implementation of RK4
+  //
+  /// @todo Stepping also needs to get much smaller as we approach LambdaQCD
+  /// -- Can't use adaptive step size close to lambdaQCD effectively (since changes will be large)
+  /// -- Do they really need to be *very* small (since errors always will get large there)?
   void AlphaS_ODE::_interpolate() {
-    /// @todo Make these class members
     // Initial step size
-    /// @todo Use an adaptive step size -- stepping in log space? It needs to be *much* faster!
-    /// -- Done, but still not fast
-    /// @todo Stepping also needs to get much smaller as we approach LambdaQCD
-    /// -- Can't use adaptive step size close to lambdaQCD effectively (since changes will be large)
-    /// -- Do they really need to be *very* small (since errors always will get large there)?
-    double h = 2;
+    double h = 2.0;
     /// This the the relative error allowed for the adaptive step size. Should be optimised.
     const double allowed_relative = 0.01;
     // Fractional threshold to which we run in Q2 scale
-    /// @todo Need a mechanism to shrink the steps if accuracy < stepsize?
-    /// @todo Is the accuracy in Q or Q2? Q is better, I think.
+    /// @todo Is the accuracy in Q or Q2?
     const double faccuracy = 0.01;
 
     // Calculated absolute tolerance around the target Q2.
@@ -118,30 +121,31 @@ namespace LHAPDF {
     double t = sqr(_mz); // starting point
     double y = _alphas_mz; // starting value
 
-    std::vector<double> q2s;
-    std::vector<double> alphas;
+    vector<double> q2s;
+    vector<double> alphas;
     // If a vector of anchor points in q2 has been given, solve for those
     // Else decide own anchor points
-    if( _q2s.size() != 0 ) {
+    if ( _q2s.size() != 0 ) {
       q2s = _q2s;
       std::sort(q2s.begin(), q2s.end());
-      foreach(double Q2, q2s){
+      foreach (double Q2, q2s) {
         _solve(Q2, t, y, allowed_relative, h, accuracy);
         alphas.push_back(y);
         // If alpha_s goes over 20 the ODE diverges too fast, so go back to start
         // rather than using this point as a starting point for the next one
-        if(y > 20.) { t = sqr(_mz); y = _alphas_mz; }
+        if (y > 20.) { t = sqr(_mz); y = _alphas_mz; }
       }
       _ipol.setQ2Values(q2s);
       _ipol.setAlphaSValues(alphas);
       return;
     }
 
+    // Start evolution in Q at MZ
     // To save time we solve from MZ down to Q=0.5,
     // then go back to MZ and solve up to Q=1000
-    double tmp = sqr(_mz);
+    double tmp = sqr(_mz); //< @todo Use a better variable name to indicate that this is the scale evolution variable
 
-    while(tmp > 0.25) {
+    while (tmp > 0.25) {
       _solve(tmp, t, y, allowed_relative, h, accuracy);
       q2s.push_back(t);
       alphas.push_back(y);
@@ -153,7 +157,7 @@ namespace LHAPDF {
     y = _alphas_mz; // starting value
     tmp = sqr(_mz);
 
-    while(tmp < 1000*1000) {
+    while (tmp < 1000*1000) { //< @todo Explain! For Q less than 1 TeV?
       tmp += (10 * accuracy * t);
       _solve(tmp, t, y, allowed_relative, h, accuracy);
       q2s.push_back(t);
@@ -166,7 +170,7 @@ namespace LHAPDF {
 
     _ipol.setQ2Values(q2s);
     _ipol.setAlphaSValues(alphas);
-    return;
   }
+
 
 }

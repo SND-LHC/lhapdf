@@ -14,13 +14,16 @@ namespace LHAPDF {
     _qcdorder = 0;
   }
 
+
   // Calculate the number of active quark flavours at energy scale Q2
-  int AlphaS::nf_Q2(double q2) const {
+  int AlphaS::numFlavorsQ2(double q2) const {
     int nf = 0;
     for (int it = 0; it < (int)_qmasses.size(); ++it)
-      if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it+1;
+      // if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it + 1;
+      if (q2 > sqr(_qmasses[it])) nf = it + 1; else break;
     return nf;
   }
+
 
   // Calculate a beta function given the number of active flavours
   double AlphaS::_beta(int i, int nf) const {
@@ -42,10 +45,22 @@ namespace LHAPDF {
     return rtn;
   }
 
-  // Set a quark mass, explicitly giving its id
-  void AlphaS::setQmass(int id, double value) {
-    if(abs(id) > 6 || id == 0)throw Exception("Invalid id for quark given (should be 1-6).");
-    if(_qmasses.size() != 6)_qmasses.resize(6);
+
+  // Set a quark mass, explicitly giving its ID
+  void AlphaS::setQMass(int id, double value) {
+    if (abs(id) > 6 || id == 0)
+      throw Exception("Invalid id for quark given (should be 1-6).");
+    if (_qmasses.size() != 6) _qmasses.resize(6);
     _qmasses[abs(id)-1] = value;
   }
+
+
+  // Get a quark mass by ID
+  double AlphaS::qMass(int id) {
+    if (abs(id) > 6 || id == 0)
+       throw Exception("Invalid id for quark given (should be 1-6).");
+    return _qmasses[abs(id)-1];
+  }
+
+
 }
