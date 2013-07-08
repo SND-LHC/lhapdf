@@ -101,7 +101,7 @@ namespace LHAPDF {
   //@}
 
 
-  /// @name Factory functions for making other LHAPDF framework objects
+  /// @name Factory functions for making grid interpolators/extrapolators
   //@{
 
   /// Interpolator factory
@@ -118,7 +118,10 @@ namespace LHAPDF {
   Extrapolator* mkExtrapolator(const std::string& name);
 
 
-  /// AlphaS factory
+  /// @name Factory functions for making AlphaS objects
+  //@{
+
+  /// @brief Make an AlphaS object from an Info object
   ///
   /// The type and configuration of the returned AlphaS is chosen based on the
   /// PDF metadata Info object given as the argument.
@@ -126,6 +129,33 @@ namespace LHAPDF {
   /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
   /// the caller is responsible for deletion of the created object.
   AlphaS* mkAlphaS(const Info& info);
+
+  /// @brief Make an AlphaS object for the named PDF set
+  ///
+  /// The type and configuration of the returned AlphaS is chosen based on the
+  /// named PDFSet's metadata.
+  ///
+  /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
+  /// the caller is responsible for deletion of the created object.
+  AlphaS* mkAlphaS(const std::string& setname);
+
+  /// @brief Make an AlphaS object for the specified PDF
+  ///
+  /// The type and configuration of the returned AlphaS is chosen based on the
+  /// named PDFSet's nth member's metadata.
+  ///
+  /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
+  /// the caller is responsible for deletion of the created object.
+  AlphaS* mkAlphaS(const std::string& setname, int member);
+
+  /// @brief Make an AlphaS object for the specified PDF
+  ///
+  /// The type and configuration of the returned AlphaS is chosen based on the
+  /// numbered PDF's metadata.
+  ///
+  /// Returns a 'new'ed AlphaS by pointer. Unless attached to a PDF,
+  /// the caller is responsible for deletion of the created object.
+  AlphaS* mkAlphaS(int lhaid);
 
   //@}
 

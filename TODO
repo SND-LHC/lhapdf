@@ -33,9 +33,6 @@ FOR STABLE 6.0.0 RELEASE
 
    Need to respect FFNS/VFNS flags.
 
-   Making an AlphaS object from the PDFSet interface (why have to make a member
-   in 99% of cases?)
-
    Include alpha_s raw and deviation plotting in the migration dump/comparison scripts.
 
 - **Non-visual PDF validation (AB)**
