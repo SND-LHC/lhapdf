@@ -108,6 +108,16 @@ namespace LHAPDF {
     }
 
 
+    /// Retrieve a metadata string by key name, with a default fallback
+    virtual const std::string& get_entry(const std::string& key, const std::string& fallback) const {
+      try {
+        return get_entry(key);
+      } catch (...) {
+        return fallback;
+      }
+    }
+
+
     /// Retrieve a metadata entry by key name, with an inline type cast
     ///
     /// Specialisations are defined below for unpacking of comma-separated lists
@@ -117,6 +127,18 @@ namespace LHAPDF {
       const string& s = get_entry(key);
       return lexical_cast<T>(s);
     }
+
+
+    /// Retrieve a metadata entry by key name, with an inline type cast and default fallback
+    template <typename T>
+    T get_entry_as(const std::string& key, const T& fallback) const {
+      try {
+        return get_entry_as<T>(key);
+      } catch (...) {
+        return fallback;
+      }
+    }
+
 
     /// Set a keyed value entry
     template <typename T>
