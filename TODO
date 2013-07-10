@@ -33,7 +33,10 @@ FOR STABLE 6.0.0 RELEASE
 
    Need to respect FFNS/VFNS flags.
 
-   Include alpha_s raw and deviation plotting in the migration dump/comparison scripts.
+   Looks like there is some problem leading to non-smooth log-space
+   interpolation for the alpha_s in CTEQ6L1 (with log-spaced knots).
+
+   Include alpha_s raw and deviation plotting in the validation plot script.
 
 - **Non-visual PDF validation (AB)**
 
@@ -70,17 +73,19 @@ FOR STABLE 6.0.0 RELEASE
    interface only. *Or provide a C++ function to return the current PDF identity
    and call that explicitly.*
 
+- **Add Info/Config mappings to Cython (AB)**
+
+
+AS AND WHEN
+-----------
+
 - **Bundle Cython generated files if possible so Cython isn't needed for a tarball build**
 
    If possible. I think this is actually important: every dependency will put
    off a large fraction of potential users. Although, cf. Rivet, a pre-supplied
    build will be important for reducing that social/technical problem.
 
-- **Add Info/Config mappings to Cython (AB)**
-
-
-AS AND WHEN
------------
+   Perhaps Cython 0.19 could be bundled? We also require Python.h to build the Python interface.
 
 - **Add AlphaS mappings to Cython (AB)**
 

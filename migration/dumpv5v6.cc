@@ -15,14 +15,16 @@
 #ifdef LHAPDF_MAJOR_VERSION
 #define LHAVERSION LHAPDF_MAJOR_VERSION
 #define XF(X, Q) pdf.xfxQ(flavor, X, Q)
+#define AS(Q) pdf.alphasQ(Q)
 #else
 #define LHAVERSION 5
 #define XF(X, Q) LHAPDF::xfx(X, Q, id)
+#define AS(Q) LHAPDF::alphasPDF(Q)
 #endif
 
 #define _STR(s) #s
-#define _OUTPUT_PREFIX(V) "xf_v" _STR(V)
-#define OUTPUT_PREFIX _OUTPUT_PREFIX(LHAVERSION)
+#define _VERSION(V) "v" _STR(V)
+#define VERSION _VERSION(LHAVERSION)
 
 const double MINLOGX = -10;
 const double MINLOGQ = log10(1);
@@ -61,7 +63,7 @@ int main(int argc, const char* argv[]) {
     for (size_t iq = 0; iq < 8; ++iq) {
       const double q = qs[iq];
       std::stringstream filename;
-      filename << OUTPUT_PREFIX << "_scanx_q" << q << "_" << flavor << ".dat";
+      filename << "xf_" << VERSION << "_scanx_q" << q << "_" << flavor << ".dat";
       std::ofstream output(filename.str().c_str());
       for (double logX = MINLOGX; logX <= 0.0; logX += DX) {
         const double x  = pow(10, logX);
@@ -75,13 +77,22 @@ int main(int argc, const char* argv[]) {
     for (size_t ix = 0; ix < 8; ++ix) {
       const double x = xs[ix];
       std::stringstream filename;
-      filename << OUTPUT_PREFIX << "_scanq_x" << x << "_" << flavor << ".dat";
+      filename << "xf_" << VERSION << "_scanq_x" << x << "_" << flavor << ".dat";
       std::ofstream output(filename.str().c_str());
       for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
         const double q = pow(10, logQ);
         output << x << " " << q << " " << XF(x, q) << std::endl;
       }
       output.close();
+    }
+
+    // alpha_s sampling in Q
+    std::stringstream as_filename;
+    as_filename << "as_" << VERSION << ".dat";
+    std::ofstream as_output(as_filename.str().c_str());
+    for (double logQ = MINLOGQ; logQ <= MAXLOGQ; logQ += DQ) {
+      const double q = pow(10, logQ);
+      as_output << q << " " << AS(q) << std::endl;
     }
 
     // // (x,Q) 2D sampling
