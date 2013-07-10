@@ -22,6 +22,14 @@ FOR BETA 3 / RELEASE CANDIDATE
      MRSTMCal, MRST2007lomod
      NNPDF23_nlo_as_0114 .. 0124
      NNPDF23_nnlo_as_0114 .. 0124
+   Dumps are done, need to tidy up CT10nlo, CT10 and CTEQ6L1 and upload all to
+   the website. HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets.
+
+- **Instability/oscillation in ipol alpha_s**
+
+   CTEQ6L1 ipol alpha_s looks odd: on a log scale its values group together in
+   little bunches with discontinuities between. Weird... and worth
+   understanding/fixing before release.
 
 
 FOR STABLE 6.0.0 RELEASE
@@ -56,8 +64,13 @@ FOR STABLE 6.0.0 RELEASE
 
 - **NNPDF2.3 PDF migration (AB)**
 
-   Includes non-zero top PDFs? Still many >> 1e-3 deviations. Why do -1, -2 PDFs
-   look valence-like?
+   Includes non-zero top PDFs: --top option added to creategrids. xmin reported
+   wrongly: requires a --xmin=1e-7 override to creategrids. Still many >> 1e-3
+   deviations. Why do -1, -2 PDFs look valence-like?
+
+- **HERAPDF1.5 PDF migration (JF,KN)**
+
+   HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets. Why?
 
 - **Improve CTEQ6L1 grid efficiency if possible (MR)**
 

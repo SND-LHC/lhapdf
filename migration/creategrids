@@ -26,6 +26,7 @@ p.add_option("--xmin", dest="XMIN", metavar="XMIN", help="truncate the x knots a
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
 p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
 p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override the original sample grid with a new one", default=False)
+p.add_option("--top", dest="HAS_TOP", action="store_true", help="generate explicit grid entries for top (and tbar) PDFs", default=False)
 # TODO: Add a FFNS/VFNS option flag and write a metadata flag accordingly
 # TODO: Use subgrids on mass thresholds (only if option enabled? or only if an FFNS flag is not enabled)
 # TODO: Add an option to increase the sampling density by a factor? (lin or log spacing?)
@@ -135,10 +136,12 @@ for lha5name in args:
         #     xfxs_array = numpy.array(xfxs)
         #     pids = [pid for i, pid in enumerate(pids) if xfxs_array[:,i].any()]
         #     return pids
-        ## NB. 0 is listed last since it will be translated to 21 in the PDG scheme
-        #
-        # TODO: Handle PDFs with non-zero top and photon (etc.) members
+
+        # TODO: Handle PDFs with photon (etc.) members
         lha5pids = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 0]
+        if opts.HAS_TOP:
+            lha5pids.insert(0, -6)
+            lha5pids.insert(-1, 6)
         pids = []
         for lha5pid in lha5pids:
             pids.append(lha5pid if lha5pid != 0 else 21)

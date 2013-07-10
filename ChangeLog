@@ -1,5 +1,7 @@
 2013-07-10  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding --top flag to creategrids, for dumping the 13-flavour NNPDF grids.
+
 	* Adding dumping of alpha_s values to dumpv5v6. Some apparent alpha_s ipol problems for CTEQ6L1.
 
 2013-07-08  Andy Buckley  <andy.buckley@cern.ch>
