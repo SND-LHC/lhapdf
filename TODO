@@ -31,6 +31,11 @@ FOR BETA 3 / RELEASE CANDIDATE
    little bunches with discontinuities between. Weird... and worth
    understanding/fixing before release.
 
+- **$prefix/sets subdir level?**
+
+   Optional/preferred/mandatory? Would be useful for symlinking and general
+   cleanliness since *only* set dirs should live in there. This is the time to change.
+
 
 FOR STABLE 6.0.0 RELEASE
 ------------------------
