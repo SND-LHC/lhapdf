@@ -92,6 +92,10 @@ FOR STABLE 6.0.0 RELEASE
 AS AND WHEN
 -----------
 
+- **Gradient extrapolator**
+
+   Keep extrapolating linearly outside the range (in log space).
+
 - **Bundle Cython generated files if possible so Cython isn't needed for a tarball build**
 
    If possible. I think this is actually important: every dependency will put
@@ -177,10 +181,6 @@ AS AND WHEN
    e.g. playing with PyTables. Sounds good in principle: I prefer a *real world*
    standard to ROOT, anyway ;-) Does it have any string/typed annotation
    mechanism that we could use?
-
-- **Gradient extrapolator**
-
-   Keep extrapolating linearly outside the range.
 
 - **Updated Octave wrapper**
 

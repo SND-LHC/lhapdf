@@ -54,7 +54,7 @@ namespace LHAPDF {
     if (logq2 <= _logq2s.front()) return _as.front();
     if (logq2 >= _logq2s.back()) return _as.back();
 
-    // Cubic interpolation of std::vector<double> q2 and as
+    // Cubic interpolation of std::vector<double> logq2 and as
     size_t i = std::upper_bound( _logq2s.begin(), _logq2s.end(), logq2 ) - _logq2s.begin();
     if (i == _logq2s.size()) i -= 1;
     i -= 1;
