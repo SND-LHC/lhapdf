@@ -41,5 +41,9 @@ int main(int argc, char* argv[]) {
   std::cout << "Query = " << (end - init) << std::endl;
   std::cout << "Total = " << (end - start) << std::endl;
 
+  #if LHAPDF_MAJOR_VERSION > 5
+  delete pdf;
+  #endif
+
   return 0;
 }

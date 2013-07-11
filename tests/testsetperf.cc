@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
   const clock_t init = clock();
 
-  /// Tests of switchng between members of a PDF set
+  /// Tests of switching between members of a PDF set
   vector<double> xfs; xfs.resize(13);
   for (double log10x = MINLOGX; log10x <= 0.0; log10x += dx) {
     for (double log10q = MINLOGQ; log10q <= MAXLOGQ; log10q += dq) {
@@ -42,6 +42,10 @@ int main(int argc, char* argv[]) {
   std::cout << "Init  = " << (init - start) << std::endl;
   std::cout << "Query = " << (end - init) << std::endl;
   std::cout << "Total = " << (end - start) << std::endl;
+
+  #if LHAPDF_MAJOR_VERSION > 5
+  foreach (const LHAPDF::PDF* pdf, pdfs) delete pdf;
+  #endif
 
   return 0;
 }
