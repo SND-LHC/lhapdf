@@ -27,8 +27,6 @@ mean a collection of these. No explicit term is defined for a single-flavour PDF
 but we tentatively reserve the terms 1FPDF and PDF1F (the latter for C/C++ validity)
 for this purpose.
 
-@todo Review this situation: should we rename LHAPDF::PDF -> LHAPDF::Member?
-
 
 The main PDF object hierarchy
 -----------------------------
@@ -40,7 +38,12 @@ allocation based on unique data paths.
 PDF data to be separated from the framework: new PDFs should not require
 addition of new handling code, nor even a new release of LHAPDF.
 
-@todo A data versioning standard will be needed for reproducibility: IDEAS?
+Data versioning is hence needed, because a library version does not imply a
+particular bug-fix version of a PDF set's data files. In fact this is already an
+unaddressed issue for LHAPDF5. We cannot automaticaly enforce good data
+provenance, but metadata flags are available for use in PDF sets which declare
+both the integer version of the set data and the integer-encoded version of the
+LHAPDF library required to use it. Set authors are encouraged to use both.
 
 Flavours are identified by standard PDG ID codes. A PDF can contain arbitrarily
 many flavours. A special case is ID = 0, which for backward compatibility and
@@ -58,11 +61,12 @@ The main PDF type is the "grid" PDF, based on interpolation of rectangular grids
 of data points.
 
 *Subgrids* are an important feature: these are distinct PDF interpolation grids
-binned in Q2, so that gradient discontinuities across flavour thresholds can be
-handled correctly (this is at least needed by the MSTW PDFs).
+binned in Q2, so that gradient discontinuities (and value discontinuities, for
+NNLO PDFs) across flavour thresholds can be handled correctly. This is at least
+needed by the MSTW PDFs.
 
 @note Subgrids in x have also been suggested, but just ensuring sufficient x knot
-density seems preferable: unlike flavour thresholds, gradient continuity is important,
+density seems preferable: unlike flavour thresholds, continuity is important,
 and this is complex to implement, and anyway the benefit is more for evolution than
 for interpolation.
 
@@ -118,9 +122,7 @@ Each PDF set is defined by a directory (conceivably support could
 later be added for zip or tar archives whose *contents* have a directory
 structure) containing data files. Each PDF member is stored in a text file with
 the name of the set followed by an underscore and a four digit number (including
-leading zeros if needed) and the extension .lha, e.g. <setname>/<setname>_0031.lha
-
-@todo Any better suggestions than .lha?
+leading zeros if needed) and the extension .dat, e.g. <setname>/<setname>_0031.dat
 
 The head of the file is reserved for member-level metadata in the YAML format:
 this section ends with a sequence of three dashes (`---`) on a line of their own. This
@@ -156,7 +158,7 @@ in the metadata block. The exponent character should be E (or e) rather than D,
 and the set preparer is responsible for ensuring that the values are entered with
 sufficient precision for the required numerical performance.
 
-@todo Comments in the grid block
+@todo Allow comments in the grid block? Why not... ignore lines which start with a #.
 
 New PDF formats may be proposed to the LHAPDF maintainers, and will be
 considered for standardisation. Acceptance of proposals is not guaranteed, and
@@ -176,29 +178,19 @@ to be read for many (including all) sets simultaneously without incurring the
 memory penalty of having loaded many data grids. Allows automatic documentation
 for web, PDF (via LaTeX), etc.
 
-@todo Documentation system for PDFs -- output to Doxygen?
+@todo Documentation system for PDFs -- output for pick-up by Doxygen?
 
-@todo Set-level info should be a singleton so that a change in code applies to
-      all members. Singleton storage/identification by set name?
+The global configuration is specified via the $prefix/lhapdf.conf file. Settings
+can be overridden in the code via a singleton Config object.
 
-Global config specified via the $prefix/lhapdf.conf file. Settings can be
-overridden in the code via a singleton.
-
-@todo Define to what extent set-level metadata can be set programmatically at
-  runtime.  Current answer = it can't, because set-level info is duplicated
-  between all the members of that set and doesn't have an independent
-  existence. Which is fine, but we should be clear about it in the docs. Should
-  we store global set-level info in future to allow runtime set-level info
-  setting?  (Performance penalty?  Probably not as long as the flavors() vector
-  is stored locally on the PDF object.)
-
-@todo Origin/priority of PDF set naming and member numbers: taken from filename,
-  the containing directory name (require consistency with the filenames?),
-  and/or the metadata system? Suggest NOT allowing a metadata source for naming
-  and member IDs, since it would just lead to maximal confusion if they got out
-  of sync with the file/dir names. What if the dir and file names are in
-  contradiction? Answer: throw an exception or fail with an assert rather than
-  try to be "softer".
+PDF set-level info can be supplied as an override for the defaults via the
+PDFSet objects. These inherit from the Info base class, as does Config and the
+member-level PDFInfo type. PDFSet objects are also singletons -- at most one can
+exist for a given set name. This means that after all members of a set have been
+loaded as PDF objects, their behaviours specified at set-level can all be
+changed via the shared PDFSet object. If the members' PDFInfo objects specify a
+metadata flag, that value is the one that will be used, of course, even if a
+set-level version of the same flag is explicitly reset.
 
 
 QCD alpha_s evolution
@@ -206,17 +198,17 @@ QCD alpha_s evolution
 
 alpha_s handling by analytic approximations, numerical solution of the evolution
 ODEs (both with use of flavour threshold treatments), or by interpolation of
-tabulated datapoints in the set/member metadata. The 1D interpolation will again
-support subgrids across flavour thresholds, but expressed as "pure metadata" in
-the header for uniformity of treatment and to allow alpha_s calculation without
-being specific to the grid format. QCD params related to alpha_s to be specified
-in metadata: Lambda_4, Lambda_5, alpha_s_MZ, Nf, FFNS/VFNS, quark masses, QCD
-order (as int = nloops?), default alpha_s solver name. See the CONFIGFLAGS
-document for the full list.
+tabulated datapoints in the set/member metadata. The 1D interpolation uses Q and
+alpha_s knot values stored as "pure metadata" in the header for uniformity of
+treatment and to allow alpha_s calculation without being specific to the grid
+format.  Interpolation subgrids across flavour thresholds are again supported,
+in this case by repeated consecutive values in the Q knots array.
 
-@todo MUST specify alpha_s_mz? Lambda optional? Defaults?
+@todo alpha_s subgrids aren't yet implemented! Soon...
 
-@todo Describe the AlphaS class hierarchy
+  QCD params related to alpha_s to be specified in metadata: Lambda_4, Lambda_5,
+alpha_s_MZ, Nf, FFNS/VFNS, quark masses, QCD order (as int = nloops?), default
+alpha_s solver name. See the CONFIGFLAGS document for the full list.
 
 @note The AlphaS objects are all designed to have no dependence on other LHAPDF
   objects: they can be happily used in non-PDF contexts. The default parameters
