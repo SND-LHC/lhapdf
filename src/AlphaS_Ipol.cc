@@ -75,7 +75,7 @@ namespace LHAPDF {
     // Calculate alpha_s
     double dlogq2 = _logq2s[i+1] - _logq2s[i];
     double tlogq2 = (logq2 - _logq2s[i]) / dlogq2;
-    return _interpolateCubic( tlogq2, _as[i], didlogq2, _as[i+1], di1dlogq2 );
+    return _interpolateCubic( tlogq2, _as[i], didlogq2*dlogq2, _as[i+1], di1dlogq2*dlogq2 );
   }
 
 
