@@ -336,10 +336,10 @@ extern "C" {
     w50513_.xmax=pdf->info().get_entry_as<double>("XMax");
     w50513_.q2min=pdf->info().get_entry_as<double>("Q2Min");
     w50513_.q2max=pdf->info().get_entry_as<double>("Q2Max");
-    w50512_.qcdl4=pdf->info().get_entry_as<double>("Lambda4");
-    w50512_.qcdl5=pdf->info().get_entry_as<double>("Lambda5");
-    lhapdfr_.qcdlha4=pdf->info().get_entry_as<double>("Lambda4");
-    lhapdfr_.qcdlha5=pdf->info().get_entry_as<double>("Lambda5");
+    w50512_.qcdl4=pdf->info().get_entry_as<double>("AlphaS_Lambda4");
+    w50512_.qcdl5=pdf->info().get_entry_as<double>("AlphaS_Lambda5");
+    lhapdfr_.qcdlha4=pdf->info().get_entry_as<double>("AlphaS_Lambda4");
+    lhapdfr_.qcdlha5=pdf->info().get_entry_as<double>("AlphaS_Lambda5");
     // BEGIN: used to test behaviour versus lhapdf 5.x
     //    w50512_.qcdl4=0.192;
     //    w50512_.qcdl5=0.192;

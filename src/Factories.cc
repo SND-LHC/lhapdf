@@ -128,11 +128,11 @@ namespace LHAPDF {
     }
     else if (as->type() == "analytic") {
       /// @todo Handle FFNS / VFNS
-      if (!info.has_key("Lambda5") && !info.has_key("Lambda4") && !info.has_key("Lambda3") )
+      if (!info.has_key("AlphaS_Lambda5") && !info.has_key("AlphaS_Lambda4") && !info.has_key("AlphaS_Lambda3") )
         throw MetadataError("Requested analytic AlphaS but the required parameters are not defined.");
-      if (info.has_key("Lambda3")) as->setLambda(3, info.get_entry_as<double>("Lambda3"));
-      if (info.has_key("Lambda4")) as->setLambda(4, info.get_entry_as<double>("Lambda4"));
-      if (info.has_key("Lambda5")) as->setLambda(5, info.get_entry_as<double>("Lambda5"));
+      if (info.has_key("AlphaS_Lambda3")) as->setLambda(3, info.get_entry_as<double>("AlphaS_Lambda3"));
+      if (info.has_key("AlphaS_Lambda4")) as->setLambda(4, info.get_entry_as<double>("AlphaS_Lambda4"));
+      if (info.has_key("AlphaS_Lambda5")) as->setLambda(5, info.get_entry_as<double>("AlphaS_Lambda5"));
     }
     else if (as->type() == "ipol") {
       if (!info.has_key("AlphaS_Qs") || !info.has_key("AlphaS_Vals") )

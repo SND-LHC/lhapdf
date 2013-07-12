@@ -204,7 +204,8 @@ AlphaS_Type
 MANDATORY
 (enum string): ode, analytic, ipol
 
-The method to be used to calculate alpha_s for this set (cf. the AlphaS class hierarchy).
+The method to be used to calculate alpha_s for this set (cf. the AlphaS class
+hierarchy).
 
 
 AlphaS_Qs, AlphaS_vals
@@ -218,14 +219,17 @@ only one of these keys is defined, or if their lengths are different, a metadata
 exception will be thrown.
 
 
-Lambda4, Lambda5 (optional, both must be present if at all)
------------------------------------------------------------
+AlphaS_Lambda3, AlphaS_Lambda4, AlphaS_Lambda5 (mandatory if using analytic alpha_s)
+------------------------------------------------------------------------------------
 MANDATORY if AlphaS_Type = analytic
 (float): e.g. 0.192
 
-The value of Lambda_QCD in 4 and 5 flavour schemes, can be used with
+The value of Lambda_QCD in 3, 4 and 5 flavour schemes, used with
 AlphaS_OrderQCD in determining an alpha_s evolution corresponding
-to this PDF set.
+to this PDF set if the analytic alpha_s evaluation scheme is used.
+
+A contiguous range of Lambda_n's must be provided, e.g. (3,4,5) or (4,5) or just
+(5) are ok, but (3,5) is not.
 
 
 ErrorType
