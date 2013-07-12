@@ -21,6 +21,14 @@ endif
 mostlyclean-local:
 	rm -rf a.out
 
-## Clean out SVN files
+## Clean out SVN and hg files
 dist-hook:
-	rm -rf `find $(distdir) -name ".svn"`
+	rm -rf `find $(distdir) -name ".svn" -o -name ".hg"`
+
+## Create the share/LHAPDF/sets directory
+install-data-hook:
+	mkdir -p $(pkgdatadir)/sets
+
+## Remove the share/LHAPDF/sets directory if empty
+uninstall-hook:
+	rmdir $(pkgdatadir)/sets || true
