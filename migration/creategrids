@@ -200,7 +200,7 @@ for lha5name in args:
     f.write("NumMembers: %d\n" % numMembers)
     f.write("Flavors: [%s]\n" % ", ".join(str(pid) for pid in pids))
     f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
-    f.write("EvolutionNf: %d\n" % lhapdf.getNf())
+    f.write("NumFlavors: %d\n" % lhapdf.getNf())
     f.write("ErrorType: \n")
     f.write("XMin: %g\n" % lhapdf.getXmin(1))
     f.write("XMax: %g\n" % lhapdf.getXmax(1))
@@ -221,8 +221,8 @@ for lha5name in args:
         f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in alphas_qs))
     else:
         f.write("AlphaS_Type: analytic\n")
-        if lhapdf.getLam4(1) > 0:
-            f.write("Lambda4: %g\n" % lhapdf.getLam4(1))
-        if lhapdf.getLam5(1) > 0:
-            f.write("Lambda5: %g\n" % lhapdf.getLam5(1))
+    if lhapdf.getLam4(1) > 0:
+        f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
+    if lhapdf.getLam5(1) > 0:
+        f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
     f.close()

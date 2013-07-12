@@ -1,3 +1,9 @@
+2013-07-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version number bump and tag as 6.0.0b3. We are nearly ready for stable release!
+
+	* Renaming LambdaX config flags to AlphaS_LambdaX, since their use is alpha_s-specific.
+
 2013-07-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding --top flag to creategrids, for dumping the 13-flavour NNPDF grids.

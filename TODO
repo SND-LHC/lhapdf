@@ -6,37 +6,6 @@ LHAPDF6 TODO list
 =================
 
 
-FOR BETA 3 / RELEASE CANDIDATE
-------------------------------
-
-- **Uncontrolled bulk PDF migration (AB)**
-
-   Just migrate lots of major sets without explicit quality checking. It's a
-   beta, live with it... Include:
-     CT10, CT10nlo, CT10nnlo
-     HERAPDF15NNLO_EIG, HERAPDF15NNLO_VAR
-     HERAPDF15NLO_EIG, HERAPDF15NLO_VAR
-     MSTW2008lo68cl, MSTW2008lo90cl
-     MSTW2008nlo68cl, MSTW2008nlo90cl
-     MSTW2008nnlo68cl, MSTW2008nnlo90cl
-     MRSTMCal, MRST2007lomod
-     NNPDF23_nlo_as_0114 .. 0124
-     NNPDF23_nnlo_as_0114 .. 0124
-   Dumps are done, need to tidy up CT10nlo, CT10 and CTEQ6L1 and upload all to
-   the website. HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets.
-
-- **Instability/oscillation in ipol alpha_s**
-
-   CTEQ6L1 ipol alpha_s looks odd: on a log scale its values group together in
-   little bunches with discontinuities between. Weird... and worth
-   understanding/fixing before release.
-
-- **$prefix/sets subdir level?**
-
-   Optional/preferred/mandatory? Would be useful for symlinking and general
-   cleanliness since *only* set dirs should live in there. This is the time to change.
-
-
 FOR STABLE 6.0.0 RELEASE
 ------------------------
 
@@ -45,9 +14,6 @@ FOR STABLE 6.0.0 RELEASE
    Use doubled Q values to implement 1D subgrids.
 
    Need to respect FFNS/VFNS flags.
-
-   Looks like there is some problem leading to non-smooth log-space
-   interpolation for the alpha_s in CTEQ6L1 (with log-spaced knots).
 
    Include alpha_s raw and deviation plotting in the validation plot script.
 
