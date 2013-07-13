@@ -200,7 +200,8 @@ for lha5name in args:
     f.write("NumMembers: %d\n" % numMembers)
     f.write("Flavors: [%s]\n" % ", ".join(str(pid) for pid in pids))
     f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
-    f.write("NumFlavors: %d\n" % lhapdf.getNf())
+    if lhapdf.getNf() > 0:
+        f.write("NumFlavors: %d\n" % lhapdf.getNf())
     f.write("ErrorType: \n")
     f.write("XMin: %g\n" % lhapdf.getXmin(1))
     f.write("XMax: %g\n" % lhapdf.getXmax(1))
