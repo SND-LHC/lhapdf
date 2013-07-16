@@ -59,6 +59,8 @@ FOR STABLE 6.0.0 RELEASE
 
 - **Add Info/Config mappings to Cython (AB)**
 
+  And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+
 
 AS AND WHEN
 -----------
