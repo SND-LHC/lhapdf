@@ -10,7 +10,6 @@
 
 namespace LHAPDF {
 
-
   /// @brief Calculator interface for computing alpha_s(Q2) in various ways
   ///
   /// The design of the AlphaS classes is that they are substitutible
@@ -50,12 +49,12 @@ namespace LHAPDF {
     virtual int numFlavorsQ2(double q2) const;
 
     /// Get a quark mass by PDG code
-    virtual double qMass(int id);
+    double quarkMass(int id) const;
 
     /// Set quark masses by PDG code
     ///
     /// Used explicitly in the analytic and ODE solvers.
-    virtual void setQMass(int id, double value);
+    void setQuarkMass(int id, double value);
 
     /// @brief Set the order of QCD (expressed as number of loops)
     ///
@@ -79,9 +78,21 @@ namespace LHAPDF {
 
     //@}
 
+    /// enum of flavor schemes
+    enum FlavorScheme { FIXED, VARIABLE };
 
     /// Get the implementation type of this AlphaS
     virtual std::string type() const = 0;
+
+    /// Set flavor scheme of alpha_s solver
+    void setFlavorScheme(FlavorScheme scheme, const std::vector<int> nf = std::vector<int>())
+    {
+      _flavorscheme = scheme;
+      _fixflav = nf;
+    }
+
+    /// Get flavor scheme
+    FlavorScheme flavorScheme() const { return _flavorscheme; }
 
 
   protected:
@@ -117,6 +128,12 @@ namespace LHAPDF {
     /// Used for working out flavor thresholds and the number of quarks that are
     /// active at energy scale Q.
     std::vector<double> _qmasses;
+
+    /// The flavor scheme in use
+    FlavorScheme _flavorscheme;
+
+    /// The allowed numbers of flavours in a fixed scheme
+    std::vector<int> _fixflav;
 
   };
 

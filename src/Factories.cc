@@ -107,12 +107,12 @@ namespace LHAPDF {
 
     // Configure the QCD params on this AlphaS
     if (info.has_key("AlphaS_OrderQCD")) as->setOrderQCD(info.get_entry_as<int>("AlphaS_OrderQCD"));
-    if (info.has_key("MUp")) as->setQMass(1, info.get_entry_as<double>("MUp"));
-    if (info.has_key("MDown")) as->setQMass(2, info.get_entry_as<double>("MDown"));
-    if (info.has_key("MStrange")) as->setQMass(3, info.get_entry_as<double>("MStrange"));
-    if (info.has_key("MCharm")) as->setQMass(4, info.get_entry_as<double>("MCharm"));
-    if (info.has_key("MBottom")) as->setQMass(5, info.get_entry_as<double>("MBottom"));
-    if (info.has_key("MTop")) as->setQMass(6, info.get_entry_as<double>("MTop"));
+    if (info.has_key("MUp")) as->setQuarkMass(1, info.get_entry_as<double>("MUp"));
+    if (info.has_key("MDown")) as->setQuarkMass(2, info.get_entry_as<double>("MDown"));
+    if (info.has_key("MStrange")) as->setQuarkMass(3, info.get_entry_as<double>("MStrange"));
+    if (info.has_key("MCharm")) as->setQuarkMass(4, info.get_entry_as<double>("MCharm"));
+    if (info.has_key("MBottom")) as->setQuarkMass(5, info.get_entry_as<double>("MBottom"));
+    if (info.has_key("MTop")) as->setQuarkMass(6, info.get_entry_as<double>("MTop"));
 
     // Required parameter settings for each calculation mode
     if (as->type() == "ode") {

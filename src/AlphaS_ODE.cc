@@ -14,12 +14,18 @@ namespace LHAPDF {
 
   // Calculate first order derivative, dy/dt, as it appears in the differential equation
   double AlphaS_ODE::_derivative(double t, double y, const vector<double>& beta) const {
-    /// @todo Respect the _order member variable
+    if ( _qcdorder == 0 ) return 0;
     const double b0 = beta[0];
+    double d = (b0*y*y);
+    if ( _qcdorder == 1 ) return - d / t;
     const double b1 = beta[1];
+    d += (b1*y*y*y);
+    if ( _qcdorder == 2 ) return - d / t;
     const double b2 = beta[2];
+    d += (b2*y*y*y*y);
+    if ( _qcdorder == 3 ) return - d / t;
     const double b3 = beta[3];
-    const double d = (b0*y*y) + (b1*y*y*y) + (b2*y*y*y*y) + (b3*y*y*y*y*y);
+    d += (b3*y*y*y*y*y);
     return - d / t;
   }
 
@@ -73,7 +79,7 @@ namespace LHAPDF {
       // Calculate next step
       _rk4(t, y, h, allowed_change, bs);
 
-      if (y > 20.) { y = std::numeric_limits<double>::max(); break; }
+      if (y > 2.) { y = std::numeric_limits<double>::max(); break; }
     }
   }
 
@@ -125,16 +131,25 @@ namespace LHAPDF {
     double t = sqr(_mz); // starting point
     double y = _alphas_mz; // starting value
 
-    // If a vector of anchor points in q2 has been given, solve for those.
+    // If a vector of knots in q2 has been given, solve for those.
     if ( !_q2s.empty() ) {
 
       vector<double> alphas;
+      double low_lim = 0;
       foreach (double q2, _q2s) {
+        // If q2 is lower than a value that already diverged, it will also
+        // diverge
+        if ( q2 < low_lim ) {
+          alphas.push_back( std::numeric_limits<double>::max() );
+          t = sqr(_mz);
+          y = _alphas_mz;
+          continue;
+        }
         _solve(q2, t, y, allowed_relative, h, accuracy);
         alphas.push_back(y);
-        // If alpha_s goes over 20 the ODE diverges too fast, so go back to start
-        // rather than using this point as a starting point for the next one
-        if (y > 20.) { t = sqr(_mz); y = _alphas_mz; }
+        // Define divergence after y > 2. -- we have no accuracy after that
+        // any way
+        if ( y > 2. ) { low_lim = q2; }
       }
       _ipol.setQ2Values(_q2s);
       _ipol.setAlphaSValues(alphas);
@@ -145,20 +160,21 @@ namespace LHAPDF {
       vector<double> q2s, alphas;
 
       // To save time we solve from MZ down to Q=0.5, then go back to MZ and solve up to Q=1000
-      double tmp = sqr(_mz); //< @todo Use a better variable name to indicate that this is the scale evolution variable
-      while (tmp > sqr(0.5)) {
-        _solve(tmp, t, y, allowed_relative, h, accuracy);
+      // The knots are quite arbitrarily defined at the moment
+      double knot = sqr(_mz);
+      while ( knot > sqr(0.5) ) {
+        _solve(knot, t, y, allowed_relative, h, accuracy);
         q2s.push_back(t);
         alphas.push_back(y);
-        if (y > 20.) break;
-        tmp -= (10 * accuracy * t);
+        if ( y > 2. ) break;
+        knot -= (10 * accuracy * t);
       }
       t = sqr(_mz); // starting point
       y = _alphas_mz; // starting value
-      tmp = sqr(_mz);
-      while (tmp < sqr(1000)) {
-        tmp += (10 * accuracy * t);
-        _solve(tmp, t, y, allowed_relative, h, accuracy);
+      knot = sqr(_mz);
+      while ( knot < sqr(1000) ) {
+        knot += (10 * accuracy * t);
+        _solve(knot, t, y, allowed_relative, h, accuracy);
         q2s.push_back(t);
         alphas.push_back(y);
       }

@@ -41,6 +41,8 @@ namespace LHAPDF {
     for (size_t it = _lambdas.size() - 1; it >= 0; --it) {
       if (_lambdas[it] != 0.) { _nfmax = it+1; break; }
     }
+    // Require intermediate lambdas to be set for now
+    // Should be improved so that we can deal with it
     if (_nfmin != _nfmax) {
       for (int it = _nfmin; it < _nfmax - 1; ++it) {
         if (_lambdas[it] == 0) throw Exception ("Need to set intermediate lambdas.");
@@ -82,24 +84,26 @@ namespace LHAPDF {
     const double lnlnx3 = lnlnx * lnlnx * lnlnx;
     const double y = 1 / lnx;
 
-    // Calculate terms up to qcdorder = 3
+    // Calculate terms up to qcdorder = 4
     // A bit messy because the actual expressions are
     // quite messy...
+    /// @todo Return constant value if QCDorder = 0;
+    /// @todo *what* value though?
     const double A = 1 / beta[0];
     const double a_0 = 1;
     double tmp = a_0;
-    if (_qcdorder > 0) {
+    if (_qcdorder > 1) {
       const double a_1 = beta[1] * lnlnx / beta02;
       tmp -= a_1 * y;
     }
-    if (_qcdorder > 1) {
+    if (_qcdorder > 2) {
       const double B = beta12 / (beta02 * beta02);
       const double a_20 = lnlnx2 - lnlnx;
       const double a_21 = beta[2] * beta[0] / beta12;
       const double a_22 = 1;
       tmp += B * y*y * (a_20 + a_21 - a_22);
     }
-    if (_qcdorder > 2) {
+    if (_qcdorder > 3) {
       const double C = 1. / (beta02 * beta02 * beta02);
       const double a_30 = (beta12 * beta[1]) * (lnlnx3 - (5/2.) * lnlnx2 - 2 * lnlnx + 0.5);
       const double a_31 = 3 * beta[0] * beta[1] * beta[2] * lnlnx;

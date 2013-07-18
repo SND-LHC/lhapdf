@@ -11,7 +11,7 @@ namespace LHAPDF {
 
   // Base class constructor for default param setup
   AlphaS::AlphaS() {
-    _qcdorder = 0;
+    _qcdorder = 4;
   }
 
 
@@ -48,7 +48,7 @@ namespace LHAPDF {
 
 
   // Set a quark mass, explicitly giving its ID
-  void AlphaS::setQMass(int id, double value) {
+  void AlphaS::setQuarkMass(int id, double value) {
     if (abs(id) > 6 || id == 0)
       throw Exception("Invalid id for quark given (should be 1-6).");
     if (_qmasses.size() != 6) _qmasses.resize(6);
@@ -57,7 +57,7 @@ namespace LHAPDF {
 
 
   // Get a quark mass by ID
-  double AlphaS::qMass(int id) {
+  double AlphaS::quarkMass(int id) const {
     if (abs(id) > 6 || id == 0)
        throw Exception("Invalid id for quark given (should be 1-6).");
     return _qmasses[abs(id)-1];
