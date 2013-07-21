@@ -18,10 +18,13 @@ namespace LHAPDF {
   // Calculate the number of active quark flavours at energy scale Q2
   int AlphaS::numFlavorsQ2(double q2) const {
     /// @todo Respect the NumFlavors + FlavorScheme metadata
+    if ( _flavorscheme == FIXED ) return _fixflav;
     int nf = 0;
-    for (int it = 0; it < (int)_qmasses.size(); ++it)
-      // if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it + 1;
-      if (q2 > sqr(_qmasses[it])) nf = it + 1; else break;
+    for (int it = 1; it <= 6; ++it) {
+      std::map<int, double>::const_iterator element = _quarkmasses.find(it);
+      if ( element == _quarkmasses.end() ) continue;
+      if ( sqr(element->second) < q2 ) nf = it;
+    }
     return nf;
   }
 
@@ -46,21 +49,20 @@ namespace LHAPDF {
     return rtn;
   }
 
-
   // Set a quark mass, explicitly giving its ID
   void AlphaS::setQuarkMass(int id, double value) {
     if (abs(id) > 6 || id == 0)
-      throw Exception("Invalid id for quark given (should be 1-6).");
-    if (_qmasses.size() != 6) _qmasses.resize(6);
-    _qmasses[abs(id)-1] = value;
+      throw Exception("Invalid id " + to_str(id) + " for quark given (should be 1-6).");
+    _quarkmasses[abs(id)] = value;
   }
 
 
   // Get a quark mass by ID
   double AlphaS::quarkMass(int id) const {
-    if (abs(id) > 6 || id == 0)
-       throw Exception("Invalid id for quark given (should be 1-6).");
-    return _qmasses[abs(id)-1];
+    std::map<int, double>::const_iterator quark = _quarkmasses.find(abs(id));
+    if ( quark == _quarkmasses.end() )
+       throw Exception("Quark mass " + to_str(id) + " not set!");
+    return quark->second;
   }
 
 

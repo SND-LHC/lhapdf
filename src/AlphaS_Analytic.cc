@@ -14,18 +14,26 @@ namespace LHAPDF {
 
   // Calculate the number of active quark flavours at energy scale Q2.
   // Respects min/max nf
+  /// Currently returns the active number of flavors,
+  /// not the number actually used for lambdaQCD
+  /// (in case only lambda3 and lambda5 are defined and
+  /// we are in the 4 flavour range, we use lambda3 but this returns 4)
+  /// @todo Is this the "correct" behaviour?
   int AlphaS_Analytic::numFlavorsQ2(double q2) const {
+    if( _flavorscheme == FIXED ) return _fixflav;
     int nf = _nfmin;
-    for (int it = _nfmin; it < (int)_qmasses.size(); ++it)
-      if (q2 > sqr(_qmasses[it]) && _qmasses[it] != 0) nf = it+1;
-    return (nf > _nfmax) ? _nfmax : nf;
+    for ( int it = _nfmin; it <= _nfmax; ++it ) {
+      std::map<int, double>::const_iterator element = _quarkmasses.find(it);
+      if ( element == _quarkmasses.end() ) continue;
+      if ( sqr(element->second) < q2 ) nf = it;
+    }
+    return nf;
   }
 
 
   // Set lambda_i && recalculate nfmax and nfmin
   void AlphaS_Analytic::setLambda(unsigned int i, double lambda) {
-    if (_lambdas.size() < i)_lambdas.resize(i);
-    _lambdas[i-1] = lambda;
+    _lambdas[i] = lambda;
     _setFlavors();
   }
 
@@ -35,28 +43,29 @@ namespace LHAPDF {
   // default, I *think* this should work even though I am comparing
   // floats since 0 has a precise representation
   void AlphaS_Analytic::_setFlavors() {
-    for (size_t it = 0; it < _lambdas.size(); ++it) {
-      if (_lambdas[it] != 0.) { _nfmin = it+1; break; }
+    for (int it = 0; it <= 6; ++it) {
+      std::map<int, double>::iterator element = _lambdas.find(it);
+      if ( element == _lambdas.end() ) continue;
+      _nfmin = it;
+      break;
     }
-    for (size_t it = _lambdas.size() - 1; it >= 0; --it) {
-      if (_lambdas[it] != 0.) { _nfmax = it+1; break; }
-    }
-    // Require intermediate lambdas to be set for now
-    // Should be improved so that we can deal with it
-    if (_nfmin != _nfmax) {
-      for (int it = _nfmin; it < _nfmax - 1; ++it) {
-        if (_lambdas[it] == 0) throw Exception ("Need to set intermediate lambdas.");
-      }
+    for (int it = 6; it >= 0; --it) {
+      std::map<int, double>::iterator element = _lambdas.find(it);
+      if ( element == _lambdas.end() ) continue;
+      _nfmax = it;
+      break;
     }
   }
 
 
   // Return the correct lambda for a given number of active flavours
+  // Uses recursion to find the closest defined-but-lower lambda for the given
+  // number of active flavours
   double AlphaS_Analytic::_lambdaQCD(int nf) const {
-    double lambda = _lambdas[nf-1];
-    if (lambda == 0)
-      throw Exception("Invalid nf " + to_str(nf) + " requested for lambdaQCD");
-    return lambda;
+    if( nf < 0 ) throw Exception("Requested lambdaQCD for " + to_str(nf) + " number of flavours.");
+    std::map<int, double>::const_iterator element = _lambdas.find(nf);
+    if ( element == _lambdas.end() ) return _lambdaQCD(nf-1);
+    return element->second;
   }
 
 

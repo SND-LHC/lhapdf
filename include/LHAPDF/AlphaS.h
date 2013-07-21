@@ -85,7 +85,7 @@ namespace LHAPDF {
     virtual std::string type() const = 0;
 
     /// Set flavor scheme of alpha_s solver
-    void setFlavorScheme(FlavorScheme scheme, const std::vector<int> nf = std::vector<int>())
+    void setFlavorScheme(FlavorScheme scheme, int nf = -1)
     {
       _flavorscheme = scheme;
       _fixflav = nf;
@@ -124,16 +124,15 @@ namespace LHAPDF {
     double _alphas_mz;
 
     /// Masses of quarks in GeV
-    ///
     /// Used for working out flavor thresholds and the number of quarks that are
     /// active at energy scale Q.
-    std::vector<double> _qmasses;
+    std::map<int, double> _quarkmasses;
 
     /// The flavor scheme in use
     FlavorScheme _flavorscheme;
 
     /// The allowed numbers of flavours in a fixed scheme
-    std::vector<int> _fixflav;
+    int _fixflav;
 
   };
 
@@ -161,7 +160,7 @@ namespace LHAPDF {
     double _lambdaQCD(int nf) const;
 
     /// LambdaQCD values. Stored as lambdaQCD_nf = _lambdas[nf-1]
-    std::vector<double> _lambdas;
+    std::map<int, double> _lambdas;
 
     /// Recalculate min/max flavors in case lambdas have changed
     void _setFlavors();

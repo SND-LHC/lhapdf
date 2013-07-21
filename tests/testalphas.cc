@@ -18,10 +18,12 @@ int main() {
   as_ana.setQuarkMass(4, 1.29);
   as_ana.setQuarkMass(5, 4.1);
   as_ana.setQuarkMass(6, 172.5);
+//  cout << as_ana.quarkMass(5) << endl;
   // as_ana.setLambda(2, 0.400);
   as_ana.setLambda(3, 0.339);
   as_ana.setLambda(4, 0.296);
   as_ana.setLambda(5, 0.213);
+  as_ana.setFlavorScheme(AlphaS::FIXED, 5);
 
   AlphaS_ODE as_ode;
   as_ode.setMZ(91);
@@ -32,6 +34,7 @@ int main() {
   as_ode.setQuarkMass(4, 1.29);
   as_ode.setQuarkMass(5, 4.1);
   as_ode.setQuarkMass(6, 172.5);
+  as_ode.setFlavorScheme(AlphaS::FIXED, 4);
 
   AlphaS_Ipol as_ipol;
   vector<double> qs; qs += 1.300000e+00, 1.560453e+00, 1.873087e+00, 2.248357e+00, 2.698811e+00, 3.239513e+00, 3.888544e+00, 4.667607e+00, 5.602754e+00, 6.725257e+00, 8.072650e+00, 9.689992e+00, 1.163137e+01, 1.396169e+01, 1.675889e+01, 2.011651e+01, 2.414681e+01, 2.898459e+01, 3.479160e+01, 4.176203e+01, 5.012899e+01, 6.017224e+01, 7.222765e+01, 8.669834e+01, 1.040682e+02, 1.249181e+02, 1.499452e+02, 1.799865e+02, 2.160465e+02, 2.593310e+02, 3.112875e+02, 3.736534e+02, 4.485143e+02, 5.383733e+02, 6.462355e+02, 7.757077e+02, 9.311194e+02, 1.117668e+03, 1.341590e+03, 1.610376e+03, 1.933012e+03, 2.320287e+03, 2.785153e+03, 3.343154e+03, 4.012949e+03, 4.816936e+03, 5.782001e+03, 6.940415e+03, 8.330915e+03, 1.000000e+04;
@@ -46,9 +49,11 @@ int main() {
     const double q = pow(10, log10q);
     const double as_ana_q = as_ana.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ana = " << as_ana_q << endl;
+    cout << "numflav = " << as_ana.numFlavorsQ(q) << endl;
     fa << q << " " << as_ana_q << endl;
     const double as_ode_q = as_ode.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ODE = " << as_ode_q << endl;
+    cout << "numflav = " << as_ode.numFlavorsQ(q) << endl;
     fo << q << " " << as_ode_q << endl;
     const double as_ipol_q = as_ipol.alphasQ(q);
     cout << "alpha_s(Q=" << q << ")_ipol = " << as_ipol_q << endl;
