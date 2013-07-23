@@ -28,6 +28,7 @@ p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separ
 p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override the original sample grid with a new one", default=False)
 p.add_option("--top", dest="HAS_TOP", action="store_true", help="generate explicit grid entries for top (and tbar) PDFs", default=False)
 p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify a fixed number of flavours [default=variable NF]", default=None)
+p.add_option("--subgrids", dest="USE_SUBGRIDS", action="store_true", help="make distinct xf and alpha_s ipol grids between flavour thresholds", default=False)
 # TODO: Use subgrids on mass thresholds (only if option enabled? or only if an FFNS flag is not enabled)
 # TODO: Add an option to increase the sampling density by a factor? (lin or log spacing?)
 opts, args = p.parse_args()
@@ -127,6 +128,13 @@ for lha5name in args:
             extraqs = [float(q) for q in opts.EXTRAQS.split(",")]
             qs = sorted(qs + extraqs)
 
+        ## Handle Q interpolation subgrids
+        if opts.USE_SUBGRIDS:
+            ## Find Q knots with only tiny separations:
+            for iq in xrange(len(qs)-1):
+                if qs[iq+1] - qs[iq] < 1e-3:
+                    print "Tiny Q grid knot separation:", qs[iq], qs[iq+1]
+
         # print "x grid: ", ", ".join("%0.2e" % x for x in xs)
         # print "Q grid: ", ", ".join("%0.2e" % q for q in qs)
 
@@ -201,13 +209,13 @@ for lha5name in args:
     f.write("Flavors: [%s]\n" % ", ".join(str(pid) for pid in pids))
     f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
     if opts.NUM_FLAVS is not None:
-        f.write("FlavorScheme: fixed\n" % )
+        f.write("FlavorScheme: fixed\n")
         f.write("NumFlavors: %d\n" % opts.NUM_FLAVS)
     elif lhapdf.getNf() > 0:
-        f.write("FlavorScheme: fixed\n" % )
+        f.write("FlavorScheme: fixed\n")
         f.write("NumFlavors: %d\n" % lhapdf.getNf())
     else:
-        f.write("FlavorScheme: variable\n" % )
+        f.write("FlavorScheme: variable\n")
     f.write("ErrorType: \n")
     f.write("XMin: %g\n" % lhapdf.getXmin(1))
     f.write("XMax: %g\n" % lhapdf.getXmax(1))
