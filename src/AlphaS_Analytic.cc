@@ -96,8 +96,8 @@ namespace LHAPDF {
     // Calculate terms up to qcdorder = 4
     // A bit messy because the actual expressions are
     // quite messy...
-    /// @todo Return constant value if QCDorder = 0;
-    /// @todo *what* value though?
+    /// @todo Is it okay to use _alphas_mz as the constant value?
+    if(_qcdorder == 0) return _alphas_mz;
     const double A = 1 / beta[0];
     const double a_0 = 1;
     double tmp = a_0;

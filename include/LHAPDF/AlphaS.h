@@ -64,12 +64,12 @@ namespace LHAPDF {
     /// @brief Set the Z mass used in this alpha_s
     ///
     /// Used explicitly in the ODE solver.
-    virtual void setMZ(double mz) { _mz = mz; }
+    void setMZ(double mz) { _mz = mz; }
 
     /// @brief Set the alpha_s(MZ) used in this alpha_s
     ///
     /// Used explicitly in the ODE solver.
-    virtual void setAlphaSMZ(double alphas) { _alphas_mz = alphas; }
+    void setAlphaSMZ(double alphas) { _alphas_mz = alphas; }
 
     /// @brief Set the @a {i}th Lambda constant for @a i active flavors
     ///

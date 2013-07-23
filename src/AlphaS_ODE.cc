@@ -158,6 +158,8 @@ namespace LHAPDF {
 
       // Start evolution in Q at MZ, and assemble a grid of anchor points.
       vector<double> q2s, alphas;
+      vector<pair<int, double> > grid; // for storing in correct order
+      int index = 0; // for sorting in the correct order
 
       // To save time we solve from MZ down to Q=0.5, then go back to MZ and solve up to Q=1000
       // The knots are quite arbitrarily defined at the moment
@@ -165,23 +167,37 @@ namespace LHAPDF {
       while ( knot > sqr(0.5) ) {
         _solve(knot, t, y, allowed_relative, h, accuracy);
         q2s.push_back(t);
-        alphas.push_back(y);
+//        alphas.push_back(y);
+        grid.push_back(make_pair(index, y));
+        index--;
         if ( y > 2. ) break;
         knot -= (10 * accuracy * t);
       }
       t = sqr(_mz); // starting point
       y = _alphas_mz; // starting value
       knot = sqr(_mz);
+      index = 1;
       while ( knot < sqr(1000) ) {
         knot += (10 * accuracy * t);
         _solve(knot, t, y, allowed_relative, h, accuracy);
         q2s.push_back(t);
-        alphas.push_back(y);
+//        alphas.push_back(y);
+        grid.push_back(make_pair(index, y));
+        index++;
       }
 
-      // We assume alpha_s is monotonic
+      // Sorting the values in the correct order
+      std::sort(grid.begin(), grid.end(),
+       boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+
+      // Need to do this since foreach can't deal with arguments
+      // with ,s (and I don't want to clutter with a typedef)
+      for ( size_t x = 0; x < grid.size(); ++x ) {
+         alphas.push_back(grid.at(x).second);
+      }
+
       std::sort(q2s.begin(), q2s.end());
-      std::sort(alphas.begin(), alphas.end(), cmpDescend<double>);
+//      std::sort(alphas.begin(), alphas.end(), std::greater<double>());
 
       // Set interpolation knots and values
       _ipol.setQ2Values(q2s);

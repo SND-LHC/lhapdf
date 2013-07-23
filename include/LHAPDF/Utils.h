@@ -27,6 +27,7 @@
 // #include "boost/range/algorithm/upper_bound.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
+#include "boost/bind.hpp"
 
 // Cosmetic wrapper for BOOST_FOREACH macro (until we can use C++11 range-based for loops)
 #ifndef foreach
@@ -82,9 +83,6 @@ namespace LHAPDF {
   /// @todo Add iszero() & equals(,) functions?
 
   //@}
-
-  template <typename N>
-  inline bool cmpDescend(N a, N b) { return a>b; }
 
   /// @name Container handling helpers
   //@{
