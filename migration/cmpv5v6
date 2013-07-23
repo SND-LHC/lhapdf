@@ -16,7 +16,7 @@ Both input data sets are given by lines in the following format:
 Where xfx is the central value for the top quark given by the set used in v5 and v6.
 
 Program assumes the values produced by v5 are accurate and compares these to values
-produced by v6 and plots them using gnuplot.
+produced by v6.
 
 Output is given in the following format:
 
@@ -27,7 +27,7 @@ import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
-op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser in calculation of relative deviations", type=float, default=1e-4)
+op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser in calculation of relative deviations", type=float, default=0.1)
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="pass/fail tolerance scale for accuracy", type=float, default=1e-3)
 op.add_option("-q", dest="VERBOSITY", help="be quiet", action="store_const", const=0, default=1)
 op.add_option("-v", dest="VERBOSITY", help="be verbose", action="store_const", const=2, default=1)
