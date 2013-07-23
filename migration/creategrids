@@ -29,8 +29,8 @@ p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override 
 p.add_option("--top", dest="HAS_TOP", action="store_true", help="generate explicit grid entries for top (and tbar) PDFs", default=False)
 p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify a fixed number of flavours [default=variable NF]", default=None)
 p.add_option("--subgrids", dest="USE_SUBGRIDS", action="store_true", help="make distinct xf and alpha_s ipol grids between flavour thresholds", default=False)
-# TODO: Use subgrids on mass thresholds (only if option enabled? or only if an FFNS flag is not enabled)
 # TODO: Add an option to increase the sampling density by a factor? (lin or log spacing?)
+p.add_option("-v", dest="VERBOSE", action="store_true", help="verbose output", default=False)
 opts, args = p.parse_args()
 
 ## Standard Z mass in GeV
@@ -85,10 +85,8 @@ for lha5name in args:
             _lha.getgrid_(ctypes.byref(nxgrid), ctypes.byref(nqgrid), gridx, gridq)
             xs, q2s = gridx[:nxgrid.value], gridq[:nqgrid.value]
             qs = list(numpy.sqrt(numpy.array(q2s)))
+            del q2s
             #print xs
-            ## Remove x == 0 points: they screw up the ipol/xpol separation
-            if xs[0] == 0.0:
-                del xs[0]
 
         except Exception, e:
             ## Probably an LHpdf set if the gridx, gridq aren't working
@@ -103,8 +101,12 @@ for lha5name in args:
             print "Manual x grid: ", ", ".join("%0.2e" % x for x in xs)
             print "Manual Q grid: ", ", ".join("%0.2e" % q for q in qs)
 
+
         ## Tidy the x knots array
-        ## Remove grid points below xmin, if that happens
+        ## Remove x == 0 points: they screw up the ipol/xpol separation
+        if xs[0] == 0.0:
+            del xs[0]
+        ## Remove other grid points below xmin, if that happens
         xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
         while xs[0] < xmin:
             del xs[0]
@@ -118,25 +120,63 @@ for lha5name in args:
         if opts.EXTRAXS:
             extraxs = [float(x) for x in opts.EXTRAXS.split(",")]
             xs = sorted(xs + extraxs)
+        ## Debug printout
+        if opts.VERBOSE:
+            print "x grid: ", ", ".join("%0.2e" % x for x in xs)
+
 
         ## Tidy the Q knots array
         # TODO: Add similar knot list cleaning for Q
-        ## Use the PDF grid's Q knot values for alpha_s interpolation
-        alphas_qs = qs
         ## Fill in extra Q sampling points if manually specified
         if opts.EXTRAQS:
             extraqs = [float(q) for q in opts.EXTRAQS.split(",")]
             qs = sorted(qs + extraqs)
+        ## Debug printout
+        if opts.VERBOSE:
+            print "Q grid: ", ", ".join("%0.2e" % q for q in qs)
 
-        ## Handle Q interpolation subgrids
+
+        ## Detect and assign Q interpolation subgrids (use a single subgrid if there are no subgrids)
+        qgrids = []
+        split_points = []
         if opts.USE_SUBGRIDS:
             ## Find Q knots with only tiny separations:
             for iq in xrange(len(qs)-1):
                 if qs[iq+1] - qs[iq] < 1e-3:
-                    print "Tiny Q grid knot separation:", qs[iq], qs[iq+1]
+                    if opts.VERBOSE:
+                        print "Flavour threshold detected by tiny Q grid knot separation:", qs[iq], "->", qs[iq+1], "GeV"
+                    split_points.append(iq)
+        # TODO: Check that the split points correspond to flavour thresholds?
 
-        # print "x grid: ", ", ".join("%0.2e" % x for x in xs)
-        # print "Q grid: ", ", ".join("%0.2e" % q for q in qs)
+        ## Actually split the subgrids
+        split_points.insert(0, 0) # add a start-at-first marker
+        split_points.append(None) # add an end-at-last marker
+        for isplit in xrange(len(split_points)-1):
+            start = split_points[isplit]
+            end = split_points[isplit+1]
+            if opts.VERBOSE:
+                print "Subgrid from Q =", qs[start], "to", qs[end if end is not None else -1]
+            if end is not None:
+                end += 1 # want to include the split point knot, so increment unless it's the last one
+            qgrid = qs[start:end]
+            if isplit > 0:
+                del qgrid[1] # remove the mq+epsilon knot since we don't want gaps in Q coverage
+            qgrids.append(qgrid)
+        if opts.VERBOSE:
+            print "Number of Q subgrids = %d" % len(qgrids)
+
+        ## Remove the Qs array, since using it now would be inconsistent
+        del qs
+
+
+        ## Use the PDF grid's Q knot values for alpha_s interpolation, with subgrid edge doubling
+        if not alphas_qs: # fill only on the first encountered member
+            alphas_qs = []
+            for qs in qgrids:
+                alphas_qs += qs
+            if opts.VERBOSE:
+                print "alpha_s Qs =", alphas_qs
+
 
         ## Determine the active (non-zero) flavours in the grid (will be -5..5 or -6..6)
         # def active_flavours(xfxs):
@@ -144,7 +184,6 @@ for lha5name in args:
         #     xfxs_array = numpy.array(xfxs)
         #     pids = [pid for i, pid in enumerate(pids) if xfxs_array[:,i].any()]
         #     return pids
-
         # TODO: Handle PDFs with photon (etc.) members
         lha5pids = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 0]
         if opts.HAS_TOP:
@@ -154,17 +193,6 @@ for lha5name in args:
         for lha5pid in lha5pids:
             pids.append(lha5pid if lha5pid != 0 else 21)
 
-        ## Get the xf values for this PDF member
-        xfs = []
-        for x in xs:
-            for q in qs:
-                # if x != 1.0:
-                #     xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
-                # else:
-                #     ## Force xf(x=1) = 0 for now, until ipol is improved
-                #     # TODO: Remove this when LHAPDF ipol knows about x=1
-                #     xfs.append([0.0 for pid in lha5pids])
-                xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
 
         ## Work out the member file path and open it for writing
         memname = setname + ('_%04d.dat' % member)
@@ -174,23 +202,38 @@ for lha5name in args:
         f.write("PdfType: %s\n" % ("central" if member == 0 else "error"))
         f.write("Format: lhagrid1\n")
         f.write("---\n")
-        ## Write x points
-        line = " ".join("%2.6e" % x for x in xs)
-        f.write(line + "\n")
-        ## Write Q2 points
-        line = " ".join("%2.6e" % q**2 for q in qs)
-        f.write(line + "\n")
-        ## Write internal flavour list
-        f.write(" ".join(str(pid) for pid in pids) + "\n")
-        ## Write block of xf values
-        for xfs_xq in xfs:
-            line = ""
-            for xf in xfs_xq:
-                if xf == 0.0: xf = 0.0 # remove occurences of negative zero
-                line += "%2.8e " % xf
-            f.write(line.strip() + "\n")
 
-        f.write("---\n")
+        ## Get the xf values for this PDF member in each Q subgrid
+        for qs in qgrids:
+            xfs = []
+            for x in xs:
+                for q in qs:
+                    # if x != 1.0:
+                    #     xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
+                    # else:
+                    #     ## Force xf(x=1) = 0 for now, until ipol is improved
+                    #     # TODO: Remove this when LHAPDF ipol knows about x=1
+                    #     xfs.append([0.0 for pid in lha5pids])
+                    xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
+
+            ## Write x points
+            line = " ".join("%2.6e" % x for x in xs)
+            f.write(line + "\n")
+            ## Write Q2 points
+            # TODO: Convert format to use Q values here rather than Q**2, for readability
+            line = " ".join("%2.6e" % q**2 for q in qs)
+            f.write(line + "\n")
+            ## Write internal flavour list
+            f.write(" ".join(str(pid) for pid in pids) + "\n")
+            ## Write block of xf values
+            for xfs_xq in xfs:
+                line = ""
+                for xf in xfs_xq:
+                    if xf == 0.0: xf = 0.0 # remove occurences of negative zero
+                    line += "%2.8e " % xf
+                f.write(line.strip() + "\n")
+            f.write("---\n")
+
         f.close()
 
         #break
