@@ -29,6 +29,7 @@ op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
 op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser in calculation of relative deviations", type=float, default=0.1)
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="pass/fail tolerance scale for accuracy", type=float, default=1e-3)
+op.add_option("--as", dest="TYPE", metavar="TYPE", help="alpha_s comparison mode", action="store_const", const="as", default="xf")
 op.add_option("-q", dest="VERBOSITY", help="be quiet", action="store_const", const=0, default=1)
 op.add_option("-v", dest="VERBOSITY", help="be verbose", action="store_const", const=2, default=1)
 opts, args = op.parse_args()
@@ -52,13 +53,24 @@ def accuracy(ref, test, epsilon=opts.EPSILON):
 
 while True:
     l5, l6 = f5.readline(), f6.readline()
-    if not l5 or not l6: break
-    lnx5, lnq5, xf5 = [float(a) for a in l5.split()]
-    lnx6, lnq6, xf6 = [float(b) for b in l6.split()]
-    assert fracdiff(lnx5, lnx6) < 1e-8 and fracdiff(lnq5, lnq6) < 1e-8
-    diff56, acc56 = diff(xf5, xf6), accuracy(xf5, xf6)
-    #out.write("%0.3e %0.3e %0.3e\n" % (lnx5, lnq5, diff56))
-    out.write("%0.3e %0.3e %0.3e\n" % (lnx5, lnq5, acc56))
-    if opts.VERBOSITY == 2 or (opts.VERBOSITY == 1 and acc56 > opts.TOLERANCE):
-        print "%0.3e, %0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
-              (lnx5, lnq5, xf5, xf6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL")
+    if not l5 or not l6:
+        break
+    if opts.TYPE == "xf":
+        lnx5, lnq5, xf5 = [float(a) for a in l5.split()]
+        lnx6, lnq6, xf6 = [float(b) for b in l6.split()]
+        assert fracdiff(lnx5, lnx6) < 1e-8 and fracdiff(lnq5, lnq6) < 1e-8
+        diff56, acc56 = diff(xf5, xf6), accuracy(xf5, xf6)
+        #out.write("%0.3e %0.3e %0.3e\n" % (lnx5, lnq5, diff56))
+        out.write("%0.3e %0.3e %0.3e\n" % (lnx5, lnq5, acc56))
+        if opts.VERBOSITY == 2 or (opts.VERBOSITY == 1 and acc56 > opts.TOLERANCE):
+            print "%0.3e, %0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
+                  (lnx5, lnq5, xf5, xf6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL")
+    elif opts.TYPE == "as":
+        lnq5, as5 = [float(a) for a in l5.split()]
+        lnq6, as6 = [float(b) for b in l6.split()]
+        assert fracdiff(lnq5, lnq6) < 1e-8
+        diff56, acc56 = diff(as5, as6), accuracy(as5, as6)
+        out.write("%0.3e %0.3e\n" % (lnq5, acc56))
+        if opts.VERBOSITY == 2 or (opts.VERBOSITY == 1 and acc56 > opts.TOLERANCE):
+            print "%0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
+                  (lnq5, as5, as6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL")
