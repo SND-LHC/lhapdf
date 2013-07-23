@@ -153,16 +153,16 @@ for lha5name in args:
         split_points.append(None) # add an end-at-last marker
         for isplit in xrange(len(split_points)-1):
             start = split_points[isplit]
-            if isplit > 0:
-                start += 1 # start from the +epsilon point
+            # if isplit > 0:
+            #     start += 1 # start from the +epsilon point
             end = split_points[isplit+1]
             if end is not None:
                 end += 1 # want to include the split point knot, so increment unless it's the last one
             if opts.VERBOSE:
                 print "Subgrid from Q =", qs[start], "to", qs[end-1 if end is not None else -1]
             qgrid = qs[start:end]
-            # if isplit > 0:
-            #     del qgrid[1] # remove the mq+epsilon knot since we don't want gaps in Q coverage
+            if isplit > 0:
+                del qgrid[1] # remove the mq+epsilon knot since we don't want gaps in Q coverage
             qgrids.append(qgrid)
         if opts.VERBOSE or len(qgrids) > 1:
             print "Number of Q subgrids = %d" % len(qgrids)
@@ -206,16 +206,19 @@ for lha5name in args:
         f.write("---\n")
 
         ## Get the xf values for this PDF member in each Q subgrid
-        for qs in qgrids:
+        for igrid, qs in enumerate(qgrids):
             xfs = []
             for x in xs:
-                for q in qs:
+                for iq, q in enumerate(qs):
                     # if x != 1.0:
                     #     xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
                     # else:
                     #     ## Force xf(x=1) = 0 for now, until ipol is improved
                     #     # TODO: Remove this when LHAPDF ipol knows about x=1
                     #     xfs.append([0.0 for pid in lha5pids])
+                    ## Offset the sampling (but not the reported Q) a little on the low Q edges of later subgrids
+                    if igrid > 0 and iq == 0:
+                        q += 1e-3
                     xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
 
             ## Write x points
