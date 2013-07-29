@@ -13,8 +13,6 @@ FOR STABLE 6.0.0 RELEASE
 
    Use doubled Q values to implement 1D subgrids.
 
-   Need to respect FFNS/VFNS flags.
-
    Include alpha_s raw and deviation plotting in the validation plot script.
 
 - **Non-visual PDF validation (AB)**
@@ -25,19 +23,13 @@ FOR STABLE 6.0.0 RELEASE
 
 - **MSTW2008 PDF migration (GW,AB)**
 
-   First attempt to use subgrids in anger. Also subgrid in alpha_s.
-
-   Check why MSTW2008NNLO interpolation goes so wild at low Q:
-   Related to the eps = 10^-6 GeV treatment combined with value discontinuity at
-   Q = m_c => ~infinite gradient term entering the interpolation? Fix with
-   subgrids? Epsilon separations can't be allowed in LHAPDF: subgrids should be
-   absolutely contiguous.
+   Mostly done: subgrid migration and interpolation is working.
 
 - **NNPDF2.3 PDF migration (AB)**
 
    Includes non-zero top PDFs: --top option added to creategrids. xmin reported
-   wrongly: requires a --xmin=1e-7 override to creategrids. Still many >> 1e-3
-   deviations. Why do -1, -2 PDFs look valence-like?
+   wrongly: requires a --xmin=1e-7 override to creategrids (confirmed with
+   authors). Still many >> 1e-3 deviations.
 
 - **HERAPDF1.5 PDF migration (JF,KN)**
 

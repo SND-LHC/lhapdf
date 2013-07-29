@@ -176,6 +176,7 @@ namespace LHAPDF {
       if (it == _knotarrays.begin()) throw GridError("Requested Q2 is smaller than any available subgrid");
       if (it == _knotarrays.end() && q2 > q2Knots().back()) throw GridError("Requested Q2 is higher than any available subgrid");
       --it; // upper_bound (and lower_bound) returns the entry *above* q2: we need to decrement by one element
+      // std::cout << "Using subgrid #" << std::distance(_knotarrays.begin(), it) << std::endl;
       return it->second;
     }
 

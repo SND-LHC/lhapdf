@@ -1,8 +1,8 @@
 /// PDF value dumping program, for both LHAPDF version 5 and 6
 ///
-/// The version is specified via the LHAVERSION macro definition, e.g.
-///   g++ dumpv5v6.cc -DLHAVERSION=5 -o dumpv5 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
-///   g++ dumpv5v6.cc -DLHAVERSION=6 -o dumpv6 `lhapdf-config --cppflags -cxxflags --ldflags --libs`
+/// The version is detected automatically from the library against which the
+/// executable is being compiled, so to build just do this:
+/// g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv5orv6
 
 #include <iostream>
 #include <fstream>

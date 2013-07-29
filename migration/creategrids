@@ -207,8 +207,9 @@ for lha5name in args:
 
         ## Get the xf values for this PDF member in each Q subgrid
         for igrid, qs in enumerate(qgrids):
+            # print qs
             xfs = []
-            for x in xs:
+            for ix, x in enumerate(xs):
                 for iq, q in enumerate(qs):
                     # if x != 1.0:
                     #     xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
@@ -219,7 +220,10 @@ for lha5name in args:
                     ## Offset the sampling (but not the reported Q) a little on the low Q edges of later subgrids
                     if igrid > 0 and iq == 0:
                         q += 1e-3
-                    xfs.append([lhapdf.xfx(x, q, pid) for pid in lha5pids])
+                    xf_vals = [lhapdf.xfx(x, q, pid) for pid in lha5pids]
+                    xfs.append(xf_vals)
+                    # if igrid == 1 and ix == 10:
+                    #     print x, q, xf_vals[-1]
 
             ## Write x points
             line = " ".join("%2.6e" % x for x in xs)
