@@ -1,3 +1,9 @@
+2013-07-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Changing the data format to list PDF Q knot values rather than Q2, for readability.
+
+	* Fixing creategrids to respect flavour thresholds and subgrids with a --subgrids flag.
+
 2013-07-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version number bump and tag as 6.0.0b3. Nearly ready for stable release!

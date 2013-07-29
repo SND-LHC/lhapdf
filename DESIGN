@@ -141,24 +141,28 @@ exchanged as email attachments.
 
 For grid PDFs, the following file content is in a grid format uniform to all PDF
 families: subgrids are delimited by more `---` line separators, and within each
-subgrid the first two lines are lists of the x and Q2 anchor values respectively
+subgrid the first two lines are lists of the x and Q knot values respectively
 used in that grid. The following lines are the xf values of the PDFs for each
-supported flavour, each line representing one (x,Q2) grid anchor point. The
+supported flavour, each line representing one (x,Q) grid anchor point. The
 order of the xf lines is that of a nested pair of loops, the outer over x knots
-and the inner over Q2 knots -- hence each subgrid data block is a series of line
+and the inner over Q knots -- hence each subgrid data block is a series of line
 groups, each with a single x value but different Q2 values in its constituent
 lines.  The flavours for which the xf values are listed in each line are
 specified as set (or member) metadata, and the xf values are listed in
 increasing order of PDG ID code (e.g. usually -5..5, 21 or -6..6, 21 for the
-standard 5 or 6 quark-flavour PDF). The final line should be another `---`
+standard 5 or 6 quark-flavour PDF). The final line must be another `---`
 delimiter to unambiguously declare the end of the final subgrid block.
 
-Scientific formatting should be used throughout the data block, and as required
-in the metadata block. The exponent character should be E (or e) rather than D,
-and the set preparer is responsible for ensuring that the values are entered with
-sufficient precision for the required numerical performance.
+Scientific formatting of floating point numbers should be used throughout the
+data block, and as required in the metadata block. The exponent character should
+be E (or e) rather than D, and the set preparer is responsible for ensuring that
+the values are entered with sufficient precision for the required numerical
+performance.
 
-@todo Allow comments in the grid block? Why not... ignore lines which start with a #.
+Lines which begin with a # symbol will be treated as comments and excluded from
+the format parsing. Partial line comments are not allowed: the # symbol must be
+the absolute first character on the line otherwise it will be treated as part of
+a data line.
 
 New PDF formats may be proposed to the LHAPDF maintainers, and will be
 considered for standardisation. Acceptance of proposals is not guaranteed, and

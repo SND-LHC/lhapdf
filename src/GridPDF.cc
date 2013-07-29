@@ -67,8 +67,8 @@ namespace LHAPDF {
           istringstream tokens(line);
           if (iblockline == 1) { // x knots line
             while (tokens >> token) xs.push_back(token);
-          } else if (iblockline == 2) { // Q2 knots line
-            while (tokens >> token) q2s.push_back(token);
+          } else if (iblockline == 2) { // Q knots line
+            while (tokens >> token) q2s.push_back(token*token); // note Q -> Q2
           } else if (iblockline == 3) { // internal flavor IDs line
             // DO NOTHING FOR NOW: only handling this for prospective forward compatibility
             /// @todo Handle internal partial flavour representations

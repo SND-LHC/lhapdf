@@ -228,9 +228,8 @@ for lha5name in args:
             ## Write x points
             line = " ".join("%2.6e" % x for x in xs)
             f.write(line + "\n")
-            ## Write Q2 points
-            # TODO: Convert format to use Q values here rather than Q**2, for readability
-            line = " ".join("%2.6e" % q**2 for q in qs)
+            ## Write Q points
+            line = " ".join("%2.6e" % q for q in qs)
             f.write(line + "\n")
             ## Write internal flavour list
             f.write(" ".join(str(pid) for pid in pids) + "\n")
