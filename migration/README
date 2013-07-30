@@ -1,5 +1,9 @@
 Instructions for building and running migration scripts/programs
-----------------------------------------------------------------
+================================================================
+
+
+SET MIGRATION
+-------------
 
 To migrate a PDF, install LHAPDF5 (including the Python module) and call e.g.
 
@@ -7,6 +11,10 @@ To migrate a PDF, install LHAPDF5 (including the Python module) and call e.g.
 
 This will create the .info set metadata file and .lha grid data files in a (new)
 CT10 directory.
+
+
+SET VALIDATION AND PLOTTING
+---------------------------
 
 To test the new PDFs, build the dumpv5 and/or dumpv6 programs. These are
 compiled from the same source (with the appropriate LHAPDF library version
@@ -20,9 +28,10 @@ or
 (cd /path/to/lhapdf6 && make install)
 g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv6
 
-These programs are run like
+These programs are run like (from a PDF-specific validation directory in
+e.g. migration/validation/myset):
 
-./dumpvX <setname> <member_num>
+../../dumpvX <setname> <member_num>
 
 with the setname being generally different between v5 and v6 (at the least, v5
 PDF names contain the .LHgrid/.LHpdf file extension). You need to specify
@@ -30,6 +39,20 @@ the data path to the preliminary v6 PDF data files if they're not installed in
 $prefix/share/LHAPDF:
 
 LHAPDF_DATA_PATH=$PWD ./dumpv6 CT10 0
+
+To numerically compare the PDFs and make all the validation plots, by far the
+easiest thing to do is run the cmpplotv5v6 batch script which loops over PIDs
+and x & Q values and runs the comparison and plotting programs. From our
+hypothetical validation/myset directory this is run like:
+
+../../cmpplotv5v6
+
+What follows is a more detailed description of how to use the scripts called by
+this: probably you don't need to know this, at least at first!
+
+
+DETAILED COMPARISON AND PLOTTING SCRIPTS
+----------------------------------------
 
 The cmpv5v6 script is used to numerically compare dumped-out PDF values between
 versions 5 and 6 of LHAPDF, and writes out the fractional deviations (with an

@@ -10,8 +10,8 @@ import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="cmpv5v6.pdf")
-op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode: x, q, xq", default="x")
-op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, fracdiff", default="fracdiff")
+op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode: x, q", default="x")
+op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, xfdiff, as, asdiff", default="xfdiff")
 op.add_option("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy", default="xy")
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation", type=float, default=1e-3)
 op.add_option("--pdfxmin", dest="PDFXMIN", metavar="X", help="low edge of the PDF range in x", type=float, default=None)
@@ -99,7 +99,7 @@ if "x" in opts.LOG:
     plt.xscale("log")
 if "y" in opts.LOG:
     plt.yscale("log")
-    if opts.TYPE == "fracdiff":
+    if opts.TYPE == "xfdiff":
         plt.ylim(ymin=1e-5)
 
 ## Set (override) axis limits
@@ -113,29 +113,20 @@ if opts.YLIM:
     if yhigh: plt.ylim(ymax=float(yhigh))
 
 ## Set up axis labels and plot title
-if opts.AXIS == "xq":
-    ## 2D plotting
+if opts.TYPE == "xf":
+    plt.ylabel("$xf(x,Q)$")
+elif opts.TYPE == "xfdiff":
+    plt.ylabel(r"$|f_6 - f_5| / (|f_5| + \epsilon)$")
+    # plt.ylabel(r"$|f_6+\epsilon|/|f_5+\epsilon| - 1$")
+#
+if opts.AXIS == "x":
     plt.xlabel("$x$")
-    plt.ylabel("$Q$")
-    # TODO: Implement!
-    print "xq axis type (2D plotting) not yet supported"
-    exit(1)
-else:
-    ## 1D plotting
-    if opts.TYPE == "xf":
-        plt.ylabel("$xf(x,Q)$")
-    elif opts.TYPE == "fracdiff":
-        # plt.ylabel("$|f_6 - f_5| / |f_5|$")
-        plt.ylabel(r"$|f_6+\epsilon|/|f_5+\epsilon| - 1$")
-    #
-    if opts.AXIS == "x":
-        plt.xlabel("$x$")
-        if opts.PDFXMIN:
-            plt.axvline(opts.PDFXMIN, linewidth=1, color="black", linestyle=":")
-    elif opts.AXIS == "q":
-        plt.xlabel("$Q$")
-        if opts.PDFQMAX:
-            plt.axvline(opts.PDFQMAX, linewidth=1, color="black", linestyle=":")
+    if opts.PDFXMIN:
+        plt.axvline(opts.PDFXMIN, linewidth=1, color="black", linestyle=":")
+elif opts.AXIS == "q":
+    plt.xlabel("$Q$")
+    if opts.PDFQMAX:
+        plt.axvline(opts.PDFQMAX, linewidth=1, color="black", linestyle=":")
 
 ## Plot vertical lines from a file (e.g. for marking all knot values)
 if opts.VLINES:
@@ -150,7 +141,7 @@ for t in l.get_texts():
     t.set_size("xx-small")
 
 ## If plotting fractional deviations, draw the tolerance level
-if opts.TYPE == "fracdiff":
+if opts.TYPE == "xfdiff":
     plt.axhline(opts.TOLERANCE, linewidth=1, color="red", linestyle=":")
 
 ## Save the plot
