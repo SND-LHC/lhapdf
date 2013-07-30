@@ -1,3 +1,7 @@
+2013-07-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a migration/cmpplotv5v6 batch script and improving the accuracy measure definition.
+
 2013-07-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Changing the data format to list PDF Q knot values rather than Q2, for readability.
