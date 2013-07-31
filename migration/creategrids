@@ -59,7 +59,7 @@ for lha5name in args:
     if lhapdf.numberPDF() == 1:
        numMembers -= 1
 
-    ## This will be filled with the set's Q2 anchors for alpha_s ipol
+    ## This will be filled with the set's Q anchors for alpha_s ipol
     alphas_qs = None
 
     ## Iterate over each member in the set (central is not included)
@@ -270,8 +270,8 @@ for lha5name in args:
     f.write("ErrorType: \n")
     f.write("XMin: %g\n" % lhapdf.getXmin(1))
     f.write("XMax: %g\n" % lhapdf.getXmax(1))
-    f.write("Q2Min: %g\n" % lhapdf.getQ2min(1))
-    f.write("Q2Max: %g\n" % lhapdf.getQ2max(1))
+    f.write("QMin: %g\n" % math.sqrt(lhapdf.getQ2min(1)))
+    f.write("QMax: %g\n" % math.sqrt(lhapdf.getQ2max(1)))
     f.write("MZ: %g\n" % MZ)
     f.write("MUp: %g\n" % lhapdf.getQMass(1, 1))
     f.write("MDown: %g\n" % lhapdf.getQMass(1, 2))

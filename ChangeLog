@@ -1,3 +1,7 @@
+2013-07-31  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Changing the Q2Min,Max flags to QMin,Max for better readability, etc. PDF and creategrids updated.
+
 2013-07-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a migration/cmpplotv5v6 batch script and improving the accuracy measure definition.

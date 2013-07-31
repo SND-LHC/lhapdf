@@ -260,30 +260,27 @@ namespace LHAPDF {
       return 1.0;
     }
 
-    /// Minimum valid Q2 value for this PDF (in GeV2).
-    virtual double q2Min() {
-      if (info().has_key("Q2Min"))
-        return info().get_entry_as<double>("Q2Min");
-      return 0.0;
-    }
-
-    /// Maximum valid Q2 value for this PDF (in GeV2).
-    virtual double q2Max() {
-      if (info().has_key("Q2Max"))
-        return info().get_entry_as<double>("Q2Max");
-      return numeric_limits<double>::max();
-    }
-
     /// Minimum valid Q value for this PDF (in GeV).
     /// @note This function calls sqrt(q2Min()). For better CPU efficiency and accuracy use q2Min() directly.
     virtual double qMin() {
-      return std::sqrt(this->q2Min());
+      return info().get_entry_as<double>("QMin", 0);
     }
 
     /// @brief Maximum valid Q value for this PDF (in GeV).
     /// @note This function calls sqrt(q2Max()). For better CPU efficiency and accuracy use q2Max() directly.
     virtual double qMax() {
-      return std::sqrt(this->q2Max());
+      return info().get_entry_as<double>("QMax", numeric_limits<double>::max());
+    }
+
+    /// Minimum valid Q2 value for this PDF (in GeV2).
+    virtual double q2Min() {
+      return sqr(this->qMin());
+    }
+
+    /// Maximum valid Q2 value for this PDF (in GeV2).
+    virtual double q2Max() {
+      // Explicitly re-access this from the info, to avoid an overflow from squaring double_max
+      return (info().has_key("QMax")) ? sqr(info().get_entry_as<double>("QMax")) : numeric_limits<double>::max();
     }
 
     /// @brief Check whether the given x is physically valid

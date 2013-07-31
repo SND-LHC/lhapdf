@@ -148,12 +148,12 @@ MANDATORY
 Minimum and maximum values of x in the PDF set. Could also be member-specific.
 
 
-Q2Min, Q2Max
+QMin, QMax
 ------------
 MANDATORY
 (float)
 
-Minimum and maximum values of Q2 in the PDF set, in GeV2. Could also be member-specific.
+Minimum and maximum values of Q in the PDF set, in GeV. Could also be member-specific.
 
 
 OrderQCD
