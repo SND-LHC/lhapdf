@@ -28,7 +28,7 @@ import optparse, os
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
 op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser in calculation of relative deviations", type=float, default=0.1)
-op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="pass/fail tolerance scale for accuracy", type=float, default=1e-3)
+op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="tolerance scale for accuracy, above which a warning will be written to stdout", type=float, default=0.1)
 op.add_option("--as", dest="TYPE", metavar="TYPE", help="alpha_s comparison mode", action="store_const", const="as", default="xf")
 op.add_option("-q", dest="VERBOSITY", help="be quiet", action="store_const", const=0, default=1)
 op.add_option("-v", dest="VERBOSITY", help="be verbose", action="store_const", const=2, default=1)
@@ -36,6 +36,7 @@ opts, args = op.parse_args()
 
 assert len(args) == 2
 assert all(os.path.exists(a) for a in args)
+#print "Comparing", args[0], args[1]
 
 f5 = open(args[0])
 f6 = open(args[1])
@@ -53,10 +54,14 @@ def accuracy(ref, test, epsilon=opts.EPSILON):
     ## Refined defn
     return abs(test - ref) / ( abs(ref) + epsilon )
 
+## Counters for the accuracy thresholds failed (first is an overall counter)
+failcounts = { -1 : 0, 1e-3 : 0,  1e-2 : 0, 1e-1 : 0, 1.0 : 0 }
+
 while True:
     l5, l6 = f5.readline(), f6.readline()
     if not l5 or not l6:
         break
+    ## PDF value comparisons
     if opts.TYPE == "xf":
         lnx5, lnq5, xf5 = [float(a) for a in l5.split()]
         lnx6, lnq6, xf6 = [float(b) for b in l6.split()]
@@ -67,6 +72,7 @@ while True:
         if opts.VERBOSITY == 2 or (opts.VERBOSITY == 1 and acc56 > opts.TOLERANCE):
             print "%0.3e, %0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
                   (lnx5, lnq5, xf5, xf6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL")
+    ## alpha_s comparisons
     elif opts.TYPE == "as":
         lnq5, as5 = [float(a) for a in l5.split()]
         lnq6, as6 = [float(b) for b in l6.split()]
@@ -76,3 +82,14 @@ while True:
         if opts.VERBOSITY == 2 or (opts.VERBOSITY == 1 and acc56 > opts.TOLERANCE):
             print "%0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
                   (lnq5, as5, as6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL")
+    ## Update accuracy threshold failure filters
+    for acc_cut in failcounts:
+        if acc56 > acc_cut:
+            failcounts[acc_cut] += 1
+
+## Print out threshold failure rates
+#print failcounts
+for acc_cut in sorted(failcounts.keys())[1:]:
+    failrate = failcounts[acc_cut] / float(failcounts[-1])
+    if failrate:
+        print "%0.1f%% of points fail acc < %0.1e cut in print %s vs %s" % (100*failrate, acc_cut, args[0], args[1])
