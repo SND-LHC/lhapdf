@@ -9,17 +9,20 @@ LHAPDF6 TODO list
 FOR STABLE 6.0.0 RELEASE
 ------------------------
 
-- **Complete and test AlphaS system (MR,KN)**
+- **Print out banner info?... needed by code that greps for it :-/**
 
-   Use doubled Q values to implement 1D subgrids.
+   e.g. ATLAS' Generate_trf.py. Implement the Fortran getdescription_() and
+   require it to be explicitly called? Or automatically call it from the Fortran
+   interface only. *Or provide a C++ function to return the current PDF identity
+   and call that explicitly.*
 
-   Include alpha_s raw and deviation plotting in the validation plot script.
+- **Build system issues**
 
-- **Non-visual PDF validation (AB)**
-
-   More automation of validation is required... we can't check thousands of
-   plots so need a more compact performance metric for printout in the event of
-   comparison failure. Needs to be silent 99% of the time.
+   Follow up NONE issue in boost.m4 / update boost.m4 in LHAPDF, YODA, Rivet.
+   Mention required Cython setup in the installation instructions.
+   Check for Cython version cf. YODA, Rivet.
+   Check Boost version (Lynn's reported issues).
+   yaml-cpp needs to be in LD_LIBRARY_PATH to build tests? Add explicit -L
 
 - **MSTW2008 PDF migration (GW,AB)**
 
@@ -37,25 +40,22 @@ FOR STABLE 6.0.0 RELEASE
 
 - **Improve CTEQ6L1 grid efficiency if possible (MR)**
 
-- **Write-up**
 
-   Target at EPJC Tools or CPC? Can put on arXiv before October, but delay
-   publication submission to aim (hope) for for eligibility in *next* REF.
+WRITE PAPER
+-----------
 
-- **Print out banner info?... needed by code that greps for it :-/**
+- ** Target at EPJC Tools or CPC?**
 
-   e.g. ATLAS' Generate_trf.py. Implement the Fortran getdescription_() and
-   require it to be explicitly called? Or automatically call it from the Fortran
-   interface only. *Or provide a C++ function to return the current PDF identity
-   and call that explicitly.*
-
-- **Add Info/Config mappings to Cython (AB)**
-
-  And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+   Can put on arXiv before October, but delay publication submission to aim
+   (hope) for for eligibility in *next* UK REF.
 
 
 AS AND WHEN
 -----------
+
+- **Add Info/Config mappings to Cython (AB)**
+
+  And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
 
 - **Gradient extrapolator**
 
