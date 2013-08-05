@@ -7,6 +7,7 @@
 
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Exceptions.h"
+#include "LHAPDF/KnotArray.h"
 
 namespace LHAPDF {
 
@@ -174,7 +175,8 @@ namespace LHAPDF {
 
 
   /// Interpolate alpha_s from tabulated points in Q2 via metadata
-  /// @todo Add Doxygen strings
+  ///
+  /// @todo Extrapolation: log-gradient xpol at low Q, const at high Q?
   class AlphaS_Ipol : public AlphaS {
   public:
 
@@ -193,13 +195,19 @@ namespace LHAPDF {
       setQ2Values(q2s);
     }
 
-    /// @brief Set the array of Q2 values for interpolation
-    void setQ2Values(const std::vector<double>& q2s) {
-      foreach (double q2, q2s) _logq2s.push_back(log(q2));
-    }
+    /// Set the array of Q2 values for interpolation
+    ///
+    /// Subgrids are represented by repeating the values which are the end of
+    /// one subgrid and the start of the next. The supplied vector must match
+    /// the layout of alpha_s values.
+    void setQ2Values(const std::vector<double>& q2s);
 
     /// Set the array of alpha_s(Q2) values for interpolation
-    void setAlphaSValues(const std::vector<double>& as) { _as = as; }
+    ///
+    /// The supplied vector must match the layout of Q2 knots.  Subgrids may
+    /// have discontinuities, i.e. different alpha_s values on either side of a
+    /// subgrid boundary (for the same Q values).
+    void setAlphaSValues(const std::vector<double>& as);
 
   private:
 
@@ -212,8 +220,16 @@ namespace LHAPDF {
     /// Get the gradient for a patch at the high end of the grid
     double _ddq_backward( size_t i ) const;
 
-    /// Array of ipol knots in log(Q2)
-    std::vector<double> _logq2s;
+    /// Synchronise the contents of the single Q2 / alpha_s vectors into subgrid objects
+    /// @note Only const so it can be called silently from a const method
+    void _setup_grids() const;
+
+    /// Map of AlphaSArrays "binned" for lookup by low edge in (log)Q2
+    /// @note This is mutable so it can be initialized silently from a const method
+    mutable std::map<double, AlphaSArray> _knotarrays;
+
+    /// Array of ipol knots in Q2
+    std::vector<double> _q2s;
     /// Array of alpha_s values for the Q2 knots
     std::vector<double> _as;
 

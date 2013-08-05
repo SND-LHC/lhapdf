@@ -230,4 +230,129 @@ namespace LHAPDF {
   };
 
 
+
+  /// Internal storage class for alpha_s interpolation grids
+  class AlphaSArray {
+  public:
+
+    /// @name Construction etc.
+    //@{
+
+    /// Default constructor just for std::map insertability
+    AlphaSArray() {}
+
+    /// Constructor from Q2 knot values and alpha_s values
+    AlphaSArray(const std::vector<double>& q2knots, const std::vector<double>& as)
+      : _q2s(q2knots), _as(as)
+    {
+      _sync();
+    }
+
+    //@}
+
+
+    /// @name Q2 stuff
+    //@{
+
+    // /// Q2 knot setter
+    // void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
+
+    /// Q2 knot vector accessor
+    const std::vector<double>& q2s() const { return _q2s; }
+
+    /// Get the Q2 value at a particular indexed Q2 knot
+    const double& q2(size_t iq2) const { return _q2s[iq2]; }
+
+    /// log(Q2) knot vector accessor
+    const std::vector<double>& logq2s() const { return _logq2s; }
+
+    /// Get the log(Q2) value at a particular indexed Q2 knot
+    const double& logq2(size_t iq2) const { return _logq2s[iq2]; }
+
+    /// Get the index of the closest Q2 knot row <= q2
+    ///
+    /// If the value is >= q2_max, return i_max-1 (for polynomial spine construction)
+    size_t iq2below(double q2) const {
+      // Test that x is in the grid range
+      if (q2 < q2s().front()) throw GridError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
+      if (q2 > q2s().back()) throw GridError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
+      /// Find the closest knot below the requested value
+      size_t i = upper_bound(q2s().begin(), q2s().end(), q2) - q2s().begin();
+      if (i == q2s().size()) i -= 1; // can't return the last knot index
+      i -= 1; // have to step back to get the knot <= q2 behaviour
+      return i;
+    }
+
+    /// Get the index of the closest logQ2 knot row <= logq2
+    ///
+    /// If the value is >= q2_max, return i_max-1 (for polynomial spine construction)
+    size_t ilogq2below(double logq2) const {
+      // Test that x is in the grid range
+      if (logq2 < logq2s().front()) throw GridError("logQ2 value " + to_str(logq2) + " is lower than lowest-logQ2 grid point at " + to_str(logq2s().front()));
+      if (logq2 > logq2s().back()) throw GridError("logQ2 value " + to_str(logq2) + " is higher than highest-logQ2 grid point at " + to_str(logq2s().back()));
+      /// Find the closest knot below the requested value
+      size_t i = upper_bound(logq2s().begin(), logq2s().end(), logq2) - logq2s().begin();
+      if (i == logq2s().size()) i -= 1; // can't return the last knot index
+      i -= 1; // have to step back to get the knot <= q2 behaviour
+      return i;
+    }
+
+    //@}
+
+
+    /// @name alpha_s values at Q2 points
+    //@{
+
+    /// alpha_s value accessor (const)
+    const std::vector<double>& alphas() const { return _as; }
+    // /// alpha_s value accessor (non-const)
+    // std::vector<double>& alphas() { return _as; }
+    // /// alpha_s value setter
+    // void setalphas(const valarray& xfs) { _as = as; }
+
+    /// Get the alpha_s value at a particular indexed Q2 knot
+    const double& alpha(size_t iq2) const { return _as[iq2]; }
+
+    //@}
+
+
+    /// @name alpha_s derivatives vs (log)Q2, useful for interpolation
+    //@{
+
+    /// Forward derivative w.r.t. logQ2
+    double ddlogq_forward(size_t i) const {
+      return (alpha(i+1) - alpha(i)) / (logq2(i+1) - logq2(i));
+    }
+
+    /// Backward derivative w.r.t. logQ2
+    double ddlogq_backward(size_t i) const {
+      return (alpha(i) - alpha(i-1)) / (logq2(i) - logq2(i-1));
+    }
+
+    /// Central (avg of forward and backward) derivative w.r.t. logQ2
+    double ddlogq_central(size_t i) const {
+      return 0.5 * (ddlogq_forward(i) + ddlogq_backward(i));
+    }
+
+    //@}
+
+
+  private:
+
+    /// Synchronise the log(Q2) array from the Q2 one
+    void _sync() {
+      _logq2s.resize(_q2s.size());
+      for (size_t i = 0; i < _q2s.size(); ++i) _logq2s[i] = log(_q2s[i]);
+    }
+
+    /// List of Q2 knots
+    std::vector<double> _q2s;
+    /// List of log(Q2) knots
+    std::vector<double> _logq2s;
+    /// List of alpha_s values across the knot array
+    std::vector<double> _as;
+
+  };
+
+
 }

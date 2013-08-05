@@ -1,5 +1,7 @@
 2013-08-05  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding subgridded alpha_s interpolation.
+
 	* Enhancing plotting and comparison scripts for alpha_s comparison.
 
 2013-07-31  Andy Buckley  <andy.buckley@cern.ch>

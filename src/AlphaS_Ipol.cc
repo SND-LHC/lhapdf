@@ -9,7 +9,43 @@
 namespace LHAPDF {
 
 
-  /// @todo Add subgrid support
+  void AlphaS_Ipol::setQ2Values(const std::vector<double>& q2s) {
+    _q2s = q2s;
+  }
+
+
+  void AlphaS_Ipol::setAlphaSValues(const std::vector<double>& as) {
+    _as = as;
+  }
+
+
+  /// @note This is const so it can be called silently from a const method
+  void AlphaS_Ipol::_setup_grids() const {
+    if (!_knotarrays.empty())
+      throw LogicError("AlphaS interpolation subgrids being initialized a second time!");
+
+    if (_q2s.size() != _as.size())
+      throw MetadataError("AlphaS value and Q interpolation arrays are differently sized");
+
+    // Walk along the Q2 vector, making subgrids at each boundary
+    double blockstartQ2 = _q2s.front();
+    double prevQ2 = _q2s.front();
+    vector<double> q2s, as;
+    for (size_t i = 0; i < _q2s.size(); ++i) {
+      const double currQ2 = _q2s[i];
+      const double currAS = _as[i];
+      // If the Q2 value is repeated, sync the current subgrid and start a new one
+      if (currQ2 == prevQ2 || i == _q2s.size()-1) {
+        if (i != 0) _knotarrays[blockstartQ2] = AlphaSArray(q2s, as);
+        blockstartQ2 = currQ2;
+        q2s.clear(); q2s.reserve(_q2s.size() - i);
+        as.clear(); as.reserve(_q2s.size() - i);
+      }
+      q2s.push_back(currQ2);
+      as.push_back(currAS);
+      prevQ2 = currQ2;
+    }
+  }
 
 
   double AlphaS_Ipol::_interpolateCubic(double T, double VL, double VDL, double VH, double VDH) const {
@@ -25,61 +61,49 @@ namespace LHAPDF {
     const double p1 = (-2*t3 + 3*t2)*VH;
     const double m1 = (t3 - t2)*VDH;
 
-    // For consistency with the ODE solver define
-    // divergence at alpha_s > 2.
-    /// @todo Will this break anything (are there PDFs that will
-    /// @todo want to interpolate values over 2. ?)
+    /// @todo For consistency with the ODE solver define divergence at alpha_s > 2.
+    /// @todo Will this break anything (are there PDFs that will want to interpolate values over 2. ?)
     return abs(p0 + m0 + p1 + m1) < 2. ? p0 + m0 + p1 + m1 : std::numeric_limits<double>::max();
-  }
-
-
-  double AlphaS_Ipol::_ddq_forward( size_t i ) const {
-    return (_as[i+1] - _as[i]) / (_logq2s[i+1] - _logq2s[i]);
-  }
-
-  double AlphaS_Ipol::_ddq_backward( size_t i ) const {
-    return (_as[i] - _as[i-1]) / (_logq2s[i] - _logq2s[i-1]);
-  }
-
-  double AlphaS_Ipol::_ddq_central( size_t i ) const {
-    return (_ddq_forward(i) + _ddq_backward(i))*0.5;
   }
 
 
   // Interpolate alpha_s from tabulated points in Q2 via metadata
   double AlphaS_Ipol::alphasQ2(double q2) const {
-    // Actually we operate in log space
-    const double logq2 = log(q2);
-
-    // Make sure the values to interpolate from have the same dimensions
-    assert(_as.size() == _logq2s.size());
+    assert(q2 >= 0);
 
     // Use a basic constant extrapolation in case we go out of range
-    if (logq2 <= _logq2s.front()) return _as.front();
-    if (logq2 >= _logq2s.back()) return _as.back();
+    if (q2 <= _q2s.front()) return _as.front(); //< @todo Gradient xpol w.r.t. logQ2 would be better, perhaps
+    if (q2 >= _q2s.back()) return _as.back();
 
-    // Cubic interpolation of std::vector<double> logq2 and as
-    size_t i = std::upper_bound( _logq2s.begin(), _logq2s.end(), logq2 ) - _logq2s.begin();
-    if (i == _logq2s.size()) i -= 1;
-    i -= 1;
+    // If this is the first valid query, set up the ipol grids
+    if (_knotarrays.empty()) _setup_grids();
+
+    // Retrieve the appropriate subgrid
+    map<double, AlphaSArray>::const_iterator it = --(_knotarrays.upper_bound(q2));
+    const AlphaSArray& arr = it->second;
+
+    // Get the Q/alpha_s index on this array which is *below* this Q point
+    const size_t i = arr.iq2below(q2);
 
     // Calculate derivatives
     double didlogq2, di1dlogq2;
     if ( i == 0 ) {
-      didlogq2 = _ddq_forward(i);
-      di1dlogq2 = _ddq_central(i+1);
-    } else if ( i == _logq2s.size()-2 ) {
-      didlogq2 = _ddq_central(i);
-      di1dlogq2 = _ddq_backward(i+1);
+      didlogq2 = arr.ddlogq_forward(i);
+      di1dlogq2 = arr.ddlogq_central(i+1);
+    } else if ( i == arr.logq2s().size()-2 ) {
+      didlogq2 = arr.ddlogq_central(i);
+      di1dlogq2 = arr.ddlogq_backward(i+1);
     } else {
-      didlogq2 = _ddq_central(i);
-      di1dlogq2 = _ddq_central(i+1);
+      didlogq2 = arr.ddlogq_central(i);
+      di1dlogq2 = arr.ddlogq_central(i+1);
     }
 
     // Calculate alpha_s
-    double dlogq2 = _logq2s[i+1] - _logq2s[i];
-    double tlogq2 = (logq2 - _logq2s[i]) / dlogq2;
-    return _interpolateCubic( tlogq2, _as[i], didlogq2*dlogq2, _as[i+1], di1dlogq2*dlogq2 );
+    const double dlogq2 = arr.logq2(i+1) - arr.logq2(i);
+    const double tlogq2 = (log(q2) - arr.logq2(i)) / dlogq2;
+    return _interpolateCubic( tlogq2,
+                              arr.alpha(i), didlogq2*dlogq2,
+                              arr.alpha(i+1), di1dlogq2*dlogq2 );
   }
 
 
