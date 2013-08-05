@@ -1,3 +1,7 @@
+2013-08-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Enhancing plotting and comparison scripts for alpha_s comparison.
+
 2013-07-31  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Changing the Q2Min,Max flags to QMin,Max for better readability, etc. PDF and creategrids updated.

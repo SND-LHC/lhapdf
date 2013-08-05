@@ -3,27 +3,29 @@
 """\
 Usage: %prog <data1.dat> <data2.dat> [...]
 
-Plot the given PDF comparison files.
+Plot the given PDF and alpha_s comparison files.
 """
 
 import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="cmpv5v6.pdf")
-op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode: x, q", default="x")
+op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode (xf plotting only): x, q", default="x")
 op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, xfdiff, as, asdiff", default="xfdiff")
 op.add_option("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy", default="xy")
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation", type=float, default=1e-3)
-op.add_option("--pdfxmin", dest="PDFXMIN", metavar="X", help="low edge of the PDF range in x", type=float, default=None)
-op.add_option("--pdfqmax", dest="PDFQMAX", metavar="Q", help="high edge of the PDF range in Q", type=float, default=None)
+op.add_option("--xmin", dest="XMIN", metavar="X", help="low edge of the range in x", type=float, default=None)
+op.add_option("--qmax", dest="QMAX", metavar="Q", help="high edge of the range in Q", type=float, default=None)
 op.add_option("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated", default=None)
 op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated", default=None)
 op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE", default=None)
 opts, args = op.parse_args()
 
-assert len(args) > 1
+assert len(args) > 0
 assert all(os.path.exists(a) for a in args)
 
+if "as" in opts.TYPE:
+    opts.AXIS = "q"
 
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "serif"
@@ -55,21 +57,21 @@ for i, a in enumerate(args):
     else:
         fname = a
         label = a.replace(".dat", "").replace("_", " ")
-        # try:
-        details = label.split()
-        if details[1].startswith("v"):
-            details[0] += " " + details[1]
-            del details[1] # remove v5/6
-            del details[1] # remove scanx/q
-            #print details
-        yvar = details[0]
-        xvar = details[1][0]
-        xval = float(details[1][1:])
-        pid = int(details[2])
-        label = r"{yvar}, flav = {flav}, ${xvar} = {xval}$".format(yvar=yvar, xvar=xvar, xval=latex_float(xval), flav=PARTONS.get(pid, pid))
-        index = (yvar, xval)
-        # except:
-        #     pass
+        try:
+            details = label.split()
+            if details[1].startswith("v"):
+                details[0] += " " + details[1]
+                del details[1] # remove v5/6
+                del details[1] # remove scanx/q
+                #print details
+            yvar = details[0]
+            xvar = details[1][0]
+            xval = float(details[1][1:])
+            pid = int(details[2])
+            label = r"{yvar}, flav = {flav}, ${xvar} = {xval}$".format(yvar=yvar, xvar=xvar, xval=latex_float(xval), flav=PARTONS.get(pid, pid))
+            index = (yvar, xval)
+        except:
+            pass
     index_fname[index] = fname
     fname_label[fname] = label
 
@@ -77,18 +79,20 @@ for i, a in enumerate(args):
 i = 0
 for _, fname in sorted(index_fname.iteritems()):
     f = open(fname)
-    xs, qs, vals = [], [], []
+    xs, vals = [], []
     for line in f:
-        x, q, val = [float(a) for a in line.split()]
-        if opts.AXIS == "x":
-            xs.append(x)
-        elif opts.AXIS == "q":
+        if opts.TYPE.startswith("xf"):
+            x, q, val = [float(a) for a in line.split()]
+            if opts.AXIS == "x":
+                xs.append(x)
+            elif opts.AXIS == "q":
+                xs.append(q)
+            vals.append(val)
+        elif opts.TYPE.startswith("as"):
+            q, val = [float(a) for a in line.split()]
             xs.append(q)
-        else:
-            print "xq axis type (2D plotting) not yet supported"
-            exit(1)
-        vals.append(val)
-    # TODO: Line styles and colors (from cmd line? group by v5/v6)
+            vals.append(val)
+    ## Line styles and colors
     color = COLORS[i % len(COLORS)]
     style = STYLES[(i / len(COLORS)) % len(COLORS)]
     i += 1
@@ -99,7 +103,7 @@ if "x" in opts.LOG:
     plt.xscale("log")
 if "y" in opts.LOG:
     plt.yscale("log")
-    if opts.TYPE == "xfdiff":
+    if "diff" in opts.TYPE:
         plt.ylim(ymin=1e-5)
 
 ## Set (override) axis limits
@@ -112,21 +116,26 @@ if opts.YLIM:
     if ylow: plt.ylim(ymin=float(ylow))
     if yhigh: plt.ylim(ymax=float(yhigh))
 
-## Set up axis labels and plot title
+## Set up axis labels
 if opts.TYPE == "xf":
     plt.ylabel("$xf(x,Q)$")
 elif opts.TYPE == "xfdiff":
     plt.ylabel(r"$|f_6 - f_5| / (|f_5| + \epsilon)$")
     # plt.ylabel(r"$|f_6+\epsilon|/|f_5+\epsilon| - 1$")
-#
+elif opts.TYPE == "as":
+    plt.ylabel(r"$\alpha_s(Q)$")
+elif opts.TYPE == "asdiff":
+    plt.ylabel(r"$|\alpha_6 - \alpha_5| / (|\alpha_5| + \epsilon)$")
+
+## Set up plot titles
 if opts.AXIS == "x":
     plt.xlabel("$x$")
-    if opts.PDFXMIN:
-        plt.axvline(opts.PDFXMIN, linewidth=1, color="black", linestyle=":")
+    if opts.XMIN:
+        plt.axvline(opts.XMIN, linewidth=1, color="black", linestyle=":")
 elif opts.AXIS == "q":
     plt.xlabel("$Q$")
-    if opts.PDFQMAX:
-        plt.axvline(opts.PDFQMAX, linewidth=1, color="black", linestyle=":")
+    if opts.QMAX:
+        plt.axvline(opts.QMAX, linewidth=1, color="black", linestyle=":")
 
 ## Plot vertical lines from a file (e.g. for marking all knot values)
 if opts.VLINES:
@@ -141,7 +150,7 @@ for t in l.get_texts():
     t.set_size("xx-small")
 
 ## If plotting fractional deviations, draw the tolerance level
-if opts.TYPE == "xfdiff":
+if "diff" in opts.TYPE:
     plt.axhline(opts.TOLERANCE, linewidth=1, color="red", linestyle=":")
 
 ## Save the plot

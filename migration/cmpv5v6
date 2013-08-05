@@ -27,12 +27,19 @@ import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
-op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser in calculation of relative deviations", type=float, default=0.1)
+op.add_option("-e", dest="EPSILON", metavar="EPS", help="regulariser in calculation of relative deviations", type=float, default=None)
 op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="tolerance scale for accuracy, above which a warning will be written to stdout", type=float, default=0.1)
 op.add_option("--as", dest="TYPE", metavar="TYPE", help="alpha_s comparison mode", action="store_const", const="as", default="xf")
 op.add_option("-q", dest="VERBOSITY", help="be quiet", action="store_const", const=0, default=1)
 op.add_option("-v", dest="VERBOSITY", help="be verbose", action="store_const", const=2, default=1)
 opts, args = op.parse_args()
+
+## Use different epsilon regulariser defaults for xf and alpha_s comparisons
+if opts.EPSILON is None:
+    if opts.TYPE == "xf":
+        opts.EPSILON = 0.1
+    elif opts.TYPE == "as":
+        opts.EPSILON = 0.01
 
 assert len(args) == 2
 assert all(os.path.exists(a) for a in args)
