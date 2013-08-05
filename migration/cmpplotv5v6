@@ -21,3 +21,7 @@ for pid in -5 -4 -3 -2 -1 1 2 3 4 5 21; do
     $SCRIPTDIR/plotv5v6 xfacc_x*_$pid.dat --axis=q -o cmpv5v6_xfacc_scanq_$pid.pdf &
     wait
 done
+## alpha_s comparisons and plotting
+$SCRIPTDIR/cmpv5v6 --as as_v*.dat -o asacc.dat
+$SCRIPTDIR/plotv5v6 as_v*.dat --type=as -o cmpv5v6_as.pdf
+$SCRIPTDIR/plotv5v6 asacc.dat --type=asdiff -o cmpv5v6_asacc.pdf
