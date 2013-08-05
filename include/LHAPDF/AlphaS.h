@@ -221,7 +221,7 @@ namespace LHAPDF {
     double _ddq_backward( size_t i ) const;
 
     /// Synchronise the contents of the single Q2 / alpha_s vectors into subgrid objects
-    /// @note Only const so it can be called silently from a const method
+    /// @note This is const so it can be called silently from a const method
     void _setup_grids() const;
 
     /// Map of AlphaSArrays "binned" for lookup by low edge in (log)Q2
