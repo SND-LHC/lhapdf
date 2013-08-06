@@ -1,3 +1,13 @@
+2013-08-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Various remaining build system tweaks and updating the version
+	code to 6.0.0rc in anticipation of release!
+
+	* Added the lhaglue_get_current_pdf(nset=1) function for C++
+	access to the currently-used PDF via LHAGlue (intended as a
+	workaround for cases where the old LHAPDF banner was grepped to
+	work out the PDF identities).
+
 2013-08-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding subgridded alpha_s interpolation.
