@@ -16,25 +16,25 @@ FOR STABLE 6.0.0 RELEASE
    interface only. *Or provide a C++ function to return the current PDF identity
    and call that explicitly.*
 
-- **Build system issues**
+- **Build system issues (AB)**
 
-   Follow up NONE issue in boost.m4 / update boost.m4 in LHAPDF, YODA, Rivet.
-   Mention required Cython setup in the installation instructions.
-   Check for Cython version cf. YODA, Rivet.
-   Check Boost version (Lynn's reported issues).
-   yaml-cpp needs to be in LD_LIBRARY_PATH to build tests? Add explicit -L
+   Follow up NONE issue from boost.m4.
 
-- **MSTW2008 PDF migration (GW,AB)**
+
+PDF VALIDATION
+--------------
+
+- **MSTW2008 PDF validation (AB)**
 
    Mostly done: subgrid migration and interpolation is working.
 
-- **NNPDF2.3 PDF migration (AB)**
+- **NNPDF2.3 PDF validation (AB)**
 
    Includes non-zero top PDFs: --top option added to creategrids. xmin reported
    wrongly: requires a --xmin=1e-7 override to creategrids (confirmed with
    authors). Still many >> 1e-3 deviations.
 
-- **HERAPDF1.5 PDF migration (JF,KN)**
+- **HERAPDF1.5 PDF validation (JF,KN)**
 
    HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets. Why?
 

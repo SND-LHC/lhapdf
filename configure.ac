@@ -84,16 +84,19 @@ AC_ARG_ENABLE([python],
   [], [enable_python=yes])
 if test x$enable_python == xyes; then
   AC_PATH_PROG(PYTHON, python)
-  AC_PATH_PROG(CYTHON, cython)
   if test x$PYTHON != x; then
     PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
     AC_SUBST(PYTHON_VERSION)
     PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
     AC_SUBST(PYTHON_PATH)
   fi
+  AM_CHECK_CYTHON([0.18], [:], [:])
+  if test x$CYTHON_FOUND != xyes; then
+    AC_MSG_ERROR([Can't build Python extension since Cython >= 0.18 could not be found])
+  fi
 fi
 AM_CONDITIONAL(WITH_PYTHON, [test x$PYTHON != x])
-AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON != x])
+AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON_FOUND = xyes])
 
 
 dnl ## Build Octave interface if possible
