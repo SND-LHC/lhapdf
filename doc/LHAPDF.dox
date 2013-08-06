@@ -9,7 +9,8 @@ Introduction
 
 LHAPDF is a general purpose C++ interpolator, used for evaluating PDFs from
 discretised data files.  Previous versions of LHAPDF were written in Fortran
-77/90.  There are several reasons for migrating to C++, the main ones being:
+77/90.  There are several reasons for this rewrite and the migration to C++, the
+main ones being:
 
 - Dynamic memory allocation
   - Although modern Fortran compilers can now deal with this, older versions
@@ -19,7 +20,22 @@ discretised data files.  Previous versions of LHAPDF were written in Fortran
     tasks; the static memory cost of loading several large PDF files becomes
     noticeable.  Being able to dynamically allocate memory means that we do
     not need to use large amounts for cases where we only need a small number
-    of PDFs loaded at a time.
+    of PDFs loaded at a time. In addition, the use of of static allocation in
+    previous versions of LHAPDF and the lack of any genuinely shared common
+    block array area for PDF manipulations means that the uninitialized static
+    memory footprint is (at more than 2 GB) vastly incompatible with running
+    LHAPDF on the Grid in "full memory" mode, the mode useful for PDF reweighting
+    for systematics estimation: dynamic allocation entirely solves this problem,
+    while removing all restrictions on the number of simultaneous PDF sets.
+
+- Encapsulation
+  - The multi-set features of LHAPDF5 were added in retrospect, after the
+    writing of PDF set wrapper codes which assumed only one PDF set would be
+    used at one time. As a result, the parallel use of multiple sets returns
+    correct PDF values, but does not work correctly for "metadata" such as
+    alpha_s, nuber of flavours, etc. The new version stores such information
+    in Info and AlphaS objects which are strictly bound to the PDF being
+    accessed, so these problems of global state are no longer an issue.
 
 - Generality
   - Previous versions of LHAPDF evolved slowly over time.  The original code
@@ -34,9 +50,11 @@ discretised data files.  Previous versions of LHAPDF were written in Fortran
     code.  Along with this, current Fortran code has been modified
     extensively to deal with different PDF file formats, each with their own
     parameter space and interpolation rules.  One of the largest improvements
-    we seek to implement in this C++ version is a unified PDF file format.
-    This will remove the need for specific case interpolation rules being
-    included in several PDF author wrappers.
+    implement in this C++ version is a unified PDF file format, with general
+    parton flavour content (using the PDG MC particle ID scheme).
+    This removes the need for special wrapper codes for each PDF, avoids the
+    need for special functions to access e.g. photon PDFs, and means that
+    new PDF sets can be made available without requiring a new LHAPDF release.
 
 - Extensibility
   - Extensions to the current Fortan code are difficult considering how much it
@@ -50,10 +68,11 @@ discretised data files.  Previous versions of LHAPDF were written in Fortran
     unforeseeable requirements in the future can, hopefully, be implemented
     easily.
 
-We hope to implement these improvements whilst retaining the functionality of
-current Fortran LHAPDF versions.  By doing so, we hope that this version will be
-easier to extend and maintain in the future.  For Fortran LHADPF documentaion as
-well as other information with regards to the project see
+These improvements have been implemented while retaining compatibility with the
+Fortran LHAPDF versions, but the "native" C++ interface is much more powerful
+and is highly recommended for new user code. We hope that this
+version will be easier to extend and maintain in the future.  For Fortran LHADPF
+documentaion as well as other information with regards to the project see
 http://lhapdf.hepforge.org/.
 
 
@@ -84,7 +103,15 @@ e.g. `libyaml-cpp.so`) as well as the default `libyaml-cpp.a` static library.
 To make sure that the shared library is built, call `cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/my/install/area`
 during the build before running `make` and `make install`.
 
-An example call to configure might look like:
+If you want to build the Python interface to LHAPDF (which is very nice!),
+you will need a copy of the Cython program (http://cython.org) which builds
+a C++ extension library for use from the Python interpreter. Cython version 0.19 or
+later is needed. You can just download and expand the Cython tarball, then add
+the resulting `$PWD/Cython-X.Y.Z` directory to your `PYTHONPATH` shell variable and the
+`$PWD/Cython-X.Y.Z/bin` directory to the `PATH` variable: you don't need to
+"properly" install it.
+
+An example call to LHAPDF's `configure` script might look like:
 
     ./configure --prefix=$HOME/local --with-yaml-cpp=$HOME/local
 
