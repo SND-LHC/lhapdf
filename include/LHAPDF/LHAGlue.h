@@ -9,6 +9,10 @@
 /// A file that provides backwards compatibility for some C functions from LHAPDF 5.x
 
 
+/// A special C++ function to return the PDF name + code currently being used via LHAGlue.
+std::string lhaglue_get_current_pdf(int nset=1);
+
+
 /// The PDF set by filename, see subdir @c PDFsets of LHAPDF for choices.
 /// @todo Why defined outside the LHAPDF namespace?!
 /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
@@ -18,6 +22,7 @@ void initPDFSetByName(const std::string& filename);
 /// @todo Why defined outside the LHAPDF namespace?!
 /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
 void initPDFSetByName(int nset, const std::string& filename);
+
 
 namespace LHAPDF {
 

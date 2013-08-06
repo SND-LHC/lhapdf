@@ -9,12 +9,9 @@ LHAPDF6 TODO list
 FOR STABLE 6.0.0 RELEASE
 ------------------------
 
-- **Print out banner info?... needed by code that greps for it :-/**
+- **Print out a banner?**
 
-   e.g. ATLAS' Generate_trf.py. Implement the Fortran getdescription_() and
-   require it to be explicitly called? Or automatically call it from the Fortran
-   interface only. *Or provide a C++ function to return the current PDF identity
-   and call that explicitly.*
+   Obnoxious or useful?
 
 - **Build system issues (AB)**
 

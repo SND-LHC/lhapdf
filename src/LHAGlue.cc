@@ -4,6 +4,7 @@
 // Copyright (C) 2012-2013 The LHAPDF collaboration (see AUTHORS for details)
 //
 #include "LHAPDF/PDF.h"
+#include "LHAPDF/PDFSet.h"
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/Utils.h"
@@ -131,7 +132,16 @@ namespace { //< Unnamed namespace to restrict visibility to this file
 }
 
 
+string lhaglue_get_current_pdf(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    return "NONE";
+  return ACTIVESETS[nset].activemember()->set().name() + " (" +
+    LHAPDF::to_str(ACTIVESETS[nset].activemember()->lhapdfID()) + ")";
+}
+
+
 extern "C" {
+
   /// LHAPDF version
   void getlhapdfversion_(char *s, size_t len) {
     /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
@@ -203,7 +213,7 @@ extern "C" {
     for (size_t i = 0; i < 13; ++i) {
       try {
         fxq[i] = ACTIVESETS[nset].activemember()->xfxQ(LHAPIDS[i], x, q);
-      } catch (const std::exception& e) {
+      } catch (const exception& e) {
         fxq[i] = 0;
       }
     }
@@ -233,7 +243,7 @@ extern "C" {
     // Then evaluate the photon flavor (historically only for MRST2004QED)
     try {
       photonfxq = ACTIVESETS[nset].activemember()->xfxQ(22, x, q);
-    } catch (const std::exception& e) {
+    } catch (const exception& e) {
       photonfxq = 0;
     }
   }
@@ -382,33 +392,35 @@ extern "C" {
 
 
 }
+
+
 // LHAPDF namespace compatibility code
 
-int LHAPDF::numberPDF(){
+int LHAPDF::numberPDF() {
   int nmem;
   numberpdf_(nmem);
   return nmem;
 }
 
-int LHAPDF::numberPDF(int nset){
+int LHAPDF::numberPDF(int nset) {
   int nmem;
   numberpdfm_(nset,nmem);
   return nmem;
 }
 
-void LHAPDF::initPDF( int memset){
-    int nset1 = 1;
-    initpdfm_(nset1, memset);
+void LHAPDF::initPDF( int memset) {
+  int nset1 = 1;
+  initpdfm_(nset1, memset);
 }
 
-void LHAPDF::initPDF(int nset, int memset){
-    initpdfm_(nset, memset);
+void LHAPDF::initPDF(int nset, int memset) {
+  initpdfm_(nset, memset);
 }
 
 double LHAPDF::xfx(double x, double Q, int fl) {
-    vector<double> r(13);
-    evolvepdf_(x, Q, &r[0]);
-    return r[fl+6];
+  vector<double> r(13);
+  evolvepdf_(x, Q, &r[0]);
+  return r[fl+6];
 }
 
 double LHAPDF::xfx(int nset, double x, double Q, int fl) {
@@ -426,19 +438,19 @@ vector<double> LHAPDF::xfx(double x, double Q) {
 vector<double> LHAPDF::xfx(int nset, double x, double Q) {
   vector<double> r(13);
   evolvepdfm_(nset, x, Q, &r[0]);
-    return r;
+  return r;
 }
 
 void LHAPDF::xfx(double x, double Q, double* results) {
-    evolvepdf_(x, Q, results);
+  evolvepdf_(x, Q, results);
 }
 
 void LHAPDF::xfx(int nset, double x, double Q, double* results) {
-    evolvepdfm_(nset, x, Q, results);
+  evolvepdfm_(nset, x, Q, results);
 }
 
 
-void LHAPDF::initPDFSet(const string& filename){
+void LHAPDF::initPDFSet(const string& filename) {
   initPDFSetByName(filename);
 }
 
@@ -463,10 +475,10 @@ double LHAPDF::alphasPDF(double Q) {
 }
 
 double LHAPDF::alphasPDF(int nset, double Q) {
-    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    // return alphaS for the requested set
-    return ACTIVESETS[nset].activemember()->alphasQ(Q);
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS for the requested set
+  return ACTIVESETS[nset].activemember()->alphasQ(Q);
 }
 
 void LHAPDF::usePDFMember(int member) {
@@ -474,5 +486,5 @@ void LHAPDF::usePDFMember(int member) {
 }
 
 void LHAPDF::usePDFMember(int nset, int member) {
-    initpdfm_(nset, member);
+  initpdfm_(nset, member);
 }
