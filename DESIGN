@@ -52,10 +52,15 @@ to +6 to cover all quarks and the gluon without need of special treatment to
 replace the 0 index with 21).
 
 PDFSet objects are singletons used only for set-level metadata querying and for
-convenience loading of all PDFs in a set.
+convenience loading of all PDFs in a set. They inherit from the general `Info`
+class used for metadata handling.
 
-Allow use of a "return zero" treatment for unsupported flavours, based on
-global, set-level, or member-level configuration.
+A "return zero" treatment for unsupported flavours, based on
+global, set-level, or member-level configuration, is used by default. It is
+also possible to request that an exception be thrown on attempting to access
+an undefined member (note that this will include top quarks in almost all PDFs,
+as they are not explicitly tabulated... hence the default behaviour of assuming
+that an unlisted flavour has zero PDF density.).
 
 The main PDF type is the "grid" PDF, based on interpolation of rectangular grids
 of data points.
@@ -65,19 +70,19 @@ binned in Q2, so that gradient discontinuities (and value discontinuities, for
 NNLO PDFs) across flavour thresholds can be handled correctly. This is at least
 needed by the MSTW PDFs.
 
-@note Subgrids in x have also been suggested, but just ensuring sufficient x knot
-density seems preferable: unlike flavour thresholds, continuity is important,
-and this is complex to implement, and anyway the benefit is more for evolution than
-for interpolation.
+@note Subgrids in x have also been suggested, but just ensuring sufficient x
+  knot density seems preferable: unlike flavour thresholds, continuity is
+  important, and this is complex to implement, and anyway the benefit is more
+  for evolution than for interpolation.
 
-There is no current concept of a PDF set enshrined in the LHAPDF6 code design but
-the name LHAPDF::PDFSet is reserved for future use.
+A `PDFSet` object is provided for handling of set-level metadata and to provide a
+convenient interface for loading all members in a set.
 
 
 Interpolators
 -------------
 
-The default bicubic as standard, but with (in general) use of subgrids to
+The default log-bicubic is standard, in general using Q2 subgrids (if present) to
 handle discontinuous transitions in Q2 across flavour mass thresholds. Log
 interpolation? Named interpolators overrideable in code, but with defaults
 specified in the set/member metadata.
@@ -131,7 +136,8 @@ the `---` divider line may vary. The type of PDF (and hence the data block forma
 must be declared via the YAML "Format" flag in the PDF member file or set info file.
 (The latter has the path form <setname>/<setname>.info and contains a single YAML
 document.)
-  Plain text rather than binary files are mandated for ease of creation, human
+
+Plain text rather than binary files are mandated for ease of creation, human
 readability/debuggability, and because standard compression tools are available
 for later addition to the LHAPDF system if runtime data file size is a serious
 issue. Separate files are used for data reading efficiency if only a few members
@@ -142,11 +148,20 @@ exchanged as email attachments.
 For grid PDFs, the following file content is in a grid format uniform to all PDF
 families: subgrids are delimited by more `---` line separators, and within each
 subgrid the first two lines are lists of the x and Q knot values respectively
-used in that grid. The following lines are the xf values of the PDFs for each
+used in that grid.
+
+@note While Q2 is the representation of the renormalization scale used inside
+the LHAPDF library (since generator and other codes will typically query the PDF
+via the squared scale and it would be inefficient to have to call `sqrt(q2)`
+every time), in the data files the unsquared Q form is used both for PDF and
+alpha_s interpolation knot positions. This is to improve the readability of the
+files, since unsquared values are more easily identified with the quark and Z masses.
+
+The following lines are the xf values of the PDFs for each
 supported flavour, each line representing one (x,Q) grid anchor point. The
 order of the xf lines is that of a nested pair of loops, the outer over x knots
 and the inner over Q knots -- hence each subgrid data block is a series of line
-groups, each with a single x value but different Q2 values in its constituent
+groups, each with a single x value but different Q values in its constituent
 lines.  The flavours for which the xf values are listed in each line are
 specified as set (or member) metadata, and the xf values are listed in
 increasing order of PDG ID code (e.g. usually -5..5, 21 or -6..6, 21 for the
@@ -196,23 +211,33 @@ changed via the shared PDFSet object. If the members' PDFInfo objects specify a
 metadata flag, that value is the one that will be used, of course, even if a
 set-level version of the same flag is explicitly reset.
 
+The `.info` file allows for PDF sets to be versioned (to permit trackable
+updates of a grid to fix bugs or improve the interpolation knot positions) using
+the integer `DataVersion` metadata flag. A negative value of this flag indicates
+that this PDF set is not suitable for production use, and the library will print
+a warning message to the terminal in this case.
+
 
 QCD alpha_s evolution
 ---------------------
 
-alpha_s handling by analytic approximations, numerical solution of the evolution
-ODEs (both with use of flavour threshold treatments), or by interpolation of
-tabulated datapoints in the set/member metadata. The 1D interpolation uses Q and
-alpha_s knot values stored as "pure metadata" in the header for uniformity of
-treatment and to allow alpha_s calculation without being specific to the grid
-format.  Interpolation subgrids across flavour thresholds are again supported,
-in this case by repeated consecutive values in the Q knots array.
+alpha_s may be calculated by several methods: analytic approximations, numerical
+solution of the evolution ODE (both with use of flavour threshold treatments),
+or by interpolation of tabulated datapoints in the set/member metadata.
 
-@todo alpha_s subgrids aren't yet implemented! Soon...
+The interpolation approach uses Q and alpha_s knot values stored as "pure
+metadata" in the header for uniformity of treatment between different
+(hypothetical) PDF grid formats. Interpolation subgrids across flavour
+thresholds are supported, in this case with the subgrid boundaries declared by
+repeated consecutive values in the Q knots array. Cubic interpolation in log(Q2)
+is used, with fixed value extrapolation at high-Q. The ODE calculator solves the
+ODE only once, then saves the result as an interpolation grid for (much)
+improved efficiency.
 
-  QCD params related to alpha_s to be specified in metadata: Lambda_4, Lambda_5,
-alpha_s_MZ, Nf, FFNS/VFNS, quark masses, QCD order (as int = nloops?), default
-alpha_s solver name. See the CONFIGFLAGS document for the full list.
+QCD params related to alpha_s are specified in the metadata: AlphaS_Lambda4,
+AlphaS_Lambda5, etc.  AlphaS_MZ, NumFlavors, FlavorScheme, quark masses, QCD
+order (as an int = number of loops), and the alpha_s solver name. See the
+CONFIGFLAGS document for the full list.
 
 @note The AlphaS objects are all designed to have no dependence on other LHAPDF
   objects: they can be happily used in non-PDF contexts. The default parameters

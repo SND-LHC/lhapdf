@@ -300,9 +300,10 @@ DataVersion
 OPTIONAL
 (int)
 
-The version of this PDF's data file. Use a negative value to flag this PDF as
-unsuitable for production use. The LHAPDF system will produce a warning printout
-in that case.
+The version of this PDF's data file, used to version fixes to the set.
+
+@note Use a negative value to flag this PDF as unsuitable for production
+use. The LHAPDF system will produce a warning printout in that case.
 
 
 MEMBER LEVEL
