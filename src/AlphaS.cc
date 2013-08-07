@@ -65,5 +65,10 @@ namespace LHAPDF {
     return quark->second;
   }
 
+  void AlphaS::setFlavorScheme(FlavorScheme scheme, int nf) {
+    if( scheme == FIXED && nf == -1 ) throw Exception("You need to define the number of flavors when using a fixed scheme!");
+    _flavorscheme = scheme;
+    _fixflav = nf;
+  }
 
 }

@@ -51,11 +51,18 @@ namespace LHAPDF {
   // Return the correct lambda for a given number of active flavours
   // Uses recursion to find the closest defined-but-lower lambda for the given
   // number of active flavours
+  // If a fixed flavor scheme is used, require the correct lambda to be set
   double AlphaS_Analytic::_lambdaQCD(int nf) const {
-    if( nf < 0 ) throw Exception("Requested lambdaQCD for " + to_str(nf) + " number of flavours.");
-    std::map<int, double>::const_iterator element = _lambdas.find(nf);
-    if ( element == _lambdas.end() ) return _lambdaQCD(nf-1);
-    return element->second;
+    if ( _flavorscheme == FIXED ) {
+      std::map<int, double>::const_iterator lambda = _lambdas.find(_fixflav);
+      if ( lambda == _lambdas.end() ) throw Exception("Set lambda(" + to_str(_fixflav) + ") when using a fixed " + to_str(_fixflav) + " flavor scheme.");
+      return lambda->second;
+    } else {
+      if( nf < 0 ) throw Exception("Requested lambdaQCD for " + to_str(nf) + " number of flavours.");
+      std::map<int, double>::const_iterator lambda = _lambdas.find(nf);
+      if ( lambda == _lambdas.end() ) return _lambdaQCD(nf-1);
+      return lambda->second;
+    }
   }
 
 
@@ -64,6 +71,7 @@ namespace LHAPDF {
     /// Get the number of active flavours and corresponding LambdaQCD
     /// Should support any number of active flavors as long as the
     /// corresponding lambas are set
+    if ( _lambdas.empty() ) throw Exception("You need to set at least one lambda value to calculate alpha_s by analytic means!");
     const int nf = this->numFlavorsQ2(q2);
     const double lambdaQCD = _lambdaQCD(nf);
 

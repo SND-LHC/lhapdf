@@ -86,12 +86,7 @@ namespace LHAPDF {
     virtual std::string type() const = 0;
 
     /// Set flavor scheme of alpha_s solver
-    void setFlavorScheme(FlavorScheme scheme, int nf = -1)
-    {
-      if( scheme == FIXED && nf == -1 ) throw Exception("You need to define the number of flavors when using a fixed scheme!");
-      _flavorscheme = scheme;
-      _fixflav = nf;
-    }
+    void setFlavorScheme(FlavorScheme scheme, int nf = -1);
 
     /// Get flavor scheme
     FlavorScheme flavorScheme() const { return _flavorscheme; }
