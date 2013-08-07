@@ -6,8 +6,12 @@ LHAPDF6 TODO list
 =================
 
 
-PDF VALIDATION
---------------
+VALIDATION
+----------
+
+- **alpha_s vaidation**
+
+   Need log gradient extrapolator at low Q.
 
 - **MSTW2008 PDF validation (AB)**
 
@@ -19,11 +23,24 @@ PDF VALIDATION
    wrongly: requires a --xmin=1e-7 override to creategrids (confirmed with
    authors). Still many >> 1e-3 deviations.
 
+   Hard to validate due to the xmin mismatch :-( Need to add the xmin variation
+   to the dump programs.
+
 - **HERAPDF1.5 PDF validation (JF,KN)**
 
-   HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets. Why?
+   HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets on unloading
+   first member. Looks like Python catching a memory leak and dying. Why? Need a
+   C++ migration program?
+
+- **Final CT10 / CT10nlo migrations**
+
+   Need ForcePosDef option to get exact behaviours (also for CTEQ6L1?).
 
 - **Improve CTEQ6L1 grid efficiency if possible (MR)**
+
+   Also some problem with the dumpv6 sampling script causing an exception at
+   high Q2? Huh? The quoted Q2 numbers look weird, too.
+
 
 
 WRITE PAPER
@@ -33,6 +50,12 @@ WRITE PAPER
 
    Can put on arXiv before October, but delay publication submission to aim
    (hope) for for eligibility in *next* UK REF.
+
+- **Note fixed problems**
+
+   NNPDF misreported xmin. Support for different set sizes. alpha_s etc. in
+   multi-set mode. Lambda reporting to PYTHIA. **ADD MORE AS WE REMEMBER THEM**
+
 
 
 VERSION 6.1
@@ -57,7 +80,7 @@ VERSION 6.1
 
    Follow up NONE issue from boost.m4.
 
-- **Optimize the grid PDF a bit more**
+- **Optimize the grid PDF interpolator code a bit more**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
    CPU: can reduce by factor of 13, typically (only one call for a whole flavour
@@ -74,6 +97,7 @@ VERSION 6.1
    Automatic memory management can be nice for everyone.
 
 - **MRST2004qed migration**
+
 
 
 AS AND WHEN

@@ -1,0 +1,200 @@
+abm11_3n_nlo.LHgrid
+abm11_3n_nnlo.LHgrid
+abm11_4n_nlo.LHgrid
+abm11_4n_nnlo.LHgrid
+abm11_5n_as_nlo.LHgrid
+abm11_5n_as_nnlo.LHgrid
+abm11_5n_nlo.LHgrid
+abm11_5n_nnlo.LHgrid
+CJ12max.LHgrid
+CJ12mid.LHgrid
+CJ12min.LHgrid
+CT09MC2.LHgrid
+CT10as.LHgrid
+CT10f3.LHgrid
+CT10f4.LHgrid
+CT10.LHgrid
+CT10nlo_as_0112.LHgrid
+CT10nlo_as_0113.LHgrid
+CT10nlo_as_0114.LHgrid
+CT10nlo_as_0115.LHgrid
+CT10nlo_as_0116.LHgrid
+CT10nlo_as_0117.LHgrid
+CT10nlo_as_0118.LHgrid
+CT10nlo_as_0119.LHgrid
+CT10nlo_as_0120.LHgrid
+CT10nlo_as_0121.LHgrid
+CT10nlo_as_0122.LHgrid
+CT10nlo_as_0123.LHgrid
+CT10nlo_as_0124.LHgrid
+CT10nlo_as_0125.LHgrid
+CT10nlo_as_0126.LHgrid
+CT10nlo_as_0127.LHgrid
+CT10nlo.LHgrid
+CT10nlo_nf3.LHgrid
+CT10nlo_nf4.LHgrid
+CT10nnlo_as_0110.LHgrid
+CT10nnlo_as_0111.LHgrid
+CT10nnlo_as_0112.LHgrid
+CT10nnlo_as_0113.LHgrid
+CT10nnlo_as_0114.LHgrid
+CT10nnlo_as_0115.LHgrid
+CT10nnlo_as_0116.LHgrid
+CT10nnlo_as_0117.LHgrid
+CT10nnlo_as_0118.LHgrid
+CT10nnlo_as_0119.LHgrid
+CT10nnlo_as_0120.LHgrid
+CT10nnlo_as_0121.LHgrid
+CT10nnlo_as_0122.LHgrid
+CT10nnlo_as_0123.LHgrid
+CT10nnlo_as_0124.LHgrid
+CT10nnlo_as_0125.LHgrid
+CT10nnlo_as_0126.LHgrid
+CT10nnlo_as_0127.LHgrid
+CT10nnlo_as_0128.LHgrid
+CT10nnlo_as_0129.LHgrid
+CT10nnlo_as_0130.LHgrid
+CT10nnlo.LHgrid
+CT10was.LHgrid
+CT10wf3.LHgrid
+CT10wf4.LHgrid
+CT10w.LHgrid
+CT10wnlo_as_0112.LHgrid
+CT10wnlo_as_0113.LHgrid
+CT10wnlo_as_0114.LHgrid
+CT10wnlo_as_0115.LHgrid
+CT10wnlo_as_0116.LHgrid
+CT10wnlo_as_0117.LHgrid
+CT10wnlo_as_0118.LHgrid
+CT10wnlo_as_0119.LHgrid
+CT10wnlo_as_0120.LHgrid
+CT10wnlo_as_0121.LHgrid
+CT10wnlo_as_0122.LHgrid
+CT10wnlo_as_0123.LHgrid
+CT10wnlo_as_0124.LHgrid
+CT10wnlo_as_0125.LHgrid
+CT10wnlo_as_0126.LHgrid
+CT10wnlo_as_0127.LHgrid
+CT10wnlo.LHgrid
+CT10wnlo_nf3.LHgrid
+CT10wnlo_nf4.LHgrid
+cteq66.LHgrid
+cteq6ll.LHpdf:cteq6l1 --resample
+MRST2007lomod.LHgrid
+MRSTMCal.LHgrid
+MSTW2008lo68cl.LHgrid --subgrids
+MSTW2008nlo68cl_asmz-68clhalf.LHgrid --subgrids
+MSTW2008nlo68cl_asmz+68clhalf.LHgrid --subgrids
+MSTW2008nlo68cl_asmz-68cl.LHgrid --subgrids
+MSTW2008nlo68cl_asmz+68cl.LHgrid --subgrids
+MSTW2008nlo68cl.LHgrid --subgrids
+MSTW2008nlo68cl_nf3.LHgrid --subgrids
+MSTW2008nlo68cl_nf4.LHgrid --subgrids
+MSTW2008nlo90cl_asmz-90clhalf.LHgrid --subgrids
+MSTW2008nlo90cl_asmz+90clhalf.LHgrid --subgrids
+MSTW2008nlo90cl_asmz-90cl.LHgrid --subgrids
+MSTW2008nlo90cl_asmz+90cl.LHgrid --subgrids
+MSTW2008nlo90cl.LHgrid --subgrids
+MSTW2008nlo90cl_nf3.LHgrid --subgrids
+MSTW2008nlo90cl_nf4.LHgrid --subgrids
+MSTW2008nlo_asmzrange.LHgrid --subgrids
+MSTW2008nlo_mbrange.LHgrid --subgrids
+MSTW2008nlo_mbrange_nf4.LHgrid --subgrids
+MSTW2008nlo_mcrange_fixasmz.LHgrid --subgrids
+MSTW2008nlo_mcrange_fixasmz_nf3.LHgrid --subgrids
+MSTW2008nlo_mcrange.LHgrid --subgrids
+MSTW2008nlo_mcrange_nf3.LHgrid --subgrids
+MSTW2008nnlo68cl_asmz-68clhalf.LHgrid --subgrids
+MSTW2008nnlo68cl_asmz+68clhalf.LHgrid --subgrids
+MSTW2008nnlo68cl_asmz-68cl.LHgrid --subgrids
+MSTW2008nnlo68cl_asmz+68cl.LHgrid --subgrids
+MSTW2008nnlo68cl.LHgrid --subgrids
+MSTW2008nnlo68cl_nf3.LHgrid --subgrids
+MSTW2008nnlo68cl_nf4.LHgrid --subgrids
+NNPDF21_lo_as_0119_100.LHgrid
+NNPDF21_lo_as_0130_100.LHgrid
+NNPDF21_lostar_as_0119_100.LHgrid
+NNPDF21_lostar_as_0130_100.LHgrid
+NNPDF23_nlo_as_0114.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0115.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0116_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0117_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0118_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0119_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0120_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0121.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0122.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0123.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_as_0124.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_collider_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_collider_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_collider_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_collider_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_collider_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0116_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0117_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0118_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0119_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF4_as_0120_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0116_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0117_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0118_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0119_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_FFN_NF5_as_0120_mc.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_noLHC_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_noLHC_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_noLHC_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_noLHC_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nlo_noLHC_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0114.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0115.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0121.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0122.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0123.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_as_0124.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_collider_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_collider_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_collider_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_collider_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_collider_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF4_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF4_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF4_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF4_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF4_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF5_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF5_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF5_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF5_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_FFN_NF5_as_0120.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_noLHC_as_0116.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_noLHC_as_0117.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_noLHC_as_0118.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_noLHC_as_0119.LHgrid --xmin=1e-7 --top
+NNPDF23_nnlo_noLHC_as_0120.LHgrid --xmin=1e-7 --top
+HERAPDF15NLO_ALPHAS.LHgrid --central-only
+HERAPDF15NLO_EIG.LHgrid --central-only
+HERAPDF15NLO_VAR.LHgrid --central-only
+HERAPDF15NNLO_ALPHAS.LHgrid --central-only
+HERAPDF15NNLO_EIG.LHgrid --central-only
+HERAPDF15NNLO_VAR.LHgrid --central-only

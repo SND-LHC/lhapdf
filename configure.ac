@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.0.0rc],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.0.0],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -203,7 +203,7 @@ echo "In LHAPDFv6, downloadable sets are packaged as tarballs, which"
 echo "must be expanded to be used. Here is an example of how to"
 echo "retrieve and install a PDF set from the command line:"
 echo
-echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/6.0.0/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
+echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/6.0/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
 echo
 echo "****************************************************************"
 echo
