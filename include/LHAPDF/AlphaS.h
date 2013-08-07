@@ -88,6 +88,7 @@ namespace LHAPDF {
     /// Set flavor scheme of alpha_s solver
     void setFlavorScheme(FlavorScheme scheme, int nf = -1)
     {
+      if( scheme == FIXED && nf == -1 ) throw Exception("You need to define the number of flavors when using a fixed scheme!");
       _flavorscheme = scheme;
       _fixflav = nf;
     }
@@ -160,7 +161,7 @@ namespace LHAPDF {
     /// Get lambdaQCD for nf
     double _lambdaQCD(int nf) const;
 
-    /// LambdaQCD values. Stored as lambdaQCD_nf = _lambdas[nf-1]
+    /// LambdaQCD values.
     std::map<int, double> _lambdas;
 
     /// Recalculate min/max flavors in case lambdas have changed

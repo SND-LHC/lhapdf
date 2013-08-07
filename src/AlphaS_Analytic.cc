@@ -8,10 +8,6 @@
 
 namespace LHAPDF {
 
-
-  /// @todo Respect the NumFlavors + FlavorScheme metadata
-
-
   // Calculate the number of active quark flavours at energy scale Q2.
   // Respects min/max nf
   /// Currently returns the active number of flavors,
@@ -30,18 +26,13 @@ namespace LHAPDF {
     return nf;
   }
 
-
   // Set lambda_i && recalculate nfmax and nfmin
   void AlphaS_Analytic::setLambda(unsigned int i, double lambda) {
     _lambdas[i] = lambda;
     _setFlavors();
   }
 
-
   // Recalculate nfmax and nfmin after a new lambda has been set
-  // Relies on vector<double> initialising all elements to 0 by
-  // default, I *think* this should work even though I am comparing
-  // floats since 0 has a precise representation
   void AlphaS_Analytic::_setFlavors() {
     for (int it = 0; it <= 6; ++it) {
       std::map<int, double>::iterator element = _lambdas.find(it);
@@ -57,7 +48,6 @@ namespace LHAPDF {
     }
   }
 
-
   // Return the correct lambda for a given number of active flavours
   // Uses recursion to find the closest defined-but-lower lambda for the given
   // number of active flavours
@@ -72,10 +62,9 @@ namespace LHAPDF {
   // Calculate alpha_s(Q2) by an analytic approximation
   double AlphaS_Analytic::alphasQ2(double q2) const {
     /// Get the number of active flavours and corresponding LambdaQCD
-    /// @todo support any number of active flavours?
-    /// Only supports active nf=3-5 at the moment
-
-    const int nf = numFlavorsQ2(q2);
+    /// Should support any number of active flavors as long as the
+    /// corresponding lambas are set
+    const int nf = this->numFlavorsQ2(q2);
     const double lambdaQCD = _lambdaQCD(nf);
 
     if (q2 <= lambdaQCD * lambdaQCD) return std::numeric_limits<double>::max();

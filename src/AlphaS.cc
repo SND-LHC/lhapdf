@@ -12,12 +12,12 @@ namespace LHAPDF {
   // Base class constructor for default param setup
   AlphaS::AlphaS() {
     _qcdorder = 4;
+    _flavorscheme = VARIABLE;
   }
 
 
   // Calculate the number of active quark flavours at energy scale Q2
   int AlphaS::numFlavorsQ2(double q2) const {
-    /// @todo Respect the NumFlavors + FlavorScheme metadata
     if ( _flavorscheme == FIXED ) return _fixflav;
     int nf = 0;
     for (int it = 1; it <= 6; ++it) {

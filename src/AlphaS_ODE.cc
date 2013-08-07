@@ -31,7 +31,7 @@ namespace LHAPDF {
 
 
   // Calculate the next step, using recursion to achieve
-  // adaptive step size. Passing be reference explained
+  // adaptive step size. Passing by reference explained
   // below.
   void AlphaS_ODE::_rk4(double& t, double& y, double h,
                         const double allowed_change, const vector<double>& bs) const {
@@ -103,29 +103,19 @@ namespace LHAPDF {
 
 
   // Solve the differential equation in alphaS using an implementation of RK4
-  //
-  /// @todo Stepping also needs to get much smaller as we approach LambdaQCD
-  /// -- Can't use adaptive step size close to lambdaQCD effectively (since changes will be large)
-  /// -- Do they really need to be *very* small (since errors always will get large there)?
   void AlphaS_ODE::_interpolate() const {
     if ( _calculated ) return;
 
     // Initial step size
     double h = 2.0;
-    /// This the the relative error allowed for the adaptive step size. Should be optimised.
+    /// This the the relative error allowed for the adaptive step size.
+    /// @todo Should be optimised.
     const double allowed_relative = 0.01;
     // Fractional threshold to which we run in Q2 scale
-    /// @todo Is the accuracy in Q or Q2?
     const double faccuracy = 0.01;
 
-    // Calculated absolute tolerance around the target Q2.
-    /// @todo Would specifying the accuracy in abs rather than rel terms be better?
+    /// @todo Leaving this to allow experimentation with relative accuracy...
     double accuracy = faccuracy;
-
-    /// @todo Running (i.e. t and h) is in Q2 or Q? Check
-
-    /// @todo Use caching of the last target so we don't always have to start the running from MZ?
-    ///       Then choose to start from last or MZ, whichever is closer.
 
     // Run in Q2 using RK4 algorithm until we are within our defined accuracy
     double t = sqr(_mz); // starting point
@@ -137,8 +127,7 @@ namespace LHAPDF {
       vector<double> alphas;
       double low_lim = 0;
       foreach (double q2, _q2s) {
-        // If q2 is lower than a value that already diverged, it will also
-        // diverge
+        // If q2 is lower than a value that already diverged, it will also diverge
         if ( q2 < low_lim ) {
           alphas.push_back( std::numeric_limits<double>::max() );
           t = sqr(_mz);
@@ -147,8 +136,7 @@ namespace LHAPDF {
         }
         _solve(q2, t, y, allowed_relative, h, accuracy);
         alphas.push_back(y);
-        // Define divergence after y > 2. -- we have no accuracy after that
-        // any way
+        // Define divergence after y > 2. -- we have no accuracy after that any way
         if ( y > 2. ) { low_lim = q2; }
       }
       _ipol.setQ2Values(_q2s);
@@ -162,7 +150,7 @@ namespace LHAPDF {
       int index = 0; // for sorting in the correct order
 
       // To save time we solve from MZ down to Q=0.5, then go back to MZ and solve up to Q=1000
-      // The knots are quite arbitrarily defined at the moment
+      /// @todo The knots are not optimised at the moment
       double knot = sqr(_mz);
       while ( knot > sqr(0.5) ) {
         _solve(knot, t, y, allowed_relative, h, accuracy);
