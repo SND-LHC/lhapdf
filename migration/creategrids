@@ -29,7 +29,7 @@ p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override 
 p.add_option("--top", dest="HAS_TOP", action="store_true", help="generate explicit grid entries for top (and tbar) PDFs", default=False)
 p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify a fixed number of flavours [default=variable NF]", default=None)
 p.add_option("--subgrids", dest="USE_SUBGRIDS", action="store_true", help="make distinct xf and alpha_s ipol grids between flavour thresholds", default=False)
-# TODO: Add an option to increase the sampling density by a factor? (lin or log spacing?)
+p.add_option("--central-only", dest="CENTRAL_ONLY", action="store_true", help="only dump the first member", default=False)
 p.add_option("-v", "--verbose", dest="VERBOSE", action="store_true", help="verbose output", default=False)
 opts, args = p.parse_args()
 
@@ -68,10 +68,7 @@ for lha5name in args:
         lhapdf.initPDF(member)
 
         ## Get the x and Q anchor point arrays
-        try:
-            if opts.RESAMPLE:
-                print "Overriding original grid with a new log-lin x sampling and log Q2 sampling"
-                raise Exception("Exception to make sure we manually construct the sample grid")
+        if not opts.RESAMPLE:
             ## Use LHAPDF5 to get the exact x and q2 grid points (requires LHAPDF 5.9)
             import ctypes
             try:
@@ -84,12 +81,13 @@ for lha5name in args:
             gridq = (ctypes.c_double * 500)()
             _lha.getgrid_(ctypes.byref(nxgrid), ctypes.byref(nqgrid), gridx, gridq)
             xs, q2s = gridx[:nxgrid.value], gridq[:nqgrid.value]
+            if not xs or not q2s:
+                raise Exception("x or Q2 grids not extracted from original PDF")
             qs = list(numpy.sqrt(numpy.array(q2s)))
             del q2s
             #print xs
-
-        except Exception, e:
-            ## Probably an LHpdf set if the gridx, gridq aren't working
+        else:
+            print "Overriding original grid with a new log-lin x sampling and log Q2 sampling"
             xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
             q2min = lhapdf.getQ2min(1)
             q2max = lhapdf.getQ2max(1)
@@ -244,8 +242,8 @@ for lha5name in args:
 
         f.close()
 
-        #break
-
+        if opts.CENTRAL_ONLY:
+            break
 
     ## Create the set-level metadata file
     metapath = os.path.join(setname, setname + '.info')
