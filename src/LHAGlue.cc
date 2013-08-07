@@ -157,6 +157,8 @@ extern "C" {
     /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
     const boost::filesystem::path p = setpath;
     string path = (p.extension().empty()) ? p.native() : p.stem().native(); //< @todo Will be wrong if a structured path is given
+    // remove trailing whitespace
+    path.erase( std::remove_if( path.begin(), path.end(), ::isspace ), path.end() );
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "CTEQ6L1";
     // Create the PDF set with index nset
@@ -177,6 +179,8 @@ extern "C" {
     /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
     const boost::filesystem::path p = setname;
     string name = (p.extension().empty()) ? p.native() : p.stem().native();
+    // remove trailing whitespace
+    name.erase( std::remove_if( name.begin(), name.end(), ::isspace ), name.end() );
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "CTEQ6L1";
     // Create the PDF set with index nset
@@ -282,6 +286,18 @@ extern "C" {
     numberpdfm_(nset1, numpdf);
   }
 
+  void getorderasm_(int& nset, int& oas) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // set equal to the number of members  for the requested set
+    oas=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_OrderQCD");
+  }
+
+  void getorderas_(int& oas) {
+    int nset1 = 1;
+    getorderasm_(nset1, oas);
+  }
+
 
   /// Get the number of flavours
   void getnfm_(int& nset, double& nf) {
@@ -312,6 +328,17 @@ extern "C" {
     /// @todo Can any Fortran LHAPDF params be usefully mapped?
   }
 
+
+  double alphaspdfm_(int& nset, double& Q){
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    return  ACTIVESETS[nset].activemember()->alphasQ(Q);
+  }
+
+  double alphaspdf_(double& Q){
+    int nset1 = 1;
+    return alphaspdfm_(nset1, Q);
+  }
 
   /// PDFLIB initialisation function
   void pdfset_(const char* par, const double* value, int parlength) {
