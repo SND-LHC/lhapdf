@@ -50,7 +50,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   ///
   /// We operate in a string-based way, since maybe there will be sets with names, but no
   /// index entry in pdfsets.index.
-  ///
+ ///
   /// @todo Can we avoid the strings and just work via the LHAPDF ID and factory construction?
   ///
   /// Smart pointers are used in the native map used for PDF member storage so
@@ -154,11 +154,14 @@ extern "C" {
   /// @todo Does this version actually take a *path*? What to do?
   void initpdfsetm_(int& nset, const char* setpath, int setpathlength) {
     // Strip file extension for backward compatibility
-    /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
-    const boost::filesystem::path p = setpath;
-    string path = (p.extension().empty()) ? p.native() : p.stem().native(); //< @todo Will be wrong if a structured path is given
+    string fullp = string(setpath,setpathlength);
     // remove trailing whitespace
-    path.erase( std::remove_if( path.begin(), path.end(), ::isspace ), path.end() );
+    fullp.erase( std::remove_if( fullp.begin(), fullp.end(), ::isspace ), fullp.end() );
+    // use only items after the last /
+    const boost::filesystem::path fp = fullp;
+    const boost::filesystem::path p = fp.leaf();
+    // handle extensions
+    string path = (p.extension().empty()) ? p.native() : p.stem().native(); 
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "CTEQ6L1";
     // Create the PDF set with index nset
