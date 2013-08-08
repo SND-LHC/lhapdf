@@ -1,6 +1,7 @@
 2013-08-08 James Ferrando  <james.ferrando@cern.ch>
 
-	* Added several backwards-compatibility updates for fortran and C++ interfaces based on 6.0.0 feedback from David Hall and Marek Schoenherr
+	* Added several backwards-compatibility updates for fortran and C++ interfaces based on 6.0.0 feedback from David Hall 
+	and Marek Schoenherr
 
 2013-08-07  Andy Buckley  <andy.buckley@cern.ch>
 
