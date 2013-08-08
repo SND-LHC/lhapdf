@@ -159,7 +159,10 @@ extern "C" {
     fullp.erase( std::remove_if( fullp.begin(), fullp.end(), ::isspace ), fullp.end() );
     // use only items after the last /
     const boost::filesystem::path fp = fullp;
+    const boost::filesystem::path pap = fp.parent_path();
     const boost::filesystem::path p = fp.leaf();
+    // prepend path to search area
+    LHAPDF::pathsPrepend(pap);
     // handle extensions
     string path = (p.extension().empty()) ? p.native() : p.stem().native(); 
     /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
