@@ -45,7 +45,6 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   /// is globally available.
   typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
 
-
   /// @brief A struct for handling the active PDFs for the Fortran interface.
   ///
   /// We operate in a string-based way, since maybe there will be sets with names, but no
@@ -324,6 +323,7 @@ extern "C" {
   }
 
 
+
   /// @todo Need getnset_ and getnmem_
 
 
@@ -429,6 +429,16 @@ extern "C" {
 
 // LHAPDF namespace compatibility code
 
+
+/// prepends path to path list
+void LHAPDF::setPDFPath(const string& path) {
+  pathsPrepend(path);
+}
+
+string LHAPDF::pdfsetsPath(){
+  return paths().at(0).native();
+}
+
 int LHAPDF::numberPDF() {
   int nmem;
   numberpdf_(nmem);
@@ -512,6 +522,105 @@ double LHAPDF::alphasPDF(int nset, double Q) {
     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   // return alphaS for the requested set
   return ACTIVESETS[nset].activemember()->alphasQ(Q);
+}
+
+bool LHAPDF::hasPhoton(){
+  return has_photon_();
+}
+
+int LHAPDF::getOrderAlphaS() {
+  return LHAPDF::getOrderAlphaS(1) ;
+}
+
+int LHAPDF::getOrderAlphaS(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS Order for the requested set
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_OrderQCD");
+}
+
+int LHAPDF::getNf() {
+  return LHAPDF::getNf(1) ;
+}
+
+int LHAPDF::getNf(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS Order for the requested set
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumFlavors");
+}
+
+
+double LHAPDF::getXmin() {
+  return LHAPDF::getXmin(1) ;
+}
+
+double LHAPDF::getXmin(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS Order for the requested set
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMin");
+}
+
+double LHAPDF::getXmax() {
+  return LHAPDF::getXmax(1) ;
+}
+
+double LHAPDF::getXmax(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS Order for the requested set
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMax");
+}
+
+double LHAPDF::getQ2min() {
+  return LHAPDF::getQ2min(1) ;
+}
+
+double LHAPDF::getQ2min(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS Order for the requested set
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("Q2Min");
+}
+
+double LHAPDF::getQ2max() {
+  return LHAPDF::getQ2max(1) ;
+}
+
+double LHAPDF::getQ2max(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS Order for the requested set
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("Q2Max");
+}
+
+
+
+double LHAPDF::getQMass(int nf) {
+  return LHAPDF::getQMass(1,nf) ;
+}
+
+double LHAPDF::getQMass(int nset, int nf) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // return alphaS Order for the requested set
+  if (nf*nf==1)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MDown");
+  if (nf*nf==4)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MUp");
+  if (nf*nf==9)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MStrange");
+  if (nf*nf==16)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MCharm");
+  if (nf*nf==25)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MBottom");
+  if (nf*nf==36)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MTop");
+  return 0.0;
+}
+
+
+double LHAPDF::getThreshold(int nf) {
+  return LHAPDF::getThreshold(1,nf) ;
+}
+
+double LHAPDF::getThreshold(int nset, int nf) {
+  return LHAPDF::getQMass(nset,nf) ;
 }
 
 void LHAPDF::usePDFMember(int member) {

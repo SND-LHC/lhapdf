@@ -26,6 +26,14 @@ void initPDFSetByName(int nset, const std::string& filename);
 
 namespace LHAPDF {
 
+
+  /// check if the pdf uses photons
+  bool hasPhoton();
+
+  /// prepends path to path list
+  void setPDFPath(const string& path);
+  std::string pdfsetsPath();
+
   /// Number of members available in the current set.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   int numberPDF();
@@ -85,6 +93,80 @@ namespace LHAPDF {
   /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   std::vector<double> xfx(int nset, double x, double Q);
+
+
+
+
+  /// Order of \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  int getOrderAlphaS();
+
+  /// Number of flavours used in current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  int getNf(int nset);
+
+
+  /// Number of flavours used in current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  int getNf();
+
+
+  /// Minimum X for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getXmin(int nset);
+
+
+  /// Minimum X for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  double getXmin();
+
+  /// Maximum X for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getXmax(int nset);
+
+
+  /// Maximum X for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  double getXmax();
+
+  /// Minimum Q2 for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  double getQ2min();
+
+  /// Minimum Q2 for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getQ2min(int nset);
+
+  /// Maximum Q2 for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getQ2max(int nset);
+
+  /// Maximum Q2 for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  double getQ2max();
+
+
+  /// Mass of quarks for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getQMass(int nset, int nf);
+
+  /// Mass of quarks for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  double getQMass(int nf);
+
+
+  /// Mass of quarks for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getThreshold(int nset, int nf);
+
+  /// Mass of quarks for current PDF
+  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  double getThreshold(int nf);
+
+  /// Order of \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  int getOrderAlphaS(int nset);
+
 
   /// \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
