@@ -29,8 +29,9 @@ VALIDATION
 - **HERAPDF1.5 PDF validation (JF,KN)**
 
    HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets on unloading
-   first member. Looks like Python catching a memory leak and dying. Why? Need a
-   C++ migration program?
+   first member. Looks like Python catching a memory leak and dying. Why?
+    => crash can be avoided until the very end by making the C grid variables
+       global in the creategrids script.
 
 - **Final CT10 / CT10nlo migrations**
 
@@ -157,6 +158,7 @@ AS AND WHEN
    all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3)
+   Graeme also recommends a specialist interpolation treatment at low Q.
 
 - **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
 
