@@ -118,9 +118,10 @@ AC_CEDAR_CHECKCXXFLAG([-Wno-long-long], [AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-lon
 
 
 ## Include $prefix in the compiler flags for the rest of the configure run
-CPPFLAGS="$CPPFLAGS -I$prefix/include"
-LDFLAGS="$LDFLAGS -L$prefix/lib"
-
+if test x$prefix != xNONE; then 
+  CPPFLAGS="$CPPFLAGS -I$prefix/include"
+  LDFLAGS="$LDFLAGS -L$prefix/lib"
+fi
 
 ## Boost utility library
 BOOST_REQUIRE([1.40.0])
