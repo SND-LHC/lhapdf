@@ -8,17 +8,22 @@ LHAPDF6 TODO list
 VERSION 6.0.1
 -------------
 
+- **Build system issues (AB)**
+
+   Follow up NONE issue: happens if --prefix not specified? Libs not found
+   during tests builds? (Only build tests with "make check?")
+
 - **Problem at very low-Q2 edges?**
 
    Very clear threshold deviations for NNPDF.
 
 
-VALIDATION
-----------
+VALIDATION / MIGRATION
+----------------------
 
 - **alpha_s validation**
 
-   Need log gradient extrapolator at low Q.
+   Looking good. Need log gradient extrapolator at low Q to avoid huge deviations.
 
 - **MSTW2008 PDF validation (AB)**
 
@@ -73,11 +78,6 @@ VERSION 6.1
    If enabled, return 0 in place of any negative PDF value. Cache config flag
    value to avoid repeated slow metadata lookups. Should solve problems with
    extreme low-Q threshold behaviours in CT10(nlo) PDFs.
-
-- **Build system issues (AB)**
-
-   Follow up NONE issue: happens if --prefix not specified? Libs not found
-   during tests builds? (Only build tests with "make check?")
 
 - **PDF flavor aliasing mechanism**
 
