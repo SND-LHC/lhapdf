@@ -5,43 +5,40 @@
 LHAPDF6 TODO list
 =================
 
+VERSION 6.0.1
+-------------
+
+- **Problem at very low-Q2 edges?**
+
+   Very clear threshold deviations for NNPDF.
+
 
 VALIDATION
 ----------
 
-- **alpha_s vaidation**
+- **alpha_s validation**
 
    Need log gradient extrapolator at low Q.
 
 - **MSTW2008 PDF validation (AB)**
 
    Mostly done: subgrid migration and interpolation is working.
+   => Approved for now, but still some deviations. ForcePosDef *and* more
+   sophisticated low Q2 treatment needed?
 
 - **NNPDF2.3 PDF validation (AB)**
 
    Includes non-zero top PDFs: --top option added to creategrids. xmin reported
    wrongly: requires a --xmin=1e-7 override to creategrids (confirmed with
-   authors). Still many >> 1e-3 deviations.
-
-   Hard to validate due to the xmin mismatch :-( Need to add the xmin variation
-   to the dump programs.
+   authors). Otherwise looks very good except at low-Q boundary (esp. for b PDFs)
 
 - **HERAPDF1.5 PDF validation (JF,KN)**
 
-   HERAPDF1.5 failed to dump -- LHAPDF5 segfaults for all sets on unloading
-   first member. Looks like Python catching a memory leak and dying. Why?
-    => crash can be avoided until the very end by making the C grid variables
-       global in the creategrids script.
+   Bug in LHAPDF5 now fixed and sets can be validated.
 
 - **Final CT10 / CT10nlo migrations**
 
    Need ForcePosDef option to get exact behaviours (also for CTEQ6L1?).
-
-- **Improve CTEQ6L1 grid efficiency if possible (MR)**
-
-   Also some problem with the dumpv6 sampling script causing an exception at
-   high Q2? Huh? The quoted Q2 numbers look weird, too.
-
 
 
 WRITE PAPER
@@ -77,9 +74,15 @@ VERSION 6.1
    value to avoid repeated slow metadata lookups. Should solve problems with
    extreme low-Q threshold behaviours in CT10(nlo) PDFs.
 
-- **Build system issues? (AB)**
+- **Build system issues (AB)**
 
-   Follow up NONE issue from boost.m4.
+   Follow up NONE issue: happens if --prefix not specified? Libs not found
+   during tests builds? (Only build tests with "make check?")
+
+- **PDF flavor aliasing mechanism**
+
+   e.g. allow anti-flavours to be identical without duplicating their grids in
+   the data files or memory.
 
 - **Optimize the grid PDF interpolator code a bit more**
 
