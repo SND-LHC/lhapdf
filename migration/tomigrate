@@ -80,6 +80,12 @@ CT10wnlo_nf3.LHgrid
 CT10wnlo_nf4.LHgrid
 cteq66.LHgrid
 cteq6ll.LHpdf:cteq6l1 --resample
+HERAPDF15NLO_ALPHAS.LHgrid
+HERAPDF15NLO_EIG.LHgrid
+HERAPDF15NLO_VAR.LHgrid
+HERAPDF15NNLO_ALPHAS.LHgrid
+HERAPDF15NNLO_EIG.LHgrid
+HERAPDF15NNLO_VAR.LHgrid
 MRST2007lomod.LHgrid
 MRSTMCal.LHgrid
 MSTW2008lo68cl.LHgrid --subgrids
@@ -192,9 +198,3 @@ NNPDF23_nnlo_noLHC_as_0117.LHgrid --xmin=1e-7 --top
 NNPDF23_nnlo_noLHC_as_0118.LHgrid --xmin=1e-7 --top
 NNPDF23_nnlo_noLHC_as_0119.LHgrid --xmin=1e-7 --top
 NNPDF23_nnlo_noLHC_as_0120.LHgrid --xmin=1e-7 --top
-HERAPDF15NLO_ALPHAS.LHgrid --central-only
-HERAPDF15NLO_EIG.LHgrid --central-only
-HERAPDF15NLO_VAR.LHgrid --central-only
-HERAPDF15NNLO_ALPHAS.LHgrid --central-only
-HERAPDF15NNLO_EIG.LHgrid --central-only
-HERAPDF15NNLO_VAR.LHgrid --central-only
