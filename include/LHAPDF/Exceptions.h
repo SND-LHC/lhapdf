@@ -88,6 +88,14 @@ namespace LHAPDF {
   };
 
 
+  /// Error for general AlphaS computation problems.
+  class AlphaSError : public Exception {
+  public:
+    /// Constructor with error description string
+    AlphaSError(const std::string& what) : Exception(what) {}
+  };
+
+
   /// @brief Error to be raised when an newer LHAPDF version is needed
   class VersionError : public Exception {
   public:

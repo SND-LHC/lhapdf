@@ -117,7 +117,7 @@ namespace LHAPDF {
     ///
     /// If the value is >= q2_max, return i_max-1 (for polynomial spine construction)
     size_t iq2below(double q2) const {
-      // Test that x is in the grid range
+      // Test that Q2 is in the grid range
       if (q2 < q2s().front()) throw GridError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
       if (q2 > q2s().back()) throw GridError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
       /// Find the closest knot below the requested value
@@ -260,22 +260,22 @@ namespace LHAPDF {
     /// Q2 knot vector accessor
     const std::vector<double>& q2s() const { return _q2s; }
 
-    /// Get the Q2 value at a particular indexed Q2 knot
-    const double& q2(size_t iq2) const { return _q2s[iq2]; }
+    // /// Get the Q2 value at a particular indexed Q2 knot
+    // const double& q2(size_t iq2) const { return _q2s[iq2]; }
 
     /// log(Q2) knot vector accessor
     const std::vector<double>& logq2s() const { return _logq2s; }
 
-    /// Get the log(Q2) value at a particular indexed Q2 knot
-    const double& logq2(size_t iq2) const { return _logq2s[iq2]; }
+    // /// Get the log(Q2) value at a particular indexed Q2 knot
+    // const double& logq2(size_t iq2) const { return _logq2s[iq2]; }
 
     /// Get the index of the closest Q2 knot row <= q2
     ///
     /// If the value is >= q2_max, return i_max-1 (for polynomial spine construction)
     size_t iq2below(double q2) const {
-      // Test that x is in the grid range
-      if (q2 < q2s().front()) throw GridError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
-      if (q2 > q2s().back()) throw GridError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
+      // Test that Q2 is in the grid range
+      if (q2 < q2s().front()) throw AlphaSError("Q2 value " + to_str(q2) + " is lower than lowest-Q2 grid point at " + to_str(q2s().front()));
+      if (q2 > q2s().back()) throw AlphaSError("Q2 value " + to_str(q2) + " is higher than highest-Q2 grid point at " + to_str(q2s().back()));
       /// Find the closest knot below the requested value
       size_t i = upper_bound(q2s().begin(), q2s().end(), q2) - q2s().begin();
       if (i == q2s().size()) i -= 1; // can't return the last knot index
@@ -287,7 +287,7 @@ namespace LHAPDF {
     ///
     /// If the value is >= q2_max, return i_max-1 (for polynomial spine construction)
     size_t ilogq2below(double logq2) const {
-      // Test that x is in the grid range
+      // Test that log(Q2) is in the grid range
       if (logq2 < logq2s().front()) throw GridError("logQ2 value " + to_str(logq2) + " is lower than lowest-logQ2 grid point at " + to_str(logq2s().front()));
       if (logq2 > logq2s().back()) throw GridError("logQ2 value " + to_str(logq2) + " is higher than highest-logQ2 grid point at " + to_str(logq2s().back()));
       /// Find the closest knot below the requested value
@@ -310,8 +310,8 @@ namespace LHAPDF {
     // /// alpha_s value setter
     // void setalphas(const valarray& xfs) { _as = as; }
 
-    /// Get the alpha_s value at a particular indexed Q2 knot
-    const double& alpha(size_t iq2) const { return _as[iq2]; }
+    // /// Get the alpha_s value at a particular indexed Q2 knot
+    // const double& alpha(size_t iq2) const { return _as[iq2]; }
 
     //@}
 
@@ -321,12 +321,12 @@ namespace LHAPDF {
 
     /// Forward derivative w.r.t. logQ2
     double ddlogq_forward(size_t i) const {
-      return (alpha(i+1) - alpha(i)) / (logq2(i+1) - logq2(i));
+      return (alphas()[i+1] - alphas()[i]) / (logq2s()[i+1] - logq2s()[i]);
     }
 
     /// Backward derivative w.r.t. logQ2
     double ddlogq_backward(size_t i) const {
-      return (alpha(i) - alpha(i-1)) / (logq2(i) - logq2(i-1));
+      return (alphas()[i] - alphas()[i-1]) / (logq2s()[i] - logq2s()[i-1]);
     }
 
     /// Central (avg of forward and backward) derivative w.r.t. logQ2

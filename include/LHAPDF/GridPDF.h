@@ -173,8 +173,8 @@ namespace LHAPDF {
     const KnotArrayNF& subgrid(double q2) const {
       assert(q2 >= 0);
       map<double, KnotArrayNF>::const_iterator it = _knotarrays.upper_bound(q2);
-      if (it == _knotarrays.begin()) throw GridError("Requested Q2 is smaller than any available subgrid");
-      if (it == _knotarrays.end() && q2 > q2Knots().back()) throw GridError("Requested Q2 is higher than any available subgrid");
+      if (it == _knotarrays.begin()) throw GridError("Requested Q2 is lower than any available Q2 subgrid");
+      if (it == _knotarrays.end() && q2 > q2Knots().back()) throw GridError("Requested Q2 is higher than any available Q2 subgrid");
       --it; // upper_bound (and lower_bound) returns the entry *above* q2: we need to decrement by one element
       // std::cout << "Using subgrid #" << std::distance(_knotarrays.begin(), it) << std::endl;
       return it->second;

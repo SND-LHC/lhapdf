@@ -28,23 +28,33 @@ namespace LHAPDF {
       throw MetadataError("AlphaS value and Q interpolation arrays are differently sized");
 
     // Walk along the Q2 vector, making subgrids at each boundary
-    double blockstartQ2 = _q2s.front();
     double prevQ2 = _q2s.front();
     vector<double> q2s, as;
-    for (size_t i = 0; i < _q2s.size(); ++i) {
-      const double currQ2 = _q2s[i];
-      const double currAS = _as[i];
-      // If the Q2 value is repeated, sync the current subgrid and start a new one
-      if (currQ2 == prevQ2 || i == _q2s.size()-1) {
-        if (i != 0) _knotarrays[blockstartQ2] = AlphaSArray(q2s, as);
-        blockstartQ2 = currQ2;
+    size_t combined_lenq2s = 0; //< For consistency checking
+    for (size_t i = 0; i <= _q2s.size(); ++i) { //< The iteration to len+1 is intentional
+      // Get current Q2 and alpha_s points, faked if i > vector to force syncing
+      const double currQ2 = (i != _q2s.size()) ? _q2s[i] : _q2s.back();
+      const double currAS = (i != _q2s.size()) ? _as[i] : -1;
+      // If the Q2 value is repeated, sync the current subgrid and start a new one.
+      // Note special treatment for the first and last points in q2s.
+      if (abs(currQ2 - prevQ2) < numeric_limits<double>::epsilon()) {
+        // Sync current subgrid as as AlphaSArray
+        if (i != 0) {
+          _knotarrays[q2s.front()] = AlphaSArray(q2s, as);
+          combined_lenq2s += q2s.size();
+        }
+        // Reset temporary vectors
         q2s.clear(); q2s.reserve(_q2s.size() - i);
         as.clear(); as.reserve(_q2s.size() - i);
       }
+      // Append current value to temporary vectors
       q2s.push_back(currQ2);
       as.push_back(currAS);
       prevQ2 = currQ2;
     }
+    if (combined_lenq2s != _q2s.size())
+      throw AlphaSError("Sum of alpha_s subgrid sizes does not match input knot array ("
+                        + to_str(combined_lenq2s) + " vs. " + to_str(_q2s.size()) + ")");
   }
 
 
@@ -72,8 +82,8 @@ namespace LHAPDF {
     assert(q2 >= 0);
 
     // Use a basic constant extrapolation in case we go out of range
-    if (q2 <= _q2s.front()) return _as.front(); //< @todo Gradient xpol w.r.t. logQ2 would be better, perhaps
-    if (q2 >= _q2s.back()) return _as.back();
+    if (q2 < _q2s.front()) return _as.front(); //< @todo Gradient xpol w.r.t. logQ2 would be better, perhaps
+    if (q2 > _q2s.back()) return _as.back();
 
     // If this is the first valid query, set up the ipol grids
     if (_knotarrays.empty()) _setup_grids();
@@ -99,11 +109,11 @@ namespace LHAPDF {
     }
 
     // Calculate alpha_s
-    const double dlogq2 = arr.logq2(i+1) - arr.logq2(i);
-    const double tlogq2 = (log(q2) - arr.logq2(i)) / dlogq2;
+    const double dlogq2 = arr.logq2s()[i+1] - arr.logq2s()[i];
+    const double tlogq2 = (log(q2) - arr.logq2s()[i]) / dlogq2;
     return _interpolateCubic( tlogq2,
-                              arr.alpha(i), didlogq2*dlogq2,
-                              arr.alpha(i+1), di1dlogq2*dlogq2 );
+                              arr.alphas()[i], didlogq2*dlogq2,
+                              arr.alphas()[i+1], di1dlogq2*dlogq2 );
   }
 
 
