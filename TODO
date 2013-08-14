@@ -21,6 +21,12 @@ VERSION 6.0.1
 VALIDATION / MIGRATION
 ----------------------
 
+- **Validation plot PDFs on Web**
+
+- **Updates of pdfsets.index file**
+
+   Should include all validated PDFs.
+
 - **alpha_s validation**
 
    Looking good. Need log gradient extrapolator at low Q to avoid huge deviations.

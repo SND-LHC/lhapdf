@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.0.0],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.0.1],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -80,7 +80,7 @@ AM_CONDITIONAL(WITH_DOXYGEN, [test x$DOXYGEN != x])
 
 ## Find Python and Cython if possible
 AC_ARG_ENABLE([python],
-  [AC_HELP_STRING(--disable-python, [build with debugging symbols (default=no)])],
+  [AC_HELP_STRING(--disable-python, [disable the build of the Python interface (default=enabled)])],
   [], [enable_python=yes])
 if test x$enable_python == xyes; then
   AC_PATH_PROG(PYTHON, python)
@@ -118,7 +118,7 @@ AC_CEDAR_CHECKCXXFLAG([-Wno-long-long], [AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-lon
 
 
 ## Include $prefix in the compiler flags for the rest of the configure run
-if test x$prefix != xNONE; then 
+if test x$prefix != xNONE; then
   CPPFLAGS="$CPPFLAGS -I$prefix/include"
   LDFLAGS="$LDFLAGS -L$prefix/lib"
 fi
