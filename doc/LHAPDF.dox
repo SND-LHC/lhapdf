@@ -12,21 +12,22 @@ discretised data files.  Previous versions of LHAPDF were written in Fortran
 77/90.  There are several reasons for this rewrite and the migration to C++, the
 main ones being:
 
-- Dynamic memory allocation
-  - Although modern Fortran compilers can now deal with this, older versions
-    of LHAPDF were written with static memory allocation in mind.  These
-    versions were then extended to allow for the initialisation of several
-    PDF data files at once.  As we look towards the parallelisation of such
-    tasks; the static memory cost of loading several large PDF files becomes
-    noticeable.  Being able to dynamically allocate memory means that we do
-    not need to use large amounts for cases where we only need a small number
-    of PDFs loaded at a time. In addition, the use of of static allocation in
-    previous versions of LHAPDF and the lack of any genuinely shared common
-    block array area for PDF manipulations means that the uninitialized static
-    memory footprint is (at more than 2 GB) vastly incompatible with running
-    LHAPDF on the Grid in "full memory" mode, the mode useful for PDF reweighting
-    for systematics estimation: dynamic allocation entirely solves this problem,
+- Hugely reduced memory overhead
+  - Although modern Fortran compilers can now dynamically allocate memory,
+    LHAPDF was written with F77 and static memory allocation in mind. The
+    memory overhead of LHAPDF5 is therefore proportional to the number of
+    supported PDF sets, then multiplied again by the number of simultaneous
+    PDF sets that can be used. The uninitialized static memory footprint is
+    hence huge: at more than 2 GB it is incompatible with running LHAPDF on
+    the Grid in "full memory" mode. This excludes use of standard LHAPDF
+    builds for PDF reweighting and other tasks on the standard LHC computing
+    resources. Dynamic memory allocation in LHAPDF6 entirely solves this problem,
     while removing all restrictions on the number of simultaneous PDF sets.
+
+- Speed
+  - Early tests show that LHAPDF6 can be substantially faster than LHAPDF5 in
+    event generation, largely due to the ability to now evolve each PDF flavour
+    independently.
 
 - Encapsulation
   - The multi-set features of LHAPDF5 were added in retrospect, after the
