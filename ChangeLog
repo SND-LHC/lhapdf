@@ -1,3 +1,9 @@
+2013-08-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* 6.0.1 patch release.
+
+	* Disabling installation of the not-to-be-used 'sets' directory.
+
 2013-08-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fixing an off-by-one error in alpha_s subgrid array creation.

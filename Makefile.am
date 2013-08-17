@@ -25,10 +25,9 @@ mostlyclean-local:
 dist-hook:
 	rm -rf `find $(distdir) -name ".svn" -o -name ".hg"`
 
-## Create the share/LHAPDF/sets directory
+## Remove the unused & misleading share/LHAPDF/sets directory on both install and uninstall!
+# TODO: Remove this hook entirely after a couple of versions
 install-data-hook:
-	mkdir -p $(pkgdatadir)/sets
-
-## Remove the share/LHAPDF/sets directory if empty
+	rmdir $(pkgdatadir)/sets || true
 uninstall-hook:
 	rmdir $(pkgdatadir)/sets || true
