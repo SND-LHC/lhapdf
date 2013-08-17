@@ -84,11 +84,10 @@ namespace LHAPDF {
     // Using base 10 for logs to get constant gradient extrapolation in
     // a log 10 - log 10 plot
     if (q2 < _q2s.front()) {
-      const double dlogq2  = log10(_q2s[1]/_q2s[0]);
-      const double dlogas  = log10(_as[1]/_as[0]);
+      const double dlogq2  = log10( _q2s[1] / _q2s[0] );
+      const double dlogas  = log10( _as[1]  / _as[0]  );
       const double loggrad = dlogas / dlogq2;
-      const double distq2  = log10(q2/_q2s[0]);
-      return _as[0] + distq2 * loggrad;
+      return _as[0] * pow( q2/_q2s[0] , loggrad );
     }
 
     if (q2 > _q2s.back()) return _as.back();
