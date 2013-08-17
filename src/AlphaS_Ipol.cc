@@ -81,8 +81,16 @@ namespace LHAPDF {
   double AlphaS_Ipol::alphasQ2(double q2) const {
     assert(q2 >= 0);
 
-    // Use a basic constant extrapolation in case we go out of range
-    if (q2 < _q2s.front()) return _as.front(); //< @todo Gradient xpol w.r.t. logQ2 would be better, perhaps
+    // Using base 10 for logs to get constant gradient extrapolation in
+    // a log 10 - log 10 plot
+    if (q2 < _q2s.front()) {
+      const double dlogq2  = log10(_q2s[1]/_q2s[0]);
+      const double dlogas  = log10(_as[1]/_as[0]);
+      const double loggrad = dlogas / dlogq2;
+      const double distq2  = log10(q2/_q2s[0]);
+      return _as[0] + distq2 * loggrad;
+    }
+
     if (q2 > _q2s.back()) return _as.back();
 
     // If this is the first valid query, set up the ipol grids
