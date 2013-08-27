@@ -12,6 +12,13 @@ To migrate a PDF, install LHAPDF5 (including the Python module) and call e.g.
 This will create the .info set metadata file and .lha grid data files in a (new)
 CT10 directory.
 
+The tomigrate file is a list of the LHAPDF5 PDF names to be migrated, plus any
+arguments to creategrids that those PDFs require for correct/optimal migration.
+A convenient way to use this file is as follows (in this case to dump all the
+HERAPDF sets):
+
+cat tomigrate | grep HERA | while read l; do ./creategrids $l; done
+
 
 SET VALIDATION AND PLOTTING
 ---------------------------
