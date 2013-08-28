@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.0.1],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.0.2a0],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -91,8 +91,8 @@ if test x$enable_python == xyes; then
     AC_SUBST(PYTHON_PATH)
   fi
   AM_CHECK_CYTHON([0.18], [:], [:])
-  if test x$CYTHON_FOUND != xyes; then
-    AC_MSG_ERROR([Can't build Python extension since Cython >= 0.18 could not be found])
+  if test x$CYTHON_FOUND = xyes; then
+    AC_MSG_INFO([Cython >= 0.18 found: Python extension source can be rebuilt (for developers)])
   fi
 fi
 AM_CONDITIONAL(WITH_PYTHON, [test x$PYTHON != x])

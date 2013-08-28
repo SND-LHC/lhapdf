@@ -1,12 +1,20 @@
-EXTRA_DIST = lhapdf.pyx clhapdf.pxd
+EXTRA_DIST = lhapdf.cpp lhapdf.pyx clhapdf.pxd
 
 if WITH_CYTHON
+lhapdf.cpp: lhapdf.pyx clhapdf.pxd
+	cython lhapdf.pyx --cplus
+else
+lhapdf.cpp:
+	@echo "Not (re)generating lhapdf.cpp since Cython is not installed"
+endif
+
+
 if WITH_PYTHON
 
 PYEXT_ENV = CC=$(CC) CXX=$(CXX)
 
 ## Always force setup.py, it's not good at guessing what needs to rebuild
-all-local:
+all-local: lhapdf.cpp
 	$(PYEXT_ENV) $(PYTHON) setup.py install --install-lib=build/ --force
 
 install-exec-local:
@@ -24,5 +32,4 @@ clean-local:
 distclean-local:
 	@rm -rf LHAPDF.egg-info
 
-endif
 endif
