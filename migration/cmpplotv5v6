@@ -3,7 +3,7 @@
 SCRIPTDIR=$(dirname $0)
 
 ## PDF validation and plotting
-for pid in 21 -5 -4 -3 -2 -1 1 2 3 4 5; do
+for pid in 21 1 -1 2 -2 3 -3 4 -4 5 -5; do
     ## Run comparison calculations for various fixed Q values
     for q in 10 50 100 200 500 1000 2000 5000; do
         $SCRIPTDIR/cmpv5v6 xf_v*_scanx_q${q}_${pid}.dat -o xfacc_q${q}_${pid}.dat &
@@ -28,4 +28,9 @@ $SCRIPTDIR/plotv5v6 as_v*.dat --type=as -o cmpv5v6_as.pdf
 $SCRIPTDIR/plotv5v6 asacc.dat --type=asdiff -o cmpv5v6_asacc.pdf
 
 ## Make a combined PDF of validation plots
-pdftk cmp*.pdf  cat output validation.pdf
+PLOTS="cmpv5v6_as.pdf cmpv5v6_asacc.pdf"
+for pid in 21 1 -1 2 -2 3 -3 4 -4 5 -5; do
+    PLOTS="$PLOTS cmpv5v6_xf_scanx_$pid.pdf cmpv5v6_xfacc_scanx_$pid.pdf"
+    PLOTS="$PLOTS cmpv5v6_xf_scanq_$pid.pdf cmpv5v6_xfacc_scanq_$pid.pdf"
+done
+pdftk $PLOTS cat output validation.pdf

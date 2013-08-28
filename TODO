@@ -12,42 +12,26 @@ VERSION 6.0.2
 
    Libs not found during tests builds? (Only build tests with "make check?")
    BOOST_DIR variable doesn't work / Boost not found on Mac+Fink?
-   Non-system Cython variables need to be set to build (also for Rivet).
 
-- **Problem at very low-Q2 edges?**
+- **alpha_s validation**
 
-   Very clear threshold deviations for NNPDF. Not physically worrying, but
-   what's happening?
+   Check low-Q log gradient extrapolation.
 
 
 VALIDATION / MIGRATION
 ----------------------
 
-- **Validation plot PDFs on Web**
+- **Put validation plot PDFs on Web**
 
-- **Updates of pdfsets.index file**
+- **NNPDF2.3 PDF validation (AB)**
 
-   Should include all validated PDFs.
-
-- **alpha_s validation**
-
-   Looking good. Need log gradient extrapolator at low Q to avoid huge deviations.
+   Looks good except at HF Q thresholds. Need to validate the top PDFs.
 
 - **MSTW2008 PDF validation (AB)**
 
    Mostly done: subgrid migration and interpolation is working.
    => Approved for now, but still some deviations. ForcePosDef *and* more
    sophisticated low Q2 treatment needed?
-
-- **NNPDF2.3 PDF validation (AB)**
-
-   Includes non-zero top PDFs: --top option added to creategrids. xmin reported
-   wrongly: requires a --xmin=1e-7 override to creategrids (confirmed with
-   authors). Otherwise looks very good except at low-Q boundary (esp. for b PDFs)
-
-- **HERAPDF1.5 PDF validation (JF,KN)**
-
-   Bug in LHAPDF5 now fixed and sets can be validated.
 
 - **Final CT10 / CT10nlo migrations**
 
@@ -80,7 +64,7 @@ VERSION 6.1
    Obnoxious or useful? In response to PDF author requests? Must be disableable
    via Verbosity=0!
 
-- **Gradient extrapolator for PDF x/Q and alpha_s**
+- **Gradient extrapolator for PDF x/Q**
 
    Keep extrapolating linearly outside the range (in log space).
 
@@ -117,7 +101,9 @@ VERSION 6.x
 
    Automatic memory management can be nice for everyone.
 
-- **MRST2004qed migration**
+- **MRST2004qed migration?**
+
+   Definitely needs special treatment. Even possible?
 
 - **Improved x -> 1 (and Q -> 0?) evolution (GW,...)**
 
@@ -140,14 +126,6 @@ VERSION 6.x
    ErrorType metadata entry for each PDF set, working out the appropriate error
    treatment should be easy (I think it's best to not use words like
    "infallible"!)
-
-- **Bundle Cython generated files if possible so Cython isn't needed for a tarball build**
-
-   If possible. I think this is actually important: every dependency will put
-   off a large fraction of potential users. Although, cf. Rivet, a pre-supplied
-   build will be important for reducing that social/technical problem.
-
-   Perhaps Cython 0.19 could be bundled? We also require Python.h to build the Python interface.
 
 
 AS AND WHEN
@@ -179,7 +157,7 @@ AS AND WHEN
    probably nuclear PDFs will inherit from PDF (since they are PDFs) and
    _contain_ a nucleon PDF whose values will be modified before returning.
 
-- **Try using boost::function to generically modify the interpolation measures in x, Q (AB)**
+- **Using std::/boost::function to generically modify the interpolation measures in x, Q (AB)**
 
 - **Use Autoconf's more robust FC_* Fortran function name macros?**
 
