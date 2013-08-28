@@ -13,10 +13,6 @@ VERSION 6.0.2
    Libs not found during tests builds? (Only build tests with "make check?")
    BOOST_DIR variable doesn't work / Boost not found on Mac+Fink?
 
-- **alpha_s validation**
-
-   Check low-Q log gradient extrapolation.
-
 
 VALIDATION / MIGRATION
 ----------------------
@@ -25,18 +21,18 @@ VALIDATION / MIGRATION
 
 - **NNPDF2.3 PDF validation (AB)**
 
-   Looks good except at HF Q thresholds. Need to validate the top PDFs.
+   Looks good except at HF Q thresholds. Need to validate the top PDFs, too.
+   Move remaining NNPDF 2.3 and 2.1 PDFs into validated area.
 
 - **MSTW2008 PDF validation (AB)**
 
    Mostly done: subgrid migration and interpolation is working.
-   => Approved for now, but still some deviations. ForcePosDef *and* more
-   sophisticated low Q2 treatment needed?
+   => Approved for now, but still some deviations. ForcePositive needed?
 
 - **Final CT10 / CT10nlo migrations**
 
-   Need ForcePosDef option to get exact behaviours without overshoots (also for
-   CTEQ6L1?). Add a --posdef flag to creategrids to make this easier
+   Need ForcePositive option to get exact behaviours without overshoots (also
+   for CTEQ6L1?). Add a --pos flag to creategrids to make this easier
    (e.g. should be used for all CTEQ sets and for NNPDF MC sets)
 
 
@@ -51,36 +47,38 @@ WRITE PAPER
 
 - **Note fixed problems**
 
-   NNPDF misreported xmin. Support for different set sizes. alpha_s etc. in
-   multi-set mode. Lambda reporting to PYTHIA. **ADD MORE AS WE REMEMBER THEM**
+   Support for different set sizes. alpha_s etc. in multi-set mode. Lambda
+   reporting to PYTHIA. **ADD MORE AS WE REMEMBER THEM**
 
 
 
 VERSION 6.1
 -----------
 
-- **Print out a banner?**
+- **Print out a banner (AB)**
 
-   Obnoxious or useful? In response to PDF author requests? Must be disableable
-   via Verbosity=0!
+   Requested/suggested by NNPDF. Print out on LHAPDF system and PDF
+   initialisation. Must be disableable via Verbosity = 0, but set default to
+   Verbosity = 1 or 2 (need to also define the verbosity level scheme).
 
 - **Gradient extrapolator for PDF x/Q**
 
    Keep extrapolating linearly outside the range (in log space).
 
-- **Add a ForcePosDef config option**
+- **Add a ForcePositive config option (SL)**
 
-   If enabled, return 0 in place of any negative PDF value. Cache config flag
-   value to avoid repeated slow metadata lookups. Should solve problems with
-   extreme low-Q threshold behaviours in CT10(nlo) PDFs.
+   If enabled, return 0 (or 1e-10?) in place of any negative PDF value. Cache
+   config flag value to avoid repeated slow metadata lookups. Should solve
+   problems with negative values due to ipol overshoots in PDFs which should
+   be positive-definite such as CTEQ sets and the NNPDF 2.3 MC PDFs.
 
-- **Add Info/Config mappings to Cython (AB)**
+- **Add Info/Config/PDFSet and AlphaS mappings to Cython**
 
   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
 
-- **Add AlphaS mappings to Cython (AB)**
-
 - **Add mkPDFs<SMART_PTR> templated vector-filling functions (AB)**
+
+- **Incorporate Mark Sutton's suggestions re. the PDF base class (AB)**
 
 
 VERSION 6.x
@@ -105,13 +103,16 @@ VERSION 6.x
 
    Definitely needs special treatment. Even possible?
 
-- **Improved x -> 1 (and Q -> 0?) evolution (GW,...)**
+- **Improved x -> 1 evolution (GW,...)**
 
    Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
    all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3)
-   Graeme also recommends a specialist interpolation treatment at low Q.
+
+- **Improved Q -> 0 evolution (GW,...)**
+
+   Graeme also recommends a specialised extrapolation treatment at low Q.
 
 - **Read zipped/tarred PDFs**
 
