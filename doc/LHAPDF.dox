@@ -1,15 +1,16 @@
 /**
 
 @mainpage
+
 @tableofcontents
 
-
-Introduction
-============
+@section intro Introduction
 
 LHAPDF is a general purpose C++ interpolator, used for evaluating PDFs from
 discretised data files.  Previous versions of LHAPDF were written in Fortran
-77/90.  There are several reasons for this rewrite and the migration to C++, the
+77/90.
+
+There are several reasons for this rewrite and the migration to C++, the
 main ones being:
 
 - Hugely reduced memory overhead
@@ -77,48 +78,83 @@ documentaion as well as other information with regards to the project see
 http://lhapdf.hepforge.org/.
 
 
-Installation
-------------
+@section install Installation
+
+@subsection externals External dependencies
+
+LHAPDF6 makes use of two external code libraries: the Boost C++ utility library
+(http://www.boost.org) and the yaml-cpp (http://code.google.com/p/yaml-cpp/)
+parser. (In LHAPDF6, PDF metadata is stored in the YAML (http://www.yaml.org)
+format.) On Linux machines both these should typically be available via your
+system's packaging mechanism (e.g. the `libboost-all-dev` and `libyaml-cpp-dev`
+packages on Ubuntu).
+
+@todo Getting Boost and yaml-cpp on Mac OS X? Available in Fink/MacPorts/etc.?
+
+
+@subsection boost Building Boost by hand
+
+Building Boost by hand is not particularly simple and should not be needed
+in most cases: we recommend avoiding this! If you have access to the CERN AFS
+filesystem, you can find builds of Boost for various platforms in the
+`/afs/cern.ch/sw/lcg/external/Boost/` directory.
+
+
+@subsection yamlcpp Building yaml-cpp by hand
+
+Building yaml-cpp by hand is simpler than Boost, but it's still better to
+use a packaged installation if possible (an installation on CERN AFS by the LCG
+team should happen soon, at which point we will update these instructions). To
+build yaml-cpp, download the tarball from http://code.google.com/p/yaml-cpp/ and
+expand it. You will need to have CMake installed to build this -- again this is
+a standard package which you can get from a packaging system or AFS.
+
+You'll also make sure that your build of `yaml-cpp` has installed a *shared*
+library (with a file extension of `.so` on Linux, or `.dylib` on Mac,
+e.g. `libyaml-cpp.so`) as well as the default `libyaml-cpp.a` static
+library. Packaging system installations of yaml-cpp should already meet this
+requirement. To make sure that the shared library is built, call `cmake
+-DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/my/install/area` during the build
+before running `make` and `make install`.
+
+
+@subsection lhapdf Building LHAPDF
 
 If you have downloaded a release tarball, unpack it with `tar xf
 LHAPDF-xxx.tar.gz`, then `cd` to the newly-created directory.
 
 @note If checking out from version control rather than unpacking a tarball,
 again `cd` to the new directory, but you must then also run `autoreconf -i`
-before proceeding to the instructions below. This extra step is because the
-tarballs contain pre-made build scripts, while if you check out from version
-control then you are effectively a developer and must make these scripts
-yourself. You must have automake, autoconf, and libtool installed to build
-LHAPDF from an SVN checkout.
+before proceeding to the instructions below. There will also be more
+requirements for external packages if you build this way, since this is the
+"developer" route to building LHAPDF and requires a bit more expertise (believe
+it or not we are trying to make life simpler for normal users ;-) )
 
 Now you should run the `configure` script to analyse your machine, compiler,
-etc. and set up the Makefiles. You will probably need to provide some arguments
-to `configure` to tell it where you want to install LHAPDF (probably you don't
-want to install to `/usr/local`, which is the default) and perhaps where to find
-the `Boost` (http://www.boost.org) and `yaml-cpp`
-(http://code.google.com/p/yaml-cpp/) libraries that LHAPDF6 requires.
+etc. and set up the Makefiles. You will probably need to provide the `--prefix`
+argument to `configure` to tell it where you want to install LHAPDF (probably
+you don't want to install to `/usr/local`, which is the default) and perhaps use
+the `--with-yaml-cpp` and `--with-boost` flags to indicate the locations of your
+Boost and yaml-cpp installations.
 
-@note Also make sure that your build of `yaml-cpp` has installed a *shared*
-library (with a file extension of `.so` on Linux, or `.dylib` on Mac,
-e.g. `libyaml-cpp.so`) as well as the default `libyaml-cpp.a` static library.
-To make sure that the shared library is built, call `cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/my/install/area`
-during the build before running `make` and `make install`.
+@note These flags expect the "base" location of the package, e.g. if you have
+installed library X such that there are headers in `/foo/include/` (or
+`/foo/include/X`) and a compiled library (or libraries) in `/foo/lib/` then you
+would use `--with-X=/foo`.
 
-If you want to build the Python interface to LHAPDF (which is very nice!),
-you will need a copy of the Cython program (http://cython.org) which builds
-a C++ extension library for use from the Python interpreter. Cython version 0.19 or
-later is needed. You can just download and expand the Cython tarball, then add
-the resulting `$PWD/Cython-X.Y.Z` directory to your `PYTHONPATH` shell variable and the
-`$PWD/Cython-X.Y.Z/bin` directory to the `PATH` variable: you don't need to
-"properly" install it.
+If you want to build the Python interface to LHAPDF (which is very nice!), you
+will need the Python development headers to be installed (e.g. via the
+`python-dev` Ubuntu package). If the `Python.h` header is not found by
+`configure`, no Python extension module will be built.
 
-An example call to LHAPDF's `configure` script might look like:
+In conclusion, an example call to LHAPDF's `configure` script might look like:
 
     ./configure --prefix=$HOME/local --with-yaml-cpp=$HOME/local
 
 (this should be appropriate if you have installed Boost in `/usr` via your
-machine's packaging system, and have privately installed yaml-cpp into
-`~/local` via the `-DCMAKE_INSTALL_PATH=...` described above.)
+machine's packaging system, and have privately installed yaml-cpp into `~/local`
+via the `-DCMAKE_INSTALL_PATH=...` described above.) An example build script for
+LHAPDF6 on the CERN lxplus6 system is shown at the end of these instructions.
 
 If you want to use an alternative C++ compiler, then you can specify the CXX
 variable on the command line, e.g.
@@ -137,10 +173,43 @@ location that you specified, call `make install`. You will (or at least
 `$prefix/share/LHAPDF`.
 
 
-Usage
------
+@subsection lxplus Building on lxplus
 
-As for previous versions, LHAPDF is a programmatic library. It can be accessed
+CERN's lxplus shared system is always an awkward environment to build packages,
+since the system compiler etc. are not part of the LCG supported list of
+architectures.
+
+    ## Set up build tools
+    source /afs/cern.ch/sw/lcg/contrib/gcc/4.6/x86_64-slc6-gcc46-opt/setup.sh
+    export PATH=/afs/cern.ch/sw/lcg/external/CMake/2.8.9/Linux-i386/bin/:$PATH
+
+    ## Create install dir and pre-empt appropriate path setting
+    mkdir local
+    export PATH=$PWD/local/bin:$PATH
+    export LD_LIBRARY_PATH=$PWD/local/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=$PWD/local/lib64/python2.6/site-packages:$PYTHONPATH
+
+    ## Build yaml-cpp
+    wget http://yaml-cpp.googlecode.com/files/yaml-cpp-0.3.0.tar.gz -O- | tar xz
+    cd yaml-cpp
+    cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PWD/../local
+    make -j2 && make install
+    cd ..
+
+    ## Build LHAPDF
+    LHANAME=LHAPDF-6.0.2
+    wget http://www.hepforge.org/archive/lhapdf/$LHANAME.tar.gz -O- | tar xz
+    cd $LHANAME
+    ./configure --prefix=$PWD/../local \
+        --with-yaml-cpp=$PWD/../local \
+        --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
+    make -j2 && make install
+    cd ..
+
+
+@section usage Usage
+
+As for previous versions, LHAPDF6 is a programmatic library. It can be accessed
 via user code written in C++, and to a more limited extent from Python and
 Fortran programs.
 
@@ -184,14 +253,12 @@ The following examples should help you to get to grips with using LHAPDF from C+
 @include examples/analytic.cc
 
 
-Authors
--------
+@section authors Authors
 
 @include AUTHORS
 
 
-For developers
---------------
+@section dev For developers
 
 See the following pages:
 
@@ -200,6 +267,8 @@ See the following pages:
 - @ref design
 - @ref config
 - @ref codingstyle
+
+@todo Add some developer build guides, including the autotools, Cython, etc. gotchas.
 
 @example ../examples/testpdf.cc
 @example ../examples/pythonexample.py
