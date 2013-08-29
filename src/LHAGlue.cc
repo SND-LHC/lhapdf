@@ -151,7 +151,7 @@ extern "C" {
   /// Load a PDF set
   ///
   /// @todo Does this version actually take a *path*? What to do?
-  void initpdfsetm_(int& nset, const char* setpath, int setpathlength) {
+  void initpdfsetm_(const int& nset, const char* setpath, int setpathlength) {
     // Strip file extension for backward compatibility
     string fullp = string(setpath,setpathlength);
     // remove trailing whitespace
@@ -179,7 +179,7 @@ extern "C" {
 
 
   /// Load a PDF set by name
-  void initpdfsetbynamem_(int& nset, const char* setname, int setnamelength) {
+  void initpdfsetbynamem_(const int& nset, const char* setname, int setnamelength) {
     // Strip file extension for backward compatibility
     /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
     const boost::filesystem::path p = setname;
@@ -201,21 +201,21 @@ extern "C" {
 
 
   /// Load a PDF in current set
-  void initpdfm_(int& nset, int& nmember) {
+  void initpdfm_(const int& nset, const int& nmember) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     ACTIVESETS[nset].loadMember(nmember);
   }
 
   /// Load a PDF in current set (non-multiset version)
-  void initpdf_(int& nmember) {
+  void initpdf_(const int& nmember) {
     int nset1 = 1;
     initpdfm_(nset1, nmember);
   }
 
 
   /// Get xf(x) values for common partons from current PDF
-  void evolvepdfm_(int& nset, double& x, double& q, double* fxq) {
+  void evolvepdfm_(const int& nset, const double& x, const double& q, double* fxq) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // Evaluate for the LHAPDF5 standard partons
@@ -229,7 +229,7 @@ extern "C" {
   }
 
   /// Get xf(x) values for common partons from current PDF (non-multiset version)
-  void evolvepdf_(double& x, double& q, double* fxq) {
+  void evolvepdf_(const double& x, const double& q, double* fxq) {
     int nset1 = 1;
     evolvepdfm_(nset1, x, q, fxq);
   }
@@ -244,7 +244,7 @@ extern "C" {
 
 
   /// Get xfx values from current PDF, including an extra photon flavour
-  void evolvepdfphotonm_(int& nset, double& x, double& q, double* fxq, double& photonfxq) {
+  void evolvepdfphotonm_(const int& nset, const double& x, const double& q, double* fxq, double& photonfxq) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // First evaluate the "normal" partons
@@ -258,26 +258,26 @@ extern "C" {
   }
 
   /// Get xfx values from current PDF, including an extra photon flavour (non-multiset version)
-  void evolvepdfphoton_(double& x, double& q, double* fxq, double& photonfxq) {
+  void evolvepdfphoton_(const double& x, const double& q, double* fxq, double& photonfxq) {
     int nset1 = 1;
     evolvepdfphotonm_(nset1, x, q, fxq, photonfxq);
   }
 
 
   /// Get xf(x) values for common partons from a photon PDF
-  void evolvepdfpm_(int& nset, double& x, double& q, double& p2, int& ip2, double& fxq) {
+  void evolvepdfpm_(const int& nset, const double& x, const double& q, const double& p2, const int& ip2, double& fxq) {
     /// @todo Implement me!
     throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
   }
 
   /// Get xf(x) values for common partons from a photon PDF (non-multiset version)
-  void evolvepdfp_(double& x, double& q, double& p2, int& ip2, double& fxq) {
+  void evolvepdfp_(const double& x, const double& q, const double& p2, const int& ip2, double& fxq) {
     int nset1 = 1;
     evolvepdfpm_(nset1, x, q, p2, ip2, fxq);
   }
 
 
-  void numberpdfm_(int& nset, int& numpdf) {
+  void numberpdfm_(const int& nset, int& numpdf) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // set equal to the number of members  for the requested set
@@ -291,7 +291,7 @@ extern "C" {
     numberpdfm_(nset1, numpdf);
   }
 
-  void getorderasm_(int& nset, int& oas) {
+  void getorderasm_(const int& nset, int& oas) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // set equal to the number of members  for the requested set
@@ -305,7 +305,7 @@ extern "C" {
 
 
   /// Get the number of flavours
-  void getnfm_(int& nset, double& nf) {
+  void getnfm_(const int& nset, double& nf) {
     /// @todo Implement me! (and improve param names)
   }
 
@@ -335,13 +335,13 @@ extern "C" {
   }
 
 
-  double alphaspdfm_(int& nset, double& Q){
+  double alphaspdfm_(const int& nset, const double& Q){
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     return  ACTIVESETS[nset].activemember()->alphasQ(Q);
   }
 
-  double alphaspdf_(double& Q){
+  double alphaspdf_(const double& Q){
     int nset1 = 1;
     return alphaspdfm_(nset1, Q);
   }
@@ -424,25 +424,25 @@ extern "C" {
   }
 
   
-  void getxmin_(int& nmem , double& xmin){
+  void getxmin_(const int& nmem , double& xmin){
     int mymem =nmem;
     double axmin=LHAPDF::getXmin( mymem );
     xmin=axmin;
   }
 
-  void getxmax_(int& nmem , double& xmax){
+  void getxmax_(const int& nmem , double& xmax){
     int mymem =nmem;
     double axmax=LHAPDF::getXmax( mymem);
     xmax=axmax;
   }
 
-  void getq2min_(int& nmem , double& q2min){
+  void getq2min_(const int& nmem , double& q2min){
     int mymem =nmem;
     double aq2min=LHAPDF::getQ2min( mymem);
     q2min=aq2min;
   }
 
-  void getq2max_(int& nmem , double& q2max){
+  void getq2max_(const int& nmem , double& q2max){
     int mymem =nmem;
     double aq2max=LHAPDF::getQ2max( mymem);
     q2max=aq2max;
