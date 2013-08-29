@@ -113,37 +113,37 @@ namespace LHAPDF {
 
   /// Minimum X for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-  double getXmin(int nset);
+  double getXmin(int nmem);
 
 
   /// Minimum X for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
-  double getXmin();
+  double getXmin(int nset, int nmem);
 
   /// Maximum X for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-  double getXmax(int nset);
+  double getXmax(int nset, int nmem);
 
 
   /// Maximum X for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
-  double getXmax();
+  double getXmax(int nmem);
 
   /// Minimum Q2 for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
-  double getQ2min();
+  double getQ2min(int nset, int nmem);
 
   /// Minimum Q2 for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-  double getQ2min(int nset);
+  double getQ2min(int nmem);
 
   /// Maximum Q2 for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-  double getQ2max(int nset);
+  double getQ2max(int nset, int nmem);
 
   /// Maximum Q2 for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
-  double getQ2max();
+  double getQ2max(int nmem);
 
 
   /// Mass of quarks for current PDF

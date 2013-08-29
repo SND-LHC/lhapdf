@@ -377,8 +377,8 @@ extern "C" {
 
     w50513_.xmin=pdf->info().get_entry_as<double>("XMin");
     w50513_.xmax=pdf->info().get_entry_as<double>("XMax");
-    w50513_.q2min=pdf->info().get_entry_as<double>("Q2Min");
-    w50513_.q2max=pdf->info().get_entry_as<double>("Q2Max");
+    w50513_.q2min=pow(pdf->info().get_entry_as<double>("QMin"),2);
+    w50513_.q2max=pow(pdf->info().get_entry_as<double>("QMax"),2);
     w50512_.qcdl4=pdf->info().get_entry_as<double>("AlphaS_Lambda4");
     w50512_.qcdl5=pdf->info().get_entry_as<double>("AlphaS_Lambda5");
     lhapdfr_.qcdlha4=pdf->info().get_entry_as<double>("AlphaS_Lambda4");
@@ -421,6 +421,31 @@ extern "C" {
   /// PDFLIB statistics on PDF under/overflows
   void pdfsta_() {
     /// @todo Do anything?
+  }
+
+  
+  void getxmin_(int& nmem , double& xmin){
+    int mymem =nmem;
+    double axmin=LHAPDF::getXmin( mymem );
+    xmin=axmin;
+  }
+
+  void getxmax_(int& nmem , double& xmax){
+    int mymem =nmem;
+    double axmax=LHAPDF::getXmax( mymem);
+    xmax=axmax;
+  }
+
+  void getq2min_(int& nmem , double& q2min){
+    int mymem =nmem;
+    double aq2min=LHAPDF::getQ2min( mymem);
+    q2min=aq2min;
+  }
+
+  void getq2max_(int& nmem , double& q2max){
+    int mymem =nmem;
+    double aq2max=LHAPDF::getQ2max( mymem);
+    q2max=aq2max;
   }
 
 
@@ -551,48 +576,53 @@ int LHAPDF::getNf(int nset) {
 }
 
 
-double LHAPDF::getXmin() {
-  return LHAPDF::getXmin(1) ;
+double LHAPDF::getXmin(int nmem) {
+  //nmem is not used
+  return LHAPDF::getXmin(1,nmem) ;
 }
 
-double LHAPDF::getXmin(int nset) {
+double LHAPDF::getXmin(int nset, int nmem) {
   if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   // return alphaS Order for the requested set
+  ACTIVESETS[nset].loadMember(nmem);
   return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMin");
 }
 
-double LHAPDF::getXmax() {
-  return LHAPDF::getXmax(1) ;
+double LHAPDF::getXmax(int nmem) {
+  return LHAPDF::getXmax(1, nmem) ;
 }
 
-double LHAPDF::getXmax(int nset) {
+double LHAPDF::getXmax(int nset, int nmem) {
   if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   // return alphaS Order for the requested set
+  ACTIVESETS[nset].loadMember(nmem);
   return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMax");
 }
 
-double LHAPDF::getQ2min() {
-  return LHAPDF::getQ2min(1) ;
+double LHAPDF::getQ2min(int nmem) {
+  return LHAPDF::getQ2min(1, nmem) ;
 }
 
-double LHAPDF::getQ2min(int nset) {
+double LHAPDF::getQ2min(int nset, int nmem) {
   if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   // return alphaS Order for the requested set
-  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("Q2Min");
+  ACTIVESETS[nset].loadMember(nmem);
+  return pow(ACTIVESETS[nset].activemember()->info().get_entry_as<double>("QMin"),2);
 }
 
-double LHAPDF::getQ2max() {
-  return LHAPDF::getQ2max(1) ;
+double LHAPDF::getQ2max(int nmem) {
+  return LHAPDF::getQ2max(1,nmem) ;
 }
 
-double LHAPDF::getQ2max(int nset) {
+double LHAPDF::getQ2max(int nset, int nmem) {
   if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   // return alphaS Order for the requested set
-  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("Q2Max");
+  ACTIVESETS[nset].loadMember(nmem);
+  return pow(ACTIVESETS[nset].activemember()->info().get_entry_as<double>("QMax"),2);
 }
 
 
