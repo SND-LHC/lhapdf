@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.0.2a0],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.0.2],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -12,7 +12,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 
 ## Library version flags (at least update the version comment with each new release version)
-VERSIONFLAGS="-version-info 2:0:0" ## for 6.0.0
+# TODO: add -avoid-version to the LDFLAGS to get rid of the versioned libs (we don't use them anyway)
+VERSIONFLAGS="-version-info 2:0:0" ## for 6.0.2
 AC_SUBST(VERSIONFLAGS)
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION, "$PACKAGE_VERSION", "LHAPDF version string")
 # TODO: improve this sed'ing so that it'll work with version digits > 9
@@ -124,7 +125,7 @@ if test x$prefix != xNONE; then
 fi
 
 ## Boost utility library
-BOOST_REQUIRE([1.40.0])
+BOOST_REQUIRE([1.49.0])
 BOOST_FOREACH
 BOOST_SMART_PTR
 BOOST_STRING_ALGO

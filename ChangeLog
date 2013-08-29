@@ -1,5 +1,9 @@
 2013-08-29  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Updating the version for the latest patch, and being more
+	pessimistic about Boost compatibility: assuming that Boost 1.49 is
+	the oldest compatible release until we hear otherwise.
+
 	* Reworking the validation system to use 0 rather than 21 for the
 	gluon ID (a simplification due to v5/v6 compatibility) and to
 	allow building of top PDF validation plots.
