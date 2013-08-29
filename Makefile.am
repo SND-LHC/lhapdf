@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = src include wrappers
-#examples tests doc
+DIST_SUBDIRS = $(SUBDIRS) examples tests doc
 
 bin_SCRIPTS = lhapdf-config
 dist_pkgdata_DATA = lhapdf.conf pdfsets.index
@@ -35,6 +35,6 @@ dist-hook:
 ## Remove the unused & misleading share/LHAPDF/sets directory on both install and uninstall!
 # TODO: Remove this hook entirely after a couple of versions
 install-data-hook:
-	rmdir $(pkgdatadir)/sets || true
+	test -e $(pkgdatadir)/sets && rmdir $(pkgdatadir)/sets || true
 uninstall-hook:
-	rmdir $(pkgdatadir)/sets || true
+	test -e $(pkgdatadir)/sets && rmdir $(pkgdatadir)/sets || true
