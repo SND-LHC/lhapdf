@@ -29,6 +29,10 @@ VALIDATION / MIGRATION
    Mostly done: subgrid migration and interpolation is working.
    => Approved for now, but still some deviations. ForcePositive needed?
 
+- **HERAPDF validation (SL,AB)**
+
+   Is HERAPDF really just a nearest-point lookup in a fine-spaced grid?!
+
 - **Final CT10 / CT10nlo migrations**
 
    Need ForcePositive option to get exact behaviours without overshoots (also
