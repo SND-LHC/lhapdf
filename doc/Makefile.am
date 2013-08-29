@@ -1,5 +1,5 @@
 if WITH_PDFLATEX
-man:
+manual:
 	(cd manual && make)
 endif
 

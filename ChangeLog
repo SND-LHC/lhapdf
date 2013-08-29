@@ -1,3 +1,12 @@
+2013-08-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing builds of examples and tests directories from the
+	top-level default make target.
+
+2013-08-29  James Ferrando  <james.ferrando@cern.ch>
+
+	* Fixes to LHAGlue.h and LHAGlue.cpp.
+
 2013-08-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing necessity of Cython for tarball builds.

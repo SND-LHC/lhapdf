@@ -1,19 +1,26 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src examples include tests wrappers doc
+SUBDIRS = src include wrappers
+#examples tests doc
 
 bin_SCRIPTS = lhapdf-config
 dist_pkgdata_DATA = lhapdf.conf pdfsets.index
 
 
+tests:
+	(cd tests && $(MAKE))
+
+examples:
+	(cd examples && $(MAKE))
+
 if WITH_DOXYGEN
 doxy:
-	(cd doc && make doxy)
+	(cd doc && $(MAKE) doxy)
 endif
 
 if WITH_PDFLATEX
-man:
-	(cd doc && make man)
+manual:
+	(cd doc && $(MAKE) manual)
 endif
 
 
