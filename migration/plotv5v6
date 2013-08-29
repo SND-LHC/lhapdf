@@ -35,7 +35,7 @@ plt.rcParams["font.family"] = "serif"
 STYLES = ["-", ":", "--", "-."]
 COLORS = ["red", "blue", "darkgreen", "orange", "purple", "magenta", "gray", "cyan"]
 PARTONS = {-5:r"$\bar{b}$",-4:r"$\bar{c}$",-3:r"$\bar{s}$",-2:r"$\bar{u}$",-1:r"$\bar{d}$",
-           1:r"$d$",2:r"$u$",3:r"$s$",4:r"$c$",5:r"$b$",21:r"$g$"}
+           1:r"$d$",2:r"$u$",3:r"$s$",4:r"$c$",5:r"$b$",0:r"$g$"}
 
 def latex_float(f):
     float_str = "{0:.2g}".format(f)

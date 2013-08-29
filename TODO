@@ -10,7 +10,6 @@ VERSION 6.0.2
 
 - **Build system issues**
 
-   Libs not found during tests builds? (Only build tests with "make check?")
    BOOST_DIR variable doesn't work / Boost not found on Mac+Fink?
 
 
@@ -21,7 +20,8 @@ VALIDATION / MIGRATION
 
 - **NNPDF2.3 PDF validation (AB)**
 
-   Looks good except at HF Q thresholds. Need to validate the top PDFs, too.
+   Looks good except at HF Q thresholds, which aren't phenomenologically
+   worrying. Need to validate the top PDFs, too.
    Move remaining NNPDF 2.3 and 2.1 PDFs into validated area.
 
 - **MSTW2008 PDF validation (AB)**

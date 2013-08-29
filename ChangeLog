@@ -1,5 +1,9 @@
 2013-08-29  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Reworking the validation system to use 0 rather than 21 for the
+	gluon ID (a simplification due to v5/v6 compatibility) and to
+	allow building of top PDF validation plots.
+
 	* Removing builds of examples and tests directories from the
 	top-level default make target.
 

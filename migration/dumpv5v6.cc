@@ -18,7 +18,7 @@
 #define AS(Q) pdf.alphasQ(Q)
 #else
 #define LHAVERSION 5
-#define XF(X, Q) LHAPDF::xfx(X, Q, id)
+#define XF(X, Q) LHAPDF::xfx(X, Q, flavor)
 #define AS(Q) LHAPDF::alphasPDF(Q)
 #endif
 
@@ -34,8 +34,8 @@ const double DQ = 0.01;
 
 int main(int argc, const char* argv[]) {
 
-  if (argc < 3) {
-    std::cerr << argv[0] << " <setname> <setmember>" << std::endl;
+  if (argc != 3) {
+    std::cerr << "Usage: " << argv[0] << " <setname> <setmember>" << std::endl;
     return 1;
   }
   const char* setname = argv[1];
@@ -44,19 +44,14 @@ int main(int argc, const char* argv[]) {
   #if LHAVERSION > 5
   const LHAPDF::PDF& pdf = *LHAPDF::mkPDF(setname, member);
   #else
-  LHAPDF::initPDFSetByName(setname);
+  string setfile = setname;
+  if (setfile.find(".LH" == string::npos) setfile += ".LHgrid";
+  LHAPDF::initPDFSetByName(setfile);
   LHAPDF::initPDF(member);
   #endif
 
   // Dump out points in (x,Q)
-  int flavors[] = {-5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5};
-  for (int i = 0; i < 11; ++i) {
-    const int flavor = flavors[i];
-    #if LHAVERSION > 5
-    const int id = i;
-    #else
-    const int id = i-5;
-    #endif
+  for (int flavor = -6; flavor <= 6; ++flavor) {
 
     // x sampling for fixed Q
     double qs[] = {10, 50, 100, 200, 500, 1000, 2000, 5000};
