@@ -64,9 +64,6 @@ cdef class PDF:
         "Maximum valid value of x to be used with this PDF"
         return self._ptr.q2Max()
 
-
-    # TODO: alphaS
-
     def alphasQ(self, q):
         "Return alpha_s at q"
         return self._ptr.alphasQ(q)
@@ -123,19 +120,44 @@ cdef class PDF:
 
     # TODO: Map the rest of the metadata functions (including the generic metadata() -> str)
 
+cdef class Info:
+    """\
+    Class that handles the parsing of PDF set metadata in the .info file.
+    """
+    cdef c.Info* _ptr
+    cdef set_ptr(self, c.Info* ptr):
+        self._ptr = ptr
 
-cdef class PDFSet:
+    def __dealloc__(self):
+        del self._ptr
+
+    def metadata(self):
+        "Return the metadata in the .info file"
+        return self._ptr.metadata()
+
+    def has_key(self, key):
+        "Return whether or not metadata for this key exists"
+        return self.ptr.has_key(key)
+   
+    def has_key_local(self, key):
+        "Returns whether or not metadata for this key exists at a local level (config/set/member)"
+        return self._ptr.has_key_local(key)
+
+    def get_entry(self, key):
+        "Returns metadata entry for this key"
+        return self._ptr.get_entry(key)
+
+    def get_entry(self, key, fallback):
+        "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
+        return self._ptr.get_entry(key, fallback)
+
+cdef class PDFSet(Info):
     """\
     A collection of PDFs with related fits, most typically a central PDF and a
     set of extra ones representing different aspects of systematic errors in the
     fit.
-    """
-    cdef c.PDFSet* _ptr
-    cdef set_ptr(self, c.PDFSet* ptr):
-        self._ptr = ptr
-
-    # def __dealloc__(self):
-    #     del self._ptr
+    """	
+    cdef c.PDFSet* _pdfptr
 
     # @property
     # def numMembers(self):
@@ -144,32 +166,32 @@ cdef class PDFSet:
 
     def __len__(self):
         "The total number of members in this set."
-        return self._ptr.size()
+        return self._pdfptr.size()
 
     @property
     def name(self):
         "Name of this PDF's containing set."
-        return self._ptr.name()
+        return self._pdfptr.name()
 
     @property
     def description(self):
         "Description of this PDF's set."
-        return self._ptr.description()
+        return self._pdfptr.description()
 
     @property
     def errorType(self):
         "Type of error treatment in this PDF's set."
-        return self._ptr.errorType()
+        return self._pdfptr.errorType()
 
     def mkPDF(self, mem):
-        cdef c.PDF* ptr = self._ptr.mkPDF(mem)
+        cdef c.PDF* ptr = self._pdfptr.mkPDF(mem)
         cdef PDF obj
         obj = PDF.__new__(PDF)
         obj.set_ptr(ptr)
         return obj
 
     def mkPDFs(self):
-        cdef vector[c.PDF*] ptrs = self._ptr.mkPDFs()
+        cdef vector[c.PDF*] ptrs = self._pdfptr.mkPDFs()
         cdef PDF obj
         objs = []
         for ptr in ptrs:
@@ -178,6 +200,11 @@ cdef class PDFSet:
             objs.append(obj)
         return objs
 
+
+cdef class PDFInfo(Info):
+    """\
+    A class handling the metadata that defines a given PDF.
+    """
 
 cdef mkPDF_setmem(char* setname, int memid):
     "Factory function to make a PDF object from the set name and member number."

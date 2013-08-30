@@ -41,8 +41,16 @@ cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
         #PDFInfo& info()
         #AlphaS& alphaS()
 
+cdef extern from "../../include/LHAPDF/Info.h" namespace "LHAPDF":
+    cdef cppclass Info:
+        map[string,string] metadata()
+        bool has_key(string)
+        bool has_key_local(string)
+        string get_entry(string) except +
+        string get_entry(string, string) except +
+
 cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
-    cdef cppclass PDFSet:
+    cdef cppclass PDFSet(Info.Info):
         vector[PDF*] mkPDFs()
         PDF* mkPDF(int)
         # int numMembers() except +
@@ -51,6 +59,10 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         string description() except +
         string errorType() except +
 
+cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
+    cdef cppclass PDFInfo(Info.Info):
+        bool has_key(string)
+    
 cdef extern from "../../include/LHAPDF/Factories.h" namespace "LHAPDF":
     #cdef Info& getConfig()
     cdef PDFSet& getPDFSet(string)
@@ -58,3 +70,4 @@ cdef extern from "../../include/LHAPDF/Factories.h" namespace "LHAPDF":
     cdef PDF* mkPDF(string, int)
     cdef PDF* mkPDF(int)
     #cdef AlphaS* mkAlphaS(string)
+
