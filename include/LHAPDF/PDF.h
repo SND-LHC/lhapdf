@@ -283,6 +283,13 @@ namespace LHAPDF {
       return (info().has_key("QMax")) ? sqr(info().get_entry_as<double>("QMax")) : numeric_limits<double>::max();
     }
 
+    /// @brief Check whether PDF is set to only return positive definite values or not.
+    ///
+    /// This is to avoid overshooting in to negative values when interpolating/extrapolating PDFs that sharply decrease towards zero.
+    bool isPositiveDefinite() const {
+      return info().get_entry_as<bool>("PositiveDefinite", false);
+    }
+
     /// @brief Check whether the given x is physically valid
     ///
     /// Returns false for x less than 0 or greater than 1, since it

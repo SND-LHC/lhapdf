@@ -31,6 +31,7 @@ p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify a fixed number of
 p.add_option("--subgrids", dest="USE_SUBGRIDS", action="store_true", help="make distinct xf and alpha_s ipol grids between flavour thresholds", default=False)
 p.add_option("--central-only", dest="CENTRAL_ONLY", action="store_true", help="only dump the first member", default=False)
 p.add_option("-v", "--verbose", dest="VERBOSE", action="store_true", help="verbose output", default=False)
+p.add_option("--force-pos-def"k dest="FORCE_POS_DEF", action="store_true", help="forces any interpolation/extrapolation on this grid to return positive definite values", default=False)
 opts, args = p.parse_args()
 
 ## Standard Z mass in GeV
@@ -289,4 +290,6 @@ for lha5name in args:
         f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
     if lhapdf.getLam5(1) > 0:
         f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
+    if opts.FORCE_POS_DEF is True:
+	f.write("PositiveDefinite: True\n")
     f.close()

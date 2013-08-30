@@ -31,10 +31,11 @@ $SCRIPTDIR/cmpv5v6 --as as_v*.dat -o asacc.dat
 $SCRIPTDIR/plotv5v6 as_v*.dat --type=as -o cmpv5v6_as.pdf
 $SCRIPTDIR/plotv5v6 asacc.dat --type=asdiff -o cmpv5v6_asacc.pdf
 
-## Make a combined PDF of validation plots
+## Make a combined PDF of validation 
 PLOTS="cmpv5v6_as.pdf cmpv5v6_asacc.pdf"
 for pid in $PIDS; do
     PLOTS="$PLOTS cmpv5v6_xf_scanx_$pid.pdf cmpv5v6_xfacc_scanx_$pid.pdf"
     PLOTS="$PLOTS cmpv5v6_xf_scanq_$pid.pdf cmpv5v6_xfacc_scanq_$pid.pdf"
 done
-pdftk $PLOTS cat output validation.pdf
+##pdftk $PLOTS cat output validation.pdf
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=validation.pdf cmp*.pdf

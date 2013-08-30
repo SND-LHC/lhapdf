@@ -250,16 +250,6 @@ MANDATORY
 The member ID in this PDF set of the main ("central") member. Usually 0.
 
 
-PosDefCentralMember
--------------------
-OPTIONAL but should be present if there is a positive-definite central member
-(uint): e.g. 101
-
-The member ID in this PDF set of a main ("central") member with a positive
-definiteness constraint. Important for parton shower programs where negative (or
-even zero?) values in PDFs do not make sense in the ISR Sudakov emission
-probability interpretation.
-
 
 FirstErrorMember
 ----------------
@@ -304,6 +294,14 @@ The version of this PDF's data file, used to version fixes to the set.
 
 @note Use a negative value to flag this PDF as unsuitable for production
 use. The LHAPDF system will produce a warning printout in that case.
+
+
+PositiveDefinite
+----------------
+OPTIONAL
+(bool)
+
+Whether or not a PDF set's members will only return positive definite values.
 
 
 MEMBER LEVEL
