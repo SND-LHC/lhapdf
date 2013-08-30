@@ -137,6 +137,11 @@ namespace LHAPDF {
       return getConfig().get_entry(key); //< fall back to the global config
     }
 
+    /// Retrieve a metadata string by key name, with a fallback
+    const std::string& get_entry(const std::string& key, const std::string& fallback) const {
+      return Info::get_entry(key, fallback);
+    }
+
     //@}
 
 

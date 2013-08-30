@@ -41,6 +41,11 @@ namespace LHAPDF {
     /// Retrieve a metadata string by key name
     const std::string& get_entry(const std::string& key) const;
 
+    /// Retrieve a metadata string by key name, with a fallback
+    const std::string& get_entry(const std::string& key, const std::string& fallback) const {
+      return Info::get_entry(key, fallback);
+    }
+
     //@}
 
 

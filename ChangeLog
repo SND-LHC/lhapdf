@@ -1,3 +1,10 @@
+2013-08-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding do-nothing overloadings of the 2-arg fallback version of
+	get_entry() to PDFSet and PDFInfo: it turns out that inheritance
+	and multiple dispatch of class methods don't automatically play as
+	nicely as you might think!
+
 2013-08-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 6.0.2 patch release.
