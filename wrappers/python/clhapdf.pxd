@@ -19,6 +19,8 @@ cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
         double xfxQ2(int, double, double) except +
         map[int,double] xfxQ(double, double) except +
         map[int,double] xfxQ2(double, double) except +
+        double alphasQ(double) except +
+        double alphasQ2(double) except +
         double xMin()
         double xMax()
         double q2Min()

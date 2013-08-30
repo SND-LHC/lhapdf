@@ -44,7 +44,6 @@ cdef class PDF:
         "Max number of loops involved in this PDF's evolution."
         return self._ptr.qcdOrder()
 
-
     @property
     def xMin(self):
         "Minimum valid value of x to be used with this PDF"
@@ -68,6 +67,13 @@ cdef class PDF:
 
     # TODO: alphaS
 
+    def alphasQ(self, q):
+        "Return alpha_s at q"
+        return self._ptr.alphasQ(q)
+
+    def alphasQ2(self, q2):
+        "Return alpha_s at q2"
+        return self._ptr.alphasQ2(q2)
 
     def xfxQ(self, pid, x, q):
         # TODO: allow 2-arg version without PID which returns a dict for all flavours
