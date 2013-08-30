@@ -44,8 +44,8 @@ int main(int argc, const char* argv[]) {
   #if LHAVERSION > 5
   const LHAPDF::PDF& pdf = *LHAPDF::mkPDF(setname, member);
   #else
-  string setfile = setname;
-  if (setfile.find(".LH" == string::npos) setfile += ".LHgrid";
+  std::string setfile = setname;
+  if (setfile.find(".LH") == std::string::npos) setfile += ".LHgrid";
   LHAPDF::initPDFSetByName(setfile);
   LHAPDF::initPDF(member);
   #endif
