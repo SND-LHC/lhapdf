@@ -9,16 +9,16 @@ Plot the given PDF and alpha_s comparison files.
 import optparse, os
 
 op = optparse.OptionParser(usage=__doc__)
-op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="cmpv5v6.pdf")
-op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode (xf plotting only): x, q", default="x")
-op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, xfdiff, as, asdiff", default="xfdiff")
-op.add_option("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy", default="xy")
-op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation", type=float, default=1e-3)
-op.add_option("--xmin", dest="XMIN", metavar="X", help="low edge of the range in x", type=float, default=None)
-op.add_option("--qmax", dest="QMAX", metavar="Q", help="high edge of the range in Q", type=float, default=None)
-op.add_option("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated", default=None)
-op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated", default=None)
-op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE", default=None)
+op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file [default: %default]", default="cmpv5v6.pdf")
+op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode (xf plotting only): x, q [default: %default]", default="x")
+op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, xfdiff, as, asdiff [default: %default]", default="xfdiff")
+op.add_option("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy [default: %default]", default="xy")
+op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation [default: %default]", type=float, default=1e-3)
+op.add_option("--xmin", dest="XMIN", metavar="X", help="low edge of the range in x [default: %default]", type=float, default=None)
+op.add_option("--qmax", dest="QMAX", metavar="Q", help="high edge of the range in Q [default: %default]", type=float, default=None)
+op.add_option("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated [default: %default]", default=None)
+op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated [default: %default]", default=None)
+op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE [default: %default]", default=None)
 opts, args = op.parse_args()
 
 assert len(args) > 0
