@@ -5,7 +5,7 @@
 LHAPDF6 TODO list
 =================
 
-VERSION 6.0.2
+VERSION 6.0.3
 -------------
 
 - **Build system issues**
@@ -21,24 +21,32 @@ VALIDATION / MIGRATION
 - **NNPDF2.3 PDF validation (AB)**
 
    Looks good except at HF Q thresholds, which aren't phenomenologically
-   worrying. The top PDF has a surprising deviation at Q = 200 GeV.
-   => Move remaining NNPDF 2.3 and 2.1 PDFs into validated area.
+   worrying but would be good to improve. The top PDF has a surprising deviation
+   at all x for Q = 200 GeV, but again not worrying from a pheno point of view.
+   => Move remaining NNPDF 2.3 and 2.1 PDFs into validated area, with completed
+   metadata.
 
 - **MSTW2008 PDF validation (AB)**
 
    Mostly done: subgrid migration and interpolation is working.
-   => Approved for now, but still some deviations. ForcePositive needed?
+   Approved for now for main sets, but still some deviations.
+   => Does ForcePositive improve things sufficiently?
 
 - **HERAPDF validation (SL,AB)**
 
-   Is HERAPDF really just a nearest-point lookup in a fine-spaced grid?!
+   Is HERAPDF really just linear interpolation in a fine-spaced grid?!
 
-- **Final CT10 / CT10nlo migrations**
+- **Final CTEQ6L1 / CT10 / CT10nlo migrations**
 
-   Need ForcePositive option to get exact behaviours without overshoots (also
-   for CTEQ6L1?). Add a --pos flag to creategrids to make this easier
-   (e.g. should be used for all CTEQ sets and for NNPDF MC sets)
+   Use the ForcePositive option to get exact behaviours without overshoots and
+   re-validate.
 
+- **MRST2004qed migration**
+
+   Needs (slightly) special treatment: creategrids needs to call
+   lhapdf.hasPhoton() and then fill a photon member if appropriate, using
+   lhapdf.xfxphoton(x,Q). We need some explicit user demand for this PDF in
+   order to bother!
 
 
 WRITE PAPER
@@ -59,53 +67,51 @@ WRITE PAPER
 VERSION 6.1
 -----------
 
+- **Rename PositiveDefinite to ForcePositive (SL, AB)**
+
+- **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
+
+- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
+
+   I'd like to avoid an extra layer of inheritance: maybe we should just move
+   some current functions from PDF -> GridPDF if they are really inappropriate.
+   It would be good to plan for photon and nuclear PDF effects on the API in the
+   same interface iteration, if possible.
+
 - **Print out a banner (AB)**
 
    Requested/suggested by NNPDF. Print out on LHAPDF system and PDF
    initialisation. Must be disableable via Verbosity = 0, but set default to
    Verbosity = 1 or 2 (need to also define the verbosity level scheme).
 
-- **Gradient extrapolator for PDF x/Q**
-
-   Keep extrapolating linearly outside the range (in log space).
-
-- **Add a ForcePositive config option (SL)**
-
-   If enabled, return 0 (or 1e-10?) in place of any negative PDF value. Cache
-   config flag value to avoid repeated slow metadata lookups. Should solve
-   problems with negative values due to ipol overshoots in PDFs which should
-   be positive-definite such as CTEQ sets and the NNPDF 2.3 MC PDFs.
-
-- **Add Info/Config/PDFSet and AlphaS mappings to Cython**
+- **Add Info/Config/PDFSet and AlphaS mappings to Cython (SL, AB)**
 
   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
 
+
+
+
+VERSION 6.x (COULD INCLUDE 6.1)
+-------------------------------
+
 - **Add mkPDFs<SMART_PTR> templated vector-filling functions (AB)**
-
-- **Incorporate Mark Sutton's suggestions re. the PDF base class (AB)**
-
-
-VERSION 6.x
------------
 
 - **PDF flavor aliasing mechanism**
 
    e.g. allow anti-flavours to be identical without duplicating their grids in
    the data files or memory.
 
-- **Optimize the grid PDF interpolator code a bit more**
-
-   Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
-   CPU: can reduce by factor of 13, typically (only one call for a whole flavour
-   interpolation set at the same point).
-
 - **Expose LHAGLUE slots system for C++ use**
 
    Automatic memory management can be nice for everyone.
 
-- **MRST2004qed migration?**
+- **Improved PDF extrapolator**
 
-   Definitely needs special treatment. Even possible?
+   Keep extrapolating linearly outside the range (in log space)? Graeme suggests
+   a particular form of extrapolation at low-Q established from the anomalous
+   dimension of the function within the grid at that point. Freezing the value
+   may be more appropriate at high-Q. High-x should not require extrapolation,
+   but gradient extrapolation in log space may be a good option at low-x.
 
 - **Improved x -> 1 evolution (GW,...)**
 
@@ -114,15 +120,12 @@ VERSION 6.x
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3)
 
-- **Improved Q -> 0 evolution (GW,...)**
+- **Read tag.gz PDF sets**
 
-   Graeme also recommends a specialised extrapolation treatment at low Q.
-
-- **Read zipped/tarred PDFs**
-
-   With standard directory structure internally. Maybe
+   This would require some sort of virtual filesystem access to the tarball contents.
    https://code.google.com/p/fuse-zip/ or http://sourceforge.net/projects/avf/?
-   Most VFSes seem more designed for CLI use than programmatic ZIP access.
+   Most VFSes seem more designed for CLI use than programmatic ZIP access. Maybe
+   start with a question on StackOverflow to work out the options.
 
 - **Add helper functions for calculating PDF errors on observables**
 
@@ -131,6 +134,7 @@ VERSION 6.x
    ErrorType metadata entry for each PDF set, working out the appropriate error
    treatment should be easy (I think it's best to not use words like
    "infallible"!)
+
 
 
 AS AND WHEN
@@ -146,6 +150,15 @@ AS AND WHEN
    meanings and contents for internal and external purposes: maybe the
    "internal" PDG ID list needs to become part of the grid data header, or can
    the metadata be used?
+
+- **Optimize the grid PDF interpolator code a bit more**
+
+   Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
+   CPU: can reduce by factor of 13 in some use cases (only one call for a whole
+   flavour interpolation set at the same point). Below threshold? Sherpa already
+   report performance increases due to being able to interpolated one flavour at
+   a time, so perhaps this use case is not valid in all generators and could be
+   a more complexity than it is worth.
 
 - **More aggressive memory and CPU optimisation**
 
