@@ -79,7 +79,8 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     ///
     /// If it's already loaded, the existing object will not be reloaded.
     void loadMember(int mem) {
-      assert(mem >= 0);
+      if (mem < 0)
+        throw LHAPDF::UserError("Tried to load a negative PDF member ID: " + LHAPDF::to_str(mem) + " in set " + setname);
       if (members.find(mem) == members.end())
         members[mem] = PDFPtr(LHAPDF::mkPDF(setname, mem));
       currentmem = mem;
@@ -124,6 +125,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   };
 
 
+  /// @todo Remove this: now that 0 is valid and equal to 21, a for-loop from -6 to 6 is fine
   static const int LHAPIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
   static map<int, PDFSetHandler> ACTIVESETS;
 
@@ -154,18 +156,18 @@ extern "C" {
   void initpdfsetm_(const int& nset, const char* setpath, int setpathlength) {
     // Strip file extension for backward compatibility
     string fullp = string(setpath,setpathlength);
-    // remove trailing whitespace
+    // Remove trailing whitespace
     fullp.erase( std::remove_if( fullp.begin(), fullp.end(), ::isspace ), fullp.end() );
-    // use only items after the last /
+    // Use only items after the last /
     const boost::filesystem::path fp = fullp;
     const boost::filesystem::path pap = fp.parent_path();
     const boost::filesystem::path p = fp.leaf();
-    // prepend path to search area
+    // Prepend path to search area
     LHAPDF::pathsPrepend(pap);
-    // handle extensions
-    string path = (p.extension().empty()) ? p.native() : p.stem().native(); 
-    /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
-    if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "CTEQ6L1";
+    // Handle extensions
+    string path = (p.extension().empty()) ? p.native() : p.stem().native();
+    /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
+    if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "cteq6l1";
     // Create the PDF set with index nset
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       ACTIVESETS[nset] = PDFSetHandler(path); //< @todo Will be wrong if a structured path is given
@@ -184,10 +186,10 @@ extern "C" {
     /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
     const boost::filesystem::path p = setname;
     string name = (p.extension().empty()) ? p.native() : p.stem().native();
-    // remove trailing whitespace
+    // Remove trailing whitespace
     name.erase( std::remove_if( name.begin(), name.end(), ::isspace ), name.end() );
-    /// Correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
-    if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "CTEQ6L1";
+    /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
+    if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "cteq6l1";
     // Create the PDF set with index nset
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       ACTIVESETS[nset] = PDFSetHandler(name);
@@ -423,7 +425,7 @@ extern "C" {
     /// @todo Do anything?
   }
 
-  
+
   void getxmin_(const int& nmem , double& xmin){
     int mymem =nmem;
     double axmin=LHAPDF::getXmin( mymem );

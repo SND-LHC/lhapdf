@@ -1,10 +1,14 @@
+2013-09-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fixed misnaming in the automatic rewriting of cteq6ll -> cteq6l1.
+
 2013-08-30 Steve Lloyd <slloyd1990@gmail.com>
 
 	* Added functionality for forcing a loaded GridPDF to return positive
 	definite values through the flag "PositiveDefinite" in the set metadata.
 	This is to prevent overshooting in to negative
 	values when interpolating/extrapolating.  Updated creategrids script with a
-	--force-pos-def flag to reflect this change. 
+	--force-pos-def flag to reflect this change.
 
 2013-08-30  Andy Buckley  <andy.buckley@cern.ch>
 
