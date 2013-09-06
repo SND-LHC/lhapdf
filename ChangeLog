@@ -1,3 +1,7 @@
+2013-09-06  James Ferrando <james.ferrando@cern.ch>
+
+	* modified PDFLIB comaptibility function to handle format of input arrays from POWHEG 
+
 2013-09-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fixed misnaming in the automatic rewriting of cteq6ll -> cteq6l1.
