@@ -30,21 +30,21 @@ namespace LHAPDF {
     GridPDF(const path& path) {
       _loadInfo(path);
       _loadData(_mempath);
-      _isPositiveDefinite = isPositiveDefinite();
+      _forcePos = -1;
     }
 
     /// Constructor from a set name and member ID.
     GridPDF(const std::string& setname, int member) {
       _loadInfo(setname, member);
       _loadData(_mempath);
-      _isPositiveDefinite = isPositiveDefinite();
+      _forcePos = -1;
     }
 
     /// Constructor from a set name and member ID.
     GridPDF(int lhaid) {
       _loadInfo(lhaid);
       _loadData(_mempath);
-      _isPositiveDefinite = isPositiveDefinite();
+      _forcePos = -1;
     }
 
     /// Virtual destructor to allow inheritance.
@@ -260,9 +260,6 @@ namespace LHAPDF {
 
     /// Associated extrapolator (mutable to allow laziness)
     mutable ExtrapolatorPtr _extrapolator;
-
-    // Cached recording of whether or not a GridPDF is forced to return only positive definite values
-    mutable bool _isPositiveDefinite;
 
   };
 

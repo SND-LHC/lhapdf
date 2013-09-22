@@ -106,7 +106,16 @@ namespace LHAPDF {
         return 0.0;
       }
       // Call the delegated method in the concrete PDF object to calculate the in-range value
-      return _xfxQ2(id2, x, q2);
+      double xfx = _xfxQ2(id2, x, q2);
+      // Apply positivity forcing at the enabled level
+      switch (forcePositive()) {
+      case 0: break;
+      case 1: if (xfx >= 0) xfx = 0; break;
+      case 2: if (xfx >= 1e-10) xfx = 1e-10; break;
+      default: throw LogicError("ForcePositive value not in expected range!");
+      }
+      // Return
+      return xfx;
     }
 
 
@@ -283,11 +292,15 @@ namespace LHAPDF {
       return (info().has_key("QMax")) ? sqr(info().get_entry_as<double>("QMax")) : numeric_limits<double>::max();
     }
 
-    /// @brief Check whether PDF is set to only return positive definite values or not.
+    /// @brief Check whether PDF is set to only return positive (definite) values or not.
     ///
-    /// This is to avoid overshooting in to negative values when interpolating/extrapolating PDFs that sharply decrease towards zero.
-    bool isPositiveDefinite() const {
-      return info().get_entry_as<bool>("PositiveDefinite", false);
+    /// This is to avoid overshooting in to negative values when
+    /// interpolating/extrapolating PDFs that sharply decrease towards zero.
+    /// 0 = unforced, 1 = forced positive, 2 = forced positive definite (>= 1e-10)
+    int forcePositive() const {
+      if (_forcePos < 0) //< Caching
+        _forcePos = info().get_entry_as<unsigned int>("ForcePositive", 0);
+      return _forcePos;
     }
 
     /// @brief Check whether the given x is physically valid
@@ -509,6 +522,13 @@ namespace LHAPDF {
 
     /// Optionally loaded AlphaS object
     mutable AlphaSPtr _alphas;
+
+    /// @brief Cached flag for whether to return only positive (or postive definite) PDF values
+    ///
+    /// A negative value indicates that the flag has not been set. 0 = no
+    /// forcing, 1 = force positive (i.e. 0 is permitted, negative values are
+    /// not), 2 = force positive definite (i.e. no values less than 1e-10).
+    mutable int _forcePos;
 
   };
 

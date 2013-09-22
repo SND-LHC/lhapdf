@@ -30,14 +30,9 @@ namespace LHAPDF {
       // for (std::map<double, KnotArrayNF>::const_iterator it = _knotarrays.begin(); it != _knotarrays.end(); ++it)
       //   cout << "#" << i++ << " from Q = " << sqrt(it->first) << endl;
       xfx = interpolator().interpolateXQ2(id, x, q2);
-      // if the PDF is positive definite and the interpolated value is negative, return a small positive number
     } else {
       // cout << "From GridPDF[xpol]: x = " << x << ", Q2 = " << q2 << endl;
-      xfx = extrapolator().extrapolateXQ2(id, x, q2);      
-    }
-    /// If the PDF is positive definite and the extrapolated value is negative, return a small positive number.
-    if (_isPositiveDefinite) {
-      if (xfx <= 0) xfx = 1E-10;
+      xfx = extrapolator().extrapolateXQ2(id, x, q2);
     }
     return xfx;
   }

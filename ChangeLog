@@ -1,6 +1,15 @@
+2013-09-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Change implementation of forced positivity to use an int value
+	to allow for better caching and distinguishing between
+	forced-positive and forced-positive-definite. The flag has been
+	renamed to ForcePositive, to indicate that it triggers an action
+	rather than just being some manually provided information about
+	the PDF in question.
+
 2013-09-06  James Ferrando <james.ferrando@cern.ch>
 
-	* modified PDFLIB comaptibility function to handle format of input arrays from POWHEG 
+	* Modified PDFLIB comaptibility function to handle format of input arrays from POWHEG.
 
 2013-09-03  Andy Buckley  <andy.buckley@cern.ch>
 

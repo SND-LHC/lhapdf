@@ -11,8 +11,20 @@ is requested from a PDF member info and is not found, the search will fall
 back to first the PDF set and then to the global config.
 
 
+Note that there is no such thing as a uniquely config-level or set-level
+quantity: all flags may be set at config, set, or member level -- what
+determines the functionality is the value as evaluated on a PDF member
+regardless of whether it is set directly on that member or if it has cascaded
+down from a higher grouping level.
+
+
 CONFIG LEVEL
 ============
+
+@note The flags listed here are simply most *likely* to be used at config-level,
+but they can be set differently for each set or for each member in a set if so
+desired. Flags set at a more specific level always take precedence.
+
 
 Verbosity
 ---------
@@ -56,6 +68,12 @@ NOT YET IMPLEMENTED!
 
 SET LEVEL
 =========
+
+@note The flags listed here are simply most *likely* to be used at set-level,
+but they can be set differently for each member in a set (or at the global
+config level) if so desired. Flags set at a more specific level always take
+precedence.
+
 
 SetDesc
 -------
@@ -245,9 +263,10 @@ A set-level declaration of the type of error treatment provided by this set.
 CentralMember
 -------------
 MANDATORY
-(uint): e.g. 0
+(int): e.g. 0
 
-The member ID in this PDF set of the main ("central") member. Usually 0.
+The member ID in this PDF set of the main ("central") member. Usually 0. A
+negative value indicates that this set has no central member.
 
 
 
@@ -296,16 +315,25 @@ The version of this PDF's data file, used to version fixes to the set.
 use. The LHAPDF system will produce a warning printout in that case.
 
 
-PositiveDefinite
-----------------
+ForcePositive
+-------------
 OPTIONAL
-(bool)
+(uint = 0,1,2, default = 0)
 
-Whether or not a PDF set's members will only return positive definite values.
+If 0, no positivity forcing will be made. If 1, force returned PDF values to be
+positive (always > 0), to avoid accidental interpolation overshoots into
+negative values. If 2, force returned PDF values to be positive definite (always
+> 1e-10), to avoid both negative values and *also* ensure that the PDF is never
+exactly 0, to avoid issues with reweighting.
 
 
 MEMBER LEVEL
 ============
+
+@note The flags listed here are simply most *likely* to be used at member-level,
+but they can also be set at the set or global config level if so desired. This
+tends not to make sense for most of the flags listed here, however. Flags set at
+a more specific level always take precedence.
 
 Format
 ------
