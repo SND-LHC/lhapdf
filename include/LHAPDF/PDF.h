@@ -110,8 +110,8 @@ namespace LHAPDF {
       // Apply positivity forcing at the enabled level
       switch (forcePositive()) {
       case 0: break;
-      case 1: if (xfx >= 0) xfx = 0; break;
-      case 2: if (xfx >= 1e-10) xfx = 1e-10; break;
+      case 1: if (xfx < 0) xfx = 0; break;
+      case 2: if (xfx < 1e-10) xfx = 1e-10; break;
       default: throw LogicError("ForcePositive value not in expected range!");
       }
       // Return
