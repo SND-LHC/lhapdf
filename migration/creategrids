@@ -17,10 +17,8 @@ TODO:
   * Force PDF behaviour toward x = 1... and Q = 0?
 """
 
-import lhapdf, numpy, math
-import os, sys, optparse
-
 ## Parse the command line to get the set names for migration (in LHAPDF5 format)
+import optparse
 p = optparse.OptionParser(usage=__doc__)
 p.add_option("--xmin", dest="XMIN", metavar="XMIN", help="truncate the x knots array at XMIN, even if the PDF reports knots lower than that", type=float, default=None)
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
@@ -34,6 +32,9 @@ p.add_option("--force-pos", dest="FORCE_POSITIVE", action="store_const", const="
 p.add_option("--force-posdef", dest="FORCE_POSITIVE", action="store_const", const="2", help="forces any interpolation/extrapolation on this grid to return positive definite (>= 1e-10) values", default=0)
 p.add_option("-v", "--verbose", dest="VERBOSE", action="store_true", help="verbose output", default=False)
 opts, args = p.parse_args()
+
+import os, sys
+import lhapdf, numpy, math
 
 ## Standard Z mass in GeV
 MZ = 91.1876
