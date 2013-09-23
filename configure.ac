@@ -12,9 +12,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 
 ## Library version flags (at least update the version comment with each new release version)
-# TODO: add -avoid-version to the LDFLAGS to get rid of the versioned libs (we don't use them anyway)
-VERSIONFLAGS="-version-info 2:0:0" ## for 6.0.2
-AC_SUBST(VERSIONFLAGS)
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION, "$PACKAGE_VERSION", "LHAPDF version string")
 # TODO: improve this sed'ing so that it'll work with version digits > 9
 PACKAGE_VERSION_CODE=[`echo $PACKAGE_VERSION | sed -e 's/\./0/g' -e 's/\([0-9]\+\).*/\1/'`]

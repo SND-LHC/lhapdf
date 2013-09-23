@@ -1,3 +1,7 @@
+2013-09-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add the -avoid-version flag to libtool.
+
 2013-09-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Change implementation of forced positivity to use an int value

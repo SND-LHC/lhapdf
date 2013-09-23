@@ -17,4 +17,5 @@ if ENABLE_LHAGLUE
   libLHAPDF_la_SOURCES += LHAGlue.cc
 endif
 
+libLHAPDF_la_LDFLAGS = -avoid-version
 libLHAPDF_la_LIBADD = $(BOOST_LIBS) $(YAMLCPP_LIBS)
