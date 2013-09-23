@@ -40,10 +40,11 @@ e.g. migration/validation/myset):
 
 ../../dumpvX <setname> <member_num>
 
-with the setname being generally different between v5 and v6 (at the least, v5
-PDF names contain the .LHgrid/.LHpdf file extension). You need to specify
-the data path to the preliminary v6 PDF data files if they're not installed in
-$prefix/share/LHAPDF:
+For .LHgrid sets with LHAPDF5, the setname can be given without the .LHgrid
+extension, i.e. the exact same arguments can be used for LHAPDF5 and 6 dumps.
+You will need to specify a .LHpdf extension if there is one, though: this ~only
+applies to the CTEQ6L1 set, though. You'll also need to specify the data path to
+the preliminary v6 PDF data files if they're not installed in $prefix/share/LHAPDF:
 
 LHAPDF_DATA_PATH=$PWD ./dumpv6 CT10 0
 
