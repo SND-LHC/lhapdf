@@ -1,5 +1,8 @@
 2013-09-23  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add mkPDFs<SMART_PTR> templated vector-filling functions and
+	update the testpdfset example program.
+
 	* Add the -avoid-version flag to libtool.
 
 2013-09-22  Andy Buckley  <andy.buckley@cern.ch>

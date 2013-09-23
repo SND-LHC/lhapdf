@@ -24,7 +24,7 @@ VALIDATION / MIGRATION
    worrying but would be good to improve. The top PDF has a surprising deviation
    at all x for Q = 200 GeV, but again not worrying from a pheno point of view.
    => Move remaining NNPDF 2.3 and 2.1 PDFs into validated area, with completed
-   metadata.
+   metadata. Need to replace some sets cf. 5.9.0 -> 5.9.1?
 
 - **MSTW2008 PDF validation (AB)**
 
@@ -67,10 +67,6 @@ WRITE PAPER
 VERSION 6.1
 -----------
 
-- **Rename PositiveDefinite to ForcePositive (SL, AB)**
-
-- **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
-
 - **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
 
    I'd like to avoid an extra layer of inheritance: maybe we should just move
@@ -84,6 +80,8 @@ VERSION 6.1
    initialisation. Must be disableable via Verbosity = 0, but set default to
    Verbosity = 1 or 2 (need to also define the verbosity level scheme).
 
+- **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
+
 - **Add Info/Config/PDFSet and AlphaS mappings to Cython (SL, AB)**
 
   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
@@ -93,8 +91,6 @@ VERSION 6.1
 
 VERSION 6.x (COULD INCLUDE 6.1)
 -------------------------------
-
-- **Add mkPDFs<SMART_PTR> templated vector-filling functions (AB)**
 
 - **PDF flavor aliasing mechanism**
 
@@ -123,7 +119,7 @@ VERSION 6.x (COULD INCLUDE 6.1)
 - **Read tag.gz PDF sets**
 
    This would require some sort of virtual filesystem access to the tarball contents.
-   https://code.google.com/p/fuse-zip/ or http://sourceforge.net/projects/avf/?
+   https://code.google.com/p/fuse-zip/ or http://sourceforge.net/projects/avf/? FUSE?
    Most VFSes seem more designed for CLI use than programmatic ZIP access. Maybe
    start with a question on StackOverflow to work out the options.
 

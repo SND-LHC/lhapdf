@@ -96,7 +96,18 @@ namespace LHAPDF {
   /// Get all PDFs in a named set (return by a new vector).
   std::vector<PDF*> mkPDFs(const std::string& setname);
 
-  /// @todo Add a templated version which can return a vector of smart ptrs
+  /// Get all PDFs in a named set (return by filling the supplied vector).
+  ///
+  /// This is a templated version for returning a vector of smart ptrs
+  template <typename PTR>
+  void mkPDFs(const std::string& setname, std::vector<PTR>& pdfs) {
+    std::vector<PDF*> rawptrs;
+    mkPDFs(setname, rawptrs);
+    pdfs.clear();
+    pdfs.reserve(rawptrs.size());
+    foreach (const PDF* p, rawptrs)
+      pdfs.push_back(PTR(p));
+  }
 
   //@}
 

@@ -93,16 +93,27 @@ namespace LHAPDF {
     /// This version may be preferred in many circumstances, since it can avoid
     /// the overhead of creating a new temporary vector.
     ///
+    /// A vector of *smart* pointers can be used, for any smart pointer type which
+    /// supports construction from a raw pointer argument, e.g. unique_ptr<PDF>(PDF*).
+    ///
     /// @note The supplied vector will be cleared before filling!
     ///
     /// @note As with the mkPDF method and factory function, the PDF pointers
     /// returned by this method are heap allocated and their memory management
-    /// is now the responsibility of the caller.
-    void mkPDFs(std::vector<PDF*>& pdfs) const {
+    /// is now the responsibility of the caller, either manually for raw pointers
+    /// or automatically if smart pointers are used.
+    ///
+    /// @note Use an *appropriate* smart pointer, of course! This depends in detail on
+    /// how you will use the PDF objects (do you want shared or unique pointers?), but
+    /// they also need to be compatible with storage in STL containers. This is *not*
+    /// the case with std::auto_ptr (which for this reason is replaced with
+    /// std::unique_ptr in C++11).
+    template <typename PTR>
+    void mkPDFs(std::vector<PTR>& pdfs) const {
       pdfs.clear();
       pdfs.reserve(size());
       for (size_t i = 0; i < size(); ++i) {
-        pdfs.push_back( mkPDF(i) );
+        pdfs.push_back( PTR(mkPDF(i)) );
       }
     }
 
@@ -113,6 +124,15 @@ namespace LHAPDF {
     /// is now the responsibility of the caller.
     std::vector<PDF*> mkPDFs() const {
       std::vector<PDF*> rtn;
+      mkPDFs(rtn);
+      return rtn;
+    }
+
+    /// @todo Use the following with default function template args if C++11 is being used
+    // template <typename PTR=PDF*>
+    template <typename PTR>
+    std::vector<PTR> mkPDFs() const {
+      std::vector<PTR> rtn;
       mkPDFs(rtn);
       return rtn;
     }
