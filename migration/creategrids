@@ -43,8 +43,6 @@ import lhapdf, numpy, math
 ## Standard Z mass in GeV
 MZ = 91.1876
 
-print args
-
 ## For every PDF set
 for lha5name in args:
 
