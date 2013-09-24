@@ -20,6 +20,10 @@ TODO:
 ## Parse the command line to get the set names for migration (in LHAPDF5 format)
 import optparse
 p = optparse.OptionParser(usage=__doc__)
+p.add_option("--desc", dest="META_SETDESC", metavar="DESC", help="a value for the SetDesc metadata field", default="")
+p.add_option("--authors", dest="META_AUTHORS", metavar="AUTHORS", help="a value for the Authors metadata field", default="")
+p.add_option("--ref", dest="META_REFERENCE", metavar="REF", help="a value for the Reference metadata field", default="")
+p.add_option("--version", dest="META_DATAVERSION", metavar="VERSION", help="a value for the DataVersion metadata field", type=int, default=-1)
 p.add_option("--xmin", dest="XMIN", metavar="XMIN", help="truncate the x knots array at XMIN, even if the PDF reports knots lower than that", type=float, default=None)
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
 p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
@@ -38,6 +42,8 @@ import lhapdf, numpy, math
 
 ## Standard Z mass in GeV
 MZ = 91.1876
+
+print args
 
 ## For every PDF set
 for lha5name in args:
@@ -251,23 +257,21 @@ for lha5name in args:
     ## Create the set-level metadata file
     metapath = os.path.join(setname, setname + '.info')
     f = open(metapath, "w")
-    f.write("SetDesc: \n")
-    f.write("Authors: \n")
-    f.write("Reference: \n")
+    f.write("SetDesc: %s\n" % opts.META_SETDESC) # TODO: Handle/insert line breaks
+    f.write("Authors: %s\n" % opts.META_AUTHORS)
+    f.write("Reference: %s\n" % opts.META_REFERENCE)
     f.write("Format: lhagrid1\n")
-    #f.write("Status: prelim\n")
-    f.write("DataVersion: -1\n")
+    f.write("DataVersion: %d\n" % opts.META_DATAVERSION)
     f.write("NumMembers: %d\n" % numMembers)
     f.write("Flavors: [%s]\n" % ", ".join(str(pid) for pid in pids))
     f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
     if opts.NUM_FLAVS is not None:
         f.write("FlavorScheme: fixed\n")
         f.write("NumFlavors: %d\n" % opts.NUM_FLAVS)
-    elif lhapdf.getNf() > 0:
-        f.write("FlavorScheme: fixed\n")
-        f.write("NumFlavors: %d\n" % lhapdf.getNf())
     else:
         f.write("FlavorScheme: variable\n")
+        if lhapdf.getNf() > 0:
+            f.write("NumFlavors: %d\n" % lhapdf.getNf())
     f.write("ErrorType: \n")
     f.write("XMin: %g\n" % lhapdf.getXmin(1))
     f.write("XMax: %g\n" % lhapdf.getXmax(1))
