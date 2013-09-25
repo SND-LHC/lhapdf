@@ -1,15 +1,15 @@
-abm11_3n_nlo.LHgrid --nf=3 --ffn
-abm11_3n_nnlo.LHgrid --nf=3 --ffn
-abm11_4n_nlo.LHgrid --nf=4 --ffn
-abm11_4n_nnlo.LHgrid --nf=4 --ffn
-abm11_5n_as_nlo.LHgrid --nf=5 --ffn
-abm11_5n_as_nnlo.LHgrid --nf=5 --ffn
-abm11_5n_nlo.LHgrid --nf=5 --ffn
-abm11_5n_nnlo.LHgrid --nf=5 --ffn
-CJ12max.LHgrid --force-pos
-CJ12mid.LHgrid --force-pos
-CJ12min.LHgrid --force-pos
-CT09MC2.LHgrid --force-pos
+abm11_3n_nlo.LHgrid --nf=3 --ffn --desc="NLO 3-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_3n_nnlo.LHgrid --nf=3 --ffn --desc="NNLO 3-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_4n_nlo.LHgrid --nf=4 --ffn --desc="NLO 4-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_4n_nnlo.LHgrid --nf=4 --ffn --desc="NNLO 4-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_as_nlo.LHgrid --nf=5 --ffn --desc="NLO 5-flavour PDFs for the ABM11 set, with a scan of alphas(Mz) fixed at 0.110 for mem=0; 0.111 for mem=1; ... ; and 0.130 for mem=20" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_as_nnlo.LHgrid --nf=5 --ffn --desc="NLO 5-flavour PDFs for the ABM11 set, with a scan of alphas(Mz) fixed at 0.104 for mem=0; 0.105 for mem=1; ... ; and 0.120 for mem=16" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_nlo.LHgrid --nf=5 --ffn --desc="NLO 5-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_nnlo.LHgrid --nf=5 --ffn --desc="NNLO 5-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+CJ12max.LHgrid --force-pos --desc="CJ12_max. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
+CJ12mid.LHgrid --force-pos --desc="CJ12_mid. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
+CJ12min.LHgrid --force-pos --desc="CJ12_min. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
+CT09MC2.LHgrid --force-pos --desc="CT09 MC PDF with 2-loop alphas and momentum sum rule violation." --ref="arXiv:0910.4183" --authors="H.-L.Lai, J. Huston, S.Mrenna, P.M.Nadolsky, D.Stump, W.-K.Tung and C.-P.Yuan"
 CT10.LHgrid --force-pos --desc="CT10 PDF fits using the standard CTEQ PDF evolution but using the HOPPIT alphas_s running solution. Excluding the D0 Run-II W asymmetry data. mem=0 => central; mem=1-52 => 90% eigenvectors" --ref="arXiv:1007.2241" --authors="H.-L.Lai, M.Guzzi, J. Huston, Z.Li, P.M.Nadolsky, J.Pumplin and C.-P.Yuan"
 CT10as.LHgrid --force-pos --desc="CT10 PDF fit alpha_s variations using the standard CTEQ PDF evolution but using the HOPPIT alphas_s running solution. Excluding the D0 Run-II W asymmetry data. mem=0 => central; mem=0-10 => 90% eigenvectors" --ref="arXiv:1007.2241" --authors="H.-L.Lai, M.Guzzi, J. Huston, Z.Li, P.M.Nadolsky, J.Pumplin and C.-P.Yuan"
 CT10f3.LHgrid --force-pos --nf=3 --ffn --desc="PDF fixed 3-flavour fit using the standard CTEQ PDF evolution but using the HOPPIT alphas_s running solution. Excluding the D0 Run-II W asymmetry data. mem=0 => NF3" --ref="arXiv:1007.2241" --authors="H.-L.Lai, M.Guzzi, J. Huston, Z.Li, P.M.Nadolsky, J.Pumplin and C.-P.Yuan"
