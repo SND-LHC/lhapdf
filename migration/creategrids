@@ -24,6 +24,7 @@ p.add_option("--desc", dest="META_SETDESC", metavar="DESC", help="a value for th
 p.add_option("--authors", dest="META_AUTHORS", metavar="AUTHORS", help="a value for the Authors metadata field", default="")
 p.add_option("--ref", dest="META_REFERENCE", metavar="REF", help="a value for the Reference metadata field", default="")
 p.add_option("--version", dest="META_DATAVERSION", metavar="VERSION", help="a value for the DataVersion metadata field", type=int, default=-1)
+p.add_option("--errtype", dest="META_ERRTYPE", metavar="TYPE", help="a value for the ErrorType metadata field", default="")
 p.add_option("--xmin", dest="XMIN", metavar="XMIN", help="truncate the x knots array at XMIN, even if the PDF reports knots lower than that", type=float, default=None)
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
 p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
@@ -274,13 +275,13 @@ for lha5name in args:
     f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
     if opts.FORCE_POSITIVE > 0:
         f.write("ForcePositive: %d\n" % opts.FORCE_POSITIVE)
-    f.write("FlavorScheme: %s\n" % "fixed" if opts.FIXED_NF else "variable")
+    f.write("FlavorScheme: %s\n" % ("fixed" if opts.FIXED_NF else "variable"))
     # TODO: Yuck... this is unclear/potentially contradictory
     if opts.NUM_FLAVS is not None:
         f.write("NumFlavors: %d\n" % opts.NUM_FLAVS)
     elif lhapdf.getNf() > 0:
         f.write("NumFlavors: %d\n" % lhapdf.getNf())
-    f.write("ErrorType: \n")
+    f.write("ErrorType: %s\n" % opts.META_ERRTYPE)
     f.write("XMin: %g\n" % lhapdf.getXmin(1))
     f.write("XMax: %g\n" % lhapdf.getXmax(1))
     f.write("QMin: %g\n" % math.sqrt(lhapdf.getQ2min(1)))
