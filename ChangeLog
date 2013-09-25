@@ -1,3 +1,7 @@
+2013-09-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Many improvements to creategrids correctness, efficiency, etc.
+
 2013-09-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add mkPDFs<SMART_PTR> templated vector-filling functions and

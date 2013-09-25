@@ -28,10 +28,12 @@ p.add_option("--xmin", dest="XMIN", metavar="XMIN", help="truncate the x knots a
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
 p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
 p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override the original sample grid with a new one", default=False)
-p.add_option("--top", dest="HAS_TOP", action="store_true", help="generate explicit grid entries for top (and tbar) PDFs", default=False)
-p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify a fixed number of flavours [default=variable NF]", default=None)
+p.add_option("--ffn", dest="FIXED_NF", action="store_true", help="specify a fixed number of flavours [default=variable NF]", default=False)
+p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify the number of flavours [default=%default]", default=5)
+p.add_option("--top", dest="NUM_FLAVS", action="store_const", const=6, help="generate explicit grid entries for top (and antitop) PDFs", default=5)
 p.add_option("--subgrids", dest="USE_SUBGRIDS", action="store_true", help="make distinct xf and alpha_s ipol grids between flavour thresholds", default=False)
 p.add_option("--central-only", dest="CENTRAL_ONLY", action="store_true", help="only dump the first member", default=False)
+p.add_option("--force-num-mems", dest="FORCE_NUMMEMS", metavar="N", type=int, help="ignore the reported numberPDF and dump members from 0..N-1", default=None)
 p.add_option("--force-pos", dest="FORCE_POSITIVE", action="store_const", const=1, help="forces any interpolation/extrapolation on this grid to return positive (>= 0) values", default=0)
 p.add_option("--force-posdef", dest="FORCE_POSITIVE", action="store_const", const=2, help="forces any interpolation/extrapolation on this grid to return positive definite (>= 1e-10) values", default=0)
 p.add_option("-v", "--verbose", dest="VERBOSE", action="store_true", help="verbose output", default=False)
@@ -54,9 +56,11 @@ for lha5name in args:
         setname = os.path.splitext(lha5name)[0]
     print "Migrating %s -> %s" % (lha5name, setname)
 
-    ## Create output dir if needed
+    ## Create output dir if needed, otherwise update the dir timestamp for convenience
     if not os.path.exists(setname):
         os.mkdir(setname)
+    else:
+        os.utime(setname, None)
 
     ## Initialize LHAPDF for this set
     lhapdf.initPDFSetByName(lha5name)
@@ -65,6 +69,18 @@ for lha5name in args:
     numMembers = lhapdf.numberPDF() + 1
     if lhapdf.numberPDF() == 1:
        numMembers -= 1
+
+    ## Perhaps override the automatically determined numberPDF
+    if opts.FORCE_NUMMEMS is not None:
+        numMembers = opts.FORCE_NUMMEMS
+
+    ## Determine the active flavors
+    # TODO: Re-order this list as e.g. [0, 1, -1, 2, -2, 3, -3, 4 -4, 5, -5]
+    pids = [n for n in xrange(-opts.NUM_FLAVS, opts.NUM_FLAVS+1) if n != 0]
+    pids.append(21)
+    if lhapdf.hasPhoton():
+        pids.append(22)
+    print "PIDs:", pids
 
     ## This will be filled with the set's Q anchors for alpha_s ipol
     alphas_qs = None
@@ -184,23 +200,6 @@ for lha5name in args:
             if opts.VERBOSE:
                 print "alpha_s Qs =", alphas_qs
 
-
-        ## Determine the active (non-zero) flavours in the grid (will be -5..5 or -6..6)
-        # def active_flavours(xfxs):
-        #     pids = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
-        #     xfxs_array = numpy.array(xfxs)
-        #     pids = [pid for i, pid in enumerate(pids) if xfxs_array[:,i].any()]
-        #     return pids
-        # TODO: Handle PDFs with photon (etc.) members
-        lha5pids = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 0]
-        if opts.HAS_TOP:
-            lha5pids.insert(0, -6)
-            lha5pids.insert(-1, 6)
-        pids = []
-        for lha5pid in lha5pids:
-            pids.append(lha5pid if lha5pid != 0 else 21)
-
-
         ## Work out the member file path and open it for writing
         memname = setname + ('_%04d.dat' % member)
         mempath = os.path.join(setname, memname)
@@ -225,7 +224,19 @@ for lha5name in args:
                     ## Offset the sampling (but not the reported Q) a little on the low Q edges of later subgrids
                     if igrid > 0 and iq == 0:
                         q += 1e-3
-                    xf_vals = [lhapdf.xfx(x, q, pid) for pid in lha5pids]
+
+                    #xf_vals = [lhapdf.xfx(x, q, pid) for pid in lha5pids]
+                    xf_vals = []
+                    for pid in pids:
+                        if abs(pid) <= 6:
+                            xf_vals.append( lhapdf.xfx(x, q, pid) )
+                        elif pid == 21:
+                            xf_vals.append( lhapdf.xfx(x, q, 0) )
+                        elif pid == 22:
+                            # TODO: Handle the MRST2004 PDF photon member
+                            assert False
+                            xf_vals.append( 0.0 )
+
                     xfs.append(xf_vals)
                     # if igrid == 1 and ix == 10:
                     #     print x, q, xf_vals[-1]
@@ -265,13 +276,12 @@ for lha5name in args:
     f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
     if opts.FORCE_POSITIVE > 0:
         f.write("ForcePositive: %d\n" % opts.FORCE_POSITIVE)
+    f.write("FlavorScheme: %s\n" % "fixed" if opts.FIXED_NF else "variable")
+    # TODO: Yuck... this is unclear/potentially contradictory
     if opts.NUM_FLAVS is not None:
-        f.write("FlavorScheme: fixed\n")
         f.write("NumFlavors: %d\n" % opts.NUM_FLAVS)
-    else:
-        f.write("FlavorScheme: variable\n")
-        if lhapdf.getNf() > 0:
-            f.write("NumFlavors: %d\n" % lhapdf.getNf())
+    elif lhapdf.getNf() > 0:
+        f.write("NumFlavors: %d\n" % lhapdf.getNf())
     f.write("ErrorType: \n")
     f.write("XMin: %g\n" % lhapdf.getXmin(1))
     f.write("XMax: %g\n" % lhapdf.getXmax(1))
