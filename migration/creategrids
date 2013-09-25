@@ -233,9 +233,7 @@ for lha5name in args:
                         elif pid == 21:
                             xf_vals.append( lhapdf.xfx(x, q, 0) )
                         elif pid == 22:
-                            # TODO: Handle the MRST2004 PDF photon member
-                            assert False
-                            xf_vals.append( 0.0 )
+                            xf_vals.append( lhapdf.xfxphoton(x, q)[-1] )
 
                     xfs.append(xf_vals)
                     # if igrid == 1 and ix == 10:

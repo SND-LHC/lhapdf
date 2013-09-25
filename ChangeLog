@@ -1,5 +1,7 @@
 2013-09-25  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding machinery for migration of the MRST2004qed set to creategrids.
+
 	* Many improvements to creategrids correctness, efficiency, etc.
 
 2013-09-23  Andy Buckley  <andy.buckley@cern.ch>

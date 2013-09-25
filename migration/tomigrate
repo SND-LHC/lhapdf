@@ -86,8 +86,9 @@ HERAPDF15NLO_VAR.LHgrid
 HERAPDF15NNLO_ALPHAS.LHgrid
 HERAPDF15NNLO_EIG.LHgrid
 HERAPDF15NNLO_VAR.LHgrid
-MRST2007lomod.LHgrid
-MRSTMCal.LHgrid
+MRST2004qed.LHgrid --desc="MRST 2004 NLO+QED fit. mem=0/1 => proton distributions; mem=2 => neutron distributions" --ref="hep-ph/0411040" --authors="MRST Collaboration"
+MRST2007lomod.LHgrid --desc="MRST MC LO* fit: Parton Distributions for LO Generators" --ref="arXiv:0711.2473v2" --authors="A. Sherstnev and R. Thorne."
+MRSTMCal.LHgrid --desc="MRST MC LO** fit: MRST MC fit with alpha_S(k_T^2)" --ref="arXiv:0807.2132" --authors="A. Sherstnev and R. Thorne."
 MSTW2008lo68cl.LHgrid --subgrids
 MSTW2008nlo68cl_asmz-68clhalf.LHgrid --subgrids
 MSTW2008nlo68cl_asmz+68clhalf.LHgrid --subgrids
