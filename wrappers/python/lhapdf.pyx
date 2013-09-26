@@ -120,10 +120,9 @@ cdef class PDF:
 
     # TODO: Map the rest of the metadata functions (including the generic metadata() -> str)
 
-    # TODO: Need another name than "print" in Python?
-    # def _print(self):
-    #     "Print a short summary to stdout"
-    #     self._ptr._print()
+    def _print(self):
+        "Print a short summary to stdout"
+        self._ptr._print()
 
 
 cdef class Info:
@@ -207,32 +206,24 @@ cdef class PDFSet(Info):
             objs.append(obj)
         return objs
 
-    # TODO: Need another name than "print" in Python?
-    # def _print(self):
-    #     "Print a short summary to stdout"
-    #     self._pdfptr._print()
+    def _print(self):
+        "Print a short summary to stdout"
+        self._pdfptr._print()
+
 
 
 cdef class PDFInfo(Info):
     """\
     A class handling the metadata that defines a given PDF.
     """
+    pass
 
-cdef mkPDF_setmem(char* setname, int memid):
-    "Factory function to make a PDF object from the set name and member number."
-    cdef PDF obj = PDF.__new__(PDF)
-    obj.set_ptr(c.mkPDF(string(setname), memid))
-    return obj
 
-cdef mkPDF_lhaid(int lhaid):
-    "Factory function to make a PDF object from the LHAPDF ID number."
-    cdef PDF obj = PDF.__new__(PDF)
-    obj.set_ptr(c.mkPDF(lhaid))
-    return obj
 
 def getPDFSet(setname):
     """Factory function to get the specified PDF set."""
     cdef c.PDFSet* ptr = &c.getPDFSet(setname)
+    # TODO: pointer ownership issue?
     cdef PDFSet obj = PDFSet.__new__(PDFSet)
     obj.set_ptr(ptr)
     return obj
@@ -246,6 +237,20 @@ def mkPDFs(setname):
         obj = PDF.__new__(PDF)
         obj.set_ptr(ptr)
         objs.append(obj)
+    return objs
+
+
+cdef mkPDF_setmem(char* setname, int memid):
+    "Factory function to make a PDF object from the set name and member number."
+    cdef PDF obj = PDF.__new__(PDF)
+    obj.set_ptr(c.mkPDF(string(setname), memid))
+    return obj
+
+cdef mkPDF_lhaid(int lhaid):
+    "Factory function to make a PDF object from the LHAPDF ID number."
+    cdef PDF obj = PDF.__new__(PDF)
+    obj.set_ptr(c.mkPDF(lhaid))
+    return obj
 
 def mkPDF(*args):
     """Factory function to make a PDF object from the set name and member number

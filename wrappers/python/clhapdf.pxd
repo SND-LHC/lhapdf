@@ -37,7 +37,7 @@ cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
         string description() except +
         string type() except +
         int qcdOrder() except +
-        # void _print "print" () except +
+        void _print "print" () except +
         #PDFSet& set()
         #PDFInfo& info()
         #AlphaS& alphaS()
@@ -59,7 +59,7 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         string name() except +
         string description() except +
         string errorType() except +
-        # void _print "print" () except +
+        void _print "print" () except +
 
 cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
     cdef cppclass PDFInfo(Info.Info):
