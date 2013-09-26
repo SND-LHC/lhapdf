@@ -277,37 +277,16 @@ def availablePDFSets():
 
 def paths():
     "Return the list of current PDF data search paths."
-    # TODO: Use Cython >= 0.17 STL type coercion when available
-    cdef vector[string] p = c._paths()
-    return [p[i].c_str() for i in xrange(p.size())]
-
-cdef _setPaths(newpaths):
-    # TODO: Use Cython >= 0.17 STL type coercion when available
-    cdef vector[string] vect
-    cdef char* cs
-    for s in newpaths:
-        cs = s
-        vect.push_back(string(cs))
-    c.setPaths(vect)
+    return c._paths()
 
 def setPaths(newpaths):
     "Set the list of current PDF data search paths."
-    _setPaths(newpaths)
-
-cdef _pathsPrepend(char* newpath):
-    # TODO: Use Cython >= 0.17 STL type coercion when available
-    cdef string s = string(newpath)
-    c.pathsPrepend(s)
+    c.setPaths(newpaths)
 
 def pathsPrepend(newpath):
     "Prepend to the list of current PDF data search paths."
-    _pathsPrepend(newpath)
-
-cdef _pathsAppend(char* newpath):
-    # TODO: Use Cython >= 0.17 STL type coercion when available
-    cdef string s = string(newpath)
-    c.pathsAppend(s)
+    c.pathsPrepend(newpath)
 
 def pathsAppend(newpath):
     "Append to the list of current PDF data search paths."
-    _pathsAppend(newpath)
+    c.pathsAppend(newpath)
