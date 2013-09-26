@@ -133,8 +133,80 @@ cdef class Info:
     cdef set_ptr(self, c.Info* ptr):
         self._ptr = ptr
 
+    def metadata(self):
+        "Return the metadata in the .info file"
+        return self._ptr.metadata()
+
+    def has_key(self, key):
+        "Return whether or not metadata for this key exists"
+        return self.ptr.has_key(key)
+
+    def has_key_local(self, key):
+        "Returns whether or not metadata for this key exists at a local level (config/set/member)"
+        return self._ptr.has_key_local(key)
+
+    # def get_entry(self, key):
+    #     "Returns metadata entry for this key"
+    #     return self._ptr.get_entry(key)
+
+    def get_entry(self, key, fallback=None):
+        "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
+        return self._ptr.get_entry(key, fallback)
+
+
+cdef class PDFSet:
+    """\
+    A collection of PDFs with related fits, most typically a central PDF and a
+    set of extra ones representing different aspects of systematic errors in the
+    fit.
+    """
+    cdef c.PDFSet* _ptr
+    cdef set_ptr(self, c.PDFSet* ptr):
+        self._ptr = ptr
+
     def __dealloc__(self):
-        del self._ptr
+        pass
+
+    def __len__(self):
+        "The total number of members in this set."
+        return self._ptr.size()
+
+    @property
+    def size(self):
+        "The total number of members in this set."
+        return self._ptr.size()
+
+    @property
+    def name(self):
+        "Name of this PDF's containing set."
+        return self._ptr.name()
+
+    @property
+    def description(self):
+        "Description of this PDF's set."
+        return self._ptr.description()
+
+    @property
+    def errorType(self):
+        "Type of error treatment in this PDF's set."
+        return self._ptr.errorType()
+
+    def mkPDF(self, mem):
+        cdef c.PDF* ptr = self._ptr.mkPDF(mem)
+        cdef PDF obj
+        obj = PDF.__new__(PDF)
+        obj.set_ptr(ptr)
+        return obj
+
+    def mkPDFs(self):
+        cdef vector[c.PDF*] ptrs = self._ptr.mkPDFs()
+        cdef PDF obj
+        objs = []
+        for ptr in ptrs:
+            obj = PDF.__new__(PDF)
+            obj.set_ptr(ptr)
+            objs.append(obj)
+        return objs
 
     def metadata(self):
         "Return the metadata in the .info file"
@@ -148,82 +220,63 @@ cdef class Info:
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
         return self._ptr.has_key_local(key)
 
-    def get_entry(self, key):
-        "Returns metadata entry for this key"
-        return self._ptr.get_entry(key)
+    # def get_entry(self, key):
+    #     "Returns metadata entry for this key"
+    #     return self._ptr.get_entry(key)
 
-    def get_entry(self, key, fallback):
+    def get_entry(self, key, fallback=None):
+        "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
+        return self._ptr.get_entry(key, fallback)
+
+    def _print(self):
+        "Print a short summary to stdout"
+        self._ptr._print()
+
+
+
+cdef class PDFInfo:
+    """\
+    A class handling the metadata that defines a given PDF.
+    """
+
+    cdef c.PDFInfo* _ptr
+    cdef set_ptr(self, c.PDFInfo* ptr):
+        self._ptr = ptr
+
+    def metadata(self):
+        "Return the metadata in the .info file"
+        return self._ptr.metadata()
+
+    def has_key(self, key):
+        "Return whether or not metadata for this key exists"
+        return self.ptr.has_key(key)
+
+    def has_key_local(self, key):
+        "Returns whether or not metadata for this key exists at a local level (config/set/member)"
+        return self._ptr.has_key_local(key)
+
+    # def get_entry(self, key):
+    #     "Returns metadata entry for this key"
+    #     return self._ptr.get_entry(key)
+
+    def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
         return self._ptr.get_entry(key, fallback)
 
 
-cdef class PDFSet(Info):
-    """\
-    A collection of PDFs with related fits, most typically a central PDF and a
-    set of extra ones representing different aspects of systematic errors in the
-    fit.
-    """
-    cdef c.PDFSet* _pdfptr
-
-    # @property
-    # def numMembers(self):
-    #     "The total number of members in this set."
-    #     return self._ptr.numMembers()
-
-    def __len__(self):
-        "The total number of members in this set."
-        return self._pdfptr.size()
-
-    @property
-    def name(self):
-        "Name of this PDF's containing set."
-        return self._pdfptr.name()
-
-    @property
-    def description(self):
-        "Description of this PDF's set."
-        return self._pdfptr.description()
-
-    @property
-    def errorType(self):
-        "Type of error treatment in this PDF's set."
-        return self._pdfptr.errorType()
-
-    def mkPDF(self, mem):
-        cdef c.PDF* ptr = self._pdfptr.mkPDF(mem)
-        cdef PDF obj
-        obj = PDF.__new__(PDF)
-        obj.set_ptr(ptr)
-        return obj
-
-    def mkPDFs(self):
-        cdef vector[c.PDF*] ptrs = self._pdfptr.mkPDFs()
-        cdef PDF obj
-        objs = []
-        for ptr in ptrs:
-            obj = PDF.__new__(PDF)
-            obj.set_ptr(ptr)
-            objs.append(obj)
-        return objs
-
-    def _print(self):
-        "Print a short summary to stdout"
-        self._pdfptr._print()
 
 
-
-cdef class PDFInfo(Info):
-    """\
-    A class handling the metadata that defines a given PDF.
-    """
-    pass
-
+def getConfig():
+    """Factory function to get the global config object."""
+    cdef c.Info* ptr = &c.getConfig()
+    cdef Info obj = Info.__new__(Info)
+    obj.set_ptr(ptr)
+    return obj
 
 
 def getPDFSet(setname):
     """Factory function to get the specified PDF set."""
     cdef c.PDFSet* ptr = &c.getPDFSet(setname)
-    # TODO: pointer ownership issue?
     cdef PDFSet obj = PDFSet.__new__(PDFSet)
     obj.set_ptr(ptr)
     return obj
@@ -264,7 +317,7 @@ def mkPDF(*args):
 
 
 
-## TODO: map AlphaS and Info/Config
+## TODO: map AlphaS
 
 
 

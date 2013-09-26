@@ -1,5 +1,7 @@
 2013-09-26  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fixing and extending Cython wrappers for Info and subclasses.
+
 	* Adding print() and dataversion() functions on PDF and PDFSet.
 
 2013-09-25  Andy Buckley  <andy.buckley@cern.ch>

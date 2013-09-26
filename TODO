@@ -66,8 +66,6 @@ VERSION 6.1
    It would be good to plan for photon and nuclear PDF effects on the API in the
    same interface iteration, if possible.
 
-- **Add summary-printing methods for PDF and PDFSet (AB)**
-
 - **Print out a banner (AB)**
 
    Requested/suggested by NNPDF. Print out on LHAPDF system and PDF
@@ -76,7 +74,7 @@ VERSION 6.1
 
 - **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
 
-- **Add Info/Config/PDFSet and AlphaS mappings to Cython (SL, AB)**
+- **Add AlphaS mappings to Cython (SL, AB)**
 
   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
 
@@ -109,7 +107,7 @@ VERSION 6.x (COULD INCLUDE 6.1)
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3)
 
-- **Read tag.gz PDF sets**
+- **Read PDF sets from tar/zip files**
 
    This would require some sort of virtual filesystem access to the tarball contents.
    https://code.google.com/p/fuse-zip/ or http://sourceforge.net/projects/avf/? FUSE?
@@ -179,7 +177,7 @@ AS AND WHEN
 
 - **Make GridPDFs not read their info or data blocks until an xf value is requested?!**
 
-   Super-laziness!
+   Super-laziness! But is there a real gain other than ~1 sec initialization speed?
 
 - **Speed up interpolation with (opportunistic) GPU and/or threaded interpolation**
 
