@@ -120,6 +120,12 @@ cdef class PDF:
 
     # TODO: Map the rest of the metadata functions (including the generic metadata() -> str)
 
+    # TODO: Need another name than "print" in Python?
+    # def _print(self):
+    #     "Print a short summary to stdout"
+    #     self._ptr._print()
+
+
 cdef class Info:
     """\
     Class that handles the parsing of PDF set metadata in the .info file.
@@ -138,7 +144,7 @@ cdef class Info:
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
         return self.ptr.has_key(key)
-   
+
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
         return self._ptr.has_key_local(key)
@@ -151,12 +157,13 @@ cdef class Info:
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
         return self._ptr.get_entry(key, fallback)
 
+
 cdef class PDFSet(Info):
     """\
     A collection of PDFs with related fits, most typically a central PDF and a
     set of extra ones representing different aspects of systematic errors in the
     fit.
-    """	
+    """
     cdef c.PDFSet* _pdfptr
 
     # @property
@@ -199,6 +206,11 @@ cdef class PDFSet(Info):
             obj.set_ptr(ptr)
             objs.append(obj)
         return objs
+
+    # TODO: Need another name than "print" in Python?
+    # def _print(self):
+    #     "Print a short summary to stdout"
+    #     self._pdfptr._print()
 
 
 cdef class PDFInfo(Info):

@@ -1,3 +1,7 @@
+2013-09-26  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding print() and dataversion() functions on PDF and PDFSet.
+
 2013-09-25  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding machinery for migration of the MRST2004qed set to creategrids.

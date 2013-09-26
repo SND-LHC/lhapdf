@@ -5,7 +5,7 @@ AM_CPPFLAGS += -DLHAPDF_INSTALL_PREFIX=\"$(prefix)\" -DLHAPDF_DATA_PREFIX=\"$(da
 AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib $(BOOST_LDFLAGS) $(YAMLCPP_LDFLAGS)
 
 libLHAPDF_la_SOURCES = \
-  GridPDF.cc Paths.cc \
+  PDF.cc GridPDF.cc Paths.cc \
   Info.cc PDFInfo.cc \
   Interpolator.cc BilinearInterpolator.cc BicubicInterpolator.cc \
   LogBilinearInterpolator.cc LogBicubicInterpolator.cc \

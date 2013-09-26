@@ -56,22 +56,33 @@ namespace LHAPDF {
       return get_entry("SetDesc");
     }
 
-    /// Get the type of PDF errors in this set (replica, symmhessian, asymmhessian, none)
-    std::string errorType() const {
-      return to_lower_copy(get_entry("ErrorType"));
+    /// Version of this PDF set's data files
+    int dataversion() const {
+      return get_entry_as<int>("DataVersion", -1);
     }
 
-    // /// Number of members in this set
+    /// Get the type of PDF errors in this set (replica, symmhessian, asymmhessian, none)
+    std::string errorType() const {
+      return to_lower_copy(get_entry("ErrorType", "UNKNOWN"));
+    }
+
+    /// Number of members in this set
     // int numMembers() const {
     //   return get_entry_as<int>("NumMembers");
     // }
-
-    // /// Number of members in this set
     size_t size() const {
       return get_entry_as<unsigned int>("NumMembers");
     }
 
     //@}
+
+
+    /// Summary printout
+    void print(std::ostream& os=std::cout) const {
+      os << name() << ", version " << dataversion() << "\n"
+         << size() << " PDF members\n"
+         << description() << std::endl;
+    }
 
 
     /// @name Creating PDF members

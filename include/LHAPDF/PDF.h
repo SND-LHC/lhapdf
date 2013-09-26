@@ -415,7 +415,12 @@ namespace LHAPDF {
 
     /// Description of this PDF member
     std::string description() const {
-      return info().get_entry("PdfDesc");
+      return info().get_entry("PdfDesc", "");
+    }
+
+    /// Version of this PDF's data file
+    int dataversion() const {
+      return info().get_entry_as<int>("DataVersion", -1);
     }
 
     /// Get the type of PDF member that this object represents (central, error)
@@ -424,6 +429,10 @@ namespace LHAPDF {
     }
 
     //@}
+
+
+    /// Summary printout
+    void print(std::ostream& os=std::cout) const;
 
 
     /// @name Parton content and QCD parameters
