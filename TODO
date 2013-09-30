@@ -5,40 +5,39 @@
 LHAPDF6 TODO list
 =================
 
-VERSION 6.0.3
--------------
-
-- **Build system issues**
-
-   BOOST_DIR variable doesn't work / Boost not found on Mac+Fink?
-
-
 
 VALIDATION / MIGRATION
 ----------------------
 
-- **Put validation plot PDFs on Web**
+- **Put all (central) validation plot PDFs on Web**
 
 - **CTEQ PDF approval (AB)**
 
    Contact Pavel Nadolsky / Joey Huston, etc.
 
-- **NNPDF2.3 FFN and QED PDF validation (AB, NNPDF)**
+- **NNPDF2.3 MC and FFN and QED PDF validation (AB, NNPDF)**
+
+   Get Juan, Stefano, Maria to check the MC and FFN sets and to submit the QED
+   sets.
+
+- **ATLAS PDFs (AB, ATLAS)**
+
+   Sasha, Voica, Mark to approve.
 
 - **MRST PDF validation (AB,GW)**
 
    2004QED, LO* and LO**
 
+   Approval needed by Robert, James, Sasha et al.
+
 - **MSTW2008 PDF validation (AB)**
 
-   Mostly done: subgrid migration and interpolation is working.
-   Approved for now for main sets, but still some deviations.
-   => Use ForcePositive?
+   Approval needed by Graeme, Robert et al.
 
 - **HERAPDF validation (SL,AB)**
 
    Is HERAPDF really just linear interpolation in a fine-spaced grid?!
-
+   Contact Mandy (and others) re. approval.
 
 
 WRITE PAPER
@@ -56,15 +55,8 @@ WRITE PAPER
 
 
 
-VERSION 6.1
------------
-
-- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
-
-   I'd like to avoid an extra layer of inheritance: maybe we should just move
-   some current functions from PDF -> GridPDF if they are really inappropriate.
-   It would be good to plan for photon and nuclear PDF effects on the API in the
-   same interface iteration, if possible.
+VERSION 6.0.4
+-------------
 
 - **Print out a banner (AB)**
 
@@ -80,8 +72,21 @@ VERSION 6.1
 
 
 
-VERSION 6.x (COULD INCLUDE 6.1)
--------------------------------
+VERSION 6.1
+-----------
+
+- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
+
+   I'd like to avoid an extra layer of inheritance: maybe we should just move
+   some current functions from PDF -> GridPDF if they are really inappropriate.
+   And is it really LHAPDF's responsibility to define a base class suitable for
+   ~all PDF applications?  If we do modify the API, it would be good to plan for
+   photon and nuclear PDF effects on the API in the same interface iteration, if
+   possible.
+
+- **Add command-line PDF query/download/upgrade command (David Hall)**
+
+   Discuss/prototype at the Glasgow dev workshop.
 
 - **PDF flavor aliasing mechanism**
 
