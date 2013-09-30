@@ -197,7 +197,7 @@ architectures.
     cd ..
 
     ## Build LHAPDF
-    LHANAME=LHAPDF-6.0.2
+    LHANAME=LHAPDF-6.X.Y
     wget http://www.hepforge.org/archive/lhapdf/$LHANAME.tar.gz -O- | tar xz
     cd $LHANAME
     ./configure --prefix=$PWD/../local \
