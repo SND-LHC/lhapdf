@@ -15,6 +15,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION, "$PACKAGE_VERSION", "LHAPDF version string")
 # TODO: improve this sed'ing so that it'll work with version digits > 9
 PACKAGE_VERSION_CODE=[`echo $PACKAGE_VERSION | sed -e 's/\./0/g' -e 's/\([0-9]\+\).*/\1/'`]
+PACKAGE_MAJOR_VERSION=[`echo $PACKAGE_VERSION | sed -e 's/^\(.\..\).*/\1/'`]
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION_CODE, $PACKAGE_VERSION_CODE, "LHAPDF version as an int")
 
 
@@ -194,15 +195,15 @@ echo "IMPORTANT INFORMATION ABOUT PDF SETS"
 echo
 echo "LHAPDF no longer bundles PDF set data in the package tarball."
 echo "The sets are instead all stored online at"
-echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/"
+echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/${PACKAGE_MAJOR_VERSION}/"
 echo "and you should install those that you wish to use into"
 echo "  $pkgdatadir"
 echo
-echo "In LHAPDFv6, downloadable sets are packaged as tarballs, which"
+echo "The downloadable PDF sets are packaged as tarballs, which"
 echo "must be expanded to be used. Here is an example of how to"
 echo "retrieve and install a PDF set from the command line:"
 echo
-echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/6.0/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
+echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/${PACKAGE_MAJOR_VERSION}/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
 echo
 echo "****************************************************************"
 echo
