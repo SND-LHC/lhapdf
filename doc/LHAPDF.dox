@@ -177,7 +177,9 @@ location that you specified, call `make install`. You will (or at least
 
 CERN's lxplus shared system is always an awkward environment to build packages,
 since the system compiler etc. are not part of the LCG supported list of
-architectures.
+architectures. Here is an example of how to build LHAPDF and its dependencies
+there -- although you can of course use other compilers, Python versions, build
+flags, etc. as you wish!
 
     ## Set up build tools
     source /afs/cern.ch/sw/lcg/contrib/gcc/4.6/x86_64-slc6-gcc46-opt/setup.sh
