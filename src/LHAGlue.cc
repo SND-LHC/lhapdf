@@ -169,8 +169,8 @@ extern "C" {
     /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "cteq6l1";
     // Create the PDF set with index nset
-    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-      ACTIVESETS[nset] = PDFSetHandler(path); //< @todo Will be wrong if a structured path is given
+    // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    ACTIVESETS[nset] = PDFSetHandler(path); //< @todo Will be wrong if a structured path is given
   }
 
   /// Load a PDF set (non-multiset version)
@@ -191,8 +191,8 @@ extern "C" {
     /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "cteq6l1";
     // Create the PDF set with index nset
-    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-      ACTIVESETS[nset] = PDFSetHandler(name);
+    // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    ACTIVESETS[nset] = PDFSetHandler(name);
   }
 
   /// Load a PDF set by name (non-multiset version)
