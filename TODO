@@ -6,6 +6,25 @@ LHAPDF6 TODO list
 =================
 
 
+VERSION 6.0.4
+-------------
+
+- **Print out a banner (AB)**
+
+   Requested/suggested by NNPDF. Print out on LHAPDF system and PDF
+   initialisation. Must be disableable via Verbosity = 0, but set default to
+   Verbosity = 1 or 2 (need to also define the verbosity level scheme).
+
+- **Extra input path trimming needed in Fortran interface? (JF)**
+
+   See emails from Jan.
+
+- **Add AlphaS mappings to Cython (SL, AB)**
+
+  And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+
+
+
 VALIDATION / MIGRATION
 ----------------------
 
@@ -55,23 +74,6 @@ WRITE PAPER
 
 
 
-VERSION 6.0.4
--------------
-
-- **Print out a banner (AB)**
-
-   Requested/suggested by NNPDF. Print out on LHAPDF system and PDF
-   initialisation. Must be disableable via Verbosity = 0, but set default to
-   Verbosity = 1 or 2 (need to also define the verbosity level scheme).
-
-- **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
-
-- **Add AlphaS mappings to Cython (SL, AB)**
-
-  And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
-
-
-
 VERSION 6.1
 -----------
 
@@ -87,6 +89,8 @@ VERSION 6.1
 - **Add command-line PDF query/download/upgrade command (David Hall)**
 
    Discuss/prototype at the Glasgow dev workshop.
+
+- **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
 
 - **PDF flavor aliasing mechanism**
 

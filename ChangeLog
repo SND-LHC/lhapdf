@@ -1,6 +1,7 @@
 2013-10-03  Andy Buckley  <andy.buckley@cern.ch>
 
-	* src/LHAGlue.cc: Removing erroneous if "protection" blocks which broke PDF set re-initialisation.
+	* src/LHAGlue.cc: Removing erroneous if "protection" blocks which
+	broke PDF set re-initialisation.
 
 2013-09-30  Andy Buckley  <andy.buckley@cern.ch>
 
