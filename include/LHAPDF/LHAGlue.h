@@ -188,6 +188,11 @@ namespace LHAPDF {
 
   /// Initialise @a member in PDF set @a setid.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-  void initPDFSet(const std::string& name);
+  void initPDFSet(const std::string& name, int member=0);
+  void initPDFSet(int nset ,const std::string& name, int nmem=0);
+
+  void initPDFSet(int setid, int member=0);
+  void initPDFSet(int nset , int setid, int nmem=0);
+
 
 }

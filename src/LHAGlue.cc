@@ -181,10 +181,12 @@ extern "C" {
 
 
   /// Load a PDF set by name
-  void initpdfsetbynamem_(const int& nset, const char* setname, int setnamelength) {
+  void initpdfsetbynamem_(const int& nset, const char* setname, int setnamelength) {    
+    // truncate input to size setnamelength
+    string my_name= (setname);
+    my_name.erase(setnamelength,std::string::npos);
+    const boost::filesystem::path p = my_name.c_str();
     // Strip file extension for backward compatibility
-    /// @todo Don't we need to use substr & setnamelength since Fortran strs are not 0-terminated?
-    const boost::filesystem::path p = setname;
     string name = (p.extension().empty()) ? p.native() : p.stem().native();
     // Remove trailing whitespace
     name.erase( std::remove_if( name.begin(), name.end(), ::isspace ), name.end() );
@@ -531,18 +533,32 @@ void LHAPDF::xfx(int nset, double x, double Q, double* results) {
 }
 
 
-void LHAPDF::initPDFSet(const string& filename) {
-  initPDFSetByName(filename);
+void LHAPDF::initPDFSet(const string& filename, int nmem) {
+  initPDFSet(1,filename, nmem);
 }
 
+void LHAPDF::initPDFSet(int nset, const string& filename, int nmem) {
+  initPDFSetByName(nset,filename);
+  ACTIVESETS[nset].loadMember(nmem);
+}
+
+void LHAPDF::initPDFSet(int nset, int setid, int nmem) {
+  ACTIVESETS[nset] = PDFSetHandler(setid); //
+}
+
+void LHAPDF::initPDFSet(int setid, int nmem) {
+  initPDFSet(1,setid,nmem);
+}
 
 
 #define SIZE 999
 void initPDFSetByName(const string& filename) {
+  std::cout << "initPDFSetByName: " << filename << std::endl;
   char cfilename[SIZE+1];
   strncpy(cfilename, filename.c_str(), SIZE);
   initpdfsetbyname_(cfilename, filename.length());
 }
+
 
 void initPDFSetByName(int nset, const string& filename) {
   char cfilename[SIZE+1];

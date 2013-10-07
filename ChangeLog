@@ -1,8 +1,18 @@
+<<<<<<< local
+2013-10-07 James Ferrando <james.ferrando@cern.ch>
+=======
 2013-10-03  Andy Buckley  <andy.buckley@cern.ch>
+>>>>>>> other
 
+<<<<<<< local
+	* Fixed handling of Fortran string-in-common-block objects in the initPDFSet routine
+	* Added missing initPDFSet variants w.r.t. lhapdf5.
+	
+=======
 	* src/LHAGlue.cc: Removing erroneous if "protection" blocks which
 	broke PDF set re-initialisation.
 
+>>>>>>> other
 2013-09-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.0.3 release.
