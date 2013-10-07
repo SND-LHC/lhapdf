@@ -9,9 +9,17 @@ LHAPDF6 TODO list
 VERSION 6.0.4
 -------------
 
-- **Extra input path trimming needed in Fortran interface? (JF)**
+- **Extra input path trimming in Fortran interface (JF)**
 
-   See emails from Jan.
+   See emails from Jan Piclum.
+
+- **Remaining LHAPDF5 C++ init methods in LHAGlue (JF)**
+
+   Except for the ones with the TYPE enum?
+
+
+VERSION 6.0.5
+-------------
 
 - **Add AlphaS mappings to Cython (SL, AB)**
 
@@ -27,35 +35,36 @@ VERSION 6.0.4
 VALIDATION / MIGRATION
 ----------------------
 
-- **Put all (central) validation plot PDFs on Web**
+- **Put all (central) validation plot PDFs on Web (AB)**
+
+   Decrease the threshold a bit and run over all central PDFs.
 
 - **CTEQ PDF approval (AB)**
 
-   Contact Pavel Nadolsky / Joey Huston, etc.
+   Pavel Nadolsky and Jon Pumplin contacted.
 
 - **NNPDF2.3 MC and FFN and QED PDF validation (AB, NNPDF)**
 
-   Get Juan, Stefano, Maria to check the MC and FFN sets and to submit the QED
-   sets.
+   Juan, Stefano, Maria are checking the MC and FFN sets and will submit the new
+   QED sets (NLO and LO).
 
 - **ATLAS PDFs (AB, ATLAS)**
 
-   Sasha, Voica, Mark to approve.
+   Sasha, Voica, Mark to provide and approve: contacted.
 
 - **MRST PDF validation (AB,GW)**
 
    2004QED, LO* and LO**
 
-   Approval needed by Robert, James, Sasha et al.
+   Approval needed by Robert et al: contacted.
 
 - **MSTW2008 PDF validation (AB)**
 
-   Approval needed by Graeme, Robert et al.
+   Approval needed by Graeme, Robert et al: contacted.
 
 - **HERAPDF validation (SL,AB)**
 
-   Is HERAPDF really just linear interpolation in a fine-spaced grid?!
-   Contact Mandy (and others) re. approval.
+   Mandy (and others) contacted for approval.
 
 
 WRITE PAPER
@@ -83,7 +92,8 @@ VERSION 6.1
    And is it really LHAPDF's responsibility to define a base class suitable for
    ~all PDF applications?  If we do modify the API, it would be good to plan for
    photon and nuclear PDF effects on the API in the same interface iteration, if
-   possible.
+   possible. Discuss at the Glasgow dev workshop.
+
 
 - **Add command-line PDF query/download/upgrade command (David Hall)**
 
@@ -91,10 +101,12 @@ VERSION 6.1
 
 - **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
 
+   Discuss at the Glasgow dev workshop.
+
 - **PDF flavor aliasing mechanism**
 
    e.g. allow anti-flavours to be identical without duplicating their grids in
-   the data files or memory.
+   the data files or memory. How could we implement this?
 
 - **Expose LHAGLUE slots system for C++ use**
 
