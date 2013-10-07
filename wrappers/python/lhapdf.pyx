@@ -118,7 +118,23 @@ cdef class PDF:
         "Check if the specified parton ID is contained in this PDF."
         return self._ptr.hasFlavor(pid)
 
-    # TODO: Map the rest of the metadata functions (including the generic metadata() -> str)
+    cdef _set(self):
+        cdef PDFSet obj = PDFSet.__new__(PDFSet)
+        obj.set_ptr(&self._ptr.set())
+        return obj
+
+    def set(self):
+        "Return the corresponding PDFSet"
+        return self._set()
+
+    cdef _info(self):
+        cdef PDFInfo obj = PDFInfo.__new__(PDFInfo)
+        obj.set_ptr(&self._ptr.info())
+        return obj
+
+    def info(self):
+        "Return the corresponding PDFInfo"
+        return self._info()
 
     def _print(self):
         "Print a short summary to stdout"
@@ -153,6 +169,10 @@ cdef class Info:
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
         rtn = self._ptr.get_entry(key, str(fallback))
         return rtn if str(rtn) != str(fallback) else fallback
+
+    def set_entry(self, key, value):
+        "Set a metadata key"
+        self._ptr.set_entry(key, str(value))
 
 
 cdef class PDFSet:
@@ -319,7 +339,7 @@ def mkPDF(*args):
 
 
 
-## TODO: map AlphaS
+# TODO: map AlphaS
 
 
 

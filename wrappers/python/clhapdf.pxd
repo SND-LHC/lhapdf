@@ -37,9 +37,9 @@ cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
         string description() except +
         string type() except +
         int qcdOrder() except +
-        void _print "print" () except +
-        #PDFSet& set()
-        #PDFInfo& info()
+        void _print "print" () except + # TODO: add the second (verbosity) argument
+        PDFSet& set()
+        PDFInfo& info()
         #AlphaS& alphaS()
 
 cdef extern from "../../include/LHAPDF/Info.h" namespace "LHAPDF":
@@ -49,6 +49,7 @@ cdef extern from "../../include/LHAPDF/Info.h" namespace "LHAPDF":
         bool has_key_local(string)
         string get_entry(string) except +
         string get_entry(string, string) except +
+        void set_entry(string, string)
 
 cdef extern from "../../include/LHAPDF/Config.h" namespace "LHAPDF":
     cdef cppclass Config(Info.Info):
@@ -62,7 +63,7 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         string name() except +
         string description() except +
         string errorType() except +
-        void _print "print" () except +
+        void _print "print" () except + # TODO: map the second (verbosity) argument
 
 cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
     cdef cppclass PDFInfo(Info.Info):
