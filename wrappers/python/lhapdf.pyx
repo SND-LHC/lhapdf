@@ -139,7 +139,7 @@ cdef class Info:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self.ptr.has_key(key)
+        return self._ptr.has_key(key)
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
@@ -151,7 +151,8 @@ cdef class Info:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        return self._ptr.get_entry(key, fallback)
+        rtn = self._ptr.get_entry(key, str(fallback))
+        return rtn if str(rtn) != str(fallback) else fallback
 
 
 cdef class PDFSet:
@@ -214,7 +215,7 @@ cdef class PDFSet:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self.ptr.has_key(key)
+        return self._ptr.has_key(key)
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
@@ -226,7 +227,8 @@ cdef class PDFSet:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        return self._ptr.get_entry(key, fallback)
+        rtn = self._ptr.get_entry(key, str(fallback))
+        return rtn if str(rtn) != str(fallback) else fallback
 
     def _print(self):
         "Print a short summary to stdout"
@@ -249,7 +251,7 @@ cdef class PDFInfo:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self.ptr.has_key(key)
+        return self._ptr.has_key(key)
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
@@ -261,8 +263,8 @@ cdef class PDFInfo:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        return self._ptr.get_entry(key, fallback)
-
+        rtn = self._ptr.get_entry(key, str(fallback))
+        return rtn if str(rtn) != str(fallback) else fallback
 
 
 

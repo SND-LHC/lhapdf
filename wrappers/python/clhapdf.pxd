@@ -66,12 +66,12 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
 
 cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
     cdef cppclass PDFInfo(Info.Info):
-        bool has_key(string)
+        pass #bool has_key(string)
 
 cdef extern from "../../include/LHAPDF/Factories.h" namespace "LHAPDF":
-    cdef Info& getConfig()
-    cdef PDFSet& getPDFSet(string)
-    cdef vector[PDF*] mkPDFs(string)
-    cdef PDF* mkPDF(string, int)
-    cdef PDF* mkPDF(int)
-    #cdef AlphaS* mkAlphaS(string)
+    cdef Info& getConfig() #except +  # TODO: re-enable when Cython refs+exceptions has been bugfixed
+    cdef PDFSet& getPDFSet(string) #except +  # TODO: re-enable when Cython refs+exceptions has been bugfixed
+    cdef vector[PDF*] mkPDFs(string) except +
+    cdef PDF* mkPDF(string, int) except +
+    cdef PDF* mkPDF(int) except +
+    #cdef AlphaS* mkAlphaS(string) except +

@@ -1,3 +1,7 @@
+2013-10-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fixing various aspects of Info, PDFSet, PDFInfo mapping to Python.
+
 2013-10-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* src/LHAGlue.cc: Removing erroneous if "protection" blocks which
