@@ -18,9 +18,11 @@ int main() {
 
   // Directly get a PDF vector using smart pointers for memory handling.
   // NB. C++11 isn't essential: it just supplies unique_ptr (and shared_ptr)
+  #if __cplusplus > 199711L
   #ifndef BOOST_NO_CXX11_SMART_PTR
   typedef unique_ptr<LHAPDF::PDF> PDFPtr;
   vector<PDFPtr> smartpdfs = set.mkPDFs<PDFPtr>();
+  #endif
   #endif
 
   return 0;
