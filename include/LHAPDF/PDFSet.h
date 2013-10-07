@@ -33,6 +33,13 @@ namespace LHAPDF {
       const path setinfopath = findpdfsetinfopath(setname);
       if (!exists(setinfopath))
         throw ReadError("Data file not found for PDF set '" + setname + "'");
+      // /// Print out a banner if sufficient verbosity is enabled
+      // const int verbosity = get_entry_as<int>("Verbosity", 1);
+      // if (verbosity > 0) {
+      //   std::cout << "Loading PDF set '" << setname << "'" << std::endl;
+      //   print(std::cout, verbosity);
+      // }
+      // Load info file
       load(setinfopath);
       /// @todo Check that some mandatory metadata keys have been set: _check() function.
     }
@@ -77,10 +84,14 @@ namespace LHAPDF {
 
 
     /// Summary printout
-    void print(std::ostream& os=std::cout) const {
-      os << name() << ", version " << dataversion() << "\n"
-         << size() << " PDF members\n"
-         << description() << std::endl;
+    void print(std::ostream& os=std::cout, int verbosity=1) const {
+      std::stringstream ss;
+      if (verbosity > 0)
+        ss << name() << ", version " << dataversion() << "\n"
+           << size() << " PDF members";
+      if (verbosity > 1)
+        ss << "\n" << description();
+      os << ss.str() << std::endl;
     }
 
 

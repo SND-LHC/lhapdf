@@ -1,5 +1,8 @@
 2013-10-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding banner printout if Verbosity > 0, and extra arg on
+	print() methods.
+
 	* More Cython mapping improvements -- PDFs can now return their
 	parent set or info objects.
 

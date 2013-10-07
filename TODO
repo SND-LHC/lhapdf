@@ -9,12 +9,6 @@ LHAPDF6 TODO list
 VERSION 6.0.4
 -------------
 
-- **Print out a banner (AB)**
-
-   Requested/suggested by NNPDF. Print out on LHAPDF system and PDF
-   initialisation. Must be disableable via Verbosity = 0, but set default to
-   Verbosity = 1 or 2 (need to also define the verbosity level scheme).
-
 - **Extra input path trimming needed in Fortran interface? (JF)**
 
    See emails from Jan.
