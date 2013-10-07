@@ -23,6 +23,11 @@ VERSION 6.0.4
 
   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
 
+- **Translate C++ exceptions into Python exceptions**
+
+   Should be happening automatically -- Cython bug? There is a real, definite
+   Cython bug re. exception declarations on functions that return references,
+   so the exception declarations on getPDFSet() etc. are commented for now.
 
 
 VALIDATION / MIGRATION

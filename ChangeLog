@@ -1,5 +1,7 @@
 2013-10-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Improving error messages when PDF data files are not found.
+
 	* Fixing various aspects of Info, PDFSet, PDFInfo mapping to Python.
 
 2013-10-03  Andy Buckley  <andy.buckley@cern.ch>
