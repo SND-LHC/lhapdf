@@ -118,7 +118,23 @@ cdef class PDF:
         "Check if the specified parton ID is contained in this PDF."
         return self._ptr.hasFlavor(pid)
 
-    # TODO: Map the rest of the metadata functions (including the generic metadata() -> str)
+    cdef _set(self):
+        cdef PDFSet obj = PDFSet.__new__(PDFSet)
+        obj.set_ptr(&self._ptr.set())
+        return obj
+
+    def set(self):
+        "Return the corresponding PDFSet"
+        return self._set()
+
+    cdef _info(self):
+        cdef PDFInfo obj = PDFInfo.__new__(PDFInfo)
+        obj.set_ptr(&self._ptr.info())
+        return obj
+
+    def info(self):
+        "Return the corresponding PDFInfo"
+        return self._info()
 
     def _print(self):
         "Print a short summary to stdout"
@@ -139,7 +155,7 @@ cdef class Info:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self.ptr.has_key(key)
+        return self._ptr.has_key(key)
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
@@ -151,7 +167,12 @@ cdef class Info:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        return self._ptr.get_entry(key, fallback)
+        rtn = self._ptr.get_entry(key, str(fallback))
+        return rtn if str(rtn) != str(fallback) else fallback
+
+    def set_entry(self, key, value):
+        "Set a metadata key"
+        self._ptr.set_entry(key, str(value))
 
 
 cdef class PDFSet:
@@ -214,7 +235,7 @@ cdef class PDFSet:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self.ptr.has_key(key)
+        return self._ptr.has_key(key)
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
@@ -226,7 +247,8 @@ cdef class PDFSet:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        return self._ptr.get_entry(key, fallback)
+        rtn = self._ptr.get_entry(key, str(fallback))
+        return rtn if str(rtn) != str(fallback) else fallback
 
     def _print(self):
         "Print a short summary to stdout"
@@ -249,7 +271,7 @@ cdef class PDFInfo:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self.ptr.has_key(key)
+        return self._ptr.has_key(key)
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
@@ -261,8 +283,8 @@ cdef class PDFInfo:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        return self._ptr.get_entry(key, fallback)
-
+        rtn = self._ptr.get_entry(key, str(fallback))
+        return rtn if str(rtn) != str(fallback) else fallback
 
 
 
@@ -317,7 +339,7 @@ def mkPDF(*args):
 
 
 
-## TODO: map AlphaS
+# TODO: map AlphaS
 
 
 

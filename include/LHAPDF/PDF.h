@@ -52,8 +52,14 @@ namespace LHAPDF {
                              + " less than required " + _info.get_entry("MinLHAPDFVersion"));
         }
       }
+      /// Print out a banner if sufficient verbosity is enabled
+      const int verbosity = _info.get_entry_as<int>("Verbosity", 1);
+      if (verbosity > 0) {
+        std::cout << "Loading PDF member at " << mempath << std::endl;
+        print(std::cout, verbosity);
+      }
       /// Print out a warning message if this PDF data is unvalidated
-      if (_info.has_key("DataVersion") && _info.get_entry_as<int>("DataVersion") < 0) {
+      if (_info.get_entry_as<int>("DataVersion", -1) < 0) {
         std::cerr << "WARNING: PDF #" << lhapdfID() << " is preliminary, unvalidated, "
                   << "and not for production use!" << std::endl;
       }
@@ -432,7 +438,7 @@ namespace LHAPDF {
 
 
     /// Summary printout
-    void print(std::ostream& os=std::cout) const;
+    void print(std::ostream& os=std::cout, int verbosity=1) const;
 
 
     /// @name Parton content and QCD parameters

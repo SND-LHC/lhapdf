@@ -1,18 +1,24 @@
-<<<<<<< local
 2013-10-07 James Ferrando <james.ferrando@cern.ch>
-=======
-2013-10-03  Andy Buckley  <andy.buckley@cern.ch>
->>>>>>> other
 
-<<<<<<< local
 	* Fixed handling of Fortran string-in-common-block objects in the initPDFSet routine
 	* Added missing initPDFSet variants w.r.t. lhapdf5.
-	
-=======
+
+2013-10-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding banner printout if Verbosity > 0, and extra arg on
+	print() methods.
+
+	* More Cython mapping improvements -- PDFs can now return their
+	parent set or info objects.
+
+	* Improving error messages when PDF data files are not found.
+
+	* Fixing various aspects of Info, PDFSet, PDFInfo mapping to Python.
+
 	* src/LHAGlue.cc: Removing erroneous if "protection" blocks which
 	broke PDF set re-initialisation.
 
->>>>>>> other
+
 2013-09-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.0.3 release.
