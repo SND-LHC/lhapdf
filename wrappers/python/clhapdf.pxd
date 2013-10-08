@@ -54,6 +54,7 @@ cdef extern from "../../include/LHAPDF/Info.h" namespace "LHAPDF":
 cdef extern from "../../include/LHAPDF/Config.h" namespace "LHAPDF":
     cdef cppclass Config(Info.Info):
         pass
+    cdef void setVerbosity(int)
 
 cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
     cdef cppclass PDFSet(Info.Info):

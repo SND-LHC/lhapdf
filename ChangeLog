@@ -1,6 +1,13 @@
+2013-10-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Tweaking banner and PDF printouts.
+
+	* Adding setVerbosity() function.
+
 2013-10-07 James Ferrando <james.ferrando@cern.ch>
 
 	* Fixed handling of Fortran string-in-common-block objects in the initPDFSet routine
+
 	* Added missing initPDFSet variants w.r.t. lhapdf5.
 
 2013-10-07  Andy Buckley  <andy.buckley@cern.ch>

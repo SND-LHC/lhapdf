@@ -350,6 +350,12 @@ def version():
 __version__ = version()
 
 
+
+def setVerbosity(vlevel):
+    "Set the main verbosity level of the LHAPDF system: 0 = quiet, 2 = loud"
+    c.setVerbosity(vlevel)
+
+
 def availablePDFSets():
     "Get the names of all the available PDF sets on this system."
     return c.availablePDFSets()

@@ -63,4 +63,10 @@ namespace LHAPDF {
   };
 
 
+  /// Convenient way to set the verbosity level
+  inline void setVerbosity(int v) {
+    Config::get().set_entry("Verbosity", v);
+  }
+
+
 }

@@ -55,7 +55,7 @@ namespace LHAPDF {
       /// Print out a banner if sufficient verbosity is enabled
       const int verbosity = _info.get_entry_as<int>("Verbosity", 1);
       if (verbosity > 0) {
-        std::cout << "Loading PDF member at " << mempath << std::endl;
+        std::cout << "LHAPDF " << version() << " loading " << mempath << std::endl;
         print(std::cout, verbosity);
       }
       /// Print out a warning message if this PDF data is unvalidated
