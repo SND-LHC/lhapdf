@@ -1,8 +1,14 @@
 2013-10-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 6.0.4 release.
+
+	* Being a wee bit smart and dropping the verbosity level
+	temporarily when loading a whole set, to avoid flooding the
+	terminal.
+
 	* Tweaking banner and PDF printouts.
 
-	* Adding setVerbosity() function.
+	* Adding verbosity() and setVerbosity() functions.
 
 2013-10-07 James Ferrando <james.ferrando@cern.ch>
 
