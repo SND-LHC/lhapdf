@@ -6,18 +6,6 @@ LHAPDF6 TODO list
 =================
 
 
-VERSION 6.0.4
--------------
-
-- **Extra input path trimming in Fortran interface (JF)**
-
-   See emails from Jan Piclum.
-
-- **Remaining LHAPDF5 C++ init methods in LHAGlue (JF)**
-
-   Except for the ones with the TYPE enum?
-
-
 VERSION 6.0.5
 -------------
 
@@ -94,6 +82,9 @@ VERSION 6.1
    photon and nuclear PDF effects on the API in the same interface iteration, if
    possible. Discuss at the Glasgow dev workshop.
 
+- **Add a configure switch to disable the C++ compatibility functions separately (AB)**
+
+   The Fortran interface can't/won't be upgraded, but the C++ one can.
 
 - **Add command-line PDF query/download/upgrade command (David Hall)**
 
@@ -119,6 +110,11 @@ VERSION 6.1
    dimension of the function within the grid at that point. Freezing the value
    may be more appropriate at high-Q. High-x should not require extrapolation,
    but gradient extrapolation in log space may be a good option at low-x.
+
+- **Provide a nicer Fortran interface?**
+
+   Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
+   away from the the theory world.
 
 - **Improved x -> 1 evolution (GW,...)**
 

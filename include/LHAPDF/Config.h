@@ -63,10 +63,24 @@ namespace LHAPDF {
   };
 
 
+  /// @name Convenient verbosity control
+  //@{
+
+  /// Convenient way to get the current verbosity level
+  ///
+  /// @note Verbosity, like any other flag, can also be set at lower levels. But who does that, really?!?
+  inline int verbosity() {
+    return Config::get().get_entry_as<int>("Verbosity", 1);
+  }
+
   /// Convenient way to set the verbosity level
+  ///
+  /// @note Verbosity, like any other flag, can also be set at lower levels. But who does that, really?!?
   inline void setVerbosity(int v) {
     Config::get().set_entry("Verbosity", v);
   }
+
+  //@}
 
 
 }

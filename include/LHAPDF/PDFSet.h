@@ -7,6 +7,8 @@
 
 #include "LHAPDF/Info.h"
 #include "LHAPDF/Factories.h"
+#include "LHAPDF/Version.h"
+#include "LHAPDF/Config.h"
 
 namespace LHAPDF {
 
@@ -131,11 +133,16 @@ namespace LHAPDF {
     /// std::unique_ptr in C++11).
     template <typename PTR>
     void mkPDFs(std::vector<PTR>& pdfs) const {
+      const int v = verbosity();
+      if (v > 0) std::cout << "LHAPDF " << version() << " loading all "
+                           << size() << " PDFs in set " << name() << std::endl;
       pdfs.clear();
       pdfs.reserve(size());
+      if (v < 2) setVerbosity(0); //< Disable every-member printout unless verbosity level is high
       for (size_t i = 0; i < size(); ++i) {
         pdfs.push_back( PTR(mkPDF(i)) );
       }
+      setVerbosity(v);
     }
 
     /// Make all the PDFs in this set, returning as a vector of PDF pointers

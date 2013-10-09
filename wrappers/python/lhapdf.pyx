@@ -351,6 +351,10 @@ __version__ = version()
 
 
 
+def verbosity():
+    "Get the main verbosity level of the LHAPDF system: 0 = quiet, 2 = loud"
+    return c.verbosity()
+
 def setVerbosity(vlevel):
     "Set the main verbosity level of the LHAPDF system: 0 = quiet, 2 = loud"
     c.setVerbosity(vlevel)
