@@ -11,9 +11,11 @@ namespace LHAPDF {
       ss << set().name() << " PDF set, member #" << memberID()
          << ", version " << dataversion() << "; "
          << "LHAPDF ID = " << lhapdfID();
+    if (verbosity > 2 && set().description().size() > 0)
+      ss << "\n" << set().description();
     if (verbosity > 1 && description().size() > 0)
       ss << "\n" << description();
-    if (verbosity > 1)
+    if (verbosity > 2)
       ss << "\n" << "Flavor content = " << to_str(flavors());
     os << ss.str() << endl;
   }
