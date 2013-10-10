@@ -13,6 +13,7 @@
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
 #include "LHAPDF/Version.h"
+#include "LHAPDF/Config.h"
 
 namespace LHAPDF {
 
@@ -53,10 +54,10 @@ namespace LHAPDF {
         }
       }
       /// Print out a banner if sufficient verbosity is enabled
-      const int verbosity = _info.get_entry_as<int>("Verbosity", 1);
-      if (verbosity > 0) {
+      const int v = verbosity();
+      if (v > 0) {
         std::cout << "LHAPDF " << version() << " loading " << mempath << std::endl;
-        print(std::cout, verbosity);
+        print(std::cout, v);
       }
       /// Print out a warning message if this PDF data is unvalidated
       if (_info.get_entry_as<int>("DataVersion", -1) < 0) {

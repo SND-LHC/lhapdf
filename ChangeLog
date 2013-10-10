@@ -1,3 +1,7 @@
+2013-10-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Small improvements to the banner messages when loading a whole PDF set.
+
 2013-10-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.0.4 release.

@@ -89,8 +89,7 @@ namespace LHAPDF {
     void print(std::ostream& os=std::cout, int verbosity=1) const {
       std::stringstream ss;
       if (verbosity > 0)
-        ss << name() << ", version " << dataversion() << "\n"
-           << size() << " PDF members";
+        ss << name() << ", version " << dataversion() << "; " << size() << " PDF members";
       if (verbosity > 1)
         ss << "\n" << description();
       os << ss.str() << std::endl;
@@ -134,8 +133,10 @@ namespace LHAPDF {
     template <typename PTR>
     void mkPDFs(std::vector<PTR>& pdfs) const {
       const int v = verbosity();
-      if (v > 0) std::cout << "LHAPDF " << version() << " loading all "
-                           << size() << " PDFs in set " << name() << std::endl;
+      if (v > 0) {
+        std::cout << "LHAPDF " << version() << " loading all " << size() << " PDFs in set " << name() << std::endl;
+        this->print(std::cout, v);
+      }
       pdfs.clear();
       pdfs.reserve(size());
       if (v < 2) setVerbosity(0); //< Disable every-member printout unless verbosity level is high

@@ -11,7 +11,12 @@ VERSION 6.0.5
 
 - **Add AlphaS mappings to Cython (SL, AB)**
 
-  And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+
+- **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
+
+   For backward compatibility. Drop this aliasing with version 6.1, when people
+   will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
 
 - **Translate C++ exceptions into Python exceptions**
 
