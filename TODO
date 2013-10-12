@@ -9,6 +9,13 @@ LHAPDF6 TODO list
 VERSION 6.0.5
 -------------
 
+- **Speed up / profile LHAPDF6 again**
+   Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this at 6.0.0
+   and it was outperforming LHA5. Did we accidentally make it slower somehow?
+   callgrind profiling does not show massive dominance of any one function
+   anymore. We can get some gain by caching the last log(x) and log(Q2) values,
+   and perhaps by doing a faster hybrid search in the grids, cf. Dave Mallow's YODA BinSearcher...
+
 - **Add AlphaS mappings to Cython (SL, AB)**
 
    And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
@@ -108,6 +115,14 @@ VERSION 6.1
 
    Automatic memory management can be nice for everyone.
 
+- **Speed up interpolation with (opportunistic) GPU and/or threaded interpolation**
+
+   Interpolation of PDFs seems like an potential use case for GPUs, since it's
+   normal to query for all partons in the set at once: if we can load the
+   relevant ipol anchors for all flavours onto the GPU then we can maybe get a
+   substantial speedup (with Amdahl's Law as the obvious caveat). Or running
+   interpolations on many set members at once? Or both? Good student project...
+
 - **Improved PDF extrapolator**
 
    Keep extrapolating linearly outside the range (in log space)? Graeme suggests
@@ -199,14 +214,6 @@ AS AND WHEN
 - **Make GridPDFs not read their info or data blocks until an xf value is requested?!**
 
    Super-laziness! But is there a real gain other than ~1 sec initialization speed?
-
-- **Speed up interpolation with (opportunistic) GPU and/or threaded interpolation**
-
-   Interpolation of PDFs seems like an ideal use case for PDFs, since it's
-   normal to query for all partons in the set at once: if we can load the
-   relevant ipol anchors for all flavours onto the GPU then we can maybe get a
-   substantial speedup (with Amdahl's Law as the obvious caveat). Good student
-   project...
 
 - **Use HDF5 for the data access?**
 
