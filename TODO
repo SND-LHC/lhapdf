@@ -10,11 +10,25 @@ VERSION 6.0.5
 -------------
 
 - **Speed up / profile LHAPDF6 again**
-   Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this at 6.0.0
-   and it was outperforming LHA5. Did we accidentally make it slower somehow?
-   callgrind profiling does not show massive dominance of any one function
-   anymore. We can get some gain by caching the last log(x) and log(Q2) values,
-   and perhaps by doing a faster hybrid search in the grids, cf. Dave Mallow's YODA BinSearcher...
+
+   Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this
+   at version 6.0.0 and it was outperforming LHA5. Did we accidentally make it
+   slower somehow?  callgrind profiling does not show massive dominance of any
+   one function anymore.
+
+   We can get some gain by caching the last log(x) and log(Q2) values, and
+   perhaps by doing a faster hybrid search in the grids, cf. Dave Mallow's YODA
+   BinSearcher. We can also cache the grid index lookup (lots of std:: functions
+   eating 30% or so of CPU) and interpolation weights. There is some unavoidable
+   C++ object overhead, I expect.
+
+   Can we do anything with GCC builtins to e.g. improve SSE auto-vectorisation?
+   Maybe the CERN OpenLab can give some advice.
+
+   Aliasing can also help us on speed as well as memory, as long as we cache the
+   returned PDF value. This is probably a good idea anyway. I assume most PDFs
+   are going to continue having fewer than Nf degrees of freedom for some time
+   yet?
 
 - **Add AlphaS mappings to Cython (SL, AB)**
 
