@@ -1,3 +1,9 @@
+2013-10-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding OpenMP directives to all-flavour functions in PDF.h. I
+	don't see a big speed difference in profiling, though: -Ofast
+	gives a much bigger speed-up.
+
 2013-10-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Small improvements to the banner messages when loading a whole PDF set.
