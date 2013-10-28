@@ -14,6 +14,7 @@ namespace LHAPDF {
   class PDF;
   class Info;
   class PDFSet;
+  class PDFInfo;
   class Config;
   class Interpolator;
   class Extrapolator;
@@ -58,13 +59,13 @@ namespace LHAPDF {
   ///
   /// Returns a 'new'ed Info by pointer.
   /// The caller is responsible for deletion of the created object.
-  Info* mkPDFInfo(const std::string& setname, int member);
+  PDFInfo* mkPDFInfo(const std::string& setname, int member);
 
   /// Create a new Info object with the given LHAPDF ID code.
   ///
   /// Returns a 'new'ed Info by pointer.
   /// The caller is responsible for deletion of the created object.
-  Info* mkPDFInfo(int lhaid);
+  PDFInfo* mkPDFInfo(int lhaid);
 
   //@}
 

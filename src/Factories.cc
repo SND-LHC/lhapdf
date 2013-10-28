@@ -6,6 +6,7 @@
 #include "LHAPDF/Info.h"
 #include "LHAPDF/Config.h"
 #include "LHAPDF/PDFSet.h"
+#include "LHAPDF/PDFInfo.h"
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/GridPDF.h"
 #include "LHAPDF/BilinearInterpolator.h"
@@ -33,11 +34,12 @@ namespace LHAPDF {
   }
 
 
-  Info* mkPDFInfo(const std::string& setname, int member) {
-    return new Info(findpdfmempath(setname, member));
+  PDFInfo* mkPDFInfo(const std::string& setname, int member) {
+    //return new Info(findpdfmempath(setname, member));
+    return new PDFInfo(setname, member);
   }
 
-  Info* mkPDFInfo(int lhaid) {
+  PDFInfo* mkPDFInfo(int lhaid) {
     const pair<string,int> setname_memid = lookupPDF(lhaid);
     return mkPDFInfo(setname_memid.first, setname_memid.second);
   }
