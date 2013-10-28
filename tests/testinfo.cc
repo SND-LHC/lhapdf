@@ -29,5 +29,13 @@ int main() {
   cout << "PIDs (1): "; foreach (int f, pids) { cout << f << " "; } cout << endl;
   cout << "PIDs (2): " << LHAPDF::to_str(pids) << endl;
 
+  // Now test loading of all central PDFs
+  foreach (const string& name, LHAPDF::availablePDFSets()) {
+    cout << "Testing PDFInfo for " << name << endl;
+    LHAPDF::PDFInfo* i = LHAPDF::mkPDFInfo(name, 0);
+    i->has_key("Foo"); // < Force loading of all info levels
+    delete i;
+  }
+
   return 0;
 }

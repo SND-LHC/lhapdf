@@ -1,3 +1,9 @@
+2013-10-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* tests/: adding testing of all available PDF sets' central info systems.
+
+	* Factories.*: mkPDFInfo now returns PDFInfo* rather than Info*.
+
 2013-10-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding OpenMP directives to all-flavour functions in PDF.h. I
