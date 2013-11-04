@@ -1,4 +1,6 @@
 // Program to test LHAPDF6 PDF behaviour by writing out their values at lots of x and Q points
+// Note: the OpenMP directives are there as an example. In fact, in this case OpenMP slows things
+// down because of the need to make the stream operations critical!
 
 #include "LHAPDF/LHAPDF.h"
 #include <iostream>
@@ -21,22 +23,35 @@ int main(int argc, char* argv[]) {
   vector<int> pids = pdf->flavors();
 
   const double MINLOGX = -10;
+  const double MAXLOGX =   0;
+  const double DX = 0.05; // 0.01
+  const int NX = (int) floor((MAXLOGX - MINLOGX)/DX) + 1;
+
   const double MINLOGQ2 = 1;
   const double MAXLOGQ2 = 8;
+  const double DQ2 = 0.05; // 0.01
+  const int NQ2 = (int) floor((MAXLOGQ2 - MINLOGQ2)/DQ2) + 1;
 
   foreach (int pid, pids) {
     const string spid = boost::lexical_cast<string>(pid);
     const string filename = setname + "_" + smem + "_" + spid + ".dat";
     ofstream f(filename.c_str());
-    const double dx = 0.1; // 0.01
-    const double dq2 = 0.1; // 0.01
-    for (double log10x = MINLOGX; log10x <= 0.0; log10x += dx) {
-      for (double log10q2 = MINLOGQ2; log10q2 <= MAXLOGQ2; log10q2 += dq2) {
-        if (log10x > -1e-3) log10x = 0;
-        const double x = pow(10, log10x);
+    for (int ix = 0; ix < NX; ++ix) {
+      const double log10x = (MINLOGX + ix*DX < -1e-3) ? MINLOGX + ix*DX : 0;
+      const double x = pow(10, log10x);
+      #if defined(_OPENMP)
+      #pragma omp parallel for
+      #endif
+      for (int iq2 = 0; iq2 < NQ2; ++iq2) {
+        const double log10q2 = MINLOGQ2 + iq2*DQ2;
         const double q2 = pow(10, log10q2);
-        f << log10x << " " << log10q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
-        // f << x << " " << q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
+        #if defined(_OPENMP)
+        #pragma omp critical
+        #endif
+        {
+          f << log10x << " " << log10q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
+          // f << x << " " << q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
+        }
       }
     }
     f.close();
