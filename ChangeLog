@@ -1,3 +1,10 @@
+2013-11-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing OpenMP directives: the One Definition Rule makes this
+	usage dangerous/illegal, and I think we've agreed among developers
+	to leave decisions about how to multithread up to the user for
+	their specific case.
+
 2013-10-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* tests/: adding testing of all available PDF sets' central info systems.

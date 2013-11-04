@@ -151,16 +151,7 @@ namespace LHAPDF {
     /// @param rtn Map of PDF xf(x,q2) values, to be filled
     void xfxQ2(double x, double q2, std::map<int, double>& rtn) const {
       rtn.clear();
-      #if defined(_OPENMP)
-      const vector<int> ids = flavors();
-      #pragma omp parallel for
-      for (size_t i = 0; i < ids.size(); ++i) {
-        const int id = ids[i];
-        rtn[id] = xfxQ2(id, x, q2);
-      }
-      #else
       foreach (int id, flavors()) rtn[id] = xfxQ2(id, x, q2);
-      #endif
     }
 
 
@@ -192,9 +183,6 @@ namespace LHAPDF {
     void xfxQ2(double x, double q2, std::vector<double>& rtn) const {
       rtn.clear();
       rtn.resize(13);
-      #if defined(_OPENMP)
-      #pragma omp parallel for
-      #endif
       for (int i = 0; i < 13; ++i) {
         const int id = i-6; // PID = 0 is automatically treated as PID = 21
         rtn[i] = xfxQ2(id, x, q2);
