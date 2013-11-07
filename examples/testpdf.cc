@@ -24,12 +24,12 @@ int main(int argc, char* argv[]) {
 
   const double MINLOGX = -10;
   const double MAXLOGX =   0;
-  const double DX = 0.05; // 0.01
+  const double DX = 0.01;
   const int NX = (int) floor((MAXLOGX - MINLOGX)/DX) + 1;
 
   const double MINLOGQ2 = 1;
   const double MAXLOGQ2 = 8;
-  const double DQ2 = 0.05; // 0.01
+  const double DQ2 = 0.01;
   const int NQ2 = (int) floor((MAXLOGQ2 - MINLOGQ2)/DQ2) + 1;
 
   foreach (int pid, pids) {
@@ -45,13 +45,14 @@ int main(int argc, char* argv[]) {
       for (int iq2 = 0; iq2 < NQ2; ++iq2) {
         const double log10q2 = MINLOGQ2 + iq2*DQ2;
         const double q2 = pow(10, log10q2);
-        #if defined(_OPENMP)
-        #pragma omp critical
-        #endif
-        {
-          f << log10x << " " << log10q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
-          // f << x << " " << q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
-        }
+        const double xf = pdf->xfxQ2(pid, x, q2);
+        // #if defined(_OPENMP)
+        // #pragma omp critical
+        // #endif
+        // {
+        //   f << log10x << " " << log10q2 << " " << xf << endl;
+        //   // f << x << " " << q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
+        // }
       }
     }
     f.close();
