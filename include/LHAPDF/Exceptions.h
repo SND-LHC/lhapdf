@@ -96,7 +96,7 @@ namespace LHAPDF {
   };
 
 
-  /// @brief Error to be raised when an newer LHAPDF version is needed
+  /// @brief Error to be raised when a newer LHAPDF version is needed
   class VersionError : public Exception {
   public:
     /// Constructor with error description string

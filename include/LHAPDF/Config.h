@@ -44,22 +44,6 @@ namespace LHAPDF {
 
     //@}
 
-
-  public:
-
-    /// @name Global config metadata specialisations
-    //@{
-
-    /// @brief All available PDF set names
-    ///
-    /// @note Taken from scanning the directories in LHAPDF_DATA_PATH for
-    /// viable PDF sets.
-    // std::vector<std::string> availablePDFSets() const {
-    //   /// @todo Write!
-    // }
-
-    //@}
-
   };
 
 

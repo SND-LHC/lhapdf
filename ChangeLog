@@ -1,3 +1,26 @@
+2013-11-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding -Qunused-arguments to CPPFLAGS (to keep clang++ quiet).
+
+2013-11-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing OpenMP directives: the One Definition Rule makes this
+	usage dangerous/illegal, and I think we've agreed among developers
+	to leave decisions about how to multithread up to the user for
+	their specific case.
+
+2013-10-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* tests/: adding testing of all available PDF sets' central info systems.
+
+	* Factories.*: mkPDFInfo now returns PDFInfo* rather than Info*.
+
+2013-10-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding OpenMP directives to all-flavour functions in PDF.h. I
+	don't see a big speed difference in profiling, though: -Ofast
+	gives a much bigger speed-up.
+
 2013-10-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Small improvements to the banner messages when loading a whole PDF set.
