@@ -8,10 +8,6 @@
 
 namespace LHAPDF {
 
-
-  /// @todo Respect the NumFlavors + FlavorScheme metadata
-
-
   // Calculate first order derivative, dy/dt, as it appears in the differential equation
   double AlphaS_ODE::_derivative(double t, double y, const vector<double>& beta) const {
     if ( _qcdorder == 0 ) return 0;
@@ -111,11 +107,9 @@ namespace LHAPDF {
     /// This the the relative error allowed for the adaptive step size.
     /// @todo Should be optimised.
     const double allowed_relative = 0.01;
-    // Fractional threshold to which we run in Q2 scale
-    const double faccuracy = 0.01;
 
-    /// @todo Leaving this to allow experimentation with relative accuracy...
-    double accuracy = faccuracy;
+    /// Accuracy of Q2 (error in Q2 within this / 2)
+    double accuracy = 0.01;
 
     // Run in Q2 using RK4 algorithm until we are within our defined accuracy
     double t = sqr(_mz); // starting point
