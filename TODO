@@ -6,10 +6,28 @@ LHAPDF6 TODO list
 =================
 
 
-VERSION 6.0.5
--------------
+VERSION 6.1
+-----------
 
-- **Speed up / profile LHAPDF6 again**
+- **Remove Boost dependency (AB)**
+
+   Boost is being more trouble than it is worth. Removal requires several
+   changes: 1) use private PDF data grid implementation (already shown to be
+   better for CPU), 2) provide our own version of the path/filesystem
+   functionality, 3) replacements for smart points and foreach functions (can we
+   require C++11?)
+
+   Things to replace:
+   - filesystem: TR2 / home-made wrapper
+   - multiarray: replace with Martin's array/SSE code
+   - foreach: iterators or require C++11
+   - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
+   - shared_ptr: manual deletes or require C++11
+   - range and bind: used at all? -> C++11
+
+- **Speed up interpolation (MR)**
+
+   Many studies already
 
    Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this
    at version 6.0.0 and it was outperforming LHA5. Maybe it is slower for CT10
@@ -23,22 +41,58 @@ VERSION 6.0.5
    Martin has got some speed-up out of a native array implementation, and found
    no benefit of changing the index search. Andy will look into caching.
 
-- **Add AlphaS mappings to Cython (SL, AB)**
+- **Speed up initialisation**
 
-   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+   Gavin S has pointed out that STL istream is actually pretty slow, due to
+   wchar handling, etc. and has provided a fastistream which is much faster. We
+   should use it (and restrict the YAML metadata content to ASCII rather thn UTF?)
 
-- **Add debug verbosity about places being searched for PDF files**
+- **Bundle yaml-cpp for optional/fallback static build**
+
+   If external lib is not found by configure, fall back to using a bundled copy,
+   statically linked into libLHAPDF. This will need cmake on the system, so test
+   for that in the configure fallback. Remove yaml-cpp paths from lhapdf-config
+
+- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
+
+   I'd like to avoid an extra layer of inheritance: maybe we should just move
+   some current functions from PDF -> GridPDF if they are really inappropriate.
+   And is it really LHAPDF's responsibility to define a base class suitable for
+   ~all PDF applications?  If we do modify the API, it would be good to plan for
+   photon and nuclear PDF effects on the API in the same interface iteration, if
+   possible. Discuss at the Glasgow dev workshop.
+
+- **Add a configure switch to disable the C++ compatibility functions separately (AB)**
+
+   The Fortran interface can't/won't be upgraded, but the C++ one can.
+
+- **Add command-line PDF query/download/upgrade command (David Hall)**
+
+   Discuss/prototype at the Glasgow dev workshop.
+
+- **Handle zipped PDF .dat files**
+
+   Prefer zipped single member data files rather than virtual filesystem access
+   to the tarball? Should be able to read zipped if a .dat.zip file is found,
+   otherwise fall back to the unzipped .dat. zless can be used to read the
+   contents with minimal overhead.
+
+- **Add helper functions for calculating PDF errors on observables (GW, others)**
+
+   Certainly a good thing to provide an example for... maybe it should just be
+   provided as an example? One nice thing is that since we now store a clear
+   ErrorType metadata entry for each PDF set, working out the appropriate error
+   treatment should be easy (I think it's best to not use words like
+   "infallible"!)
 
 - **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
 
    For backward compatibility. Drop this aliasing with version 6.1, when people
    will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
 
-- **Translate C++ exceptions into Python exceptions**
+- **Add Type enum and C++ function back?**
 
-   Should be happening automatically -- Cython bug? There is a real, definite
-   Cython bug re. exception declarations on functions that return references,
-   so the exception declarations on getPDFSet() etc. are commented for now.
+   Requested by Alex Mitov.
 
 
 VALIDATION / MIGRATION
@@ -47,6 +101,10 @@ VALIDATION / MIGRATION
 - **Put all (central) validation plot PDFs on Web (AB)**
 
    Decrease the threshold a bit and run over all central PDFs.
+
+- **ABM PDF approval**
+
+   Need to contact Segei Alekhin.
 
 - **CTEQ PDF approval (AB)**
 
@@ -90,30 +148,8 @@ WRITE PAPER
    reporting to PYTHIA. Number of members reported correctly. **ADD MORE AS WE REMEMBER THEM**
 
 
-
-VERSION 6.1
------------
-
-- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
-
-   I'd like to avoid an extra layer of inheritance: maybe we should just move
-   some current functions from PDF -> GridPDF if they are really inappropriate.
-   And is it really LHAPDF's responsibility to define a base class suitable for
-   ~all PDF applications?  If we do modify the API, it would be good to plan for
-   photon and nuclear PDF effects on the API in the same interface iteration, if
-   possible. Discuss at the Glasgow dev workshop.
-
-- **Add a configure switch to disable the C++ compatibility functions separately (AB)**
-
-   The Fortran interface can't/won't be upgraded, but the C++ one can.
-
-- **Add command-line PDF query/download/upgrade command (David Hall)**
-
-   Discuss/prototype at the Glasgow dev workshop.
-
-- **Karl's concerns about alpha_s NF and low-Q xpol (KN, AB)**
-
-   Discuss at the Glasgow dev workshop.
+VERSION 6.1.1
+-------------
 
 - **PDF flavor aliasing mechanism**
 
@@ -124,13 +160,12 @@ VERSION 6.1
 
    Automatic memory management can be nice for everyone.
 
-- **Speed up interpolation with (opportunistic) GPU and/or threaded interpolation**
+- **Speed up interpolation with GPUs**
 
    Interpolation of PDFs seems like an potential use case for GPUs, since it's
    normal to query for all partons in the set at once: if we can load the
    relevant ipol anchors for all flavours onto the GPU then we can maybe get a
-   substantial speedup (with Amdahl's Law as the obvious caveat). Or running
-   interpolations on many set members at once? Or both? Good student project...
+   substantial speedup. OpenMP did not particuarly help, from quick tests.
 
 - **Improved PDF extrapolator**
 
@@ -152,21 +187,17 @@ VERSION 6.1
    deserves specialisation beyond generic splines. Graeme will look at what's
    done in the CTEQ code (other than interpolating in x**0.3)
 
-- **Read PDF sets from tar/zip files**
+- **Add AlphaS mappings to Cython (SL, AB)**
 
-   This would require some sort of virtual filesystem access to the tarball contents.
-   https://code.google.com/p/fuse-zip/ or http://sourceforge.net/projects/avf/? FUSE?
-   Most VFSes seem more designed for CLI use than programmatic ZIP access. Maybe
-   start with a question on StackOverflow to work out the options.
+   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
 
-- **Add helper functions for calculating PDF errors on observables**
+- **Add debug verbosity about places being searched for PDF files**
 
-   Certainly a good thing to provide an example for... maybe it should just be
-   provided as an example? One nice thing is that since we now store a clear
-   ErrorType metadata entry for each PDF set, working out the appropriate error
-   treatment should be easy (I think it's best to not use words like
-   "infallible"!)
+- **Translate C++ exceptions into Python exceptions**
 
+   Should be happening automatically -- Cython bug? There is a real, definite
+   Cython bug re. exception declarations on functions that return references,
+   so the exception declarations on getPDFSet() etc. are commented for now.
 
 
 AS AND WHEN
