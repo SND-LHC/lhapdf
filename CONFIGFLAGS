@@ -187,6 +187,8 @@ FlavorScheme
 ------------
 (enum string): fixed/variable
 
+TODO: Also provide optional override AlphaS_FlavorScheme
+
 The flavour treatment scheme used in PDF/alpha_s evolution.
 
 
@@ -195,7 +197,7 @@ NumFlavors
 MANDATORY
 (uint): e.g. 4 or 5
 
-TODO: Rename as
+TODO: Also provide optional override AlphaS_NumFlavors
 
 Maximum/fixed number of flavors used in the fit. Used explicitly in alpha_s evolution.
 

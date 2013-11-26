@@ -90,9 +90,16 @@ VERSION 6.1
    For backward compatibility. Drop this aliasing with version 6.1, when people
    will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
 
-- **Add Type enum and C++ function back?**
+- **Add Type enum and C++ function (JF)**
 
    Requested by Alex Mitov.
+
+- **Separate AlphaS_QThresholdB etc. from QMass (AB/KN)**
+
+   Requested by Alex Mitov.
+
+- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB/KN)**
+
 
 
 VALIDATION / MIGRATION
