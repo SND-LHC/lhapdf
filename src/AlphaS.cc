@@ -13,6 +13,7 @@ namespace LHAPDF {
   AlphaS::AlphaS() {
     _qcdorder = 4;
     _flavorscheme = VARIABLE;
+    _fixflav = -1;
   }
 
 
@@ -25,6 +26,7 @@ namespace LHAPDF {
       if ( element == _quarkmasses.end() ) continue;
       if ( sqr(element->second) < q2 ) nf = it;
     }
+    if ( _fixflav != -1 && nf > _fixflav ) nf = _fixflav;
     return nf;
   }
 

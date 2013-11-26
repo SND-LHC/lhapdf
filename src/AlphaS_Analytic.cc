@@ -16,13 +16,14 @@ namespace LHAPDF {
   /// we are in the 4 flavour range, we use lambda3 but this returns 4)
   /// @todo Is this the "correct" behaviour?
   int AlphaS_Analytic::numFlavorsQ2(double q2) const {
-    if( _flavorscheme == FIXED ) return _fixflav;
+    if ( _flavorscheme == FIXED ) return _fixflav;
     int nf = _nfmin;
     for ( int it = _nfmin; it <= _nfmax; ++it ) {
       std::map<int, double>::const_iterator element = _quarkmasses.find(it);
       if ( element == _quarkmasses.end() ) continue;
       if ( sqr(element->second) < q2 ) nf = it;
     }
+    if ( _fixflav != -1 && nf > _fixflav ) nf = _fixflav;
     return nf;
   }
 
@@ -58,7 +59,7 @@ namespace LHAPDF {
       if ( lambda == _lambdas.end() ) throw Exception("Set lambda(" + to_str(_fixflav) + ") when using a fixed " + to_str(_fixflav) + " flavor scheme.");
       return lambda->second;
     } else {
-      if( nf < 0 ) throw Exception("Requested lambdaQCD for " + to_str(nf) + " number of flavours.");
+      if ( nf < 0 ) throw Exception("Requested lambdaQCD for " + to_str(nf) + " number of flavours.");
       std::map<int, double>::const_iterator lambda = _lambdas.find(nf);
       if ( lambda == _lambdas.end() ) return _lambdaQCD(nf-1);
       return lambda->second;

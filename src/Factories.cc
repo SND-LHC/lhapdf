@@ -116,8 +116,10 @@ namespace LHAPDF {
     if (info.has_key("MBottom")) as->setQuarkMass(5, info.get_entry_as<double>("MBottom"));
     if (info.has_key("MTop")) as->setQuarkMass(6, info.get_entry_as<double>("MTop"));
 
-    if (info.has_key("NumFlavors") &&  info.has_key("FlavorScheme")) {
-      if (to_lower_copy(info.get_entry("FlavorScheme")) == "fixed") as->setFlavorScheme(AlphaS::FIXED, info.get_entry_as<int>("NumFlavors"));
+    if (info.has_key("FlavorScheme")) {
+      if (to_lower_copy(info.get_entry("FlavorScheme")) == "fixed" && info.has_key("NumFlavors")) as->setFlavorScheme(AlphaS::FIXED, info.get_entry_as<int>("NumFlavors"));
+      else if (to_lower_copy(info.get_entry("FlavorScheme")) == "variable" && info.has_key("NumFlavors")) as->setFlavorScheme(AlphaS::VARIABLE, info.get_entry_as<int>("NumFlavors"));
+      else as->setFlavorScheme(AlphaS::VARIABLE);
     }
 
     // Required parameter settings for each calculation mode
