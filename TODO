@@ -94,12 +94,15 @@ VERSION 6.1
 
    Requested by Alex Mitov.
 
-- **Separate AlphaS_QThresholdB etc. from QMass (AB/KN)**
+- **Separate AlphaS_QThresholdB etc. from M<qname> (AB/KN)**
 
    Requested by Alex Mitov.
 
 - **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB/KN)**
 
+- **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
+
+   Need a flag, or do this all the time? My inclination is to do it all the time.
 
 
 VALIDATION / MIGRATION
