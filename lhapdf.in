@@ -1,6 +1,14 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
+## @configure_input@
 
-__version__ = '@PACKAGE_VERSION@'
+# Load settings from installation on PYTHONPATH, otherwise use configure
+try:
+    import lhapdf
+    __version__ = lhapdf.__version__
+    configured_datadir = lhapdf.paths()[0]
+except ImportError:
+    __version__ = '@PACKAGE_VERSION@'
+    configured_datadir = '@datadir@/@PACKAGE_TARNAME@'.replace('${prefix}', '@prefix@')
 
 import optparse, textwrap, logging, csv
 
@@ -212,8 +220,10 @@ if __name__ == '__main__':
         version     = __version__,
         subcommands = (update_cmd, list_cmd, install_cmd)
     )
-    parser.add_option('--datadir', default='@datadir@/@PACKAGE_TARNAME@'.replace('${prefix}', '@prefix@'),
-        help='LHAPDF data directory [default: %default]')
+    parser.add_option('--listdir', default=configured_datadir,
+        help='PDF list directory [default: %default]')
+    parser.add_option('--pdfdir', default=configured_datadir,
+        help='PDF sets directory [default: %default]')
     parser.add_option('-q', '--quiet', help='Suppress normal messages',
         dest='LOGLEVEL', action='store_const', const=logging.WARNING, default=logging.INFO)
     parser.add_option('-v', '--verbose', help='Output debug messages',
