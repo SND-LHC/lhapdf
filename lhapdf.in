@@ -10,7 +10,13 @@ except ImportError:
     __version__ = '@PACKAGE_VERSION@'
     configured_datadir = '@datadir@/@PACKAGE_TARNAME@'.replace('${prefix}', '@prefix@')
 
-import optparse, textwrap, logging, csv
+major_version = '.'.join(__version__.split('.')[:2])
+urlbase = 'http://www.hepforge.org/archive/lhapdf/pdfsets/' + major_version + '/'
+index_filename = 'pdfsets.index'
+
+
+import os, math, optparse, textwrap, logging, csv, urllib2
+import yaml
 
 class Subcommand(object):
     """A subcommand of a root command-line application that may be
@@ -172,7 +178,10 @@ class PdfSet(object):
         self.version = version
         self.id_code = id_code
     def __eq__(self, other):
-        return self.name == other.name if isinstance(other, PdfSet) else self.name == other
+        if isinstance(other, PdfSet):
+            return self.name == other.name
+        else:
+            return self.name == other
     def __ne__(self, other):
         return not self == other
     def __repr__(self):
@@ -180,20 +189,102 @@ class PdfSet(object):
 
 
 def get_reference_database(filepath):
-    """Reads reference file and returns list of PDF info."""
+    """Reads reference file and returns list of PDF info.
+
+    The reference file is space-delimited, with columns:
+    id_code version name
+    """
     database = []
-    csv_file = open(filepath, 'rb')
     try:
+        csv_file = open(filepath, 'rb')
+        logging.debug('Reading %s' % filepath)
         reader = csv.reader(csv_file, delimiter=' ', skipinitialspace=True, strict=True)
         for row in reader:
             id_code, version, name = int(row[0]), int(row[1]), str(row[2])
             database.append(PdfSet(name, version, id_code))
-    except:
-        logging.warn('%s corrupted on line %d' % (filepath, reader.line_num))
+    except IOError:
+        logging.error('Could not open %s' % filepath)
+    except (ValueError, csv.Error):
+        logging.error('Corrupted file on line %d: %s' % (reader.line_num, filepath))
+        csv_file.close()
         database = []
-    finally:
+    else:
         csv_file.close()
     return database
+
+
+def get_installed_database(path):
+    """Returns list of PDF info for PDF sets installed in 'path'.
+
+    The path to each YAML file is assumed to be:
+    path/pdf_name/pdf_name.info
+    """
+    database = []
+    for subdir in os.listdir(path):
+        metadata_filepath = os.path.join(path, subdir, subdir + os.extsep + 'info')
+        if os.path.isfile(metadata_filepath):
+            try:
+                metadata_file = open(metadata_filepath, 'rb')
+                logging.debug('Reading %s' % metadata_filepath)
+                metadata = yaml.load(metadata_file)
+                name = subdir
+                version = int(metadata['DataVersion'])
+                database.append(PdfSet(name, version, 0))
+            except IOError:
+                logging.error('Could not open %s' % metadata_filepath)
+            except ValueError:
+                logging.error('Corrupted file %s' % metadata_filepath)
+                metadata_file.close()
+            else:
+                metadata_file.close()
+    return database
+
+
+def download_file(url, dest_dir, dryrun=False):
+    """Download a file from url to destination directory."""
+    if not os.path.isdir(os.path.abspath(dest_dir)):
+        logging.info('Creating directory %s' % dest_dir)
+        os.makedirs(dest_dir)
+
+    dest_filepath = os.path.join(dest_dir, os.path.basename(url))
+
+    try:
+        u = urllib2.urlopen(url)
+        file_size = int(u.info().getheaders('Content-Length')[0])
+    except urllib2.URLError as e:
+        logging.error('Unable to download %s' % url)
+        logging.debug('Reason: ', e.reason)
+        return
+
+    logging.info('Downloading %s [%s]' % (url, convertBytes(file_size)))
+    logging.debug('to %s' % dest_filepath)
+    if dryrun:
+        return
+
+    try:
+        dest_file = open(dest_filepath, 'wb')
+        while True:
+            buffer = u.read(8192)
+            if not buffer: break
+            dest_file.write(buffer)
+    except IOError:
+        logging.error('Could not write to %s' % dest_filepath)
+    except urllib2.URLError as e:
+        logging.error("Error during download: ", e.reason)
+        dest_file.close()
+    else:
+        dest_file.close()
+
+
+def convertBytes(size, nDecimalPoints=1):
+    units = ('B', 'KB', 'MB', 'GB')
+    i = int(math.floor(math.log(size, 1024)))
+    p = math.pow(1024, i)
+    s = round(size/p, nDecimalPoints)
+    if (s > 0):
+        return '%s %s' % (s, units[i])
+    else:
+        return '0 B'
 
 
 if __name__ == '__main__':
@@ -234,6 +325,9 @@ if __name__ == '__main__':
     logging.basicConfig(level=options.LOGLEVEL, format='%(levelname)s: %(message)s')
 
     if subcommand is list_cmd:
-        ref = get_reference_database(options.datadir + '/pdfsets.index')
-        
+        ref = get_reference_database(os.path.join(options.listdir, index_filename))
+        ins = get_installed_database(options.pdfdir)
+        print ins
 
+    if subcommand is update_cmd:
+        download_file(urlbase + index_filename, options.listdir, dryrun=True)
