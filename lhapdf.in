@@ -1,0 +1,229 @@
+#!/usr/bin/env python
+
+__version__ = '@PACKAGE_VERSION@'
+
+import optparse, textwrap, logging, csv
+
+class Subcommand(object):
+    """A subcommand of a root command-line application that may be
+    invoked by a SubcommandOptionParser.
+    """
+    def __init__(self, name, help='', aliases=(), **kwargs):
+        """Creates a new subcommand. name is the primary way to invoke
+        the subcommand; aliases are alternate names. parser is an
+        OptionParser responsible for parsing the subcommand's options.
+        help is a short description of the command. If no parser is
+        given, it defaults to a new, empty OptionParser.
+        """
+        self.name = name
+        kwargs['add_help_option'] = kwargs.get('add_help_option', False)
+        self.parser = optparse.OptionParser(**kwargs)
+        if not kwargs['add_help_option']:
+            self.parser.add_option('-h', '--help', action='help', help=optparse.SUPPRESS_HELP)
+        self.aliases = aliases
+        self.help = help
+        
+class SubcommandsOptionParser(optparse.OptionParser):
+    """A variant of OptionParser that parses subcommands and their arguments."""
+    
+    # A singleton command used to give help on other subcommands.
+    _HelpSubcommand = Subcommand('help',
+        help='give detailed help on a specific sub-command',
+        aliases=('?',))
+    
+    def __init__(self, *args, **kwargs):
+        """Create a new subcommand-aware option parser. All of the
+        options to OptionParser.__init__ are supported in addition
+        to subcommands, a sequence of Subcommand objects.
+        """
+        # The subcommand array, with the help command included.
+        self.subcommands = list(kwargs.pop('subcommands', []))
+        self.subcommands.append(self._HelpSubcommand)
+        
+        # A more helpful default usage.
+        if 'usage' not in kwargs:
+            kwargs['usage'] = """
+  %prog COMMAND [ARGS...]
+  %prog help COMMAND"""
+        
+        # Super constructor.
+        optparse.OptionParser.__init__(self, *args, **kwargs)
+        
+        # Adjust the help-visible name of each subcommand.
+        for subcommand in self.subcommands:
+            subcommand.parser.prog = '%s %s' % \
+                    (self.get_prog_name(), subcommand.name)
+        
+        # Our root parser needs to stop on the first unrecognized argument.  
+        self.disable_interspersed_args()
+    
+    def add_subcommand(self, cmd):
+        """Adds a Subcommand object to the parser's list of commands."""
+        self.subcommands.append(cmd)
+    
+    # Add the list of subcommands to the help message.
+    def format_help(self, formatter=None):
+        # Get the original help message, to which we will append.
+        out = optparse.OptionParser.format_help(self, formatter)
+        if formatter is None:
+            formatter = self.formatter
+        
+        # Subcommands header.
+        result = ["\n"]
+        result.append(formatter.format_heading('Commands'))
+        formatter.indent()
+        
+        # Generate the display names (including aliases).
+        # Also determine the help position.
+        disp_names = []
+        help_position = 0
+        for subcommand in self.subcommands:
+            name = subcommand.name
+            if subcommand.aliases:
+                name += ' (%s)' % ', '.join(subcommand.aliases)
+            disp_names.append(name)
+                
+            # Set the help position based on the max width.
+            proposed_help_position = len(name) + formatter.current_indent + 2
+            if proposed_help_position <= formatter.max_help_position:
+                help_position = max(help_position, proposed_help_position)        
+        
+        # Add each subcommand to the output.
+        for subcommand, name in zip(self.subcommands, disp_names):
+            # Lifted directly from optparse.py.
+            name_width = help_position - formatter.current_indent - 2
+            if len(name) > name_width:
+                name = "%*s%s\n" % (formatter.current_indent, "", name)
+                indent_first = help_position
+            else:
+                name = "%*s%-*s  " % (formatter.current_indent, "",
+                                      name_width, name)
+                indent_first = 0
+            result.append(name)
+            help_width = formatter.width - help_position
+            help_lines = textwrap.wrap(subcommand.help, help_width)
+            result.append("%*s%s\n" % (indent_first, "", help_lines[0]))
+            result.extend(["%*s%s\n" % (help_position, "", line)
+                           for line in help_lines[1:]])
+        formatter.dedent()
+        
+        # Concatenate the original help message with the subcommand
+        # list.
+        return out + "".join(result)
+    
+    def _subcommand_for_name(self, name):
+        """Return the subcommand in self.subcommands matching the
+        given name. The name may either be the name of a subcommand or
+        an alias. If no subcommand matches, returns None.
+        """
+        for subcommand in self.subcommands:
+            if name == subcommand.name or \
+               name in subcommand.aliases:
+                return subcommand
+        return None
+    
+    def parse_args(self, a=None, v=None):
+        """Like OptionParser.parse_args, but returns these four items:
+        - options: the options passed to the root parser
+        - subcommand: the Subcommand object that was invoked
+        - suboptions: the options passed to the subcommand parser
+        - subargs: the positional arguments passed to the subcommand
+        """  
+        options, args = optparse.OptionParser.parse_args(self, a, v)
+        
+        if not args:
+            # No command given.
+            self.print_help()
+            self.exit()
+        else:
+            cmdname = args.pop(0)
+            subcommand = self._subcommand_for_name(cmdname)
+            if not subcommand:
+                self.error('unknown command ' + cmdname)
+        
+        suboptions, subargs = subcommand.parser.parse_args(args)
+ 
+        if subcommand is self._HelpSubcommand:
+            if subargs:
+                # particular
+                cmdname = subargs[0]
+                helpcommand = self._subcommand_for_name(cmdname)
+                helpcommand.parser.print_help()
+                self.exit()
+            else:
+                # general
+                self.print_help()
+                self.exit()
+        
+        return options, subcommand, suboptions, subargs
+ 
+class PdfSet(object):
+    """Stores PDF metadata: name, version, ID code."""
+    def __init__(self, name, version, id_code):
+        self.name    = name
+        self.version = version
+        self.id_code = id_code
+    def __eq__(self, other):
+        return self.name == other.name if isinstance(other, PdfSet) else self.name == other
+    def __ne__(self, other):
+        return not self == other
+    def __repr__(self):
+        return self.name
+
+
+def get_reference_database(filepath):
+    """Reads reference file and returns list of PDF info."""
+    database = []
+    csv_file = open(filepath, 'rb')
+    try:
+        reader = csv.reader(csv_file, delimiter=' ', skipinitialspace=True, strict=True)
+        for row in reader:
+            id_code, version, name = int(row[0]), int(row[1]), str(row[2])
+            database.append(PdfSet(name, version, id_code))
+    except:
+        logging.warn('%s corrupted on line %d' % (filepath, reader.line_num))
+        database = []
+    finally:
+        csv_file.close()
+    return database
+
+
+if __name__ == '__main__':
+
+    # Setup subcommands
+    update_cmd = Subcommand('update',
+        help='update list of available PDF sets')
+
+    list_cmd = Subcommand('list', aliases=('ls',),
+        help='list installed/available PDF sets')
+    list_cmd.parser.add_option('--all', action='store_true', dest='all', default=True,
+        help='show available PDF sets')
+    list_cmd.parser.add_option('--installed', action='store_true',
+        help='show installed PDF sets')
+    list_cmd.parser.add_option('--outdated', action='store_true',
+        help='show installed, but outdated, PDF sets')
+
+    install_cmd = Subcommand('install', usage='%prog PDF...', aliases=('get',),
+        help='install PDF sets')
+
+    # Setup global parser and options
+    parser = SubcommandsOptionParser(
+        description = 'LHAPDF is an interface to parton distribution functions. This program is intended for browsing and installing the PDFs.',
+        version     = __version__,
+        subcommands = (update_cmd, list_cmd, install_cmd)
+    )
+    parser.add_option('--datadir', default='@datadir@/@PACKAGE_TARNAME@'.replace('${prefix}', '@prefix@'),
+        help='LHAPDF data directory [default: %default]')
+    parser.add_option('-q', '--quiet', help='Suppress normal messages',
+        dest='LOGLEVEL', action='store_const', const=logging.WARNING, default=logging.INFO)
+    parser.add_option('-v', '--verbose', help='Output debug messages',
+        dest='LOGLEVEL', action='store_const', const=logging.DEBUG, default=logging.INFO)
+
+    # Parse command-line input
+    options, subcommand, suboptions, subargs = parser.parse_args()
+    logging.basicConfig(level=options.LOGLEVEL, format='%(levelname)s: %(message)s')
+
+    if subcommand is list_cmd:
+        ref = get_reference_database(options.datadir + '/pdfsets.index')
+        
+
