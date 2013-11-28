@@ -8,7 +8,7 @@ try:
     configured_datadir = lhapdf.paths()[0]
 except ImportError:
     __version__ = '@PACKAGE_VERSION@'
-    configured_datadir = '@datarootdir@'.replace('${prefix}', '@prefix@')
+    configured_datadir = '@datarootdir@/@PACKAGE_TARNAME@'.replace('${prefix}', '@prefix@')
 
 major_version = '.'.join(__version__.split('.')[:2])
 urlbase = 'http://www.hepforge.org/archive/lhapdf/pdfsets/' + major_version + '/'
