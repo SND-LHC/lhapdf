@@ -258,16 +258,21 @@ def download_file(url, dest_dir, dryrun=False):
     except urllib2.URLError as e:
         logging.error('Unable to download %s' % url)
         logging.debug('Reason: ', e.reason)
-        return False
+        raise
 
     logging.debug('Downloading from %s' % url)
     logging.debug('Downloading to %s' % dest_filepath)
     if dryrun:
         logging.info('%s [%s]' % (os.path.basename(url), convertBytes(file_size)))
-        return False
+        return
 
     try:
         dest_file = open(dest_filepath, 'wb')
+    except IOError:
+        logging.error('Could not write to %s' % dest_filepath)
+        raise
+
+    try:
         file_size_dl = 0
         buffer_size  = 8192
         while True:
@@ -280,20 +285,15 @@ def download_file(url, dest_dir, dryrun=False):
             status  = chr(13) + '%s: ' % os.path.basename(url)
             status += r'%s [%3.1f%%]' % (convertBytes(file_size_dl).rjust(10), file_size_dl * 100. / file_size)
             print status,
-    except IOError:
-        logging.error('Could not write to %s' % dest_filepath)
     except urllib2.URLError as e:
         logging.error('Error during download: ', e.reason)
-        dest_file.close()
+        raise
     except KeyboardInterrupt:
         logging.error('Download halted by user')
-        dest_file.close()
-    else:
-        dest_file.close()
+        raise
     finally:
+        dest_file.close()
         print
-        return False
-    return True
 
 
 def convertBytes(size, nDecimalPoints=1):
@@ -408,13 +408,18 @@ if __name__ == '__main__':
                     continue
 
             tar_filename = pdf + '.tar.gz'
-            if download_file(urlbase + tar_filename, options.pdfdir, dryrun=suboptions.dryrun):
-                try:
-                    tar_file = tarfile.open(os.path.join(options.pdfdir, tar_filename), 'r:gz')
-                    tar_file.extractall(options.pdfdir)
-                    tar_file.close()
-                except:
-                    logging.error('Unable to extract %s' % tar_filename)
+            try:
+                download_file(urlbase + tar_filename, options.pdfdir, dryrun=suboptions.dryrun)
+            except:
+                break
+            else:
+                if not suboptions.dryrun:
+                    try:
+                        tar_file = tarfile.open(os.path.join(options.pdfdir, tar_filename), 'r:gz')
+                        tar_file.extractall(options.pdfdir)
+                        tar_file.close()
+                    except:
+                        logging.error('Unable to extract %s' % tar_filename)
 
 
 
