@@ -13,19 +13,18 @@
 std::string lhaglue_get_current_pdf(int nset=1);
 
 
-/// The PDF set by filename, see subdir @c PDFsets of LHAPDF for choices.
-/// @todo Why defined outside the LHAPDF namespace?!
-/// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-void initPDFSetByName(const std::string& filename);
-
-/// The PDF set by filename, see subdir @c PDFsets of LHAPDF for choices.
-/// @todo Why defined outside the LHAPDF namespace?!
-/// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-void initPDFSetByName(int nset, const std::string& filename);
-
 
 namespace LHAPDF {
 
+  /// @brief Only Provided for LHAPDF5 compatibility. Distinction between evolution 
+  /// or interpolation PDF sets.
+  /// Enum to choose whether evolution (i.e. @c LHpdf data file) or
+  /// interpolation (i.e. @c LHgrid data file) is used. 
+  /// This distinction ismeaningless in LHAPDF6 interpolation is always used.
+  enum SetType {
+    EVOLVE = 0, LHPDF = 0,
+    INTERPOLATE = 1, LHGRID = 1
+  };
 
   /// check if the pdf uses photons
   bool hasPhoton();
@@ -33,6 +32,19 @@ namespace LHAPDF {
   /// prepends path to path list
   void setPDFPath(const string& path);
   std::string pdfsetsPath();
+
+
+  /// The PDF set by filename, see subdir @c PDFsets of LHAPDF for choices.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  void initPDFSetByName(const std::string& filename);
+  void initPDFSetByName(const std::string& filename, SetType type);
+
+  /// The PDF set by filename, see subdir @c PDFsets of LHAPDF for choices.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  void initPDFSetByName(int nset, const std::string& filename);
+  void initPDFSetByName(int nset, const std::string& filename, SetType type);
+
+
 
   /// Number of members available in the current set.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
@@ -190,9 +202,12 @@ namespace LHAPDF {
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   void initPDFSet(const std::string& name, int member=0);
   void initPDFSet(int nset ,const std::string& name, int nmem=0);
-
   void initPDFSet(int setid, int member=0);
   void initPDFSet(int nset , int setid, int nmem=0);
+  /// Initialise @a member in PDF set @a name, of type @a type. - LHAPDF5 compatibility
+  void initPDFSet(const std::string& name, SetType type, int member=0);  
+  /// Initialise @a member in PDF set @a name, of type @a type (multi-set version) - LHAPDF5 compatibility
+  void initPDFSet(int nset, const std::string& name, SetType type, int member=0);
 
 
 }

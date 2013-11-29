@@ -542,6 +542,18 @@ void LHAPDF::initPDFSet(int nset, const string& filename, int nmem) {
   ACTIVESETS[nset].loadMember(nmem);
 }
 
+
+void LHAPDF::initPDFSet(const string& filename, SetType type ,int nmem) {
+  // silently ignore type
+  initPDFSet(1,filename, nmem);
+}
+
+void LHAPDF::initPDFSet(int nset, const string& filename, SetType type ,int nmem) {
+  // silently ignore type
+  initPDFSetByName(nset,filename);
+  ACTIVESETS[nset].loadMember(nmem);
+}
+
 void LHAPDF::initPDFSet(int nset, int setid, int nmem) {
   ACTIVESETS[nset] = PDFSetHandler(setid); //
 }
@@ -552,7 +564,7 @@ void LHAPDF::initPDFSet(int setid, int nmem) {
 
 
 #define SIZE 999
-void initPDFSetByName(const string& filename) {
+void LHAPDF::initPDFSetByName(const string& filename) {
   std::cout << "initPDFSetByName: " << filename << std::endl;
   char cfilename[SIZE+1];
   strncpy(cfilename, filename.c_str(), SIZE);
@@ -560,7 +572,24 @@ void initPDFSetByName(const string& filename) {
 }
 
 
-void initPDFSetByName(int nset, const string& filename) {
+void LHAPDF::initPDFSetByName(int nset, const string& filename) {
+  char cfilename[SIZE+1];
+  strncpy(cfilename, filename.c_str(), SIZE);
+  initpdfsetbynamem_(nset, cfilename, filename.length());
+}
+
+
+void LHAPDF::initPDFSetByName(const string& filename, SetType type) {
+  //silently ignore type
+  std::cout << "initPDFSetByName: " << filename << std::endl;
+  char cfilename[SIZE+1];
+  strncpy(cfilename, filename.c_str(), SIZE);
+  initpdfsetbyname_(cfilename, filename.length());
+}
+
+
+void LHAPDF::initPDFSetByName(int nset, const string& filename, SetType type) {
+  //silently ignore type
   char cfilename[SIZE+1];
   strncpy(cfilename, filename.c_str(), SIZE);
   initpdfsetbynamem_(nset, cfilename, filename.length());
