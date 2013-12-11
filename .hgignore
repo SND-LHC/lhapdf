@@ -1,3 +1,4 @@
+^lhapdf-config$
 ^LHAPDF-.*\.tar\.gz$
 ^migration/sets$
 ^migration/settarballs$
