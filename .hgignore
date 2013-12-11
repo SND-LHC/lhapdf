@@ -4,6 +4,7 @@
 ^migration/settarballs$
 ^migration/validation$
 ^migration/backup$
+^migration/lhapdf(5|6)sets$
 ^doc/doxygen$
 ^doc/Doxyfile$
 ^include/LHAPDF/Version.h$
