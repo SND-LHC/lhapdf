@@ -1,5 +1,8 @@
 2013-12-11  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding use of a built-in yaml-cpp (0.3.0) if --with-yaml-cpp (or
+	similar configure flags) are not specified.
+
 	* Using intermediate static libs to build the source files that
 	depend on YAML and Boost path stuff separately from the others.
 

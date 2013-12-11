@@ -142,28 +142,41 @@ AC_SUBST(BOOST_LIBS)
 AC_ARG_WITH([yaml-cpp], AS_HELP_STRING([--with-yaml-cpp], [indicate the position of the yaml-cpp installation (should contain both lib and include dirs]))
 AC_ARG_WITH([yaml-cpp-lib], AS_HELP_STRING([--with-yaml-cpp-lib], [indicate the position of the yaml-cpp lib directory (the one containing libyaml-cpp.so)]))
 AC_ARG_WITH([yaml-cpp-inc], AS_HELP_STRING([--with-yaml-cpp-inc], [indicate the position of the yaml-cpp include directory (the one *containing* the 'yaml-cpp' directory)]))
-YAMLCPP_CPPFLAGS=
-test "$with_yaml_cpp" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp/include"
-test "$with_yaml_cpp_inc" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp_inc"
-YAMLCPP_LDFLAGS=
-test "$with_yaml_cpp" && test -d $with_yaml_cpp/lib && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib"
-test "$with_yaml_cpp" && test -d $with_yaml_cpp/lib64 && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib64"
-test "$with_yaml_cpp_lib" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp_lib"
-YAMLCPP_LIBS="-lyaml-cpp"
-oldCPPFLAGS=$CPPFLAGS
-oldLDFLAGS=$LDFLAGS
-CPPFLAGS="$AM_CPPFLAGS $CPPFLAGS $YAMLCPP_CPPFLAGS $BOOST_CPPFLAGS"
-LDFLAGS="$AM_LDFLAGS $LDFLAGS $YAMLCPP_LDFLAGS"
-AC_CHECK_HEADER([yaml-cpp/yaml.h], [], [AC_MSG_ERROR([yaml-cpp/yaml.h header not found.])])
-AC_CHECK_HEADER([yaml-cpp/node.h], [YAMLCPP_MAJOR_VERSION=3])
-AC_CHECK_HEADER([yaml-cpp/node/node.h], [YAMLCPP_MAJOR_VERSION=5])
-if test "x$YAMLCPP_MAJOR_VERSION" = x; then
-  AC_MSG_ERROR([yaml-cpp API version could not be determined])
+if test -z "$with_yaml_cpp" && test -z "$with_yaml_cpp_lib" && test -z "$with_yaml_cpp_inc"; then
+    AC_MSG_NOTICE([Using built-in yaml-cpp 0.3.0])
+    AC_CHECK_TOOL(CMAKE, cmake)
+    test x$CMAKE = x && AC_MSG_ERROR([Built-in yaml-cpp build requires cmake])
+    YAMLCPP_BUILTIN=yes
+    YAMLCPP_CPPFLAGS=
+    YAMLCPP_LDFLAGS=
+    YAMLCPP_LIBS=
+    YAMLCPP_MAJOR_VERSION=
+else
+    YAMLCPP_BUILTIN=no
+    YAMLCPP_CPPFLAGS=
+    test "$with_yaml_cpp" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp/include"
+    test "$with_yaml_cpp_inc" && YAMLCPP_CPPFLAGS="-I$with_yaml_cpp_inc"
+    YAMLCPP_LDFLAGS=
+    test "$with_yaml_cpp" && test -d $with_yaml_cpp/lib && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib"
+    test "$with_yaml_cpp" && test -d $with_yaml_cpp/lib64 && YAMLCPP_LDFLAGS="-L$with_yaml_cpp/lib64"
+    test "$with_yaml_cpp_lib" && YAMLCPP_LDFLAGS="-L$with_yaml_cpp_lib"
+    YAMLCPP_LIBS="-lyaml-cpp"
+    oldCPPFLAGS=$CPPFLAGS
+    oldLDFLAGS=$LDFLAGS
+    CPPFLAGS="$AM_CPPFLAGS $CPPFLAGS $YAMLCPP_CPPFLAGS $BOOST_CPPFLAGS"
+    LDFLAGS="$AM_LDFLAGS $LDFLAGS $YAMLCPP_LDFLAGS"
+    AC_CHECK_HEADER([yaml-cpp/yaml.h], [], [AC_MSG_ERROR([yaml-cpp/yaml.h header not found.])])
+    AC_CHECK_HEADER([yaml-cpp/node.h], [YAMLCPP_MAJOR_VERSION=3])
+    AC_CHECK_HEADER([yaml-cpp/node/node.h], [YAMLCPP_MAJOR_VERSION=5])
+    if test "x$YAMLCPP_MAJOR_VERSION" = x; then
+      AC_MSG_ERROR([yaml-cpp API version could not be determined])
+    fi
+    AC_MSG_NOTICE([yaml-cpp API version = $YAMLCPP_MAJOR_VERSION])
+    CPPFLAGS=$oldCPPFLAGS
+    LDFLAGS=$oldLDFLAGS
 fi
-AC_MSG_NOTICE([yaml-cpp API version = $YAMLCPP_MAJOR_VERSION])
+AM_CONDITIONAL(USE_BUILTIN_YAMLCPP, [test $YAMLCPP_BUILTIN = yes])
 AC_SUBST(YAMLCPP_MAJOR_VERSION)
-CPPFLAGS=$oldCPPFLAGS
-LDFLAGS=$oldLDFLAGS
 AC_SUBST(YAMLCPP_CPPFLAGS)
 AC_SUBST(YAMLCPP_LDFLAGS)
 AC_SUBST(YAMLCPP_LIBS)
