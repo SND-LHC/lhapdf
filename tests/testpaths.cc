@@ -5,15 +5,14 @@
 using namespace std;
 
 int main() {
-  foreach (const string& p, LHAPDF::paths()) {
+  foreach (const string& p, LHAPDF::paths())
     cout << p << endl;
-  }
+
   cout << "@" << LHAPDF::findFile("lhapdf.conf") << "@" << endl;
 
   cout << "List of available PDFs:" << endl;
-  foreach (const string& s, LHAPDF::availablePDFSets()) {
+  foreach (const string& s, LHAPDF::availablePDFSets())
     cout << " " << s << endl;
-  }
 
   return 0;
 }
