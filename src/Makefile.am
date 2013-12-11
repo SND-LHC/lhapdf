@@ -1,13 +1,15 @@
 lib_LTLIBRARIES = libLHAPDF.la
 noinst_LTLIBRARIES = libLHAPDFInfo.la libLHAPDFPaths.la libLHAPDFGlue.la
 
+EXTRA_DIST = yaml-cpp-0.3.0.tar.gz
+
 AM_CPPFLAGS += -I$(top_srcdir)/include -I$(prefix)/include $(BOOST_CPPFLAGS)
 AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib -avoid-version
 
 libLHAPDFInfo_la_SOURCES = Info.cc
 if USE_BUILTIN_YAMLCPP
 all-local:
-	cd yaml-cpp && cmake . && $(MAKE)
+	{ test -d yaml-cpp || tar xf yaml-cpp-0.3.0.tar.gz ; } && cd yaml-cpp && cmake . && $(MAKE)
   libLHAPDFInfo_la_CPPFLAGS = -I$(srcdir)/yaml-cpp/include -DYAMLCPP_API=3 $(AM_CPPFLAGS)
   libLHAPDFInfo_la_LDFLAGS = $(AM_LDFLAGS) -Wl,-whole-archive -L$(srcdir)/yaml-cpp -lyaml-cpp -Wl,-no-whole-archive
 else

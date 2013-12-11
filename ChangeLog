@@ -1,6 +1,7 @@
 2013-12-11  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Removing checking for and linking against Boost filesystem and system libs!
+	* Removing checking for and linking against Boost filesystem and
+	system libs!
 
 	* Replacing use of boost::filesystem::path and functions with
 	home-made versions.

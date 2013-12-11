@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-  foreach (const LHAPDF::path& p, LHAPDF::paths()) {
+  foreach (const string& p, LHAPDF::paths()) {
     cout << p << endl;
   }
   cout << "@" << LHAPDF::findFile("lhapdf.conf") << "@" << endl;

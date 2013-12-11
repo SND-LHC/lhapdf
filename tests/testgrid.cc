@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i <= 1; ++i) {
     const GridPDF pdf(setname, i);
 
-    foreach (const path& p, paths()) cout << p << " : "; cout << endl;
+    foreach (const string& p, paths()) cout << p << " : "; cout << endl;
 
     safeprint(pdf, "Verbosity");
     safeprint(pdf, "PdfDesc");
