@@ -2,7 +2,7 @@ lib_LTLIBRARIES = libLHAPDF.la
 noinst_LTLIBRARIES = libLHAPDFInfo.la libLHAPDFPaths.la libLHAPDFGlue.la
 
 AM_CPPFLAGS += -I$(top_srcdir)/include -I$(prefix)/include $(BOOST_CPPFLAGS)
-AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib $(BOOST_LDFLAGS) -avoid-version
+AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib -avoid-version
 
 libLHAPDFInfo_la_SOURCES = Info.cc
 if USE_BUILTIN_YAMLCPP
@@ -18,7 +18,6 @@ endif
 
 libLHAPDFPaths_la_SOURCES = Paths.cc
 libLHAPDFPaths_la_CPPFLAGS = $(AM_CPPFLAGS) -DLHAPDF_INSTALL_PREFIX=\"$(prefix)\" -DLHAPDF_DATA_PREFIX=\"$(datadir)\"
-libLHAPDFPaths_la_LIBADD = $(BOOST_LIBS)
 
 libLHAPDFGlue_la_SOURCES = LHAGlue.cc
 

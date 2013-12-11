@@ -123,6 +123,7 @@ if test x$prefix != xNONE; then
   LDFLAGS="$LDFLAGS -L$prefix/lib"
 fi
 
+
 ## Boost utility library
 BOOST_REQUIRE([1.49.0])
 BOOST_FOREACH
@@ -130,15 +131,10 @@ BOOST_SMART_PTR
 BOOST_STRING_ALGO
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/range.hpp])
-dnl BOOST_FIND_HEADER([boost/range/algorithm/sort.hpp])
-BOOST_FILESYSTEM
-BOOST_LDFLAGS="$BOOST_FILESYSTEM_LDFLAGS $BOOST_SYSTEM_LDFLAGS"
-BOOST_LIBS="$BOOST_FILESYSTEM_LIBS $BOOST_SYSTEM_LIBS"
-AC_SUBST(BOOST_LDFLAGS)
-AC_SUBST(BOOST_LIBS)
+BOOST_FIND_HEADER([boost/bind.hpp])
 
 
-# yaml-cpp parser library
+# yaml-cpp parser library (taken from a static internally bundled version if no --with flag specified)
 AC_ARG_WITH([yaml-cpp], AS_HELP_STRING([--with-yaml-cpp], [indicate the position of the yaml-cpp installation (should contain both lib and include dirs]))
 AC_ARG_WITH([yaml-cpp-lib], AS_HELP_STRING([--with-yaml-cpp-lib], [indicate the position of the yaml-cpp lib directory (the one containing libyaml-cpp.so)]))
 AC_ARG_WITH([yaml-cpp-inc], AS_HELP_STRING([--with-yaml-cpp-inc], [indicate the position of the yaml-cpp include directory (the one *containing* the 'yaml-cpp' directory)]))
