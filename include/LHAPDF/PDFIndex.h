@@ -19,7 +19,7 @@ namespace LHAPDF {
   inline std::map<int, std::string>& getPDFIndex() {
     static map<int, string> _lhaindex;
     if (_lhaindex.empty()) { // The map needs to be populated first
-      path indexpath = findFile("pdfsets.index");
+      string indexpath = findFile("pdfsets.index");
       if (indexpath.empty()) throw ReadError("Could not find a pdfsets.index file");
       try {
         ifstream file(indexpath.c_str());
@@ -33,7 +33,7 @@ namespace LHAPDF {
           _lhaindex[id] = setname;
         }
       } catch (const std::exception& ex) {
-        throw ReadError("Trouble when reading " + indexpath.native() + ": " + ex.what());
+        throw ReadError("Trouble when reading " + indexpath + ": " + ex.what());
       }
     }
     return _lhaindex;

@@ -7,7 +7,7 @@ cdef extern from "../../include/LHAPDF/Version.h" namespace "LHAPDF":
     cdef string version()
 
 cdef extern from "../../include/LHAPDF/Paths.h" namespace "LHAPDF":
-    cdef vector[string] _paths()
+    cdef vector[string] paths()
     cdef void setPaths(vector[string])
     cdef void pathsPrepend(string)
     cdef void pathsAppend(string)

@@ -27,7 +27,7 @@ namespace LHAPDF {
     /// rather than acquiring it via a pointer/reference of PDF type, then you
     /// probably (hopefully) know what you're doing and aren't putting it into
     /// public production code!
-    GridPDF(const path& path) {
+    GridPDF(const std::string& path) {
       _loadInfo(path);
       _loadData(_mempath);
       _forcePos = -1;
@@ -56,7 +56,7 @@ namespace LHAPDF {
   protected:
 
     /// Load the PDF grid data block (not the metadata) from the given PDF member file
-    void _loadData(const path& mempath);
+    void _loadData(const std::string& mempath);
 
 
   public:

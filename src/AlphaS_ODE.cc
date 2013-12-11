@@ -5,6 +5,7 @@
 //
 #include "LHAPDF/AlphaS.h"
 #include "LHAPDF/Utils.h"
+#include "boost/bind.hpp"
 
 namespace LHAPDF {
 
@@ -169,8 +170,9 @@ namespace LHAPDF {
       }
 
       // Sorting the values in the correct order
+      /// @todo AB: Probably this "magic" isn't needed? Not that it's wrong, but it is obscure -- at least add an explanatory comment!
       std::sort(grid.begin(), grid.end(),
-       boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+                boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
 
       // Need to do this since foreach can't deal with arguments
       // with ,s (and I don't want to clutter with a typedef)

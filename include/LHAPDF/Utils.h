@@ -21,13 +21,11 @@
 // Boost includes
 #include "boost/shared_ptr.hpp"
 #include "boost/lexical_cast.hpp"
-#include "boost/range.hpp"
-// #include "boost/range/algorithm/sort.hpp"
-// #include "boost/range/algorithm/lower_bound.hpp"
-// #include "boost/range/algorithm/upper_bound.hpp"
-#include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
-#include "boost/bind.hpp"
+#include "boost/algorithm/string.hpp"
+#include "boost/range.hpp"
+// System includes
+#include "sys/stat.h"
 
 // Cosmetic wrapper for BOOST_FOREACH macro (until we can use C++11 range-based for loops)
 #ifndef foreach
@@ -37,6 +35,7 @@
 
 /// Namespace for all LHAPDF functions and classes
 namespace LHAPDF {
+
   // Allow implicit use of the std and boost namespaces within namespace LHAPDF
   using namespace std;
   using namespace boost;
@@ -66,6 +65,79 @@ namespace LHAPDF {
     return ss.str();
   }
 
+  /// Does a string @a s contain the @a sub substring?
+  inline bool contains(const std::string& s, const std::string& sub) {
+    return s.find(sub) != string::npos;
+  }
+
+  /// Does a string @a s start with the @a sub substring?
+  inline bool startswith(const std::string& s, const std::string& sub) {
+    return s.find(sub) == 0;
+  }
+
+  /// Does a string @a s end with the @a sub substring?
+  inline bool endswith(const std::string& s, const std::string& sub) {
+    return s.find(sub) == s.length()-sub.length()-1;
+  }
+
+  //@}
+
+
+  /// @name Generic path functions in the LHAPDF namespace
+  //@{
+
+  /// Check if a path @a p (either file or dir) exists
+  inline bool path_exists(const std::string& p) {
+    struct stat st;
+    return (stat(p.c_str(), &st) == 0);
+  }
+
+  /// Check if a file @a p exists
+  inline bool file_exists(const std::string& p) {
+    struct stat st;
+    return (stat(p.c_str(), &st) == 0 && S_ISREG(st.st_mode));
+  }
+
+  /// Check if a dir @a p exists
+  inline bool dir_exists(const std::string& p) {
+    struct stat st;
+    return (stat(p.c_str(), &st) == 0 && S_ISDIR(st.st_mode));
+  }
+
+  /// Operator for joining strings @a a and @a b with filesystem separators
+  inline std::string operator / (const std::string& a, const std::string& b) {
+    string rtn = a + "/" + b;
+    while (contains(rtn, "//"))
+      replace_first(rtn, "//", "/");
+    return rtn;
+  }
+
+  /// Get the basename (i.e. terminal file name) from a path @a p
+  inline std::string basename(const std::string& p) {
+    if (!contains(p, "/")) return p;
+    return p.substr(p.rfind("/"));
+  }
+
+  /// Get the dirname (i.e. path to the penultimate directory) from a path @a p
+  inline std::string dirname(const std::string& p) {
+    if (!contains(p, "/")) return "";
+    return p.substr(0, p.rfind("/"));
+  }
+
+  /// Get the stem (i.e. part without a file extension) from a filename @a f
+  inline std::string file_stem(const std::string& f) {
+    if (!contains(f, ".")) return f;
+    return f.substr(0, f.rfind("."));
+  }
+
+  /// Get the file extension from a filename @a f
+  inline std::string file_extn(const std::string& f) {
+    if (!contains(f, ".")) return "";
+    return f.substr(f.rfind("."));
+  }
+
+  /// @todo Add an abspath(p) function
+
   //@}
 
 
@@ -84,8 +156,27 @@ namespace LHAPDF {
 
   //@}
 
+
   /// @name Container handling helpers
   //@{
+
+  /// Does the vector<T> @a container contain @a item?
+  template <typename T>
+  inline bool contains(const std::vector<T>& container, const T& item) {
+    return container.find(item) != container.end();
+  }
+
+  // /// Does the set<T> @a container contain @a item?
+  // template <typename T>
+  // inline bool contains(const std::set<T>& container, const T& item) {
+  //   return container.find(item) != container.end();
+  // }
+
+  /// Does the map<K,T> @a container have a key K @a key?
+  template <typename K, typename T>
+  inline bool has_key(const std::map<K,T>& container, const K& key) {
+    return container.find(key) != container.end();
+  }
 
   // /// @name Implementation of generic begin/end container identification by traits
   // /// taken from http://stackoverflow.com/a/9407420/91808 . Needs C++11 (or maybe just C++0x).

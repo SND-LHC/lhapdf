@@ -38,7 +38,7 @@ namespace LHAPDF {
   }
 
 
-  void GridPDF::_loadData(const path& mempath) {
+  void GridPDF::_loadData(const std::string& mempath) {
     string line;
     int iblock(0), iblockline(0), iline(0);
     vector<double> xs, q2s;
@@ -129,7 +129,7 @@ namespace LHAPDF {
     } catch (Exception& e) {
       throw;
     } catch (std::exception& e) {
-      throw ReadError("Read error while parsing " + mempath.native() + " as a GridPDF data file");
+      throw ReadError("Read error while parsing " + mempath + " as a GridPDF data file");
     }
 
   }

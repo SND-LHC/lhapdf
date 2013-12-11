@@ -35,7 +35,7 @@ namespace LHAPDF {
     Info() { }
 
     /// Constructor
-    Info(const path& path) {
+    Info(const std::string& path) {
       load(path);
     }
 
@@ -52,7 +52,7 @@ namespace LHAPDF {
     ///
     /// This function may be called several times to read metadata from several
     /// YAML source files. Values for existing keys will be overwritten.
-    void load(const path& filepath);
+    void load(const std::string& filepath);
 
     //@}
 

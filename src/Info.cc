@@ -10,12 +10,12 @@
 namespace LHAPDF {
 
 
-  void Info::load(const path& filepath) {
+  void Info::load(const string& filepath) {
     // Complain if the path is empty
     if (filepath.empty()) throw ReadError("No PDF file specified in Info::load");
 
     // But complain if a non-empty path is provided, but it's invalid
-    if (!exists(filepath)) throw ReadError("PDF data file '" + filepath.string() + "' not found");
+    if (!file_exists(filepath)) throw ReadError("PDF data file '" + filepath + "' not found");
 
     // Read the YAML part of the file into the metadata map
     try {
@@ -71,11 +71,11 @@ namespace LHAPDF {
 
       #endif
     } catch (const YAML::ParserException& ex) {
-      throw ReadError("YAML parse error in " + filepath.string() + " :" + ex.what());
+      throw ReadError("YAML parse error in " + filepath + " :" + ex.what());
     } catch (const LHAPDF::Exception& ex) {
       throw;
     } catch (const std::exception& ex) {
-      throw ReadError("Trouble when reading " + filepath.string() + " :" + ex.what());
+      throw ReadError("Trouble when reading " + filepath + " :" + ex.what());
     }
 
   }
@@ -84,18 +84,18 @@ namespace LHAPDF {
 
   // /// @todo Only support loading via PDF set name and member ID, not explicit paths
   // /// @todo Replace the loading of the set metadata into the member info with set-level Info singletons
-  // void Info::loadFull(const path& mempath) { //< @todo Need a better method name!
+  // void Info::loadFull(const string& mempath) { //< @todo Need a better method name!
   //   // Extract the set name from the member data file path
-  //   const path memberdata = findFile(mempath);
-  //   if (memberdata.empty() || !exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath.string() + "'");
-  //   const string memname = memberdata.filename().string(); //< Can use this to alternatively work out the set name...
-  //   const path setdir = memberdata.parent_path();
-  //   const string setname = setdir.filename().string();
+  //   const string memberdata = findFile(mempath);
+  //   if (memberdata.empty() || !file_exists(memberdata)) throw ReadError("Could not find PDF data file '" + mempath + "'");
+  //   const string memname = basename(memberdata); //< Can use this to alternatively work out the set name...
+  //   const string setdir = dirname(memberdata);
+  //   const string setname = basename(setdir);
   //   path setinfo = findpdfsetinfopath(setname);
   //   // Load the set info
-  //   if (exists(setinfo)) load(setinfo.string());
+  //   if (file_exists(setinfo)) load(setinfo);
   //   // Load the member info (possibly overriding the set-level metadata)
-  //   load(memberdata.string());
+  //   load(memberdata);
   // }
 
 

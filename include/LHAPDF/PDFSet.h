@@ -32,8 +32,8 @@ namespace LHAPDF {
     /// @todo Remove?
     PDFSet(const std::string& setname) {
       _setname = setname;
-      const path setinfopath = findpdfsetinfopath(setname);
-      if (!exists(setinfopath))
+      const string setinfopath = findpdfsetinfopath(setname);
+      if (!file_exists(setinfopath))
         throw ReadError("Data file not found for PDF set '" + setname + "'");
       // /// Print out a banner if sufficient verbosity is enabled
       // const int verbosity = get_entry_as<int>("Verbosity", 1);

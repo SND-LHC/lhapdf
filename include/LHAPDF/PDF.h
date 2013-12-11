@@ -43,7 +43,7 @@ namespace LHAPDF {
     /// @name Helper methods for info loading / path setting, used by derived types
     //@{
 
-    void _loadInfo(const path& mempath) {
+    void _loadInfo(const std::string& mempath) {
       _mempath = mempath;
       _info = PDFInfo(_setname(), memberID());
       /// Check that this is a sufficient version LHAPDF for this PDF
@@ -67,7 +67,7 @@ namespace LHAPDF {
     }
 
     void _loadInfo(const std::string& setname, int member) {
-      path searchpath = findFile(pdfmempath(setname, member));
+      const string searchpath = findFile(pdfmempath(setname, member));
       _loadInfo(searchpath);
     }
 
@@ -408,7 +408,7 @@ namespace LHAPDF {
     ///
     /// Obtained from the member file path, not Info-based metadata.
     int memberID() const {
-      const string memname = _mempath.stem().string();
+      const string memname = file_stem(_mempath);
       const int memid = lexical_cast<int>(memname.substr(memname.length()-4)); //< Last 4 chars should be the member number
       return memid;
     }
@@ -524,11 +524,11 @@ namespace LHAPDF {
 
     /// Get the set name from the member data file path (for internal use only)
     std::string _setname() const {
-      return _mempath.parent_path().filename().string();
+      return basename(dirname(_mempath));
     }
 
     /// Member data file path
-    path _mempath;
+    std::string _mempath;
 
     /// Metadata container
     PDFInfo _info;

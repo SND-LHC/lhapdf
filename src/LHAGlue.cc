@@ -36,8 +36,6 @@ lhapdfr lhapdfr_;
 
 namespace { //< Unnamed namespace to restrict visibility to this file
 
-
-
   /// @brief PDF object storage here is a smart pointer to ensure deletion of created PDFs
   ///
   /// NB. std::auto_ptr cannot be stored in STL containers, hence we use
@@ -129,8 +127,8 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   static const int LHAPIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
   static map<int, PDFSetHandler> ACTIVESETS;
 
-
 }
+
 
 
 string lhaglue_get_current_pdf(int nset) {
@@ -141,6 +139,7 @@ string lhaglue_get_current_pdf(int nset) {
 }
 
 
+
 extern "C" {
 
   /// LHAPDF version
@@ -149,23 +148,21 @@ extern "C" {
     strncpy(s, LHAPDF_VERSION, len);
   }
 
-
   /// Load a PDF set
   ///
   /// @todo Does this version actually take a *path*? What to do?
   void initpdfsetm_(const int& nset, const char* setpath, int setpathlength) {
     // Strip file extension for backward compatibility
-    string fullp = string(setpath,setpathlength);
+    string fullp = string(setpath, setpathlength);
     // Remove trailing whitespace
     fullp.erase( std::remove_if( fullp.begin(), fullp.end(), ::isspace ), fullp.end() );
     // Use only items after the last /
-    const boost::filesystem::path fp = fullp;
-    const boost::filesystem::path pap = fp.parent_path();
-    const boost::filesystem::path p = fp.leaf();
+    const string pap = LHAPDF::dirname(fullp);
+    const string p = LHAPDF::basename(fullp);
     // Prepend path to search area
     LHAPDF::pathsPrepend(pap);
     // Handle extensions
-    string path = (p.extension().empty()) ? p.native() : p.stem().native();
+    string path = LHAPDF::file_extn(p).empty() ? p : LHAPDF::file_stem(p);
     /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
     if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "cteq6l1";
     // Create the PDF set with index nset
@@ -179,15 +176,13 @@ extern "C" {
     initpdfsetm_(nset1, setpath, setpathlength);
   }
 
-
   /// Load a PDF set by name
-  void initpdfsetbynamem_(const int& nset, const char* setname, int setnamelength) {    
-    // truncate input to size setnamelength
-    string my_name= (setname);
-    my_name.erase(setnamelength,std::string::npos);
-    const boost::filesystem::path p = my_name.c_str();
+  void initpdfsetbynamem_(const int& nset, const char* setname, int setnamelength) {
+    // Truncate input to size setnamelength
+    string p = setname;
+    p.erase(setnamelength, std::string::npos);
     // Strip file extension for backward compatibility
-    string name = (p.extension().empty()) ? p.native() : p.stem().native();
+    string name = LHAPDF::file_extn(p).empty() ? p : LHAPDF::file_stem(p);
     // Remove trailing whitespace
     name.erase( std::remove_if( name.begin(), name.end(), ::isspace ), name.end() );
     /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
@@ -203,7 +198,6 @@ extern "C" {
     initpdfsetbynamem_(nset1, setname, setnamelength);
   }
 
-
   /// Load a PDF in current set
   void initpdfm_(const int& nset, const int& nmember) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
@@ -216,7 +210,6 @@ extern "C" {
     int nset1 = 1;
     initpdfm_(nset1, nmember);
   }
-
 
   /// Get xf(x) values for common partons from current PDF
   void evolvepdfm_(const int& nset, const double& x, const double& q, double* fxq) {
@@ -238,14 +231,12 @@ extern "C" {
     evolvepdfm_(nset1, x, q, fxq);
   }
 
-
   /// Determine if the current PDF has a photon flavour (historically only MRST2004QED)
   /// @todo Function rather than subroutine?
   bool has_photon_() {
     /// @todo Only apply to nset = 1? Or do we need to track the current nset value?
     return ACTIVESETS[1].activemember()->hasFlavor(22);
   }
-
 
   /// Get xfx values from current PDF, including an extra photon flavour
   void evolvepdfphotonm_(const int& nset, const double& x, const double& q, double* fxq, double& photonfxq) {
@@ -267,7 +258,6 @@ extern "C" {
     evolvepdfphotonm_(nset1, x, q, fxq, photonfxq);
   }
 
-
   /// Get xf(x) values for common partons from a photon PDF
   void evolvepdfpm_(const int& nset, const double& x, const double& q, const double& p2, const int& ip2, double& fxq) {
     /// @todo Implement me!
@@ -279,7 +269,6 @@ extern "C" {
     int nset1 = 1;
     evolvepdfpm_(nset1, x, q, p2, ip2, fxq);
   }
-
 
   void numberpdfm_(const int& nset, int& numpdf) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
@@ -307,7 +296,6 @@ extern "C" {
     getorderasm_(nset1, oas);
   }
 
-
   /// Get the number of flavours
   void getnfm_(const int& nset, double& nf) {
     /// @todo Implement me! (and improve param names)
@@ -319,17 +307,13 @@ extern "C" {
     getnfm_(nset1, nf);
   }
 
-
   /// @todo Doc and better arg name
   void lhaprint_(int& a){
     // Do nothing for now
     /// @todo Can this be mapped?
   }
 
-
-
   /// @todo Need getnset_ and getnmem_
-
 
   /// @brief Set LHAPDF parameters
   ///
@@ -337,7 +321,6 @@ extern "C" {
   void setlhaparm_(const char* par, int parlength) {
     /// @todo Can any Fortran LHAPDF params be usefully mapped?
   }
-
 
   double alphaspdfm_(const int& nset, const double& Q){
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
@@ -385,8 +368,6 @@ extern "C" {
       ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
     }
 
-
-
     // Need to extract parameters for common blocks
     PDFPtr pdf = ACTIVESETS[1].activemember();
 
@@ -406,7 +387,6 @@ extern "C" {
     // END:  backwards compatibility test
   }
 
-
   /// PDFLIB nucleon structure function querying
   void structm_(const double& x, const double& q,
                 double& upv, double& dnv, double& usea, double& dsea,
@@ -424,7 +404,6 @@ extern "C" {
     glu = pdf->xfxQ(21, x, q);
   }
 
-
   /// PDFLIB photon structure function querying
   void structp_(const double& x, const double& q2, const double& p2, const double& ip2,
                 double& upv, double& dnv, double& usea, double& dsea,
@@ -432,12 +411,10 @@ extern "C" {
     throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
   }
 
-
   /// PDFLIB statistics on PDF under/overflows
   void pdfsta_() {
     /// @todo Do anything?
   }
-
 
   void getxmin_(const int& nmem , double& xmin){
     int mymem =nmem;
@@ -467,16 +444,17 @@ extern "C" {
 }
 
 
-// LHAPDF namespace compatibility code
+// LHAPDF namespace C++ compatibility code
+/// @todo Make this disableable from configure
+#define ENABLE_LHAGLUE_CXX
+#ifdef ENABLE_LHAGLUE_CXX
 
-
-/// prepends path to path list
 void LHAPDF::setPDFPath(const string& path) {
   pathsPrepend(path);
 }
 
-string LHAPDF::pdfsetsPath(){
-  return paths().at(0).native();
+string LHAPDF::pdfsetsPath() {
+  return paths()[0];
 }
 
 int LHAPDF::numberPDF() {
@@ -562,7 +540,6 @@ void LHAPDF::initPDFSet(int setid, int nmem) {
   initPDFSet(1,setid,nmem);
 }
 
-
 #define SIZE 999
 void LHAPDF::initPDFSetByName(const string& filename) {
   std::cout << "initPDFSetByName: " << filename << std::endl;
@@ -571,13 +548,11 @@ void LHAPDF::initPDFSetByName(const string& filename) {
   initpdfsetbyname_(cfilename, filename.length());
 }
 
-
 void LHAPDF::initPDFSetByName(int nset, const string& filename) {
   char cfilename[SIZE+1];
   strncpy(cfilename, filename.c_str(), SIZE);
   initpdfsetbynamem_(nset, cfilename, filename.length());
 }
-
 
 void LHAPDF::initPDFSetByName(const string& filename, SetType type) {
   //silently ignore type
@@ -587,14 +562,12 @@ void LHAPDF::initPDFSetByName(const string& filename, SetType type) {
   initpdfsetbyname_(cfilename, filename.length());
 }
 
-
 void LHAPDF::initPDFSetByName(int nset, const string& filename, SetType type) {
   //silently ignore type
   char cfilename[SIZE+1];
   strncpy(cfilename, filename.c_str(), SIZE);
   initpdfsetbynamem_(nset, cfilename, filename.length());
 }
-
 
 double LHAPDF::alphasPDF(double Q) {
   return LHAPDF::alphasPDF(1, Q) ;
@@ -632,7 +605,6 @@ int LHAPDF::getNf(int nset) {
   // return alphaS Order for the requested set
   return ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumFlavors");
 }
-
 
 double LHAPDF::getXmin(int nmem) {
   //nmem is not used
@@ -683,8 +655,6 @@ double LHAPDF::getQ2max(int nset, int nmem) {
   return pow(ACTIVESETS[nset].activemember()->info().get_entry_as<double>("QMax"),2);
 }
 
-
-
 double LHAPDF::getQMass(int nf) {
   return LHAPDF::getQMass(1,nf) ;
 }
@@ -702,7 +672,6 @@ double LHAPDF::getQMass(int nset, int nf) {
   return 0.0;
 }
 
-
 double LHAPDF::getThreshold(int nf) {
   return LHAPDF::getThreshold(1,nf) ;
 }
@@ -718,3 +687,5 @@ void LHAPDF::usePDFMember(int member) {
 void LHAPDF::usePDFMember(int nset, int member) {
   initpdfm_(nset, member);
 }
+
+#endif // ENABLE_LHAGLUE_CXX

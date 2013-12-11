@@ -29,7 +29,7 @@ namespace LHAPDF {
       static Config _cfg; //< Could we use the Info(path) constructor for automatic init-once behaviour?
       // Test for emptiness and only initialise *once*:
       if (_cfg._metadict.empty()) {
-        string confpath = findFile("lhapdf.conf").string();
+        string confpath = findFile("lhapdf.conf");
         if (!confpath.empty()) _cfg.load(confpath);
       }
       return _cfg;

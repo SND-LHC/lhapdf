@@ -1,5 +1,8 @@
 2013-12-11  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Replacing use of boost::filesystem::path and functions with
+	home-made versions.
+
 	* Adding use of a built-in yaml-cpp (0.3.0) if --with-yaml-cpp (or
 	similar configure flags) are not specified.
 
