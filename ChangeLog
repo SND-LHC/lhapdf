@@ -1,3 +1,8 @@
+2013-12-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Using intermediate static libs to build the source files that
+	depend on YAML and Boost path stuff separately from the others.
+
 2013-11-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding -Qunused-arguments to CPPFLAGS (to keep clang++ quiet).
