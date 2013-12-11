@@ -8,9 +8,7 @@ LHAPDF6 TODO list
 VERSION 6.0.5
 -------------
 
-- **Remove Boost filesystem dependency (AB)**
-
-- **Speed up initialisation**
+- **Speed up initialisation (AB)**
 
    Gavin S has pointed out that STL istream is actually pretty slow, due to
    wchar handling, etc. and has provided a fastistream which is much faster. We
@@ -18,17 +16,13 @@ VERSION 6.0.5
 
 - **Bundle yaml-cpp for optional/fallback static build**
 
-   If external lib is not found by configure, fall back to using a bundled copy,
-   statically linked into libLHAPDF. This will need cmake on the system, so test
-   for that in the configure fallback. Remove yaml-cpp paths from lhapdf-config
+   Mostly done, but technical problems remain with the CMake static lib build,
+   which doesn't (can't?) use the -fPIC flag which is needed to make a shared
+   lib from it.
 
 - **Add a configure switch to disable the C++ compatibility functions separately (AB)**
 
    The Fortran interface can't/won't be upgraded, but the C++ one can.
-
-- **Add Type enum and C++ function (JF)**
-
-   Requested by Alex Mitov.
 
 - **Add extra requested C++ compatiblity function (JF/AB)**
 
