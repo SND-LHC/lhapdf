@@ -5,11 +5,51 @@
 LHAPDF6 TODO list
 =================
 
+VERSION 6.0.5
+-------------
+
+- **Remove Boost filesystem dependency (AB)**
+
+- **Speed up initialisation**
+
+   Gavin S has pointed out that STL istream is actually pretty slow, due to
+   wchar handling, etc. and has provided a fastistream which is much faster. We
+   should use it (and restrict the YAML metadata content to ASCII rather thn UTF?)
+
+- **Bundle yaml-cpp for optional/fallback static build**
+
+   If external lib is not found by configure, fall back to using a bundled copy,
+   statically linked into libLHAPDF. This will need cmake on the system, so test
+   for that in the configure fallback. Remove yaml-cpp paths from lhapdf-config
+
+- **Add a configure switch to disable the C++ compatibility functions separately (AB)**
+
+   The Fortran interface can't/won't be upgraded, but the C++ one can.
+
+- **Add Type enum and C++ function (JF)**
+
+   Requested by Alex Mitov.
+
+- **Add extra requested C++ compatiblity function (JF/AB)**
+
+   Requested by Stefano Carraza.
+
+- **Separate AlphaS_QThresholdB etc. from M<qname> (AB/KN)**
+
+   Requested by Alex Mitov.
+
+- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB/KN)**
+
+- **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
+
+   Need a flag, or do this all the time? My inclination is to do it all the time.
+
+
 
 VERSION 6.1
 -----------
 
-- **Remove Boost dependency (AB)**
+- **Remove remaining Boost dependencies (AB)**
 
    Boost is being more trouble than it is worth. Removal requires several
    changes: 1) use private PDF data grid implementation (already shown to be
@@ -18,7 +58,6 @@ VERSION 6.1
    require C++11?)
 
    Things to replace:
-   - filesystem: TR2 / home-made wrapper
    - multiarray: replace with Martin's array/SSE code
    - foreach: iterators or require C++11
    - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
@@ -41,18 +80,6 @@ VERSION 6.1
    Martin has got some speed-up out of a native array implementation, and found
    no benefit of changing the index search. Andy will look into caching.
 
-- **Speed up initialisation**
-
-   Gavin S has pointed out that STL istream is actually pretty slow, due to
-   wchar handling, etc. and has provided a fastistream which is much faster. We
-   should use it (and restrict the YAML metadata content to ASCII rather thn UTF?)
-
-- **Bundle yaml-cpp for optional/fallback static build**
-
-   If external lib is not found by configure, fall back to using a bundled copy,
-   statically linked into libLHAPDF. This will need cmake on the system, so test
-   for that in the configure fallback. Remove yaml-cpp paths from lhapdf-config
-
 - **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
 
    I'd like to avoid an extra layer of inheritance: maybe we should just move
@@ -61,10 +88,6 @@ VERSION 6.1
    ~all PDF applications?  If we do modify the API, it would be good to plan for
    photon and nuclear PDF effects on the API in the same interface iteration, if
    possible. Discuss at the Glasgow dev workshop.
-
-- **Add a configure switch to disable the C++ compatibility functions separately (AB)**
-
-   The Fortran interface can't/won't be upgraded, but the C++ one can.
 
 - **Add command-line PDF query/download/upgrade command (David Hall)**
 
@@ -89,20 +112,6 @@ VERSION 6.1
 
    For backward compatibility. Drop this aliasing with version 6.1, when people
    will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
-
-- **Add Type enum and C++ function (JF)**
-
-   Requested by Alex Mitov.
-
-- **Separate AlphaS_QThresholdB etc. from M<qname> (AB/KN)**
-
-   Requested by Alex Mitov.
-
-- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB/KN)**
-
-- **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
-
-   Need a flag, or do this all the time? My inclination is to do it all the time.
 
 
 VALIDATION / MIGRATION
