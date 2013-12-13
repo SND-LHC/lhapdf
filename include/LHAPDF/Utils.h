@@ -32,7 +32,6 @@
 #define foreach BOOST_FOREACH
 #endif
 
-
 /// Namespace for all LHAPDF functions and classes
 namespace LHAPDF {
 
@@ -40,6 +39,10 @@ namespace LHAPDF {
   using namespace std;
   using namespace boost;
 
+  /// Smart pointer abstraction between C++98 and C++11
+  #if __cplusplus <= 199711L
+  typedef auto_ptr unique_ptr;
+  #endif
 
   /// @name String handling utility functions
   //@{
