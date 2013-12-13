@@ -14,12 +14,6 @@ VERSION 6.0.5
    wchar handling, etc. and has provided a fastistream which is much faster. We
    should use it (and restrict the YAML metadata content to ASCII rather thn UTF?)
 
-- **Bundle yaml-cpp for optional/fallback static build**
-
-   Mostly done, but technical problems remain with the CMake static lib build,
-   which doesn't (can't?) use the -fPIC flag which is needed to make a shared
-   lib from it.
-
 - **Add a configure switch to disable the C++ compatibility functions separately (AB)**
 
    The Fortran interface can't/won't be upgraded, but the C++ one can.
@@ -32,7 +26,7 @@ VERSION 6.0.5
 
    Requested by Alex Mitov.
 
-- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB/KN)**
+- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
 
 - **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
 
@@ -42,21 +36,6 @@ VERSION 6.0.5
 
 VERSION 6.1
 -----------
-
-- **Remove remaining Boost dependencies (AB)**
-
-   Boost is being more trouble than it is worth. Removal requires several
-   changes: 1) use private PDF data grid implementation (already shown to be
-   better for CPU), 2) provide our own version of the path/filesystem
-   functionality, 3) replacements for smart points and foreach functions (can we
-   require C++11?)
-
-   Things to replace:
-   - multiarray: replace with Martin's array/SSE code
-   - foreach: iterators or require C++11
-   - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
-   - shared_ptr: manual deletes or require C++11
-   - range and bind: used at all? -> C++11
 
 - **Speed up interpolation (MR)**
 
@@ -74,20 +53,11 @@ VERSION 6.1
    Martin has got some speed-up out of a native array implementation, and found
    no benefit of changing the index search. Andy will look into caching.
 
-- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
-
-   I'd like to avoid an extra layer of inheritance: maybe we should just move
-   some current functions from PDF -> GridPDF if they are really inappropriate.
-   And is it really LHAPDF's responsibility to define a base class suitable for
-   ~all PDF applications?  If we do modify the API, it would be good to plan for
-   photon and nuclear PDF effects on the API in the same interface iteration, if
-   possible. Discuss at the Glasgow dev workshop.
-
 - **Add command-line PDF query/download/upgrade command (David Hall)**
 
-   Discuss/prototype at the Glasgow dev workshop.
+   Nearly done, need to merge the branches.
 
-- **Handle zipped PDF .dat files**
+- **Handle zipped PDF .dat files (AB)**
 
    Prefer zipped single member data files rather than virtual filesystem access
    to the tarball? Should be able to read zipped if a .dat.zip file is found,
@@ -101,6 +71,25 @@ VERSION 6.1
    ErrorType metadata entry for each PDF set, working out the appropriate error
    treatment should be easy (I think it's best to not use words like
    "infallible"!)
+
+- **Remove remaining Boost dependencies? (AB)**
+
+   Boost was being more trouble than it was worth, but maybe now that we're not
+   using the filesystem stuff it is ok. Full removal would require several changes:
+   - multiarray: replace with Martin's array/SSE code
+   - foreach: iterators or require C++11
+   - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
+   - shared_ptr: manual deletes or require C++11
+   - bind: C++11 or something less cool
+
+- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
+
+   I'd like to avoid an extra layer of inheritance: maybe we should just move
+   some current functions from PDF -> GridPDF if they are really inappropriate.
+   And is it really LHAPDF's responsibility to define a base class suitable for
+   ~all PDF applications?  If we do modify the API, it would be good to plan for
+   photon and nuclear PDF effects on the API in the same interface iteration, if
+   possible. Discuss...
 
 - **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
 
