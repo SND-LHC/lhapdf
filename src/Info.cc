@@ -12,7 +12,7 @@ namespace LHAPDF {
 
   void Info::load(const string& filepath) {
     // Complain if the path is empty
-    if (filepath.empty()) throw ReadError("No PDF file specified in Info::load");
+    if (filepath.empty()) throw ReadError("Empty PDF file name given to Info::load");
 
     // But complain if a non-empty path is provided, but it's invalid
     if (!file_exists(filepath)) throw ReadError("PDF data file '" + filepath + "' not found");
