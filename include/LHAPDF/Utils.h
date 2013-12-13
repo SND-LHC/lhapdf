@@ -118,7 +118,7 @@ namespace LHAPDF {
   /// Get the basename (i.e. terminal file name) from a path @a p
   inline std::string basename(const std::string& p) {
     if (!contains(p, "/")) return p;
-    return p.substr(p.rfind("/"));
+    return p.substr(p.rfind("/")+1);
   }
 
   /// Get the dirname (i.e. path to the penultimate directory) from a path @a p
@@ -136,7 +136,7 @@ namespace LHAPDF {
   /// Get the file extension from a filename @a f
   inline std::string file_extn(const std::string& f) {
     if (!contains(f, ".")) return "";
-    return f.substr(f.rfind("."));
+    return f.substr(f.rfind(".")+1);
   }
 
   /// @todo Add an abspath(p) function
