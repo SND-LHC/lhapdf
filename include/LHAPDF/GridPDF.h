@@ -28,21 +28,21 @@ namespace LHAPDF {
     /// probably (hopefully) know what you're doing and aren't putting it into
     /// public production code!
     GridPDF(const std::string& path) {
-      _loadInfo(path);
+      _loadInfo(path); // Sets _mempath
       _loadData(_mempath);
       _forcePos = -1;
     }
 
     /// Constructor from a set name and member ID.
     GridPDF(const std::string& setname, int member) {
-      _loadInfo(setname, member);
+      _loadInfo(setname, member); // Sets _mempath
       _loadData(_mempath);
       _forcePos = -1;
     }
 
     /// Constructor from a set name and member ID.
     GridPDF(int lhaid) {
-      _loadInfo(lhaid);
+      _loadInfo(lhaid); // Sets _mempath
       _loadData(_mempath);
       _forcePos = -1;
     }
@@ -250,10 +250,10 @@ namespace LHAPDF {
     mutable std::vector<double> _q2knots;
 
     /// Typedef of smart pointer for ipol memory handling
-    typedef auto_ptr<Interpolator> InterpolatorPtr;
+    typedef unique_ptr<Interpolator> InterpolatorPtr;
 
     /// Typedef of smart pointer for xpol memory handling
-    typedef auto_ptr<Extrapolator> ExtrapolatorPtr;
+    typedef unique_ptr<Extrapolator> ExtrapolatorPtr;
 
     /// Associated interpolator (mutable to allow laziness)
     mutable InterpolatorPtr _interpolator;

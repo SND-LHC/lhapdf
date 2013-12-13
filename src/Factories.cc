@@ -160,13 +160,13 @@ namespace LHAPDF {
 
 
   AlphaS* mkAlphaS(const std::string& setname, int member) {
-    auto_ptr<Info> info( mkPDFInfo(setname, member) );
+    unique_ptr<Info> info( mkPDFInfo(setname, member) );
     return mkAlphaS(*info);
   }
 
 
   AlphaS* mkAlphaS(int lhaid) {
-    auto_ptr<Info> info( mkPDFInfo(lhaid) );
+    unique_ptr<Info> info( mkPDFInfo(lhaid) );
     return mkAlphaS(*info);
   }
 
