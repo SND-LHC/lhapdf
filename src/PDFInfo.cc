@@ -12,8 +12,11 @@ namespace LHAPDF {
 
   /// Constructor from a set name and member ID.
   PDFInfo::PDFInfo(const std::string& setname, int member) {
-    _setname = setname; _member = member;
+    _setname = setname;
+    _member = member;
     const string searchpath = findFile(pdfmempath(setname, member));
+    if (searchpath.empty())
+      throw ReadError("Couldn't find a PDF data file for " + setname + " #" + to_str(member));
     load(searchpath);
   }
 
@@ -25,6 +28,8 @@ namespace LHAPDF {
       throw IndexError("Can't find a PDF with LHAPDF ID = " + to_str(lhaid));
     _setname = setname_memid.first; _member = setname_memid.second;
     const string searchpath = pdfmempath(setname_memid.first, setname_memid.second);
+    if (searchpath.empty())
+      throw ReadError("Couldn't find a PDF data file for LHAPDF ID = " + to_str(lhaid));
     load(searchpath);
   }
 
