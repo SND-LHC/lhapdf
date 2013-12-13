@@ -3,9 +3,11 @@ noinst_LTLIBRARIES = libLHAPDFInfo.la libLHAPDFPaths.la libLHAPDFGlue.la
 
 EXTRA_DIST = yaml-cpp-0.3.0.tar.gz
 if USE_BUILTIN_YAMLCPP
-yaml-cpp: yaml-cpp-0.3.0.tar.gz
-	tar xf $^ && cd yaml-cpp && cmake . -DCMAKE_EXE_LINKER_FLAGS=-fPIC && $(MAKE)
-all: yaml-cpp
+yaml-cpp/libyaml-cpp.a: yaml-cpp-0.3.0.tar.gz
+	test -d yaml-cpp || tar xf $^; true
+	grep COMPILE_FLAGS yaml-cpp/CMakeLists.txt || sed -i -e 's/LABEL_SUFFIX}"/LABEL_SUFFIX}"\n\tCOMPILE_FLAGS "-fPIC"/' yaml-cpp/CMakeLists.txt; true
+	cd yaml-cpp && cmake . && $(MAKE)
+all: yaml-cpp/libyaml-cpp.a
 	@true
 endif
 
