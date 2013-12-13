@@ -409,6 +409,7 @@ namespace LHAPDF {
     /// Obtained from the member file path, not Info-based metadata.
     int memberID() const {
       const string memname = file_stem(_mempath);
+      assert(memname.length() > 5); // There must be more to the filename stem than just the _nnnn suffix
       const int memid = lexical_cast<int>(memname.substr(memname.length()-4)); //< Last 4 chars should be the member number
       return memid;
     }
