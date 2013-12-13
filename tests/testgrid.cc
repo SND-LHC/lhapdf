@@ -15,7 +15,11 @@ void safeprint(const PDF& pdf, const string& key) {
 
 int main(int argc, char* argv[]) {
 
-  const string setname = (argc > 1) ? argv[1] : "EXAMPLEPDF";
+  if (argc < 2) {
+    cout << "Usage: testgrid <PDFNAME>" << endl;
+    exit(1);
+  }
+  const string setname = argv[1];
 
   for (int i = 0; i <= 1; ++i) {
     const GridPDF pdf(setname, i);
