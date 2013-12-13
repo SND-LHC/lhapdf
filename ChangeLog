@@ -1,3 +1,11 @@
+2013-12-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a typedef of auto_ptr as unique_ptr if not in C++0x or later.
+
+	* Adding -DNDEBUG to the CXXFLAGS if not in debug mode.
+
+	* Use C++11 compilation if available.
+
 2013-12-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing checking for and linking against Boost filesystem and
