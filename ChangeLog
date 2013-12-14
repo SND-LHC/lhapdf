@@ -1,5 +1,8 @@
 2013-12-14  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding a --disable-lhaglue-cxx configure switch and machinery to
+	use it (disables building of LHAPDF5 C++ compatibility routines.)
+
 	* Adding requested xfxphoton and getqmass_ functions and various Fortran wrapper fixes.
 
 2013-12-13  Andy Buckley  <andy.buckley@cern.ch>

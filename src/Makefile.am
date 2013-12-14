@@ -28,6 +28,9 @@ libLHAPDFPaths_la_SOURCES = Paths.cc
 libLHAPDFPaths_la_CPPFLAGS = $(AM_CPPFLAGS) -DLHAPDF_INSTALL_PREFIX=\"$(prefix)\" -DLHAPDF_DATA_PREFIX=\"$(datadir)\"
 
 libLHAPDFGlue_la_SOURCES = LHAGlue.cc
+if ENABLE_LHAGLUE_CXX
+libLHAPDFGlue_la_CPPFLAGS = $(AM_CPPFLAGS) -DENABLE_LHAGLUE_CXX
+endif
 
 libLHAPDF_la_SOURCES = \
   PDF.cc GridPDF.cc PDFInfo.cc \

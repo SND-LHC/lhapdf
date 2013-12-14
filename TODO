@@ -14,12 +14,6 @@ VERSION 6.0.5
    wchar handling, etc. and has provided a fastistream which is much faster. We
    should use it (and restrict the YAML metadata content to ASCII rather thn UTF?)
 
-- **Add configure switches to disable the C++ and Fortran compatibility functions separately (AB)**
-
-   Means that the two sets can't depend on each other. For now allow C++
-   functions to use Fortran one (although this won't be very efficient) and
-   provide a --disable-lhaglue-cxx flag.
-
 - **Add command-line PDF query/download/upgrade command (David Hall)**
 
    Nearly done, need to merge the branches.

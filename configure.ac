@@ -54,7 +54,7 @@ AC_ARG_ENABLE([debug],
 if test x$enable_debug == xyes; then
   AM_CXXFLAGS="$AM_CXXFLAGS -g"
 else
-  AM_CXXFLAGS="$AM_CXXFLAGS -DNDEBUG"
+  AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
 fi
 
 
@@ -62,12 +62,21 @@ fi
 AC_ARG_ENABLE([lhaglue],
   [AC_HELP_STRING(--disable-lhaglue, [build without LHAPDF5 compatibility routines])],
   [], [enable_lhaglue=yes])
+AC_ARG_ENABLE([lhaglue-cxx],
+  [AC_HELP_STRING(--disable-lhaglue-cxx, [build without LHAPDF5 C++ compatibility routines])],
+  [], [enable_lhaglue_cxx=yes])
 if test x$enable_lhaglue == xyes; then
-   AC_MSG_NOTICE(Building LHAGLUE wrappers)
+  AC_MSG_NOTICE(Building LHAGLUE Fortran wrappers)
+  if test x$enable_lhaglue_cxx == xyes; then
+    AC_MSG_NOTICE(Building LHAGLUE C++ wrappers)
+  else
+    AC_MSG_NOTICE(Not building LHAGLUE C++ wrappers)
+  fi
 else
    AC_MSG_NOTICE(Not building LHAGLUE wrappers)
 fi
 AM_CONDITIONAL(ENABLE_LHAGLUE, [test x$enable_lhaglue == xyes])
+AM_CONDITIONAL(ENABLE_LHAGLUE_CXX, [test x$enable_lhaglue_cxx == xyes])
 
 
 ## Find pdflatex if possible

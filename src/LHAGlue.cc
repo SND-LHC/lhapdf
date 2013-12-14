@@ -459,8 +459,6 @@ extern "C" {
 
 
 // LHAPDF namespace C++ compatibility code
-/// @todo Make this disableable from configure
-#define ENABLE_LHAGLUE_CXX
 #ifdef ENABLE_LHAGLUE_CXX
 
 void LHAPDF::setPDFPath(const string& path) {
