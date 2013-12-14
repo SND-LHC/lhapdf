@@ -1,3 +1,7 @@
+2013-12-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding requested xfxphoton and getqmass_ functions and various Fortran wrapper fixes.
+
 2013-12-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a typedef of auto_ptr as unique_ptr if not in C++0x or later.

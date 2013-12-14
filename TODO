@@ -14,24 +14,29 @@ VERSION 6.0.5
    wchar handling, etc. and has provided a fastistream which is much faster. We
    should use it (and restrict the YAML metadata content to ASCII rather thn UTF?)
 
-- **Add a configure switch to disable the C++ compatibility functions separately (AB)**
+- **Add configure switches to disable the C++ and Fortran compatibility functions separately (AB)**
 
-   The Fortran interface can't/won't be upgraded, but the C++ one can.
+   Means that the two sets can't depend on each other. For now allow C++
+   functions to use Fortran one (although this won't be very efficient) and
+   provide a --disable-lhaglue-cxx flag.
 
-- **Add extra requested C++ compatiblity function (JF/AB)**
+- **Add command-line PDF query/download/upgrade command (David Hall)**
 
-   Requested by Stefano Carraza.
+   Nearly done, need to merge the branches.
+
+
+VERSION 6.0.6 (alpha_s tweaks)
+------------------------------
 
 - **Separate AlphaS_QThresholdB etc. from M<qname> (AB/KN)**
 
    Requested by Alex Mitov.
 
-- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
-
 - **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
 
    Need a flag, or do this all the time? My inclination is to do it all the time.
 
+- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
 
 
 VERSION 6.1
@@ -52,10 +57,6 @@ VERSION 6.1
 
    Martin has got some speed-up out of a native array implementation, and found
    no benefit of changing the index search. Andy will look into caching.
-
-- **Add command-line PDF query/download/upgrade command (David Hall)**
-
-   Nearly done, need to merge the branches.
 
 - **Handle zipped PDF .dat files (AB)**
 

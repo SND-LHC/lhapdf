@@ -47,7 +47,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   ///
   /// We operate in a string-based way, since maybe there will be sets with names, but no
   /// index entry in pdfsets.index.
- ///
+  ///
   /// @todo Can we avoid the strings and just work via the LHAPDF ID and factory construction?
   ///
   /// Smart pointers are used in the native map used for PDF member storage so
@@ -169,7 +169,6 @@ extern "C" {
     // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     ACTIVESETS[nset] = PDFSetHandler(path); //< @todo Will be wrong if a structured path is given
   }
-
   /// Load a PDF set (non-multiset version)
   void initpdfset_(const char* setpath, int setpathlength) {
     int nset1 = 1;
@@ -191,7 +190,6 @@ extern "C" {
     // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     ACTIVESETS[nset] = PDFSetHandler(name);
   }
-
   /// Load a PDF set by name (non-multiset version)
   void initpdfsetbyname_(const char* setname, int setnamelength) {
     int nset1 = 1;
@@ -204,7 +202,6 @@ extern "C" {
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     ACTIVESETS[nset].loadMember(nmember);
   }
-
   /// Load a PDF in current set (non-multiset version)
   void initpdf_(const int& nmember) {
     int nset1 = 1;
@@ -224,7 +221,6 @@ extern "C" {
       }
     }
   }
-
   /// Get xf(x) values for common partons from current PDF (non-multiset version)
   void evolvepdf_(const double& x, const double& q, double* fxq) {
     int nset1 = 1;
@@ -251,7 +247,6 @@ extern "C" {
       photonfxq = 0;
     }
   }
-
   /// Get xfx values from current PDF, including an extra photon flavour (non-multiset version)
   void evolvepdfphoton_(const double& x, const double& q, double* fxq, double& photonfxq) {
     int nset1 = 1;
@@ -263,13 +258,13 @@ extern "C" {
     /// @todo Implement me!
     throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
   }
-
   /// Get xf(x) values for common partons from a photon PDF (non-multiset version)
   void evolvepdfp_(const double& x, const double& q, const double& p2, const int& ip2, double& fxq) {
     int nset1 = 1;
     evolvepdfpm_(nset1, x, q, p2, ip2, fxq);
   }
 
+  /// Get the number of members in the set
   void numberpdfm_(const int& nset, int& numpdf) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
@@ -278,34 +273,53 @@ extern "C" {
     // reproduce old lhapdf v5 behaviour , subtract 1 if more than 1 member set
     if (numpdf > 1) numpdf-=1;
   }
-
+  /// Get the number of members in the set (non-multiset version)
   void numberpdf_(int& numpdf) {
     int nset1 = 1;
     numberpdfm_(nset1, numpdf);
   }
 
+  /// Get the alpha_s order for the set
   void getorderasm_(const int& nset, int& oas) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // set equal to the number of members  for the requested set
     oas=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_OrderQCD");
   }
-
+  /// Get the alpha_s order for the set (non-multiset version)
   void getorderas_(int& oas) {
     int nset1 = 1;
     getorderasm_(nset1, oas);
   }
 
   /// Get the number of flavours
-  void getnfm_(const int& nset, double& nf) {
+  void getnfm_(const int& nset, int& nf) {
     /// @todo Implement me! (and improve param names)
   }
 
   /// Get the number of flavours (non-multiset version)
-  void getnf_(double& nf) {
+  void getnf_(int& nf) {
     int nset1 = 1;
     getnfm_(nset1, nf);
   }
+
+  /// Get nf'th quark mass
+  void getqmassm_(const int& nset, const int& nf, double& mass) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    if (nf*nf == 1) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MDown");
+    if (nf*nf == 4) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MUp");
+    if (nf*nf == 9) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MStrange");
+    if (nf*nf == 16) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MCharm");
+    if (nf*nf == 25) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MBottom");
+    if (nf*nf == 36) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MTop");
+  }
+  /// Get nf'th quark mass (non-multiset version)
+  void getqmass_(const int& nf, double& mass) {
+    int nset1 = 1;
+    getqmassm_(nset1, nf, mass);
+  }
+
 
   /// @todo Doc and better arg name
   void lhaprint_(int& a){
@@ -462,7 +476,6 @@ int LHAPDF::numberPDF() {
   numberpdf_(nmem);
   return nmem;
 }
-
 int LHAPDF::numberPDF(int nset) {
   int nmem;
   numberpdfm_(nset,nmem);
@@ -473,17 +486,16 @@ void LHAPDF::initPDF( int memset) {
   int nset1 = 1;
   initpdfm_(nset1, memset);
 }
-
 void LHAPDF::initPDF(int nset, int memset) {
   initpdfm_(nset, memset);
 }
+
 
 double LHAPDF::xfx(double x, double Q, int fl) {
   vector<double> r(13);
   evolvepdf_(x, Q, &r[0]);
   return r[fl+6];
 }
-
 double LHAPDF::xfx(int nset, double x, double Q, int fl) {
   vector<double> r(13);
   evolvepdfm_(nset, x, Q, &r[0]);
@@ -495,7 +507,6 @@ vector<double> LHAPDF::xfx(double x, double Q) {
   evolvepdf_(x, Q, &r[0]);
   return r;
 }
-
 vector<double> LHAPDF::xfx(int nset, double x, double Q) {
   vector<double> r(13);
   evolvepdfm_(nset, x, Q, &r[0]);
@@ -505,9 +516,46 @@ vector<double> LHAPDF::xfx(int nset, double x, double Q) {
 void LHAPDF::xfx(double x, double Q, double* results) {
   evolvepdf_(x, Q, results);
 }
-
 void LHAPDF::xfx(int nset, double x, double Q, double* results) {
   evolvepdfm_(nset, x, Q, results);
+}
+
+
+vector<double> LHAPDF::xfxphoton(double x, double Q) {
+  vector<double> r(13);
+  double mphoton;
+  evolvepdfphoton_(x, Q, &r[0], mphoton);
+  r.push_back(mphoton);
+  return r;
+}
+vector<double> LHAPDF::xfxphoton(int nset, double x, double Q) {
+  vector<double> r(13);
+  double mphoton;
+  evolvepdfphotonm_(nset, x, Q, &r[0], mphoton);
+  r.push_back(mphoton);
+  return r;
+}
+
+void LHAPDF::xfxphoton(double x, double Q, double* results) {
+  evolvepdfphoton_(x, Q, results, results[13]);
+}
+void LHAPDF::xfxphoton(int nset, double x, double Q, double* results) {
+  evolvepdfphotonm_(nset, x, Q, results, results[13]);
+}
+
+double LHAPDF::xfxphoton(double x, double Q, int fl) {
+  vector<double> r(13);
+  double mphoton;
+  evolvepdfphoton_(x, Q, &r[0], mphoton);
+  if (fl == 7) return mphoton;
+  return r[fl+6];
+}
+double LHAPDF::xfxphoton(int nset, double x, double Q, int fl) {
+  vector<double> r(13);
+  double mphoton;
+  evolvepdfphotonm_(nset, x, Q, &r[0], mphoton);
+  if ( fl == 7 ) return mphoton;
+  return r[fl+6];
 }
 
 
@@ -656,28 +704,22 @@ double LHAPDF::getQ2max(int nset, int nmem) {
 }
 
 double LHAPDF::getQMass(int nf) {
-  return LHAPDF::getQMass(1,nf) ;
+  return LHAPDF::getQMass(1, nf) ;
 }
 
 double LHAPDF::getQMass(int nset, int nf) {
-  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-  // return alphaS Order for the requested set
-  if (nf*nf==1)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MDown");
-  if (nf*nf==4)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MUp");
-  if (nf*nf==9)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MStrange");
-  if (nf*nf==16)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MCharm");
-  if (nf*nf==25)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MBottom");
-  if (nf*nf==36)  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MTop");
-  return 0.0;
+  double mass;
+  getqmassm_(nset, nf, mass);
+  return mass;
 }
 
 double LHAPDF::getThreshold(int nf) {
-  return LHAPDF::getThreshold(1,nf) ;
+  return LHAPDF::getThreshold(1, nf) ;
 }
 
 double LHAPDF::getThreshold(int nset, int nf) {
-  return LHAPDF::getQMass(nset,nf) ;
+  /// @todo Update when we can support generalized thresholds
+  return LHAPDF::getQMass(nset, nf) ;
 }
 
 void LHAPDF::usePDFMember(int member) {

@@ -13,23 +13,48 @@
 std::string lhaglue_get_current_pdf(int nset=1);
 
 
+// Compatibility preprocessor-based aliasing of deprecated "M" function names
+#define initPDFSetM initPDFSet
+#define initPDFSetByNameM initPDFSetByName
+#define initPDFM initPDF
+#define initPDFByNameM initPDFByName
+#define getDescriptionM getDescription
+#define xfxM xfx
+#define xfxpM xfxp
+#define xfxaM xfxa
+#define xfxphotonM xfxphoton
+#define numberPDFM numberPDF
+#define alphasPDFM alphasPDF
+#define getOrderPDFM getOrderPDF
+#define getOrderAlphaSM getOrderAlphaS
+#define getQMassM getQMass
+#define getThresholdM getThreshold
+#define getNfM getNf
+#define getLam4M getLam4
+#define getLam5M getLam5
+#define getXminM getXmin
+#define getXmaxM getXmax
+#define getQ2minM getQ2min
+#define getQ2maxM getQ2max
 
 namespace LHAPDF {
 
-  /// @brief Only Provided for LHAPDF5 compatibility. Distinction between evolution 
+
+  /// @brief Only Provided for LHAPDF5 compatibility. Distinction between evolution
   /// or interpolation PDF sets.
   /// Enum to choose whether evolution (i.e. @c LHpdf data file) or
-  /// interpolation (i.e. @c LHgrid data file) is used. 
+  /// interpolation (i.e. @c LHgrid data file) is used.
   /// This distinction ismeaningless in LHAPDF6 interpolation is always used.
   enum SetType {
     EVOLVE = 0, LHPDF = 0,
     INTERPOLATE = 1, LHGRID = 1
   };
 
-  /// check if the pdf uses photons
+
+  /// Check if the PDF includes a photon member
   bool hasPhoton();
 
-  /// prepends path to path list
+  /// Prepends path to path list
   void setPDFPath(const string& path);
   std::string pdfsetsPath();
 
@@ -106,8 +131,56 @@ namespace LHAPDF {
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   std::vector<double> xfx(int nset, double x, double Q);
 
+  /// MRST QED PDF: returns a vector \f$ x f_i(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$;
+  /// @arg 13 = \f$ \gamma \f$.
+  ///
+  /// NB. Note extra element in this set for MRST photon.
+  std::vector<double> xfxphoton(double x, double Q);
+  /// MRST QED PDF: returns a vector \f$ x f_i(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$;
+  /// @arg 13 = \f$ \gamma \f$.
+  std::vector<double> xfxphoton(int nset, double x, double Q);
 
+  /// MRST QED PDF: fills primitive 14 element array pointed at by @a results with
+  /// \f$ x f(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
+  /// @arg 13 = \f$ \gamma \f$.
+  ///
+  /// NB. Note extra element in this set for MRST photon.
+  void xfxphoton(double x, double Q, double* results);
+  /// MRST QED PDF: fills primitive 14 element array pointed at by @a results with
+  /// \f$ x f(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
+  /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 6 = \f$ g \f$;
+  /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$.
+  /// @arg 13 = \f$ \gamma \f$.
+  ///
+  /// NB. Note extra element in this set for MRST photon.
+  void xfxphoton(int nset, double x, double Q, double* results);
 
+  /// MRST QED PDF: returns \f$ x f(x, Q) \f$ for flavour @a fl - this time the flavour encoding
+  /// is as in the LHAPDF manual.
+  /// @arg -6..-1 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 0 = \f$ g \f$
+  /// @arg 1..6 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$;
+  /// @arg 7 = \f$ \gamma \f$.
+  ///
+  /// NB. Note extra element in this set for MRST photon.
+  double xfxphoton(double x, double Q, int fl);
+  /// MRST QED PDF: returns \f$ x f(x, Q) \f$ for flavour @a fl - this time the flavour encoding
+  /// is as in the LHAPDF manual.
+  /// @arg -6..-1 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
+  /// @arg 0 = \f$ g \f$
+  /// @arg 1..6 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$;
+  /// @arg 7 = \f$ \gamma \f$.
+  double xfxphoton(int nset, double x, double Q, int fl);
 
   /// Order of \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
@@ -205,7 +278,7 @@ namespace LHAPDF {
   void initPDFSet(int setid, int member=0);
   void initPDFSet(int nset , int setid, int nmem=0);
   /// Initialise @a member in PDF set @a name, of type @a type. - LHAPDF5 compatibility
-  void initPDFSet(const std::string& name, SetType type, int member=0);  
+  void initPDFSet(const std::string& name, SetType type, int member=0);
   /// Initialise @a member in PDF set @a name, of type @a type (multi-set version) - LHAPDF5 compatibility
   void initPDFSet(int nset, const std::string& name, SetType type, int member=0);
 
