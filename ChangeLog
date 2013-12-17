@@ -1,3 +1,10 @@
+2013-12-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Replacing use of the tokenizing istringstream in GridPDF.cc with
+	basic ifstream seetg and tellg calls for initialisation speed
+	improvement: thanks to David Grellscheid for the suggestion and
+	implementation help!
+
 2013-12-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a --disable-lhaglue-cxx configure switch and machinery to

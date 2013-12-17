@@ -8,11 +8,7 @@ LHAPDF6 TODO list
 VERSION 6.0.5
 -------------
 
-- **Speed up initialisation (AB)**
-
-   Gavin S has pointed out that STL istream is actually pretty slow, due to
-   wchar handling, etc. and has provided a fastistream which is much faster. We
-   should use it (and restrict the YAML metadata content to ASCII rather thn UTF?)
+- **Mangle yaml-cpp to put symbols in a LHAPDF_YAML namespace (AB)**
 
 - **Add command-line PDF query/download/upgrade command (David Hall)**
 

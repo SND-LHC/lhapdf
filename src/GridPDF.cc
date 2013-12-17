@@ -47,7 +47,12 @@ namespace LHAPDF {
 
     try {
       ifstream file(mempath.c_str());
+      int bol = file.tellg();
+      int eol = bol;
       while (getline(file, line)) {
+        bol = eol;
+        eol = file.tellg();
+
         // Trim the current line to ensure that there is no effect of leading spaces, etc.
         trim(line);
 
@@ -66,21 +71,26 @@ namespace LHAPDF {
 
           // Parse the data lines
           double token;
-          istringstream tokens(line);
+          file.seekg(bol); // Go to start of line
+          // string tmp; getline(file, tmp);
+          // cout << "\n" << line << "\n=======\n" << tmp << "\n" << endl;
+          // assert (line == tmp);
+          // file.seekg(bol);
+
           if (iblockline == 1) { // x knots line
-            while (tokens >> token) xs.push_back(token);
+            while (file.tellg() < eol-1 && file >> token) xs.push_back(token); //cout << file.tellg() << " " << eol << endl; }
           } else if (iblockline == 2) { // Q knots line
-            while (tokens >> token) q2s.push_back(token*token); // note Q -> Q2
+            while (file.tellg() < eol-1 && file >> token) q2s.push_back(token*token); // note Q -> Q2
           } else if (iblockline == 3) { // internal flavor IDs line
             // DO NOTHING FOR NOW: only handling this for prospective forward compatibility
             /// @todo Handle internal partial flavour representations
-            //while (tokens >> token) intflavors.push_back(token);
+            //while (file.tellg() < eol && file >> token) intflavors.push_back(token);
           } else {
             if (iblockline == 4) { // on the first line of the xf block, resize the arrays
               for (size_t ipid = 0; ipid < npid; ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
             }
             size_t ipid = 0;
-            while (tokens >> token) {
+            while (file.tellg() < eol-1 && file >> token) {
               ipid_xfs[ipid].push_back(token);
               ipid += 1;
             }
@@ -89,6 +99,8 @@ namespace LHAPDF {
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
                               " flavor entries seen but " + to_str(npid) + " expected");
           }
+
+          file.seekg(eol);
 
         } else { // we *are* on a block separator line
 
