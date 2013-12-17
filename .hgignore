@@ -9,7 +9,7 @@
 ^doc/Doxyfile$
 ^include/LHAPDF/Version.h$
 ^include/LHAPDF/stamp-.*$
-^src/yaml-cpp$
+^src/yamlcpp/yaml-cpp$
 ^wrappers/python/lhapdf\.cpp$
 ^wrappers/python/setup\.py$
 ^tests/test([^\.]+)
