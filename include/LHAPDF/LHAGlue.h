@@ -8,10 +8,11 @@
 /// @file LHAGlue.h
 /// A file that provides backwards compatibility for some C functions from LHAPDF 5.x
 
+#include "LHAPDF/Version.h"
+#if LHAPDF_LHA5CXX
 
 /// A special C++ function to return the PDF name + code currently being used via LHAGlue.
 std::string lhaglue_get_current_pdf(int nset=1);
-
 
 // Compatibility preprocessor-based aliasing of deprecated "M" function names
 #define initPDFSetM initPDFSet
@@ -70,7 +71,6 @@ namespace LHAPDF {
   void initPDFSetByName(int nset, const std::string& filename, SetType type);
 
 
-
   /// Number of members available in the current set.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   int numberPDF();
@@ -86,6 +86,7 @@ namespace LHAPDF {
   /// The choice of PDF member out of one distribution.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   void initPDF(int nset, int memset);
+
 
   /// Nucleon PDF: returns \f$ x f(x, Q) \f$ for flavour @a fl - flavour encoding as in the LHAPDF manual.
   /// @arg -6..-1 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
@@ -131,6 +132,7 @@ namespace LHAPDF {
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   std::vector<double> xfx(int nset, double x, double Q);
 
+
   /// MRST QED PDF: returns a vector \f$ x f_i(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
   /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
   /// @arg 6 = \f$ g \f$;
@@ -138,12 +140,15 @@ namespace LHAPDF {
   /// @arg 13 = \f$ \gamma \f$.
   ///
   /// NB. Note extra element in this set for MRST photon.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   std::vector<double> xfxphoton(double x, double Q);
+
   /// MRST QED PDF: returns a vector \f$ x f_i(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
   /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
   /// @arg 6 = \f$ g \f$;
   /// @arg 7..12 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$;
   /// @arg 13 = \f$ \gamma \f$.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   std::vector<double> xfxphoton(int nset, double x, double Q);
 
   /// MRST QED PDF: fills primitive 14 element array pointed at by @a results with
@@ -154,7 +159,9 @@ namespace LHAPDF {
   /// @arg 13 = \f$ \gamma \f$.
   ///
   /// NB. Note extra element in this set for MRST photon.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   void xfxphoton(double x, double Q, double* results);
+
   /// MRST QED PDF: fills primitive 14 element array pointed at by @a results with
   /// \f$ x f(x, Q) \f$ with index \f$ 0 < i < 12 \f$.
   /// @arg 0..5 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
@@ -163,6 +170,7 @@ namespace LHAPDF {
   /// @arg 13 = \f$ \gamma \f$.
   ///
   /// NB. Note extra element in this set for MRST photon.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   void xfxphoton(int nset, double x, double Q, double* results);
 
   /// MRST QED PDF: returns \f$ x f(x, Q) \f$ for flavour @a fl - this time the flavour encoding
@@ -173,23 +181,26 @@ namespace LHAPDF {
   /// @arg 7 = \f$ \gamma \f$.
   ///
   /// NB. Note extra element in this set for MRST photon.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double xfxphoton(double x, double Q, int fl);
+
   /// MRST QED PDF: returns \f$ x f(x, Q) \f$ for flavour @a fl - this time the flavour encoding
   /// is as in the LHAPDF manual.
   /// @arg -6..-1 = \f$ \bar{t} \f$, ..., \f$ \bar{u} \f$, \f$ \bar{d} \f$;
   /// @arg 0 = \f$ g \f$
   /// @arg 1..6 = \f$ d \f$, \f$ u \f$, ..., \f$ t \f$;
   /// @arg 7 = \f$ \gamma \f$.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double xfxphoton(int nset, double x, double Q, int fl);
 
   /// Order of \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
   int getOrderAlphaS();
 
+
   /// Number of flavours used in current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   int getNf(int nset);
-
 
   /// Number of flavours used in current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
@@ -200,7 +211,6 @@ namespace LHAPDF {
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double getXmin(int nmem);
 
-
   /// Minimum X for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
   double getXmin(int nset, int nmem);
@@ -209,10 +219,10 @@ namespace LHAPDF {
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double getXmax(int nset, int nmem);
 
-
   /// Maximum X for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
   double getXmax(int nmem);
+
 
   /// Minimum Q2 for current PDF
   /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
@@ -282,5 +292,6 @@ namespace LHAPDF {
   /// Initialise @a member in PDF set @a name, of type @a type (multi-set version) - LHAPDF5 compatibility
   void initPDFSet(int nset, const std::string& name, SetType type, int member=0);
 
-
 }
+
+#endif

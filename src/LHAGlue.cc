@@ -427,31 +427,28 @@ extern "C" {
 
   /// PDFLIB statistics on PDF under/overflows
   void pdfsta_() {
-    /// @todo Do anything?
+    /// @note Can't do anything...
   }
 
-  void getxmin_(const int& nmem , double& xmin){
-    int mymem =nmem;
-    double axmin=LHAPDF::getXmin( mymem );
-    xmin=axmin;
+
+  void getxmin_(const int& nmem, double& xmin) {
+    ACTIVESETS[1].loadMember(nmem);
+    xmin = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMin");
   }
 
-  void getxmax_(const int& nmem , double& xmax){
-    int mymem =nmem;
-    double axmax=LHAPDF::getXmax( mymem);
-    xmax=axmax;
+  void getxmax_(const int& nmem, double& xmax) {
+    ACTIVESETS[1].loadMember(nmem);
+    xmax = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMax");
   }
 
-  void getq2min_(const int& nmem , double& q2min){
-    int mymem =nmem;
-    double aq2min=LHAPDF::getQ2min( mymem);
-    q2min=aq2min;
+  void getq2min_(const int& nmem, double& q2min) {
+    ACTIVESETS[1].loadMember(nmem);
+    q2min = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMin"));
   }
 
-  void getq2max_(const int& nmem , double& q2max){
-    int mymem =nmem;
-    double aq2max=LHAPDF::getQ2max( mymem);
-    q2max=aq2max;
+  void getq2max_(const int& nmem, double& q2max) {
+    ACTIVESETS[1].loadMember(nmem);
+    q2max = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMax"));
   }
 
 
@@ -653,8 +650,7 @@ int LHAPDF::getNf(int nset) {
 }
 
 double LHAPDF::getXmin(int nmem) {
-  //nmem is not used
-  return LHAPDF::getXmin(1,nmem) ;
+  return LHAPDF::getXmin(1, nmem) ;
 }
 
 double LHAPDF::getXmin(int nset, int nmem) {

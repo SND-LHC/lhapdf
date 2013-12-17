@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.0.4],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.0.5],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -53,8 +53,8 @@ AC_ARG_ENABLE([debug],
   [enable_debug=yes], [enable_debug=no])
 if test x$enable_debug == xyes; then
   AM_CXXFLAGS="$AM_CXXFLAGS -g"
-else
-  AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
+#else
+#  AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
 fi
 
 
@@ -76,7 +76,11 @@ else
    AC_MSG_NOTICE(Not building LHAGLUE wrappers)
 fi
 AM_CONDITIONAL(ENABLE_LHAGLUE, [test x$enable_lhaglue == xyes])
+if test x$enable_lhaglue == xyes; then flag=1; else flag=0; fi
+AC_DEFINE_UNQUOTED(LHAPDF_PDFLIB, $flag, "Whether PDFLIB Fortran compatibility is available")
 AM_CONDITIONAL(ENABLE_LHAGLUE_CXX, [test x$enable_lhaglue_cxx == xyes])
+if test x$enable_lhaglue_cxx == xyes; then flag=1; else flag=0; fi
+AC_DEFINE_UNQUOTED(LHAPDF_LHA5CXX, $flag, "Whether LHAPDF5 C++ compatibility is available")
 
 
 ## Find pdflatex if possible

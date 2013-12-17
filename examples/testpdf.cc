@@ -39,20 +39,11 @@ int main(int argc, char* argv[]) {
     for (int ix = 0; ix < NX; ++ix) {
       const double log10x = (MINLOGX + ix*DX < -1e-3) ? MINLOGX + ix*DX : 0;
       const double x = pow(10, log10x);
-      #if defined(_OPENMP)
-      #pragma omp parallel for
-      #endif
       for (int iq2 = 0; iq2 < NQ2; ++iq2) {
         const double log10q2 = MINLOGQ2 + iq2*DQ2;
         const double q2 = pow(10, log10q2);
         const double xf = pdf->xfxQ2(pid, x, q2);
-        // #if defined(_OPENMP)
-        // #pragma omp critical
-        // #endif
-        // {
-        //   f << log10x << " " << log10q2 << " " << xf << endl;
-        //   // f << x << " " << q2 << " " << pdf->xfxQ2(pid, x, q2) << endl;
-        // }
+        f << x << " " << q2 << " " << xf << endl;
       }
     }
     f.close();
