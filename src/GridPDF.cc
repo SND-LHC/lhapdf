@@ -38,6 +38,47 @@ namespace LHAPDF {
   }
 
 
+  namespace {
+    // A wrapper for std::strtod and std::strtol, for fast tokenizing when all
+    // input is guaranteed to be numeric (as in this data block). Based very
+    // closely on FastIStringStream by Gavin Salam.
+    class NumParser {
+    public:
+      // Constructor from char*
+      NumParser(const char* line=0) { reset(line); }
+      // Constructor from std::string
+      NumParser(const string& line) { reset(line); }
+
+      // Re-init to new line as char*
+      void reset(const char* line=0) {
+        _next = const_cast<char*>(line);
+        _new_next = _next;
+        _error = false;
+      }
+      // Re-init to new line as std::string
+      void reset(const string& line) { reset(line.c_str()); }
+
+      // Tokenizing stream operator (forwards to double and int specialisations)
+      template<class T> NumParser& operator>>(T& value) {
+        _get(value);
+        if (_new_next == _next) _error = true; // handy error condition behaviour!
+        _next = _new_next;
+        return *this;
+      }
+
+      // Allow use of operator>> in a while loop
+      operator bool() const { return !_error; }
+
+    private:
+      void _get(double& x) { x = std::strtod(_next, &_new_next); }
+      void _get(float& x) { x = std::strtof(_next, &_new_next); }
+      void _get(int& i) { i = std::strtol(_next, &_new_next, 10); } // force base 10!
+
+      char *_next, *_new_next;
+      bool _error;
+    };
+  }
+
   void GridPDF::_loadData(const std::string& mempath) {
     string line;
     int iblock(0), iblockline(0), iline(0);
@@ -47,12 +88,8 @@ namespace LHAPDF {
 
     try {
       ifstream file(mempath.c_str());
-      int bol = file.tellg();
-      int eol = bol;
+      NumParser nparser; double token;
       while (getline(file, line)) {
-        bol = eol;
-        eol = file.tellg();
-
         // Trim the current line to ensure that there is no effect of leading spaces, etc.
         trim(line);
 
@@ -70,27 +107,21 @@ namespace LHAPDF {
           //cout << line << " @ " << iline << " = block line #" << iblockline << endl;
 
           // Parse the data lines
-          double token;
-          file.seekg(bol); // Go to start of line
-          // string tmp; getline(file, tmp);
-          // cout << "\n" << line << "\n=======\n" << tmp << "\n" << endl;
-          // assert (line == tmp);
-          // file.seekg(bol);
-
+          nparser.reset(line);
           if (iblockline == 1) { // x knots line
-            while (file.tellg() < eol-1 && file >> token) xs.push_back(token); //cout << file.tellg() << " " << eol << endl; }
+            while (nparser >> token) xs.push_back(token);
           } else if (iblockline == 2) { // Q knots line
-            while (file.tellg() < eol-1 && file >> token) q2s.push_back(token*token); // note Q -> Q2
+            while (nparser >> token) q2s.push_back(token*token); // note Q -> Q2
           } else if (iblockline == 3) { // internal flavor IDs line
             // DO NOTHING FOR NOW: only handling this for prospective forward compatibility
             /// @todo Handle internal partial flavour representations
-            //while (file.tellg() < eol && file >> token) intflavors.push_back(token);
+            //while (nparser >> token) intflavors.push_back(token);
           } else {
             if (iblockline == 4) { // on the first line of the xf block, resize the arrays
               for (size_t ipid = 0; ipid < npid; ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
             }
             size_t ipid = 0;
-            while (file.tellg() < eol-1 && file >> token) {
+            while (nparser >> token) {
               ipid_xfs[ipid].push_back(token);
               ipid += 1;
             }
@@ -99,8 +130,6 @@ namespace LHAPDF {
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
                               " flavor entries seen but " + to_str(npid) + " expected");
           }
-
-          file.seekg(eol);
 
         } else { // we *are* on a block separator line
 
