@@ -1,5 +1,7 @@
 2013-12-19  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Merging in the first version of the lhapdf manager script by David Hall. Thanks!
+
 	* Further tweaking of the grid numerics parsing, using a variation
 	on Gavin Salam's FastIStringStream class.
 
