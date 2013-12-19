@@ -8,11 +8,7 @@ LHAPDF6 TODO list
 VERSION 6.0.5
 -------------
 
-- **Mangle yaml-cpp to put symbols in a LHAPDF_YAML namespace (AB)**
-
-- **Add command-line PDF query/download/upgrade command (David Hall)**
-
-   Nearly done, need to merge the branches.
+- **Finish migration and RELEASE!**
 
 
 VERSION 6.0.6 (alpha_s tweaks)

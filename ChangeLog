@@ -1,5 +1,9 @@
 2013-12-19  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Changing the YAML functions to operate in a mangled namespace if
+	using the LHAPDF bundled version (a bit of sed and preprocessor:
+	not too evil!)
+
 	* Merging in the first version of the lhapdf manager script by David Hall. Thanks!
 
 	* Further tweaking of the grid numerics parsing, using a variation

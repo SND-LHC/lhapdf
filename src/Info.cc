@@ -7,6 +7,10 @@
 #include "LHAPDF/PDFIndex.h"
 #include "yaml-cpp/yaml.h"
 
+#ifdef YAML_NAMESPACE
+#define YAML YAML_NAMESPACE
+#endif
+
 namespace LHAPDF {
 
 

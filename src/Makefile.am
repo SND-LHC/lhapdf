@@ -7,7 +7,7 @@ AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib -avoid-version
 libLHAPDFInfo_la_SOURCES = Info.cc
 if USE_BUILTIN_YAMLCPP
   SUBDIRS = yamlcpp
-  libLHAPDFInfo_la_CPPFLAGS = -I$(srcdir)/yamlcpp/yaml-cpp/include -DYAMLCPP_API=3 $(AM_CPPFLAGS)
+  libLHAPDFInfo_la_CPPFLAGS = -I$(srcdir)/yamlcpp/yaml-cpp/include -DYAMLCPP_API=3 -DYAML_NAMESPACE=LHAPDF_YAML $(AM_CPPFLAGS)
   libLHAPDFInfo_la_LDFLAGS = $(AM_LDFLAGS) -Wl,-whole-archive -L$(srcdir)/yamlcpp/yaml-cpp -lyaml-cpp -Wl,-no-whole-archive
 else
   libLHAPDFInfo_la_CPPFLAGS = $(AM_CPPFLAGS) $(YAMLCPP_CPPFLAGS) -DYAMLCPP_API=$(YAMLCPP_MAJOR_VERSION)
