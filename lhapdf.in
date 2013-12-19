@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 ## @configure_input@
 
-# Load settings from installation on PYTHONPATH, otherwise use configure
+# Load settings from Python module, otherwise use install-time configururation
 try:
     import lhapdf
     __version__ = lhapdf.__version__
@@ -16,7 +16,6 @@ index_filename = 'pdfsets.index'
 
 
 import os, sys, math, optparse, textwrap, logging, csv, urllib2, tarfile, fnmatch
-import yaml
 
 class Subcommand(object):
     """A subcommand of a root command-line application that may be
@@ -173,10 +172,10 @@ class SubcommandsOptionParser(optparse.OptionParser):
  
 class PdfSet(object):
     """Stores PDF metadata: name, version, ID code."""
-    def __init__(self, name, version, id_code):
+    def __init__(self, name, id_code, version):
         self.name    = name
-        self.version = version
         self.id_code = id_code
+        self.version = version
     def __eq__(self, other):
         if isinstance(other, PdfSet):
             return self.name == other.name
@@ -189,7 +188,7 @@ class PdfSet(object):
 
 
 def get_reference_list(filepath):
-    """Reads reference file and returns list of PDF info.
+    """Reads reference file and returns list of PdfSet objects.
 
     The reference file is space-delimited, with columns:
     id_code version name
@@ -200,8 +199,14 @@ def get_reference_list(filepath):
         logging.debug('Reading %s' % filepath)
         reader = csv.reader(csv_file, delimiter=' ', skipinitialspace=True, strict=True)
         for row in reader:
-            id_code, version, name = int(row[0]), int(row[1]), str(row[2])
-            database.append(PdfSet(name, version, id_code))
+            # TODO: Add PDF versioning in LHAPDF 6.1
+            #if len(row) != 3:
+                #raise ValueError
+            #id_code, version, name = int(row[0]), int(row[1]), str(row[2])
+            if len(row) != 2:
+                raise ValueError
+            id_code, version, name = int(row[0]), None, str(row[1])
+            database.append(PdfSet(name, id_code, version))
     except IOError:
         logging.error('Could not open %s' % filepath)
     except (ValueError, csv.Error):
@@ -214,7 +219,7 @@ def get_reference_list(filepath):
 
 
 def get_installed_list(path):
-    """Returns list of PDF info for PDF sets installed in 'path'.
+    """Returns list of PdfSet objects representing PDFs installed in 'path'.
 
     The path to each YAML file is assumed to be:
     path/pdf_name/pdf_name.info
@@ -223,6 +228,8 @@ def get_installed_list(path):
         logging.error('Unable to find directory %s' % path)
         return []
 
+    version_fieldname = 'DataVersion'
+
     database = []
     for subdir in os.listdir(path):
         metadata_filepath = os.path.join(path, subdir, subdir + os.extsep + 'info')
@@ -230,10 +237,17 @@ def get_installed_list(path):
             try:
                 metadata_file = open(metadata_filepath, 'rb')
                 logging.debug('Reading %s' % metadata_filepath)
-                metadata = yaml.load(metadata_file)
+
+                # Attempt to find PDF version from YAML file
+                for line in metadata_file:
+                    if version_fieldname in line:
+                        version = int(line.split(version_fieldname, 1)[1].split(':', 1)[1].strip())
+                        break
+                else:
+                    version = None
+
                 name = subdir
-                version = int(metadata['DataVersion'])
-                database.append(PdfSet(name, version, 0))
+                database.append(PdfSet(name, 0, version))
             except IOError:
                 logging.error('Could not open %s' % metadata_filepath)
             except ValueError:
@@ -255,45 +269,47 @@ def download_file(url, dest_dir, dryrun=False):
     try:
         u = urllib2.urlopen(url)
         file_size = int(u.info().getheaders('Content-Length')[0])
-    except urllib2.URLError as e:
+    except urllib2.URLError, e:
         logging.error('Unable to download %s' % url)
-        logging.debug('Reason: ', e.reason)
-        raise
+        return False
 
     logging.debug('Downloading from %s' % url)
     logging.debug('Downloading to %s' % dest_filepath)
     if dryrun:
         logging.info('%s [%s]' % (os.path.basename(url), convertBytes(file_size)))
-        return
+        return False
 
     try:
         dest_file = open(dest_filepath, 'wb')
     except IOError:
         logging.error('Could not write to %s' % dest_filepath)
-        raise
+        return False
 
     try:
-        file_size_dl = 0
-        buffer_size  = 8192
-        while True:
-            buffer = u.read(buffer_size)
-            if not buffer: break
+        try:
+            file_size_dl = 0
+            buffer_size  = 8192
+            while True:
+                buffer = u.read(buffer_size)
+                if not buffer: break
 
-            file_size_dl += len(buffer)
-            dest_file.write(buffer)
+                file_size_dl += len(buffer)
+                dest_file.write(buffer)
 
-            status  = chr(13) + '%s: ' % os.path.basename(url)
-            status += r'%s [%3.1f%%]' % (convertBytes(file_size_dl).rjust(10), file_size_dl * 100. / file_size)
-            print status,
-    except urllib2.URLError as e:
-        logging.error('Error during download: ', e.reason)
-        raise
-    except KeyboardInterrupt:
-        logging.error('Download halted by user')
-        raise
+                status  = chr(13) + '%s: ' % os.path.basename(url)
+                status += r'%s [%3.1f%%]' % (convertBytes(file_size_dl).rjust(10), file_size_dl * 100. / file_size)
+                print status,
+        except urllib2.URLError, e:
+            logging.error('Error during download: ', e.reason)
+            return False
+        except KeyboardInterrupt:
+            logging.error('Download halted by user')
+            return False
     finally:
         dest_file.close()
         print
+
+    return True
 
 
 def convertBytes(size, nDecimalPoints=1):
@@ -311,19 +327,24 @@ if __name__ == '__main__':
     #######################
     #  Setup subcommands  #
     #######################
+    pattern_match_desc = ' Supports Unix-style pattern matching of PDF names.'
+
     update_cmd = Subcommand('update',
+        description='Update the list of available PDF sets.',
         help='update list of available PDF sets')
 
-    list_cmd = Subcommand('list', aliases=('ls',),
+    list_cmd = Subcommand('list', aliases=('ls',), usage='%prog [options] pattern...',
+        description='List all available PDF sets, or search using a pattern.' + pattern_match_desc,
         help='list installed/available PDF sets')
     list_cmd.parser.add_option('--installed', action='store_true',
-        help='show installed PDF sets')
+        help='list installed PDF sets')
     list_cmd.parser.add_option('--outdated', action='store_true',
-        help='show installed, but outdated, PDF sets')
+        help='list installed, but outdated, PDF sets')
     list_cmd.parser.add_option('--codes', action='store_true',
-        help='show ID codes')
+        help='additionally show ID codes')
 
-    install_cmd = Subcommand('install', usage='%prog PDF...', aliases=('get',),
+    install_cmd = Subcommand('install', aliases=('get',), usage='%prog [options] pattern...',
+        description='Download and unpack a list of PDFs, or those matching a pattern.' + pattern_match_desc,
         help='install PDF sets')
     install_cmd.parser.add_option('--dryrun', action='store_true',
         help='Do not download sets')
@@ -357,69 +378,76 @@ if __name__ == '__main__':
             subcommand.parser.error("Options '--installed' and '--outdated' are mutually exclusive")
 
 
+
+    # Update command doesn't depend on PDF sets
     if subcommand is update_cmd:
         download_file(urlbase + index_filename, options.listdir)
         sys.exit(0)
 
-    # Convert to dict for easy lookup
-    reference = {pdf.name: pdf for pdf in get_reference_list(os.path.join(options.listdir, index_filename))}
-    installed = {pdf.name: pdf for pdf in get_installed_list(options.pdfdir)}
+
+    # List and install commands require us to build lists of reference and installed PDFs
+    master_list, installed = {}, {}
+    for pdf in get_reference_list(os.path.join(options.listdir, index_filename)):
+        master_list[pdf.name] = pdf
+    for pdf in get_installed_list(options.pdfdir):
+        installed[pdf.name] = pdf
 
     # Check installation status of all PDFs
-    for pdf in reference.keys():
-        if pdf in installed:
-            reference[pdf].installed = True
-            if installed[pdf].version < reference[pdf].version:
-                reference[pdf].oudated = True
+    for pdf in master_list.keys():
+        master_list[pdf].installed = pdf in installed
+        if pdf not in installed or installed[pdf].version is None or master_list[pdf].version is None:
+            master_list[pdf].outdated = False
+        else:
+            master_list[pdf].outdated = installed[pdf].version < master_list[pdf].version
 
     # Unix-style pattern matching of arguments
-    requested_pdfs = []
+    search_pdfs = []
     for pattern in subargs:
-        requested_pdfs += fnmatch.filter(reference.keys(), pattern)
+        matched_pdfs = fnmatch.filter(master_list.keys(), pattern)
+        if len(matched_pdfs) == 0:
+            logging.warning('No matching PDFs for pattern: %s' % pattern)
+        else:
+            search_pdfs += matched_pdfs
+
 
     if subcommand is list_cmd:
         # No patterns given => use all PDFs
         if len(subargs) == 0:
-            requested_pdfs = reference.keys()
+            search_pdfs = master_list.keys()
 
         if suboptions.installed:
-            displayed_pdfs = [pdf for pdf in requested_pdfs if hasattr(reference[pdf], 'installed')]
+            displayed_pdfs = [pdf for pdf in search_pdfs if master_list[pdf].installed]
         elif suboptions.outdated:
-            displayed_pdfs = [pdf for pdf in requested_pdfs if hasattr(reference[pdf], 'outdated')]
+            displayed_pdfs = [pdf for pdf in search_pdfs if master_list[pdf].outdated]
         else:
-            displayed_pdfs = requested_pdfs
+            displayed_pdfs = search_pdfs
 
         for pdf in sorted(displayed_pdfs):
             if suboptions.codes:
-                print '%d %s' % (reference[pdf].id_code, pdf)
+                print '%d  %s' % (master_list[pdf].id_code, pdf)
             else:
                 print pdf
         sys.exit(0)
 
 
     if subcommand is install_cmd:
-        for pdf in sorted(requested_pdfs):
-            if pdf not in reference:
+        for pdf in sorted(search_pdfs):
+            if pdf not in master_list:
                 logging.warn('PDF not recognised: %s' % pdf)
                 continue
-            if pdf in installed:
+            if pdf in installed and not suboptions.upgrade:
                 logging.warn('PDF already installed: %s (use --upgrade to force install)' % pdf)
-                if not suboptions.upgrade:
-                    continue
+                continue
 
             tar_filename = pdf + '.tar.gz'
-            try:
-                download_file(urlbase + tar_filename, options.pdfdir, dryrun=suboptions.dryrun)
-            except:
-                break
-            else:
-                if not suboptions.dryrun:
-                    try:
-                        tar_file = tarfile.open(os.path.join(options.pdfdir, tar_filename), 'r:gz')
-                        tar_file.extractall(options.pdfdir)
-                        tar_file.close()
-                    except:
-                        logging.error('Unable to extract %s' % tar_filename)
+            if download_file(urlbase + tar_filename, options.pdfdir, dryrun=suboptions.dryrun):
+                try:
+                    tar_file = tarfile.open(os.path.join(options.pdfdir, tar_filename), 'r:gz')
+                    tar_file.extractall(options.pdfdir)
+                    tar_file.close()
+                except:
+                    logging.error('Unable to extract %s' % tar_filename)
+
 
 
 
