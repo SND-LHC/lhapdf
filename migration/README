@@ -17,7 +17,7 @@ arguments to creategrids that those PDFs require for correct/optimal migration.
 A convenient way to use this file is as follows (in this case to dump all the
 HERAPDF sets):
 
-cat tomigrate | grep HERA | while read l; do eval "./creategrids $l"; done
+cat tomigrate | egrep -v "^#" | grep HERA | while read l; do eval "./creategrids $l"; done
 
 (The eval is needed to preserve quote marks in arguments in the tomigrate file.)
 
