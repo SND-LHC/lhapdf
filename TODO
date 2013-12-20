@@ -51,6 +51,11 @@ VERSION 6.1
    otherwise fall back to the unzipped .dat. zless can be used to read the
    contents with minimal overhead.
 
+- **Add a GlobalID metadata member, for the LHAPDF/PDFLIB ID code**
+
+   The pdfsets.index file can then be regularly generated from the set .info
+   files (and include the latest available DataVersions)
+
 - **Add helper functions for calculating PDF errors on observables (GW, others)**
 
    Certainly a good thing to provide an example for... maybe it should just be

@@ -260,10 +260,12 @@ OPTIONAL (but should be present if there is an error set)
 A set-level declaration of the type of error treatment provided by this set.
 
 
-ErrorCL
--------
+ErrorConfLevel
+--------------
 OPTIONAL (but should be present if there is a Hessian error set)
-(float): e.g. 0.68, 0.90
+(int/float): e.g. 68, 90
+
+The confidence level of the Hessian error set eigenvectors, in percent.
 
 
 CentralMember

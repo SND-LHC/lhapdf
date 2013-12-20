@@ -1,3 +1,10 @@
+2013-12-20  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding comment and empty line support to PDF index parsing, and
+	updating pdfsets.index with missing PDFs and assigning LHAPDF IDs
+	to ABM12, new MRST QED and MSTW sets, new NNPDF23 QED sets, and
+	the first ATLAS PDF sets.
+
 2013-12-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Changing the YAML functions to operate in a mangled namespace if

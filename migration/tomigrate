@@ -24,6 +24,12 @@ abm12lhc_4_nnlo.LHgrid --diffasmass --nf=4 --ffn --errtype=symmhessian --cl=68 -
 abm12lhc_5_nnlo.LHgrid --diffasmass --nf=5 --ffn --errtype=symmhessian --cl=68 --desc="NNLO 5-flavour PDFs for the ABM12 set" --ref="arXiv:1310.3059" --authors="S. Alekhin, J. Bluemlein, S. Moch"
 
 
+## ATLAS
+# TODO: What to do about the error type (cf. HERAPDF)?
+ATLAS-epWZ12-EIG.LHgrid  --desc="" --authors="ATLAS Collaboration"
+ATLAS-epWZ12-VAR.LHgrid --diffasmass --desc="" --authors="ATLAS Collaboration"
+
+
 ## CTEQ6-era LO and NLO
 cteq6ll.LHpdf:cteq6l1 --version=3 --resample --force-pos --desc="CTEQ6L1 - LO with LO alpha_s. CTEQ6 parameterization. mem=0 => central PDF" --ref="hep-ph/0201195" --authors="J. Pumplin, D.R. Stump, J. Huston, H.L. Lai, P. Nadolsky, W.K. Tung"
 cteq66.LHgrid --force-pos --errtype=hessian --cl=90 --desc="CTEQ6.6 PDF fits. mem=0 => central value; mem=1-44 => 90% eigenvector sets. Use these for standard uncertainty calculations. All members have alpha_s(mz) = 0.118" --ref="arXiv:0802.0007" --authors="P.M.Nadolsky, H.-L.Lai, Q.-H.Cao, J. Huston, J.Pumplin, D.Stump, W.-K.Tung and C.-P.Yuan."
@@ -127,6 +133,7 @@ HERAPDF15NNLO_VAR.LHgrid --diffasmass --desc="HERAPDF15 NNLO variations of fit p
 
 
 ## MRST QED and LO*/LO**
+MRST2004qed.LHgrid --version=1 --force-num-mems=2 --desc="MRST 2004 NLO QCD + LO QED fit.  This set has 2 member PDFs.  mem=0 => PDFs of proton using current-quark masses in model for initial photon PDF; mem=1 => PDFs of proton using constituent-quark masses in model for initial photon PDF.  We recommend to take the average of members 0 and 1 as the central value, with half the difference taken as some measure of the uncertainty due to the model for the initial photon PDF." --ref="hep-ph/0411040" --authors="A.D. Martin, R.G. Roberts, W.J. Stirling and R.S. Thorne"
 MRST2004qed_proton.LHgrid --version=1 --force-num-mems=2 --desc="MRST 2004 NLO QCD + LO QED fit.  This set has 2 member PDFs.  mem=0 => PDFs of proton using current-quark masses in model for initial photon PDF; mem=1 => PDFs of proton using constituent-quark masses in model for initial photon PDF.  We recommend to take the average of members 0 and 1 as the central value, with half the difference taken as some measure of the uncertainty due to the model for the initial photon PDF." --ref="hep-ph/0411040" --authors="A.D. Martin, R.G. Roberts, W.J. Stirling and R.S. Thorne"
 MRST2004qed_neutron.LHgrid --version=1 --force-num-mems=2 --desc="MRST 2004 NLO QCD + LO QED fit.  This set has 2 member PDFs.  mem=0 => PDFs of neutron using current-quark masses in model for initial photon PDF; mem=1 => PDFs of neutron using constituent-quark masses in model for initial photon PDF.  We recommend to take the average of members 0 and 1 as the central value, with half the difference taken as some measure of the uncertainty due to the model for the initial photon PDF." --ref="hep-ph/0411040" --authors="A.D. Martin, R.G. Roberts, W.J. Stirling and R.S. Thorne"
 MRST2007lomod.LHgrid --version=1 --force-pos --desc="MRST MC LO* fit.  LO PDF fit with violation of momentum-sum rule and NLO alpha_S." --ref="arXiv:0711.2473" --authors="A. Sherstnev and R.S. Thorne"
@@ -283,3 +290,19 @@ NNPDF23_nnlo_noLHC_as_0117.LHgrid --version=2 --errtype=replicas --xmin=1e-7 --t
 NNPDF23_nnlo_noLHC_as_0118.LHgrid --version=2 --errtype=replicas --xmin=1e-7 --top --desc="NNPDF 2.3 NNLO no-LHC fit, alphas(MZ)=0.118. mem=0 => average on replicas; mem=1-100 => PDF replicas" --ref="arXiv:1207.1303" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
 NNPDF23_nnlo_noLHC_as_0119.LHgrid --version=2 --errtype=replicas --xmin=1e-7 --top --desc="NNPDF 2.3 NNLO no-LHC fit, alphas(MZ)=0.119. mem=0 => average on replicas; mem=1-100 => PDF replicas" --ref="arXiv:1207.1303" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
 NNPDF23_nnlo_noLHC_as_0120.LHgrid --version=2 --errtype=replicas --xmin=1e-7 --top --desc="NNPDF 2.3 NNLO no-LHC fit, alphas(MZ)=0.120. mem=0 => average on replicas; mem=1-100 => PDF replicas" --ref="arXiv:1207.1303" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+
+## NNPDF23 QED sets
+NNPDF23_nlo_as_0117_qed.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nlo_as_0118_qed.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nlo_as_0119_qed.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nlo_as_0117_qed_neutron.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nlo_as_0118_qed_neutron.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nlo_as_0119_qed_neutron.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nnlo_as_0117_qed.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nnlo_as_0118_qed.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nnlo_as_0119_qed.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nnlo_as_0117_qed_neutron.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nnlo_as_0118_qed_neutron.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+NNPDF23_nnlo_as_0119_qed_neutron.LHgrid --errtype=replicas --xmin=1e-7 --top --desc="" --authors "NNPDF Collaboration. R.D. Ball, V. Bertone, S. Carrazza,  C.S. Deans, L. Del Debbio, S. Forte, A. Guffanti, N.P. Hartland, J.I. Latorre, J. Rojo and M. Ubiali"
+
+# TODO: special / new LO NNPDF?
