@@ -223,7 +223,7 @@ for lha5name in args:
             if opts.META_ERRTYPE:
                 f.write("ErrorType: %s\n" % opts.META_ERRTYPE)
             if opts.META_CONFLEVEL:
-                f.write("ErrorConfLevel: %d\n" % opts.META_CONFLEVEL)
+                f.write("ErrorConfLevel: %s\n" % opts.META_CONFLEVEL)
             f.write("XMin: %g\n" % lhapdf.getXmin(1))
             f.write("XMax: %g\n" % lhapdf.getXmax(1))
             f.write("QMin: %g\n" % math.sqrt(lhapdf.getQ2min(1)))
