@@ -1,5 +1,8 @@
 2013-12-20  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Internally rename libyaml-cpp.a to liblhapdf-yaml-cpp.a to
+	definitely avoid picking up one from the system.
+
 	* Adding comment and empty line support to PDF index parsing, and
 	updating pdfsets.index with missing PDFs and assigning LHAPDF IDs
 	to ABM12, new MRST QED and MSTW sets, new NNPDF23 QED sets, and
