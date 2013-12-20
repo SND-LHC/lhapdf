@@ -25,7 +25,7 @@ abm12lhc_5_nnlo.LHgrid --diffasmass --nf=5 --ffn --errtype=symmhessian --cl=68 -
 
 
 ## CTEQ6-era LO and NLO
-cteq6ll.LHpdf:cteq6l1 --resample --force-pos --desc="CTEQ6L1 - LO with LO alpha_s. CTEQ6 parameterization. mem=0 => central PDF" --ref="hep-ph/0201195" --authors="J. Pumplin, D.R. Stump, J. Huston, H.L. Lai, P. Nadolsky, W.K. Tung"
+cteq6ll.LHpdf:cteq6l1 --version=3 --resample --force-pos --desc="CTEQ6L1 - LO with LO alpha_s. CTEQ6 parameterization. mem=0 => central PDF" --ref="hep-ph/0201195" --authors="J. Pumplin, D.R. Stump, J. Huston, H.L. Lai, P. Nadolsky, W.K. Tung"
 cteq66.LHgrid --force-pos --errtype=hessian --cl=90 --desc="CTEQ6.6 PDF fits. mem=0 => central value; mem=1-44 => 90% eigenvector sets. Use these for standard uncertainty calculations. All members have alpha_s(mz) = 0.118" --ref="arXiv:0802.0007" --authors="P.M.Nadolsky, H.-L.Lai, Q.-H.Cao, J. Huston, J.Pumplin, D.Stump, W.-K.Tung and C.-P.Yuan."
 # TODO: add CTEQ6lg (light gluino) for fun!
 
