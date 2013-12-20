@@ -255,7 +255,7 @@ A contiguous range of Lambda_n's must be provided, e.g. (3,4,5) or (4,5) or just
 ErrorType
 ---------
 OPTIONAL (but should be present if there is an error set)
-(enum string): replica, symmhessian, asymmhessian, none
+(enum string): replicas, symmhessian, asymmhessian, none
 
 A set-level declaration of the type of error treatment provided by this set.
 
