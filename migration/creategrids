@@ -204,7 +204,7 @@ for lha5name in args:
         if not member:
             metapath = os.path.join(setname, setname + '.info')
             f = open(metapath, "w")
-            f.write("SetDesc: '\"%s\"\n" % opts.META_SETDESC.replace("\\n","\n")) # Note line break insertion and quoting
+            f.write("SetDesc: \"%s\"\n" % opts.META_SETDESC.replace("\\n","\n")) # Note line break insertion and quoting
             f.write("Authors: %s\n" % opts.META_AUTHORS)
             f.write("Reference: %s\n" % opts.META_REFERENCE)
             f.write("Format: lhagrid1\n")
