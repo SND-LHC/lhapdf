@@ -367,7 +367,7 @@ def availablePDFSets():
 
 def paths():
     "Return the list of current PDF data search paths."
-    return c._paths()
+    return c.paths()
 
 def setPaths(newpaths):
     "Set the list of current PDF data search paths."
