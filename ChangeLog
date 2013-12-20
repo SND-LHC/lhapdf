@@ -1,5 +1,7 @@
 2013-12-20  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 6.0.5 release.
+
 	* Internally rename libyaml-cpp.a to liblhapdf-yaml-cpp.a to
 	definitely avoid picking up one from the system.
 
