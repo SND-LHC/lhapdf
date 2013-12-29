@@ -100,5 +100,5 @@ while True:
 #print failcounts
 for acc_cut in sorted(failcounts.keys())[1:]:
     failrate = failcounts[acc_cut] / float(failcounts[-1])
-    if failrate:
+    if failrate and (acc_cut > 5e-3 or opts.VERBOSITY == 2 or failrate > 1e-2):
         print "%0.1f%% of points fail acc < %0.1e cut in print %s vs %s" % (100*failrate, acc_cut, args[0], args[1])

@@ -78,6 +78,7 @@ for i, a in enumerate(args):
 
 ## Plot each line
 i = 0
+valid = False
 for _, fname in sorted(index_fname.iteritems()):
     f = open(fname)
     xs, vals = [], []
@@ -93,11 +94,19 @@ for _, fname in sorted(index_fname.iteritems()):
             q, val = [float(a) for a in line.split()]
             xs.append(q)
             vals.append(val)
+    if not any(v for v in vals):
+        continue
     ## Line styles and colors
     color = COLORS[i % len(COLORS)]
     style = STYLES[(i / len(COLORS)) % len(COLORS)]
     i += 1
     plt.plot(xs, vals, label=fname_label[fname], linestyle=style, color=color)
+    valid = True
+
+## Escape early with no plot output if there are no non-zero values
+if not valid:
+    print "No non-zero data values; cannot plot on a log scale... exiting"
+    sys.exit(2)
 
 ## Set up axes with log scales
 if "x" in opts.LOG:
