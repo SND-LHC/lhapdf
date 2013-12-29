@@ -23,7 +23,7 @@ Output is given in the following format:
   x Q fractional_accuracy
 """
 
-import optparse, os
+import optparse, os, sys
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
@@ -42,8 +42,9 @@ if opts.CUTOFF is None:
     elif opts.TYPE == "as":
         opts.CUTOFF = 0.05
 
-assert len(args) == 2
-assert all(os.path.exists(a) for a in args)
+if not (len(args) == 2 and all(os.path.exists(a) for a in args)):
+    print "Wrong args = '%s'" % " ".join(args)
+    sys.exit(1)
 #print "Comparing", args[0], args[1]
 
 f5 = open(args[0])

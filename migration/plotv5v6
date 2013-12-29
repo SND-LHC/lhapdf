@@ -6,7 +6,7 @@ Usage: %prog <data1.dat> <data2.dat> [...]
 Plot the given PDF and alpha_s comparison files.
 """
 
-import optparse, os
+import optparse, os, sys
 
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file [default: %default]", default="cmpv5v6.pdf")
@@ -21,8 +21,9 @@ op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the pl
 op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE [default: %default]", default=None)
 opts, args = op.parse_args()
 
-assert len(args) > 0
-assert all(os.path.exists(a) for a in args)
+if not (args and all(os.path.exists(a) for a in args)):
+    print "Null args = '%s'" % " ".join(args)
+    sys.exit(1)
 
 if "as" in opts.TYPE:
     opts.AXIS = "q"
