@@ -63,6 +63,22 @@ What follows is a more detailed description of how to use the scripts called by
 this: probably you don't need to know this, at least at first!
 
 
+BULK VALIDATION
+---------------
+
+To dump validation grids for the first (or any) member of each set, these commands
+may be helpful, to be run from the migration/validation directory:
+
+export LHAPDF_DATA_PATH=$HOME/proj/hep/lhapdf6/migration/sets
+mem=0
+for i in `ls ../sets`; do mkdir -p ${i}_validation_$mem; done
+[install LHAPDF5]
+for i in `ls ../sets`; do (cd ${i}_validation_$mem && ../../dumpv5 $i $mem); done
+[install LHAPDF6]
+for i in `ls ../sets`; do (cd ${i}_validation_$mem && ../../dumpv6 $i $mem); done
+for i in `ls ../sets`; do (cd ${i}_validation_$mem && echo $i && ../../cmpplotv5v6); done
+
+
 DETAILED COMPARISON AND PLOTTING SCRIPTS
 ----------------------------------------
 

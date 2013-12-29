@@ -3,9 +3,10 @@
 ^LHAPDF-.*\.tar\.gz$
 ^migration/sets$
 ^migration/settarballs$
-^migration/validation$
+^migration/validation.*
 ^migration/backup$
 ^migration/lhapdf(5|6)sets$
+^migration/dumpv(5|6)$
 ^doc/doxygen$
 ^doc/Doxyfile$
 ^include/LHAPDF/Version.h$
