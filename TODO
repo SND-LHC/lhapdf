@@ -22,6 +22,10 @@ VERSION 6.0.6 (alpha_s tweaks)
 VERSION 6.1
 -----------
 
+- **Reweight.h and Uncertainty.h, or a general PDFTools.h?**
+
+   Provide getWeight(PDF*, PDF*, Q, x1, x2=-1)
+
 - **Speed up interpolation (MR)**
 
    Many studies already
@@ -41,9 +45,8 @@ VERSION 6.1
 - **Handle zipped PDF .dat files (AB)**
 
    Prefer zipped single member data files rather than virtual filesystem access
-   to the tarball? Should be able to read zipped if a .dat.zip file is found,
-   otherwise fall back to the unzipped .dat. zless can be used to read the
-   contents with minimal overhead.
+   to the tarball. Can transparently read zipped files with LD_PRELOAD and
+   zlibc. Can zlibc be used programmatically?
 
 - **Add a GlobalID metadata member, for the LHAPDF/PDFLIB ID code**
 
@@ -86,36 +89,19 @@ VERSION 6.1
 VALIDATION / MIGRATION
 ----------------------
 
-- **Put all (central) validation plot PDFs on Web (AB)**
-
-   Decrease the threshold a bit and run over all central PDFs.
-
 - **ABM PDF approval**
 
-   Need to contact Segei Alekhin.
+   Need special treatment at high x? Ipol in log(1-x) above x=0.9?
 
 - **CTEQ PDF approval (AB)**
 
    Pavel Nadolsky and Jon Pumplin contacted.
 
-- **NNPDF2.3 MC and FFN and QED PDF validation (AB, NNPDF)**
-
-   Juan, Stefano, Maria are checking the MC and FFN sets and will submit the new
-   QED sets (NLO and LO).
+- **NNPDF2.3 QED PDF validation (AB, NNPDF)**
 
 - **ATLAS PDFs (AB, ATLAS)**
 
    Sasha, Voica, Mark to provide and approve: contacted.
-
-- **MRST PDF validation (AB,GW)**
-
-   2004QED, LO* and LO**
-
-   Approval needed by Robert et al: contacted.
-
-- **MSTW2008 PDF validation (AB)**
-
-   Approval needed by Graeme, Robert et al: contacted.
 
 - **HERAPDF validation (SL,AB)**
 
