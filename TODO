@@ -8,13 +8,18 @@ LHAPDF6 TODO list
 VERSION 6.0.6 (alpha_s tweaks)
 ------------------------------
 
+- **Disable/allow override of C++11 standard enabling (AB)**
+
+   Problems on pre-Maverick Macs, where the compiler toolchain is a mess. Detect
+   if "-std" appears in the CXXFLAGS, and if so don't attempt to add the C++11 enabling?
+
 - **Separate AlphaS_QThresholdB etc. from M<qname> (AB/KN)**
 
    Requested by Alex Mitov.
 
 - **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
 
-   Need a flag, or do this all the time? My inclination is to do it all the time.
+   AB: Need a flag, or do this all the time? My inclination is to do it all the time.
 
 - **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
 
@@ -24,11 +29,14 @@ VERSION 6.1
 
 - **Reweight.h and Uncertainty.h, or a general PDFTools.h?**
 
-   Provide getWeight(PDF*, PDF*, Q, x1, x2=-1)
+   Provide getWeight(PDF*, PDF*, Q, x1, x2=-1). For uncertainties, note that we
+   can use C++11 erf to convert sigmas to CLs (NB. divide arg by sqrt(2)). C++11
+   doesn't contain erfinv, unfortunately: we need Boost if that's required.
 
 - **Speed up interpolation (MR)**
 
-   Many studies already
+   Many studies already... and Martin has done the important work to de-Boostify
+   the interpolation grid data objects.
 
    Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this
    at version 6.0.0 and it was outperforming LHA5. Maybe it is slower for CT10
@@ -42,24 +50,29 @@ VERSION 6.1
    Martin has got some speed-up out of a native array implementation, and found
    no benefit of changing the index search. Andy will look into caching.
 
+- **Improved high-x interpolation (??)**
+
+   Sergey Alekhin mentioned that their native treatment of the high-x region is
+   rather careful, interpolating in a log(1-x) rather than log(x) space. I'm not
+   sure how a smooth handover between the two measures is done. Perhaps we could
+   / should implement something similar for this region? High-x is definitely an
+   awkward case, given that the PDFs vary rapidly in that region and a log
+   measure is maybe not best suited to accurately interpolating there.
+
+- **Add Parent metadata, for proton, neutron, photon, pion... and ions?**
+
+   All, including nuclear/ion states are possible in the PDG MC code scheme.
+
 - **Handle zipped PDF .dat files (AB)**
 
    Prefer zipped single member data files rather than virtual filesystem access
    to the tarball. Can transparently read zipped files with LD_PRELOAD and
-   zlibc. Can zlibc be used programmatically?
+   zlibc: is that enough? Add instructions for that to manual/website.
 
 - **Add a GlobalID metadata member, for the LHAPDF/PDFLIB ID code**
 
    The pdfsets.index file can then be regularly generated from the set .info
    files (and include the latest available DataVersions)
-
-- **Add helper functions for calculating PDF errors on observables (GW, others)**
-
-   Certainly a good thing to provide an example for... maybe it should just be
-   provided as an example? One nice thing is that since we now store a clear
-   ErrorType metadata entry for each PDF set, working out the appropriate error
-   treatment should be easy (I think it's best to not use words like
-   "infallible"!)
 
 - **Remove remaining Boost dependencies? (AB)**
 
@@ -95,9 +108,7 @@ VALIDATION / MIGRATION
 
 - **CTEQ PDF approval (AB)**
 
-   Pavel Nadolsky and Jon Pumplin contacted.
-
-- **NNPDF2.3 QED PDF validation (AB, NNPDF)**
+   Contacted x 3.
 
 - **ATLAS PDFs (AB, ATLAS)**
 
@@ -111,10 +122,7 @@ VALIDATION / MIGRATION
 WRITE PAPER
 -----------
 
-- ** Target at EPJC Tools or CPC?**
-
-   Can put on arXiv before October, but delay publication submission to aim
-   (hope) for for eligibility in *next* UK REF.
+- ** Target at EPJC Tools**
 
 - **Note fixed problems**
 
