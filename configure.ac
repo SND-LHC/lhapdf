@@ -40,7 +40,7 @@ AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Version.h])
 
 ## Checks for programs
 AC_PROG_CXX
-AX_CXX_COMPILE_STDCXX_11([noext],[optional])
+# TODO: reinstate when mandatory: AX_CXX_COMPILE_STDCXX_11([noext],[optional])
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
