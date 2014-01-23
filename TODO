@@ -5,13 +5,32 @@
 LHAPDF6 TODO list
 =================
 
-VERSION 6.0.6 (alpha_s tweaks)
-------------------------------
+VERSION 6.0.6
+-------------
 
-- **Disable/allow override of C++11 standard enabling (AB)**
+- **Add Parent metadata, for proton, neutron, photon, pion... and ions?**
 
-   Problems on pre-Maverick Macs, where the compiler toolchain is a mess. Detect
-   if "-std" appears in the CXXFLAGS, and if so don't attempt to add the C++11 enabling?
+   All, including nuclear/ion states are possible in the PDG MC code scheme.
+
+- **Add a GlobalID metadata member, for the LHAPDF/PDFLIB ID code**
+
+   The pdfsets.index file can then be regularly generated from the set .info
+   files (and include the latest available DataVersions)
+
+- **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
+
+   For backward compatibility. Drop this aliasing with version 6.1, when people
+   will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
+
+- **Uncertainties and reweighting code and (final) flag changes**
+
+   Including sigma/CL, unknown ErrorType, and Graeme's code that operates on them.
+
+   Reweight.h and Uncertainty.h, or a general PDFTools.h?
+
+   Provide getWeight(PDF*, PDF*, Q, x1, x2=-1). For uncertainties, note that we
+   can use C++11 erf to convert sigmas to CLs (NB. divide arg by sqrt(2)). C++11
+   doesn't contain erfinv, unfortunately: we need Boost if that's required.
 
 - **Separate AlphaS_QThresholdB etc. from M<qname> (AB/KN)**
 
@@ -26,12 +45,6 @@ VERSION 6.0.6 (alpha_s tweaks)
 
 VERSION 6.1
 -----------
-
-- **Reweight.h and Uncertainty.h, or a general PDFTools.h?**
-
-   Provide getWeight(PDF*, PDF*, Q, x1, x2=-1). For uncertainties, note that we
-   can use C++11 erf to convert sigmas to CLs (NB. divide arg by sqrt(2)). C++11
-   doesn't contain erfinv, unfortunately: we need Boost if that's required.
 
 - **Speed up interpolation (MR)**
 
@@ -59,20 +72,11 @@ VERSION 6.1
    awkward case, given that the PDFs vary rapidly in that region and a log
    measure is maybe not best suited to accurately interpolating there.
 
-- **Add Parent metadata, for proton, neutron, photon, pion... and ions?**
-
-   All, including nuclear/ion states are possible in the PDG MC code scheme.
-
 - **Handle zipped PDF .dat files (AB)**
 
    Prefer zipped single member data files rather than virtual filesystem access
    to the tarball. Can transparently read zipped files with LD_PRELOAD and
    zlibc: is that enough? Add instructions for that to manual/website.
-
-- **Add a GlobalID metadata member, for the LHAPDF/PDFLIB ID code**
-
-   The pdfsets.index file can then be regularly generated from the set .info
-   files (and include the latest available DataVersions)
 
 - **Remove remaining Boost dependencies? (AB)**
 
@@ -84,23 +88,14 @@ VERSION 6.1
    - shared_ptr: manual deletes or require C++11
    - bind: C++11 or something less cool
 
-- **Respond to Mark Sutton's suggestions re. the PDF base class (AB)**
 
-   I'd like to avoid an extra layer of inheritance: maybe we should just move
-   some current functions from PDF -> GridPDF if they are really inappropriate.
-   And is it really LHAPDF's responsibility to define a base class suitable for
-   ~all PDF applications?  If we do modify the API, it would be good to plan for
-   photon and nuclear PDF effects on the API in the same interface iteration, if
-   possible. Discuss...
+VALIDATION / MIGRATION / ETC.
+-----------------------------
 
-- **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
+- **Make LHAPDF6 the main LHAPDF web page**
 
-   For backward compatibility. Drop this aliasing with version 6.1, when people
-   will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
-
-
-VALIDATION / MIGRATION
-----------------------
+   Archive the LHAPDF5 pages. Generate set list/details page from Python API /
+   pdfsets.index file.
 
 - **ABM PDF approval**
 
@@ -113,10 +108,12 @@ VALIDATION / MIGRATION
 - **ATLAS PDFs (AB, ATLAS)**
 
    Sasha, Voica, Mark to provide and approve: contacted.
+   What to put for the VAR error type?
 
 - **HERAPDF validation (SL,AB)**
 
-   Mandy (and others) contacted for approval.
+   Mandy and Voica contacted for approval.
+   What to put for the VAR error type?
 
 
 WRITE PAPER
