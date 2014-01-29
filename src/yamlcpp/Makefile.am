@@ -11,7 +11,7 @@ yaml-cpp/liblhapdf-yaml-cpp.a: yaml-cpp-0.3.0.tar.gz
 	for i in `find yaml-cpp -type f -name "*.h" -o -name "*.cpp"`; do (grep LHAPDF_YAML $$i > /dev/null) || \
       { $(SED) -e 's/namespace YAML/namespace LHAPDF_YAML/' -e 's/YAML::/LHAPDF_YAML::/g' $$i > tmp; \
         test -e tmp && mv tmp $$i; } done; true
-	cd yaml-cpp && export CXX="$(CXX)" && export CXXFLAGS="$(CPPFLAGS) $(CXXFLAGS)" && $(CMAKE) . && \
+	cd yaml-cpp && CXX="$(CXX)" CXXFLAGS="$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) $(DYLDFLAGS)" $(CMAKE) . && \
       $(MAKE) && mv libyaml-cpp.a liblhapdf-yaml-cpp.a
 
 clean-local:
