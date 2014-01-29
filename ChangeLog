@@ -1,5 +1,8 @@
 2014-01-29  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding the SetIndex and Parent metadata fields, and updating the
+	creategrids script, pdfsets.index and tomigrate files accordingly.
+
 	* Removing the external yaml-cpp build option, and
 	improving/clarifying the internal yaml-cpp build and linking.
 

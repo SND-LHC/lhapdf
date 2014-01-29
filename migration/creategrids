@@ -24,6 +24,8 @@ p.add_option("--desc", dest="META_SETDESC", metavar="DESC", help="a value for th
 p.add_option("--authors", dest="META_AUTHORS", metavar="AUTHORS", help="a value for the Authors metadata field", default="")
 p.add_option("--ref", dest="META_REFERENCE", metavar="REF", help="a value for the Reference metadata field", default="")
 p.add_option("--version", dest="META_DATAVERSION", metavar="VERSION", help="a value for the DataVersion metadata field", type=int, default=-1)
+p.add_option("--id", dest="META_LHAPDFID", metavar="LHAPDFID", help="a value for the SetIndex metadata field", type=int, default=None)
+p.add_option("--pid", dest="META_PARTICLEID", metavar="PARTICLEID", help="a value for the Particle metadata field. Defaults to 2212 (proton)", type=int, default=2212)
 p.add_option("--errtype", dest="META_ERRTYPE", metavar="TYPE", help="a value for the ErrorType metadata field", default="")
 p.add_option("--cl", dest="META_CONFLEVEL", metavar="CONFLEVEL", help="a value for the ErrorConfLevel metadata field", default="")
 p.add_option("--xmin", dest="XMIN", metavar="XMIN", help="truncate the x knots array at XMIN, even if the PDF reports knots lower than that", type=float, default=None)
@@ -206,11 +208,15 @@ for lha5name in args:
             metapath = os.path.join(setname, setname + '.info')
             f = open(metapath, "w")
             f.write("SetDesc: \"%s\"\n" % opts.META_SETDESC.replace("\\n","\n")) # Note line break insertion and quoting
+            if opts.META_LHAPDFID is not None:
+                f.write("SetIndex: %d\n" % opts.META_LHAPDFID)
             f.write("Authors: %s\n" % opts.META_AUTHORS)
             f.write("Reference: %s\n" % opts.META_REFERENCE)
             f.write("Format: lhagrid1\n")
             f.write("DataVersion: %d\n" % opts.META_DATAVERSION)
             f.write("NumMembers: %d\n" % numMembers)
+            if opts.META_PARTICLEID:
+                f.write("Particle: %d\n" % opts.META_PARTICLEID)
             f.write("Flavors: [%s]\n" % ", ".join(str(pid) for pid in pids))
             f.write("OrderQCD: %d\n" % lhapdf.getOrderPDF())
             if opts.FORCE_POSITIVE > 0:
@@ -247,10 +253,10 @@ for lha5name in args:
                     f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in alphas_qs))
                 else:
                     f.write("AlphaS_Type: analytic\n")
-                    if lhapdf.getLam4(1) > 0:
-                        f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
-                    if lhapdf.getLam5(1) > 0:
-                        f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
+                if lhapdf.getLam4(1) > 0:
+                    f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
+                if lhapdf.getLam5(1) > 0:
+                    f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
         f.close()
 
         ## Escape here if only writing the .info file
@@ -286,10 +292,10 @@ for lha5name in args:
                 f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in alphas_qs))
             else:
                 f.write("AlphaS_Type: analytic\n")
-                if lhapdf.getLam4(1) > 0:
-                    f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
-                if lhapdf.getLam5(1) > 0:
-                    f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
+            if lhapdf.getLam4(1) > 0:
+                f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
+            if lhapdf.getLam5(1) > 0:
+                f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
         f.write("---\n")
 
         ## Get the xf values for this PDF member in each Q subgrid

@@ -8,14 +8,7 @@ LHAPDF6 TODO list
 VERSION 6.0.6
 -------------
 
-- **Add Parent metadata, for proton, neutron, photon, pion... and ions?**
-
-   All, including nuclear/ion states are possible in the PDG MC code scheme.
-
-- **Add a GlobalID metadata member, for the LHAPDF/PDFLIB ID code**
-
-   The pdfsets.index file can then be regularly generated from the set .info
-   files (and include the latest available DataVersions)
+- **Generate the pdfsets.index file and website PDF set list from metadata**
 
 - **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
 

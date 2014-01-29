@@ -81,6 +81,12 @@ MANDATORY
 (free string): A human-readable description of this PDF set.
 
 
+SetIndex
+--------
+OPTIONAL, but should be set for sets with assigned LHAPDF IDs
+(int): The LHAPDF global ID code for the first member in this PDF set.
+
+
 Authors
 -------
 MANDATORY
@@ -98,6 +104,16 @@ Reference
 OPTIONAL
 (free string): A reference to the paper that describes this PDF set. Use semicolons
 to separate a standard journal string, arXiv ID, DOI code, etc.
+
+
+Particle
+--------
+OPTIONAL
+(int): e.g. 2212
+
+The PDG ID code (including nuclear codes) for the parent particle which this PDF
+set (or member) describes. The most common are proton (2212), neutron (2112),
+pion (211), photon (22), and nuclei like the deuteron (1000010020).
 
 
 Flavors
