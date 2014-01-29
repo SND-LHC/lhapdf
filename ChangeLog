@@ -1,3 +1,8 @@
+2014-01-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing the external yaml-cpp build option, and
+	improving/clarifying the internal yaml-cpp build and linking.
+
 2014-01-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Tweaks for better variable-passing to cmake in the bundled
