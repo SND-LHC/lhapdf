@@ -63,7 +63,9 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         PDF* mkPDF(int)
         size_t size() except +
         string name() except +
-        string description() except +
+        string description()
+        int lhapdfID() except +
+        int dataversion() except +
         string errorType() except +
         void _print "print" () except + # TODO: map the second (verbosity) argument
 

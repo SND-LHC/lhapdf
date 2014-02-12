@@ -64,6 +64,11 @@ namespace LHAPDF {
       return get_entry("SetDesc");
     }
 
+    /// First LHAPDF global index in this PDF set
+    int lhapdfID() const {
+      return get_entry_as<int>("SetIndex", -1);
+    }
+
     /// Version of this PDF set's data files
     int dataversion() const {
       return get_entry_as<int>("DataVersion", -1);

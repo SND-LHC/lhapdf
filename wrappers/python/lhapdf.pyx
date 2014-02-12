@@ -208,6 +208,16 @@ cdef class PDFSet:
         return self._ptr.description()
 
     @property
+    def lhapdfID(self):
+        "First LHAPDF global index in this PDF set."
+        return self._ptr.lhapdfID()
+
+    @property
+    def dataversion(self):
+        "Version of this PDF set's data files."
+        return self._ptr.dataversion()
+
+    @property
     def errorType(self):
         "Type of error treatment in this PDF's set."
         return self._ptr.errorType()

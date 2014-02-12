@@ -418,6 +418,7 @@ namespace LHAPDF {
     ///
     /// Obtained from the member ID and the set's LHAPDF ID index
     int lhapdfID() const {
+      /// @todo Use set().lhapdfID() + memberID()
       return lookupLHAPDFID(_setname(), memberID());
     }
 
