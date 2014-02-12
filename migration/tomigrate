@@ -119,9 +119,9 @@ CT10nnlo_as_0130.LHgrid --force-pos --id=11280 --desc="CT10 NNLO Global Analysis
 # TODO: add CTEQ PDFs for Higgs extrema (to be supplied by CTEQ)
 
 ## CJ12 (deuteron)
-CJ12max.LHgrid --pid=1000010020 --force-pos --errtype=hessian --cl=90 --id=12000 --desc="CJ12_max. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
+CJ12min.LHgrid --pid=1000010020 --force-pos --errtype=hessian --cl=90 --id=12000 --desc="CJ12_min. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
 CJ12mid.LHgrid --pid=1000010020 --force-pos --errtype=hessian --cl=90 --id=12100 --desc="CJ12_mid. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
-CJ12min.LHgrid --pid=1000010020 --force-pos --errtype=hessian --cl=90 --id=12200 --desc="CJ12_min. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
+CJ12max.LHgrid --pid=1000010020 --force-pos --errtype=hessian --cl=90 --id=12200 --desc="CJ12_max. Global parton distributions with nuclear and finite-Q^2 corrections. mem=0 => central value; mem=1-38 => 19 sets of +ve/-ve error values" --ref="arXiv:1212.1702" --authors="Owens J.F, Accardi A, and Melnitchouk W"
 
 
 ## HERAPDF 1.5 NLO and NNLO
