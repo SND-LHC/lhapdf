@@ -350,17 +350,7 @@ extern "C" {
   /// PDFLIB initialisation function
   void pdfset_(const char* par, const double* value, int parlength) {
 
-    // Initialise struct equivalents to common blocks with sensible values.
-    w50512_.qcdl4 = 0.215;
-    w50512_.qcdl5 = 0.165;
-    w50513_.xmin = 0.0;
-    w50513_.xmax = 1.0;
-    w50513_.q2min = 1.0;
-    w50513_.q2max = 1.0e5;
-    lhapdfr_.qcdlha4 = 0.0;
-    lhapdfr_.qcdlha5 = 0.0;
-    lhapdfr_.nfllha = 4;
-
+    // Identify the calling program (yuck!)
     string my_par(par);
     if (my_par.find("NPTYPE") != string::npos) {
       /// @todo Remove noisiness? Useful for now
@@ -382,22 +372,22 @@ extern "C" {
       ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
     }
 
-    // Need to extract parameters for common blocks
+    // Extract parameters for common blocks (with sensible fallback values)
     PDFPtr pdf = ACTIVESETS[1].activemember();
-
-    w50513_.xmin=pdf->info().get_entry_as<double>("XMin");
-    w50513_.xmax=pdf->info().get_entry_as<double>("XMax");
-    w50513_.q2min=pow(pdf->info().get_entry_as<double>("QMin"),2);
-    w50513_.q2max=pow(pdf->info().get_entry_as<double>("QMax"),2);
-    w50512_.qcdl4=pdf->info().get_entry_as<double>("AlphaS_Lambda4");
-    w50512_.qcdl5=pdf->info().get_entry_as<double>("AlphaS_Lambda5");
-    lhapdfr_.qcdlha4=pdf->info().get_entry_as<double>("AlphaS_Lambda4");
-    lhapdfr_.qcdlha5=pdf->info().get_entry_as<double>("AlphaS_Lambda5");
+    w50513_.xmin = pdf->info().get_entry_as<double>("XMin", 0.0);
+    w50513_.xmax = pdf->info().get_entry_as<double>("XMax", 1.0);
+    w50513_.q2min = pow(pdf->info().get_entry_as<double>("QMin"), 1.0);
+    w50513_.q2max = pow(pdf->info().get_entry_as<double>("QMax"), 1.0e5);
+    w50512_.qcdl4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.215); //< @todo Where does this default come from?
+    w50512_.qcdl5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.165); //< @todo Where does this default come from?
+    lhapdfr_.qcdlha4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
+    lhapdfr_.qcdlha5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
+    lhapdfr_.nfllha = 4;
     // BEGIN: used to test behaviour versus lhapdf 5.x
-    //    w50512_.qcdl4=0.192;
-    //    w50512_.qcdl5=0.192;
-    //    lhapdfr_.qcdlha4=0.192;
-    //    lhapdfr_.qcdlha5=0.192;
+    //    w50512_.qcdl4 = 0.192;
+    //    w50512_.qcdl5 = 0.192;
+    //    lhapdfr_.qcdlha4 = 0.192;
+    //    lhapdfr_.qcdlha5 = 0.192;
     // END:  backwards compatibility test
   }
 
