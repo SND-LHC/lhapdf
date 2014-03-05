@@ -376,8 +376,8 @@ extern "C" {
     PDFPtr pdf = ACTIVESETS[1].activemember();
     w50513_.xmin = pdf->info().get_entry_as<double>("XMin", 0.0);
     w50513_.xmax = pdf->info().get_entry_as<double>("XMax", 1.0);
-    w50513_.q2min = pow(pdf->info().get_entry_as<double>("QMin"), 1.0);
-    w50513_.q2max = pow(pdf->info().get_entry_as<double>("QMax"), 1.0e5);
+    w50513_.q2min = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMin", 1.0));
+    w50513_.q2max = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMax", 1.0e5));
     w50512_.qcdl4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.215); //< @todo Where does this default come from?
     w50512_.qcdl5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.165); //< @todo Where does this default come from?
     lhapdfr_.qcdlha4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
