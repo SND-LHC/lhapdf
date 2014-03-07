@@ -378,8 +378,8 @@ extern "C" {
     w50513_.xmax = pdf->info().get_entry_as<double>("XMax", 1.0);
     w50513_.q2min = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMin", 1.0));
     w50513_.q2max = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMax", 1.0e5));
-    w50512_.qcdl4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.215); //< @todo Where does this default come from?
-    w50512_.qcdl5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.165); //< @todo Where does this default come from?
+    w50512_.qcdl4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
+    w50512_.qcdl5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
     lhapdfr_.qcdlha4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
     lhapdfr_.qcdlha5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
     lhapdfr_.nfllha = 4;
