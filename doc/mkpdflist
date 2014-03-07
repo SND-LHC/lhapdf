@@ -1,0 +1,43 @@
+#! /usr/bin/env python
+# -*- python -*-
+
+import lhapdf
+sets = {}
+for psname in lhapdf.availablePDFSets():
+    ps = lhapdf.getPDFSet(psname)
+    if ps.lhapdfID > 0:
+        sets[ps.lhapdfID] = ps
+
+#s = "<html>\n"
+#s += "  <h1>PDF sets</h1>\n"
+
+s = "/**\n"
+s += "@page pdfsets PDF sets\n\n"
+
+s += """All sets behave very closely to their LHAPDF v5 equivalents, usually within
+1 part in 1000 across x,Q space, sometimes with larger localised deviations at the
+edges of the x,Q grid or on flavour thresholds: these are not expected to be physically
+important. See http://lhapdf.hepforge.org/validationpdfs/ for a full set of validation
+plots for each set's central member.\n\n"""
+
+s += """In the table, green rows indicate sets which have been officially approved
+for LHAPDF6 by their authors. Red rows indicate those which have not yet been so
+approved. Unvalidated sets may still be used and have generally been seen to behave
+faithfully to their LHAPDF5 equivalents, but please take care.\n\n"""
+
+s += "See http://www.hepforge.org/archive/lhapdf/pdfsets/6.0 for data downloads.\n\n"
+
+s += "  <table>\n"
+s += "    <tr><th>%LHAPDF ID</th><th>Set name</th><th>Number of set members</th><th>Latest data version</th></tr>\n"
+
+for lhaid, ps in sorted(sets.iteritems()):
+    color = "#fee" if ps.dataversion < 0 else "#efe"
+    s += '    <tr style="background-color: {col};"><td>{id}</td><td>{name}</td><td>{size}</td><td>{version}</td></tr>\n'.\
+         format(col=color, id=lhaid, name=ps.name, size=ps.size, version=ps.dataversion)
+
+s += "  </table>\n"
+
+#s += "</html>\n"
+s += "\n*/\n"
+
+print s

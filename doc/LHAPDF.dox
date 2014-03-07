@@ -198,6 +198,13 @@ flags, etc. as you wish!
     cd ..
 
 
+@section sets Official PDF sets
+
+The following PDF sets are available and officially supported:
+
+- @ref pdfsets
+
+
 @section usage Usage
 
 As for previous versions, LHAPDF6 is a programmatic library. It can be accessed
@@ -213,34 +220,44 @@ the old `LHAPATH` variable which supports multiple search paths separated by
 colon (`:`) characters, cf. standard system paths like `PATH`,
 `LD_LIBRARY_PATH`, etc.]
 
+Here are some reference documents on the library design and the system of
+PDF/set/config metadata flags:
+
+- Design rationale: @ref design
+- PDF metadata flags: @ref config
+
+
+@section codeexamples Code examples
+
 The following examples should help you to get to grips with using LHAPDF from C++:
 
-**Using and testing PDFs in C++:**
+@subsection ex1 Using and testing PDFs in C++
 @include examples/testpdf.cc
+
 @include tests/testperf.cc
 
-**Using and testing PDFs in Python:**
+@subsection ex2 Using and testing PDFs in Python
 @include examples/pythonexample.py
 
-**Handling LHAPDF v5/v6 compatibility in C++:**
+@subsection ex3 Handling LHAPDF v5/v6 compatibility in C++
 @include examples/compatibility.cc
 
-**Using and testing PDF grids in C++:**
+@subsection ex4 Using and testing PDF grids in C++
 @include tests/testgrid.cc
 
-**Testing the Info system in C++:**
+@subsection ex5 Testing the Info system in C++
 @include tests/testinfo.cc
 
-**Testing the LHAPDF ID indexing system in C++:**
+@subsection ex6 Testing the LHAPDF ID indexing system in C++
 @include tests/testindex.cc
 
-**Testing the path searching system in C++:**
+@subsection ex7 Testing the path searching system in C++
 @include tests/testpaths.cc
 
-**Testing the AlphaS classes in C++:**
+@subsection ex8 Testing the AlphaS classes in C++
 @include tests/testalphas.cc
 
-**Making a new PDF subclass in C++:**
+@subsection ex9 Making a new PDF subclass in C++
 @include examples/analytic.cc
 
 
@@ -255,8 +272,6 @@ See the following pages:
 
 - @ref todolist
 - @ref todo
-- @ref design
-- @ref config
 - @ref codingstyle
 
 @todo Add some developer build guides, including the autotools, Cython, etc. gotchas.

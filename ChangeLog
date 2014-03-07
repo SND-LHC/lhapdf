@@ -1,5 +1,9 @@
 2014-03-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Doc updates, and added script and current output to generate a
+	PDF sets list Doxygen/HTML input from sets found on the developer
+	system.
+
 	* Add a third column to the pdfsets.index file for version
 	comparison by the manager script.
 
