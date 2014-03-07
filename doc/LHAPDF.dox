@@ -82,40 +82,36 @@ http://lhapdf.hepforge.org/.
 
 @subsection externals External dependencies
 
-LHAPDF6 makes use of two external code libraries: the Boost C++ utility library
-(http://www.boost.org) and the yaml-cpp (http://code.google.com/p/yaml-cpp/)
-parser. (In LHAPDF6, PDF metadata is stored in the YAML (http://www.yaml.org)
-format.) On Linux machines both these should typically be available via your
-system's packaging mechanism (e.g. the `libboost-all-dev` and `libyaml-cpp-dev`
-packages on Ubuntu).
+LHAPDF6 makes use of header files from the Boost C++ utility library
+(http://www.boost.org). On Linux machines this should typically be available via
+your system's packaging mechanism, e.g. the `libboost-all-dev` package on Ubuntu
+and other Debian derivatives. On Scientific Linux 6 the system installation of
+Boost is sufficient for LHAPDF 6.0.5 and later. The system copy on SL5 is too
+old, however, but surely everyone has upgraded to v6 by now...
 
-@todo Getting Boost and yaml-cpp on Mac OS X? Available in Fink/MacPorts/etc.?
+On Mac OS X the Homebrew system (http://brew.sh/) comes recommended by several
+LHAPDF developers and contains a well-managed version of Boost. Many HEP
+packages are already available for Homebrew via the homebrew-hep project:
+http://davidchall.github.io/homebrew-hep/
 
-
-@subsection boost Building Boost by hand
-
-Building Boost by hand is not particularly simple and should not be needed
-in most cases: we recommend avoiding this! If you have access to the CERN AFS
+Building Boost by hand is not particularly simple and should not be needed in
+most cases: we recommend avoiding this! If you have access to the CERN AFS
 filesystem, you can find builds of Boost for various platforms in the
-`/afs/cern.ch/sw/lcg/external/Boost/` directory.
+`/afs/cern.ch/sw/lcg/external/Boost/` directory. If you really want or need to
+do it manually, version 6.0.5 and later of LHAPDF only use Boost headers
+(previous ones used compiled libraries) and rather than fully building Boost,
+you can just use the header files direct from its source tarball: this is not
+wonderfully neat, but is a lot easier than doing a full manual build and
+installation of the Boost libraries.
 
+The CMake system (i.e. `cmake` command) must also be installed, in order to
+build an internal copy of the yaml-cpp parser library
+(http://code.google.com/p/yaml-cpp/) used to read the PDF metadata which is in
+YAML format (http://www.yaml.org).
 
-@subsection yamlcpp Building yaml-cpp by hand
-
-Building yaml-cpp by hand is simpler than Boost, but it's still better to
-use a packaged installation if possible (an installation on CERN AFS by the LCG
-team should happen soon, at which point we will update these instructions). To
-build yaml-cpp, download the tarball from http://code.google.com/p/yaml-cpp/ and
-expand it. You will need to have CMake installed to build this -- again this is
-a standard package which you can get from a packaging system or AFS.
-
-You'll also make sure that your build of `yaml-cpp` has installed a *shared*
-library (with a file extension of `.so` on Linux, or `.dylib` on Mac,
-e.g. `libyaml-cpp.so`) as well as the default `libyaml-cpp.a` static
-library. Packaging system installations of yaml-cpp should already meet this
-requirement. To make sure that the shared library is built, call `cmake
--DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/my/install/area` during the build
-before running `make` and `make install`.
+@note Until version 6.0.5, LHAPDF required yaml-cpp to be installed externally,
+ either manually or by package manager. With version 6.0.5 and later, there is
+ no such dependence, but the `cmake` command must be available at build time.
 
 
 @subsection lhapdf Building LHAPDF
@@ -134,8 +130,8 @@ Now you should run the `configure` script to analyse your machine, compiler,
 etc. and set up the Makefiles. You will probably need to provide the `--prefix`
 argument to `configure` to tell it where you want to install LHAPDF (probably
 you don't want to install to `/usr/local`, which is the default) and perhaps use
-the `--with-yaml-cpp` and `--with-boost` flags to indicate the locations of your
-Boost and yaml-cpp installations.
+the `--with-boost` flag to indicate the locations of your
+Boost installation.
 
 @note These flags expect the "base" location of the package, e.g. if you have
 installed library X such that there are headers in `/foo/include/` (or
@@ -149,17 +145,18 @@ will need the Python development headers to be installed (e.g. via the
 
 In conclusion, an example call to LHAPDF's `configure` script might look like:
 
-    ./configure --prefix=$HOME/local --with-yaml-cpp=$HOME/local
+    ./configure --prefix=$HOME/local
 
-(this should be appropriate if you have installed Boost in `/usr` via your
-machine's packaging system, and have privately installed yaml-cpp into `~/local`
-via the `-DCMAKE_INSTALL_PATH=...` described above.) An example build script for
-LHAPDF6 on the CERN lxplus6 system is shown at the end of these instructions.
+(This should be appropriate if you have installed Boost in `/usr` via your
+machine's packaging system.) An example build script for LHAPDF6 on the CERN
+lxplus6 system is shown at the end of these instructions.
 
 If you want to use an alternative C++ compiler, then you can specify the CXX
-variable on the command line, e.g.
+variable on the command line. This is essential on OS X Mavericks and later,
+where the consistent compiler suite is clang rather than gcc -- in that
+situation, use:
 
-    ./configure --prefix=... CXX=clang++
+    ./configure --prefix=... CC=clang CXX=clang++
 
 The configure script will run and produce quite a bit of output from its various
 tests. Hopefully everything will be successful: if it gets to the end without
@@ -191,19 +188,11 @@ flags, etc. as you wish!
     export LD_LIBRARY_PATH=$PWD/local/lib:$LD_LIBRARY_PATH
     export PYTHONPATH=$PWD/local/lib64/python2.6/site-packages:$PYTHONPATH
 
-    ## Build yaml-cpp
-    wget http://yaml-cpp.googlecode.com/files/yaml-cpp-0.3.0.tar.gz -O- | tar xz
-    cd yaml-cpp
-    cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PWD/../local
-    make -j2 && make install
-    cd ..
-
     ## Build LHAPDF
     LHANAME=LHAPDF-6.X.Y
     wget http://www.hepforge.org/archive/lhapdf/$LHANAME.tar.gz -O- | tar xz
     cd $LHANAME
     ./configure --prefix=$PWD/../local \
-        --with-yaml-cpp=$PWD/../local \
         --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
     make -j2 && make install
     cd ..
