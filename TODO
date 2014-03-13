@@ -8,12 +8,11 @@ LHAPDF6 TODO list
 VERSION 6.0.6
 -------------
 
-- **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
+- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
 
-   For backward compatibility. Drop this aliasing with version 6.1, when people
-   will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
+- **Fix missing LHAGlue functions getnset_ etc. (AB)**
 
-- **Uncertainties and reweighting code and (final) flag changes**
+- **Uncertainties and reweighting code and (final) flag changes (GW, AB)**
 
    Including sigma/CL, unknown ErrorType, and Graeme's code that operates on them.
 
@@ -27,9 +26,16 @@ VERSION 6.0.6
 
    Requested by Alex Mitov.
 
-- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
-
 - **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
+
+
+VERSION 6.0.7
+-------------
+
+- **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
+
+   For backward compatibility. Drop this aliasing with version 6.1, when people
+   will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
 
 
 
@@ -53,22 +59,7 @@ VERSION 6.1
    Martin has got some speed-up out of a native array implementation, and found
    no benefit of changing the index search. Andy will look into caching.
 
-- **Improved high-x interpolation (??)**
-
-   Sergey Alekhin mentioned that their native treatment of the high-x region is
-   rather careful, interpolating in a log(1-x) rather than log(x) space. I'm not
-   sure how a smooth handover between the two measures is done. Perhaps we could
-   / should implement something similar for this region? High-x is definitely an
-   awkward case, given that the PDFs vary rapidly in that region and a log
-   measure is maybe not best suited to accurately interpolating there.
-
-- **Handle zipped PDF .dat files (AB)**
-
-   Prefer zipped single member data files rather than virtual filesystem access
-   to the tarball. Can transparently read zipped files with LD_PRELOAD and
-   zlibc: is that enough? Add instructions for that to manual/website.
-
-- **Remove remaining Boost dependencies? (AB)**
+- **Remove remaining Boost dependencies / move to C++11 (AB)**
 
    Boost was being more trouble than it was worth, but maybe now that we're not
    using the filesystem stuff it is ok. Full removal would require several changes:
@@ -121,6 +112,21 @@ WRITE PAPER
 
 VERSION 6.1.1
 -------------
+
+- **Improved high-x interpolation (??)**
+
+   Sergey Alekhin mentioned that their native treatment of the high-x region is
+   rather careful, interpolating in a log(1-x) rather than log(x) space. I'm not
+   sure how a smooth handover between the two measures is done. Perhaps we could
+   / should implement something similar for this region? High-x is definitely an
+   awkward case, given that the PDFs vary rapidly in that region and a log
+   measure is maybe not best suited to accurately interpolating there.
+
+- **Handle zipped PDF .dat files (AB)**
+
+   Prefer zipped single member data files rather than virtual filesystem access
+   to the tarball. Can transparently read zipped files with LD_PRELOAD and
+   zlibc: is that enough? Add instructions for that to manual/website.
 
 - **PDF flavor aliasing mechanism**
 

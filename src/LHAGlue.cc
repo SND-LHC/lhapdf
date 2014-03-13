@@ -142,11 +142,29 @@ string lhaglue_get_current_pdf(int nset) {
 
 extern "C" {
 
+
   /// LHAPDF version
-  void getlhapdfversion_(char *s, size_t len) {
+  void getlhapdfversion_(char* s, size_t len) {
     /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
     strncpy(s, LHAPDF_VERSION, len);
   }
+
+
+  /// Return a dummy max number of sets (there is no limitation now)
+  void getmaxnumsets_(int& nmax) {
+    nmax = 1000;
+  }
+
+
+  /// Set path
+  void setpdfpath_(const char* s, size_t len) {
+    /// @todo Works? Need to check Fortran string return, C-string copying, null termination
+    char s2[1024];
+    s2[len] = '\0';
+    strncpy(s2, s, len);
+    LHAPDF::pathsPrepend(s2);
+  }
+
 
   /// Load a PDF set
   ///
@@ -175,6 +193,7 @@ extern "C" {
     initpdfsetm_(nset1, setpath, setpathlength);
   }
 
+
   /// Load a PDF set by name
   void initpdfsetbynamem_(const int& nset, const char* setname, int setnamelength) {
     // Truncate input to size setnamelength
@@ -196,6 +215,7 @@ extern "C" {
     initpdfsetbynamem_(nset1, setname, setnamelength);
   }
 
+
   /// Load a PDF in current set
   void initpdfm_(const int& nset, const int& nmember) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
@@ -207,6 +227,26 @@ extern "C" {
     int nset1 = 1;
     initpdfm_(nset1, nmember);
   }
+
+
+  /// Get the ID number of the current set
+  /// @todo How does this work? Return int or return via params?
+  void getnset_(int& nset) {
+    // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    //   throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // ACTIVESETS[nset].loadMember(nmember);
+    throw LHAPDF::NotImplementedError("LHAGLUE getnset not implemented");
+  }
+
+  /// Get the ID number of the current member
+  /// @todo How does this work? Return int or return via params?
+  void getnmem_(int& nset, int& nmember) {
+    // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    //   throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // ACTIVESETS[nset].loadMember(nmember);
+    throw LHAPDF::NotImplementedError("LHAGLUE getnmem not implemented");
+  }
+
 
   /// Get xf(x) values for common partons from current PDF
   void evolvepdfm_(const int& nset, const double& x, const double& q, double* fxq) {
@@ -227,12 +267,14 @@ extern "C" {
     evolvepdfm_(nset1, x, q, fxq);
   }
 
+
   /// Determine if the current PDF has a photon flavour (historically only MRST2004QED)
   /// @todo Function rather than subroutine?
   bool has_photon_() {
     /// @todo Only apply to nset = 1? Or do we need to track the current nset value?
     return ACTIVESETS[1].activemember()->hasFlavor(22);
   }
+
 
   /// Get xfx values from current PDF, including an extra photon flavour
   void evolvepdfphotonm_(const int& nset, const double& x, const double& q, double* fxq, double& photonfxq) {
@@ -253,6 +295,7 @@ extern "C" {
     evolvepdfphotonm_(nset1, x, q, fxq, photonfxq);
   }
 
+
   /// Get xf(x) values for common partons from a photon PDF
   void evolvepdfpm_(const int& nset, const double& x, const double& q, const double& p2, const int& ip2, double& fxq) {
     /// @todo Implement me!
@@ -263,6 +306,7 @@ extern "C" {
     int nset1 = 1;
     evolvepdfpm_(nset1, x, q, p2, ip2, fxq);
   }
+
 
   /// Get the number of members in the set
   void numberpdfm_(const int& nset, int& numpdf) {
@@ -279,12 +323,13 @@ extern "C" {
     numberpdfm_(nset1, numpdf);
   }
 
+
   /// Get the alpha_s order for the set
   void getorderasm_(const int& nset, int& oas) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    // set equal to the number of members  for the requested set
-    oas=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_OrderQCD");
+    // Set equal to the number of members for the requested set
+    oas = ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_OrderQCD");
   }
   /// Get the alpha_s order for the set (non-multiset version)
   void getorderas_(int& oas) {
@@ -292,16 +337,18 @@ extern "C" {
     getorderasm_(nset1, oas);
   }
 
+
   /// Get the number of flavours
   void getnfm_(const int& nset, int& nf) {
-    /// @todo Implement me! (and improve param names)
+    //nf = ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_NumFlavors");
+    nf = ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumFlavors");
   }
-
   /// Get the number of flavours (non-multiset version)
   void getnf_(int& nf) {
     int nset1 = 1;
     getnfm_(nset1, nf);
   }
+
 
   /// Get nf'th quark mass
   void getqmassm_(const int& nset, const int& nf, double& mass) {
@@ -321,13 +368,24 @@ extern "C" {
   }
 
 
+  /// Get the nf'th quark threshold
+  /// @todo Update when we can support generalized thresholds
+  void getthresholdm_(const int& nset, const int& nf, double& Q) {
+    getqmassm_(nset, nf, Q);
+  }
+  /// Get the nf'th quark threshold
+  void getthreshold_(const int& nf, double& Q) {
+    int nset1 = 1;
+    getthresholdm_(nset1, nf, Q);
+  }
+
+
   /// @todo Doc and better arg name
   void lhaprint_(int& a){
     // Do nothing for now
     /// @todo Can this be mapped?
   }
 
-  /// @todo Need getnset_ and getnmem_
 
   /// @brief Set LHAPDF parameters
   ///
@@ -335,6 +393,7 @@ extern "C" {
   void setlhaparm_(const char* par, int parlength) {
     /// @todo Can any Fortran LHAPDF params be usefully mapped?
   }
+
 
   double alphaspdfm_(const int& nset, const double& Q){
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())

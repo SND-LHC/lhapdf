@@ -1,3 +1,8 @@
+2014-03-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding implementations of getnf_, setpdfpath_ and placeholder
+	getnset_, getnmem_ LHAGLUE functions.
+
 2014-03-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Doc updates, and added script and current output to generate a
