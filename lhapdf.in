@@ -199,13 +199,9 @@ def get_reference_list(filepath):
         logging.debug('Reading %s' % filepath)
         reader = csv.reader(csv_file, delimiter=' ', skipinitialspace=True, strict=True)
         for row in reader:
-            # TODO: Add PDF versioning in LHAPDF 6.1
-            #if len(row) != 3:
-                #raise ValueError
-            #id_code, version, name = int(row[0]), int(row[1]), str(row[2])
-            if len(row) != 2:
+            if len(row) != 3:
                 raise ValueError
-            id_code, version, name = int(row[0]), None, str(row[1])
+            id_code, version, name = int(row[0]), int(row[1]), str(row[2])
             database.append(PdfSet(name, id_code, version))
     except IOError:
         logging.error('Could not open %s' % filepath)
