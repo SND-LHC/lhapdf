@@ -1,3 +1,9 @@
+2014-03-15  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Adding new example programs testpdfunc and hessian2replicas,
+	functions for PDF uncertainties in PDFSet.h, and backwards
+	compatibility functions (+ getnset_, getnmem_) in LHAGlue.cc.
+
 2014-03-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding implementations of getnf_, setpdfpath_ and placeholder

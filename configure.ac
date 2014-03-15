@@ -151,6 +151,8 @@ BOOST_STRING_ALGO
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/range.hpp])
 BOOST_FIND_HEADER([boost/bind.hpp])
+BOOST_FIND_HEADER([boost/random.hpp])
+BOOST_FIND_HEADER([boost/math/distributions/chi_squared.hpp])
 
 
 ## Export base compiler flags
