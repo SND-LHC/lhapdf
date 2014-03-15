@@ -9,6 +9,7 @@
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/Version.h"
 #include "LHAPDF/Config.h"
+/// @todo Keep this to the .cc files?
 #include <boost/math/distributions/chi_squared.hpp>
 
 namespace LHAPDF {
@@ -80,7 +81,8 @@ namespace LHAPDF {
       return to_lower_copy(get_entry("ErrorType", "UNKNOWN"));
     }
 
-    /// G. Watt.  Get the confidence level of the Hessian eigenvectors, in percent.
+    /// @brief Get the confidence level of the Hessian eigenvectors, in percent.
+    ///
     /// If not defined, assume 1-sigma = erf(1/sqrt(2)) = 68.268949% by default.
     double errorConfLevel() const {
       return get_entry_as<double>("ErrorConfLevel", 100*boost::math::erf(1/sqrt(2)));
@@ -224,9 +226,9 @@ namespace LHAPDF {
       /// The following five values will be returned in a vector<double>.
       double central = values[0], errplus = 0.0, errminus = 0.0, errsym = 0.0, scale = 1.0;
       const int nmem = size()-1;
-      
+
       if (errorType() == "replicas") {
-      
+
 	/// Calculate the average and standard deviation
 	/// using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2.
 	double av = 0.0, sd = 0.0;
@@ -240,18 +242,18 @@ namespace LHAPDF {
 	else sd = 0.0;
 	central = av;
 	errplus = errminus = errsym = sd;
-	
+
       } else if (errorType() == "symmhessian") {
-      
+
 	for (int ieigen = 1; ieigen <= nmem; ieigen++) {
 	  errsym += sqr(values[ieigen]-values[0]);
 	}
 	errsym = sqrt(errsym);
 	errplus = errsym;
 	errminus = errsym;
-	
+
       } else if (errorType() == "hessian") {
-      
+
 	/// Calculate the asymmetric and symmetric Hessian uncertainties
 	/// using Eqs. (2.1), (2.2) and (2.6) of arXiv:1106.5788v2.
 	for (int ieigen = 1; ieigen <= nmem/2; ieigen++) {
@@ -326,13 +328,13 @@ namespace LHAPDF {
     	double qerrCL = boost::math::quantile(dist,errCL);
     	double qreqCL = boost::math::quantile(dist,reqCL);
     	scale = sqrt(qreqCL/qerrCL);
-    
+
     	for (int i = 1; i <= 3; i++) {
     	  err[i] *= scale;
     	}
     	err[4] = scale;
       }
-  
+
       return err;
 
     }
@@ -363,12 +365,12 @@ namespace LHAPDF {
     	cor = (cor/nmem - errA[0]*errB[0])/(errA[3]*errB[3]) * nmem/(nmem-1.0);
 
       } else if (errorType() == "symmhessian") {
-    
+
     	for (int ieigen = 1; ieigen <= nmem; ieigen++) {
     	  cor += (valuesA[ieigen]-errA[0])*(valuesB[ieigen]-errB[0]);
     	}
     	cor /= errA[3]*errB[3];
-    
+
       } else if (errorType() == "hessian") {
 
     	/// Calculate the correlation using Eq. (2.5) of arXiv:1106.5788v2.
@@ -387,7 +389,7 @@ namespace LHAPDF {
 
     /// Generate a random value from Hessian "values" and Gaussian random numbers.
     double randomValue(const vector<double>& values, const vector<double>& random, bool symmetrise=true) const {
-  
+
       if (values.size() != size()) {
 	throw UserError("Error in LHAPDF::PDFSet::randomValue.  Input vector must contain values for all PDF members.");
       }
@@ -401,7 +403,7 @@ namespace LHAPDF {
 
       /// Allocate number of eigenvectors based on ErrorType.
       unsigned neigen = 0;
-      if (errorType() == "hessian") { 
+      if (errorType() == "hessian") {
 	neigen = nmem/2;
       } else if (errorType() == "symmhessian") {
 	neigen = nmem;
@@ -439,11 +441,11 @@ namespace LHAPDF {
     	}
 
       }
-      
+
       return frand;
 
     }
-    
+
     //@}
 
 

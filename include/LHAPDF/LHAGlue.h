@@ -193,9 +193,32 @@ namespace LHAPDF {
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double xfxphoton(int nset, double x, double Q, int fl);
 
+
+  /// Print PDF description to stdout
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  void getDescription();
+
+  /// Print PDF description to stdout
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  void getDescription(int nset);
+
+
   /// Order of \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
-  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   int getOrderAlphaS();
+
+  /// Order of \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  int getOrderAlphaS(int nset);
+
+
+  /// Order of QCD used by the current PDF.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  int getOrderPDF();
+
+  /// Order of QCD used by the current PDF.
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  int getOrderPDF(int nset);
 
 
   /// Number of flavours used in current PDF
@@ -203,8 +226,26 @@ namespace LHAPDF {
   int getNf(int nset);
 
   /// Number of flavours used in current PDF
-  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   int getNf();
+
+
+  /// 4-flavour LambdaQCD used in current PDF, if available else -1.0
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getLam4(int nset);
+
+  /// 4-flavour LambdaQCD used in current PDF, if available else -1.0
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getLam4(int nset, int nmem);
+
+
+  /// 5-flavour LambdaQCD used in current PDF, if available else -1.0
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getLam5(int nset);
+
+  /// 5-flavour LambdaQCD used in current PDF, if available else -1.0
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
+  double getLam5(int nset, int nmem);
 
 
   /// Minimum X for current PDF
@@ -220,12 +261,12 @@ namespace LHAPDF {
   double getXmax(int nset, int nmem);
 
   /// Maximum X for current PDF
-  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double getXmax(int nmem);
 
 
   /// Minimum Q2 for current PDF
-  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double getQ2min(int nset, int nmem);
 
   /// Minimum Q2 for current PDF
@@ -237,7 +278,7 @@ namespace LHAPDF {
   double getQ2max(int nset, int nmem);
 
   /// Maximum Q2 for current PDF
-  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double getQ2max(int nmem);
 
 
@@ -246,7 +287,7 @@ namespace LHAPDF {
   double getQMass(int nset, int nf);
 
   /// Mass of quarks for current PDF
-  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
+  /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
   double getQMass(int nf);
 
 
@@ -255,12 +296,8 @@ namespace LHAPDF {
   double getThreshold(int nset, int nf);
 
   /// Mass of quarks for current PDF
-  /// @deprecated Use the proper C++ interface of LHAPDF6 -instead!
-  double getThreshold(int nf);
-
-  /// Order of \f$ \alpha_\mathrm{s} \f$ used by the current PDF.
   /// @deprecated Use the proper C++ interface of LHAPDF6 instead!
-  int getOrderAlphaS(int nset);
+  double getThreshold(int nf);
 
 
   /// \f$ \alpha_\mathrm{s} \f$ used by the current PDF.

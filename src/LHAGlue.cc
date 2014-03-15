@@ -759,6 +759,18 @@ void LHAPDF::initPDFSetByName(int nset, const string& filename, SetType type) {
   initpdfsetbynamem_(nset, cfilename, filename.length());
 }
 
+
+void LHAPDF::getDescription() {
+  getDescription(1);
+}
+
+void LHAPDF::getDescription(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  cout << ACTIVESETS[nset].activemember()->set().description() << endl;
+}
+
+
 double LHAPDF::alphasPDF(double Q) {
   return LHAPDF::alphasPDF(1, Q) ;
 }
@@ -771,9 +783,11 @@ double LHAPDF::alphasPDF(int nset, double Q) {
   return ACTIVESETS[nset].activemember()->alphasQ(Q);
 }
 
+
 bool LHAPDF::hasPhoton(){
   return has_photon_();
 }
+
 
 int LHAPDF::getOrderAlphaS() {
   return LHAPDF::getOrderAlphaS(1) ;
@@ -784,8 +798,48 @@ int LHAPDF::getOrderAlphaS(int nset) {
     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   currentset = nset;
   // return alphaS Order for the requested set
-  return ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_OrderQCD");
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_OrderQCD", -1);
 }
+
+
+int LHAPDF::getOrderPDF() {
+  return LHAPDF::getOrderPDF(1) ;
+}
+
+int LHAPDF::getOrderPDF(int nset) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  currentset = nset;
+  // return PDF order for the requested set
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<int>("OrderQCD", -1);
+}
+
+
+double LHAPDF::getLam4(int nmem) {
+  return LHAPDF::getLam4(1, nmem) ;
+}
+
+double LHAPDF::getLam4(int nset, int nmem) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  currentset = nset;
+  ACTIVESETS[nset].loadMember(nmem);
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda4", -1.0);
+}
+
+
+double LHAPDF::getLam5(int nmem) {
+  return LHAPDF::getLam5(1, nmem) ;
+}
+
+double LHAPDF::getLam5(int nset, int nmem) {
+  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  currentset = nset;
+  ACTIVESETS[nset].loadMember(nmem);
+  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda5", -1.0);
+}
+
 
 int LHAPDF::getNf() {
   return LHAPDF::getNf(1) ;
@@ -798,6 +852,7 @@ int LHAPDF::getNf(int nset) {
   // return alphaS Order for the requested set
   return ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumFlavors");
 }
+
 
 double LHAPDF::getXmin(int nmem) {
   return LHAPDF::getXmin(1, nmem) ;
