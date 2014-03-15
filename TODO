@@ -12,6 +12,10 @@ VERSION 6.0.6
 
 - **Fix missing LHAGlue functions getnset_ etc. (AB)**
 
+- **Fix YAML symbol copying into static lib**
+
+   Or disable static lib for now.
+
 - **Uncertainties and reweighting code and (final) flag changes (GW, AB)**
 
    Including sigma/CL, unknown ErrorType, and Graeme's code that operates on them.

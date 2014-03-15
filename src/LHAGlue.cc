@@ -122,12 +122,12 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     map<int, PDFPtr> members;
   };
 
+
+  /// Collection of active sets
+  static map<int, PDFSetHandler> ACTIVESETS;
+
   /// The currently active set
   int currentset = 0;
-
-  /// @todo Remove this: now that 0 is valid and equal to 21, a for-loop from -6 to 6 is fine
-  static const int LHAPIDS[13] = { -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 };
-  static map<int, PDFSetHandler> ACTIVESETS;
 
 }
 
@@ -241,35 +241,35 @@ extern "C" {
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   }
 
+  void setnset_(const int& nset) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" +
+                              LHAPDF::to_str(nset) + " but it is not initialised");
+    currentset = nset;
+  }
+
   void getnmem_(int& nset, int& nmem) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     nmem = ACTIVESETS[nset].currentmem;
   }
 
-  /// G. Watt.  If needed, implementations of setnset and setnmem given below.
+  void setnmem_(const int& nset, const int& nmem) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" +
+                              LHAPDF::to_str(nset) + " but it is not initialised");
+    ACTIVESETS[nset].loadMember(nmem);
+  }
 
-  // void setnset_(int& nset) {
-  //   if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-  //     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-  //   currentset = nset;
-  // }
-
-  // void setnmem_(int& nset, int& nmem) {
-  //   if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-  //     throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-  //   ACTIVESETS[nset].loadMember(nmem);
-  // }
 
   /// Get xf(x) values for common partons from current PDF
   void evolvepdfm_(const int& nset, const double& x, const double& q, double* fxq) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    currentset = nset;
-    // Evaluate for the LHAPDF5 standard partons
+    // Evaluate for the 13 LHAPDF5 standard partons (-6..6)
     for (size_t i = 0; i < 13; ++i) {
       try {
-        fxq[i] = ACTIVESETS[nset].activemember()->xfxQ(LHAPIDS[i], x, q);
+        fxq[i] = ACTIVESETS[nset].activemember()->xfxQ(i-6, x, q);
       } catch (const exception& e) {
         fxq[i] = 0;
       }
@@ -303,6 +303,7 @@ extern "C" {
     } catch (const exception& e) {
       photonfxq = 0;
     }
+    currentset = nset;
   }
   /// Get xfx values from current PDF, including an extra photon flavour (non-multiset version)
   void evolvepdfphoton_(const double& x, const double& q, double* fxq, double& photonfxq) {
@@ -374,11 +375,12 @@ extern "C" {
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     currentset = nset;
     if (nf*nf == 1) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MDown");
-    if (nf*nf == 4) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MUp");
-    if (nf*nf == 9) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MStrange");
-    if (nf*nf == 16) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MCharm");
-    if (nf*nf == 25) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MBottom");
-    if (nf*nf == 36) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MTop");
+    else if (nf*nf == 4) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MUp");
+    else if (nf*nf == 9) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MStrange");
+    else if (nf*nf == 16) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MCharm");
+    else if (nf*nf == 25) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MBottom");
+    else if (nf*nf == 36) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MTop");
+    else throw LHAPDF::UserError("Trying to get quark mass for invalid quark ID #" + LHAPDF::to_str(nf));
   }
   /// Get nf'th quark mass (non-multiset version)
   void getqmass_(const int& nf, double& mass) {
@@ -419,13 +421,13 @@ extern "C" {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     currentset = nset;
-    return  ACTIVESETS[nset].activemember()->alphasQ(Q);
+    return ACTIVESETS[nset].activemember()->alphasQ(Q);
   }
-
   double alphaspdf_(const double& Q){
     int nset1 = 1;
     return alphaspdfm_(nset1, Q);
   }
+
 
   /// PDFLIB initialisation function
   void pdfset_(const char* par, const double* value, int parlength) {
