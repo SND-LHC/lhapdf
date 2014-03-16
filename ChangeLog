@@ -1,3 +1,9 @@
+2014-03-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Disable static library build for now, until we can figure out
+	how to portably pull symbols from yaml-cpp into both shared and
+	static libs via libtool.
+
 2014-03-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding more compatibility functions: getDescription, getLam4,5,
