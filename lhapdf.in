@@ -199,9 +199,14 @@ def get_reference_list(filepath):
         logging.debug('Reading %s' % filepath)
         reader = csv.reader(csv_file, delimiter=' ', skipinitialspace=True, strict=True)
         for row in reader:
-            if len(row) != 3:
+            # <= 6.0.5
+            if len(row) == 2:
+                id_code, version, name = int(row[0]), None, str(row[1])
+            # >= 6.0.6
+            elif len(row) == 3:
+                id_code, version, name = int(row[0]), int(row[1]), str(row[2])
+            else:
                 raise ValueError
-            id_code, version, name = int(row[0]), int(row[1]), str(row[2])
             database.append(PdfSet(name, id_code, version))
     except IOError:
         logging.error('Could not open %s' % filepath)
