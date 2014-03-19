@@ -1,3 +1,10 @@
+2014-03-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Convert lhapdf-yaml-cpp building to use libtool, avoiding
+	linking portability issues. Re-enable static library building
+	since the necessary symbols now seem to be present (and the
+	libtool warning has also disappeared).
+
 2014-03-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Disable static library build for now, until we can figure out

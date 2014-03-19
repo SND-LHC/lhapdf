@@ -38,9 +38,6 @@ AC_LANG(C++)
 AC_CONFIG_SRCDIR([src/GridPDF.cc])
 AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Version.h])
 
-## Don't build a static library (until correct copying of yaml-cpp symbols can be achieved)
-AC_DISABLE_STATIC
-
 ## Checks for programs
 AC_PROG_CXX
 # TODO: reinstate when mandatory: AX_CXX_COMPILE_STDCXX_11([noext],[optional])
