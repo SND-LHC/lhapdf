@@ -5,16 +5,17 @@
 LHAPDF6 TODO list
 =================
 
-VERSION 6.0.6
+VERSION 6.1.0
 -------------
+
+- **Make LHAPDF6 the main LHAPDF web page**
+
+   Archive the LHAPDF5 pages. Generate set list/details page from Python API /
+   pdfsets.index file.
 
 - **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
 
 - **Fix missing LHAGlue functions getnset_ etc. (AB)**
-
-- **Fix YAML symbol copying into static lib**
-
-   Or disable static lib for now.
 
 - **Uncertainties and reweighting code and (final) flag changes (GW, AB)**
 
@@ -22,29 +23,70 @@ VERSION 6.0.6
 
    Reweight.h and Uncertainty.h, or a general PDFTools.h?
 
-   Provide getWeight(PDF*, PDF*, Q, x1, x2=-1). For uncertainties, note that we
-   can use C++11 erf to convert sigmas to CLs (NB. divide arg by sqrt(2)). C++11
-   doesn't contain erfinv, unfortunately: we need Boost if that's required.
+- **AlphaS flavour threshold/mass treatment (AB/KN)**
 
-- **Separate AlphaS_QThresholdB etc. from M<qname> (AB/KN)**
+   Separate AlphaS_QThresholdB etc. from M<qname> (requested by Alex Mitov)
 
-   Requested by Alex Mitov.
+   Add optional vector arg for flavour thresholds on ODe solver: if empty, use
+   quark masses as thresholds. Also on analytic solver or is that pointless?
 
 - **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
 
+   Add ODE behaviour to not calculate div-by-zero if x_n+1 = x_n, then insert
+   doubled evolution/ipol points on flavour thresholds.
 
-VERSION 6.0.7
--------------
+
+VALIDATION / MIGRATION / ETC.
+-----------------------------
+
+- **ABM PDF approval**
+
+   Behaviour at high x looks fine: Sergey contacted again, Mar 2014. Contact
+   again, pointing out that the measure is already enforced by the grid density.
+
+- **CTEQ PDF approval (AB)**
+
+   Approved! Need to regenerate PDFs.
+
+- **ATLAS & HERA PDFs (AB)**
+
+   Waiting for final approvals from Voica.
+
+
+
+WRITE PAPER
+-----------
+
+- ** Target at EPJC Tools**
+
+- **Note fixed problems**
+
+   Support for different set sizes. alpha_s etc. in multi-set mode. Lambda
+   reporting to PYTHIA. Number of members reported correctly. **ADD MORE AS WE REMEMBER THEM**
+
+
+
+
+VERSION 6.2
+-----------
 
 - **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
 
    For backward compatibility. Drop this aliasing with version 6.1, when people
    will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
 
+- **Optimize the grid PDF interpolator code a bit more**
 
+   Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
+   CPU: can reduce by factor of 13 in some use cases (only one call for a whole
+   flavour interpolation set at the same point). Below threshold? Sherpa already
+   report performance increases due to being able to interpolated one flavour at
+   a time, so perhaps this use case is not valid in all generators and could be
+   a more complexity than it is worth.
 
-VERSION 6.1
------------
+- **Reweighting helper functions?**
+
+   e.g. getWeight(PDF*, PDF*, Q, x1, x2=-1). Too trivial, or helpful?
 
 - **Speed up interpolation (MR)**
 
@@ -76,55 +118,49 @@ VERSION 6.1
    just yet.
 
 
-VALIDATION / MIGRATION / ETC.
------------------------------
+- **Expose LHAGLUE slots system for C++ use**
 
-- **Make LHAPDF6 the main LHAPDF web page**
+   Automatic memory management can be nice for everyone. Expose as PDFManager.
 
-   Archive the LHAPDF5 pages. Generate set list/details page from Python API /
-   pdfsets.index file.
+- **Provide a nicer Fortran interface?**
 
-- **ABM PDF approval**
+   Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
+   away from the the theory world. Suggest prefixing all functions with "lhapdf"
+   and basing it on the PDFManager, with explicit commands for switching current PDF.
 
-   Need special treatment at high x? Ipol in log(1-x) above x=0.9?
+- **Add AlphaS mappings to Cython (SL, AB)**
 
-- **CTEQ PDF approval (AB)**
+   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
 
-   Contacted x 3.
+- **Add debug verbosity about places being searched for PDF files**
 
-- **ATLAS PDFs (AB, ATLAS)**
+- **Translate C++ exceptions into Python exceptions**
 
-   Sasha, Voica, Mark to provide and approve: contacted.
-   What to put for the VAR error type?
-
-- **HERAPDF validation (SL,AB)**
-
-   Mandy and Voica contacted for approval.
-   What to put for the VAR error type?
+   Should be happening automatically -- Cython bug? There is a real, definite
+   Cython bug re. exception declarations on functions that return references,
+   so the exception declarations on getPDFSet() etc. are commented for now.
 
 
-WRITE PAPER
+
+
+AS AND WHEN
 -----------
-
-- ** Target at EPJC Tools**
-
-- **Note fixed problems**
-
-   Support for different set sizes. alpha_s etc. in multi-set mode. Lambda
-   reporting to PYTHIA. Number of members reported correctly. **ADD MORE AS WE REMEMBER THEM**
-
-
-VERSION 6.1.1
--------------
 
 - **Improved high-x interpolation (??)**
 
    Sergey Alekhin mentioned that their native treatment of the high-x region is
    rather careful, interpolating in a log(1-x) rather than log(x) space. I'm not
-   sure how a smooth handover between the two measures is done. Perhaps we could
-   / should implement something similar for this region? High-x is definitely an
-   awkward case, given that the PDFs vary rapidly in that region and a log
-   measure is maybe not best suited to accurately interpolating there.
+   sure how a smooth handover between the two measures is done: a smooth
+   interpolation between modes? Perhaps we could / should implement something
+   similar for this region. High-x is definitely an awkward case, given that the
+   PDFs vary rapidly in that region and a log measure is maybe not best suited
+   to accurately interpolating there... but dense gridding seems to be
+   sufficient so far.
+
+   Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
+   all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
+   deserves specialisation beyond generic splines. Graeme will look at what's
+   done in the CTEQ code (other than interpolating in x**0.3)
 
 - **Handle zipped PDF .dat files (AB)**
 
@@ -136,10 +172,6 @@ VERSION 6.1.1
 
    e.g. allow anti-flavours to be identical without duplicating their grids in
    the data files or memory. How could we implement this?
-
-- **Expose LHAGLUE slots system for C++ use**
-
-   Automatic memory management can be nice for everyone.
 
 - **Speed up interpolation with GPUs**
 
@@ -156,34 +188,6 @@ VERSION 6.1.1
    may be more appropriate at high-Q. High-x should not require extrapolation,
    but gradient extrapolation in log space may be a good option at low-x.
 
-- **Provide a nicer Fortran interface?**
-
-   Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
-   away from the the theory world.
-
-- **Improved x -> 1 evolution (GW,...)**
-
-   Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
-   all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably
-   deserves specialisation beyond generic splines. Graeme will look at what's
-   done in the CTEQ code (other than interpolating in x**0.3)
-
-- **Add AlphaS mappings to Cython (SL, AB)**
-
-   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
-
-- **Add debug verbosity about places being searched for PDF files**
-
-- **Translate C++ exceptions into Python exceptions**
-
-   Should be happening automatically -- Cython bug? There is a real, definite
-   Cython bug re. exception declarations on functions that return references,
-   so the exception declarations on getPDFSet() etc. are commented for now.
-
-
-AS AND WHEN
------------
-
 - **Allow use of valence/sea etc. decompositions**
 
    GridPDF may be inherited from to allow the returned values to be built from
@@ -194,30 +198,6 @@ AS AND WHEN
    meanings and contents for internal and external purposes: maybe the
    "internal" PDG ID list needs to become part of the grid data header, or can
    the metadata be used?
-
-- **Optimize the grid PDF interpolator code a bit more**
-
-   Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
-   CPU: can reduce by factor of 13 in some use cases (only one call for a whole
-   flavour interpolation set at the same point). Below threshold? Sherpa already
-   report performance increases due to being able to interpolated one flavour at
-   a time, so perhaps this use case is not valid in all generators and could be
-   a more complexity than it is worth.
-
-- **More aggressive memory and CPU optimisation**
-
-   For example avoiding duplication of x,Q knot arrays between flavors... if
-   this "1D" effect is really significant.
-
-- **Support photon structure functions**
-
-   Need to make use of the P2 and IP2 params. No idea how to even start here...
-
-- **Support nuclear corrections**
-
-   Have to be applyable to all nucleon PDFs, regardless of implementation:
-   probably nuclear PDFs will inherit from PDF (since they are PDFs) and
-   _contain_ a nucleon PDF whose values will be modified before returning.
 
 - **Using std::/boost::function to generically modify the interpolation measures in x, Q (AB)**
 
@@ -236,15 +216,8 @@ AS AND WHEN
 
    Super-laziness! But is there a real gain other than ~1 sec initialization speed?
 
-- **Use HDF5 for the data access?**
-
-   David has more info: I've only ever looked at it in a very rudimentary way,
-   e.g. playing with PyTables. Sounds good in principle: I prefer a *real world*
-   standard to ROOT, anyway ;-) Does it have any string/typed annotation
-   mechanism that we could use?
-
 - **Updated Octave wrapper**
 
-   To come from Phil Ilten
+   To come from Phil Ilten if he's interested.
 
 */
