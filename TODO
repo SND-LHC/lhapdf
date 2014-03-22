@@ -8,20 +8,17 @@ LHAPDF6 TODO list
 VERSION 6.1.0
 -------------
 
-- **Make LHAPDF6 the main LHAPDF web page**
+- **Make LHAPDF6 the main LHAPDF web page (AB)**
 
    Archive the LHAPDF5 pages. Generate set list/details page from Python API /
    pdfsets.index file.
 
 - **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
 
-- **Fix missing LHAGlue functions getnset_ etc. (AB)**
+- **Uncertainties code and (final) flag changes (GW, AB)**
 
-- **Uncertainties and reweighting code and (final) flag changes (GW, AB)**
-
-   Including sigma/CL, unknown ErrorType, and Graeme's code that operates on them.
-
-   Reweight.h and Uncertainty.h, or a general PDFTools.h?
+   Refine Graeme's code interfaces (e.g. return struct/fill in-place rather than
+   std::vector). Clarify flag behaviours, esp. re. default ErrorConfLevel = 1 sigma.
 
 - **AlphaS flavour threshold/mass treatment (AB/KN)**
 
