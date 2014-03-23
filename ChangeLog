@@ -1,5 +1,7 @@
 2014-03-23  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Moving new uncertainty functions into a new PDFSet.cc file to keep header clean.
+
 	* Removing now unnecessary cmake check from configure and the docs.
 
 2014-03-19  Andy Buckley  <andy.buckley@cern.ch>
