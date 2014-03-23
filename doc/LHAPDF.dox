@@ -104,10 +104,10 @@ you can just use the header files direct from its source tarball: this is not
 wonderfully neat, but is a lot easier than doing a full manual build and
 installation of the Boost libraries.
 
-The CMake system (i.e. `cmake` command) must also be installed, in order to
-build an internal copy of the yaml-cpp parser library
+@note In version 6.0.5, the CMake system (i.e. `cmake` command) must also be
+installed, in order to build an internal copy of the yaml-cpp parser library
 (http://code.google.com/p/yaml-cpp/) used to read the PDF metadata which is in
-YAML format (http://www.yaml.org).
+YAML format (http://www.yaml.org). Thie requirement was removed in version 6.1.0.
 
 @note Until version 6.0.5, LHAPDF required yaml-cpp to be installed externally,
  either manually or by package manager. With version 6.0.5 and later, there is

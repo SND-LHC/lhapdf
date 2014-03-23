@@ -47,8 +47,8 @@ AC_PROG_LN_S
 AC_PROG_LIBTOOL
 
 ## Find CMake, which is needed internally to build yaml-cpp
-AC_CHECK_TOOL(CMAKE, cmake)
-test x$CMAKE = x && AC_MSG_ERROR([Built-in yaml-cpp build requires cmake])
+#AC_CHECK_TOOL(CMAKE, cmake)
+#test x$CMAKE = x && AC_MSG_ERROR([Built-in yaml-cpp build requires cmake])
 
 
 ## Enable debugging symbols and assert checking

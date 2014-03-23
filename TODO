@@ -36,18 +36,28 @@ VERSION 6.1.0
 VALIDATION / MIGRATION / ETC.
 -----------------------------
 
-- **ABM PDF approval**
+- **Regen all PDFs without --cl=68 (AB)**
 
-   Behaviour at high x looks fine: Sergey contacted again, Mar 2014. Contact
-   again, pointing out that the measure is already enforced by the grid density.
+   Update versions as required.
 
 - **CTEQ PDF approval (AB)**
 
-   Approved! Need to regenerate PDFs.
+   Approved! Need to regenerate PDFs. Versions = 1.
+
+- **MRST / MSTW renumberings (AB, GW)**
+
+   Correct MRST QED PDF numberings to match LHAPDF5.
+   Change MSTW numberings to be more obviously distinct from LHAPDF5.
+   Both for version 6.1 only?
 
 - **ATLAS & HERA PDFs (AB)**
 
    Waiting for final approvals from Voica.
+
+- **ABM PDF approval**
+
+   Behaviour at high x looks fine: Sergey contacted again, Mar 2014. Contact
+   again, pointing out that the measure is already enforced by the grid density.
 
 
 

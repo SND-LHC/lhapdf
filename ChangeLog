@@ -1,3 +1,7 @@
+2014-03-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing now unnecessary cmake check from configure and the docs.
+
 2014-03-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Convert lhapdf-yaml-cpp building to use libtool, avoiding
