@@ -27,14 +27,15 @@ namespace LHAPDF {
     double central, errplus, errminus, errsymm, scale;
 
     /// Cast operator to a vector<double>
+    /// @todo Remove? Does anyone want/need this?
     operator std::vector<double> () const {
       vector<double> rtn;
       rtn.resize(5);
-      rtn.push_back(this->central);
-      rtn.push_back(this->errplus);
-      rtn.push_back(this->errminus);
-      rtn.push_back(this->errsymm);
-      rtn.push_back(this->scale);
+      rtn[0] = this->central;
+      rtn[1] = this->errplus;
+      rtn[2] = this->errminus;
+      rtn[3] = this->errsymm;
+      rtn[4] = this->scale;
       return rtn;
     }
   };
