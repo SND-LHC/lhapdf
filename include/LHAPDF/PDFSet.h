@@ -17,6 +17,29 @@ namespace LHAPDF {
   class PDF;
 
 
+  /// Structure for storage of uncertainty info calculated over a PDF error set
+  /// @todo Exact role of scale and default value?
+  struct PDFUncertainty {
+    PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1)
+      : central(cent), errplus(eplus), errminus(eminus), errsymm(esymm), scale(scalefactor)
+    {    }
+
+    double central, errplus, errminus, errsymm, scale;
+
+    /// Cast operator to a vector<double>? Hmm...
+    operator std::vector<double> () const {
+      vector<double> rtn;
+      rtn.resize(5);
+      rtn.push_back(this->central);
+      rtn.push_back(this->errplus);
+      rtn.push_back(this->errminus);
+      rtn.push_back(this->errsymm);
+      rtn.push_back(this->scale);
+      return rtn;
+    }
+  };
+
+
   /// Class for PDF set metadata and manipulation
   class PDFSet : public Info {
   public:
@@ -189,29 +212,36 @@ namespace LHAPDF {
 
     /// @brief Calculate central value and error with appropriate formulae using vector "values".
     ///
-    /// The return value is a 5-element vector of (central, errplus, errminus, errsym, scale).
-    ///
     /// If the PDF set is given in the form of replicas, the uncertainty is given by the
     /// standard deviation, and the central (average) value is not necessarily "values[0]"
     /// for quantities with a non-linear dependence on PDFs.  In the Hessian approach,
     /// the central value is the best-fit "values[0]" and the uncertainty is given by either
     /// the symmetric or asymmetric formula using eigenvector PDF sets.
-    std::vector<double> uncertainty(const std::vector<double>& values) const;
+    PDFUncertainty uncertainty(const std::vector<double>& values) const;
 
     /// @brief Calculate central value and error using vector @c values and optional args for stat treatment
+    ///
+    /// @todo Unify under this signature
     ///
     /// Optional argument @c inputCL to rescale uncertainties to a particular confidence level.
     /// If the PDF set is given in the form of replicas, then optional argument @c median will
     /// instead calculate the median and confidence interval of the probability distribution.
-    std::vector<double> uncertainty(const std::vector<double>& values, double inputCL, bool median=false) const;
+    PDFUncertainty uncertainty(const std::vector<double>& values, double inputCL, bool median=false) const;
 
-    /// @brief Calculate the PDF correlation using appropriate formulae given vectors "valuesA" and "valuesB".
+    /// Calculate PDF uncertainties (as above), with with efficient no-copy return to the @c rtn argument.
+    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double inputCL, bool median=false) const {
+      rtn = uncertainty(values, inputCL, median);
+    }
+
+    /// @brief Calculate the PDF correlation between @c valuesA and @c valuesB using appropriate formulae for this set.
     ///
     /// The correlation can vary between -1 and +1 where values close to {-1,0,+1} mean that the two
     /// quantities A and B are {anticorrelated,uncorrelated,correlated}, respectively.
     double correlation(const vector<double>& valuesA, const vector<double>& valuesB) const;
 
-    /// Generate a random value from Hessian "values" and Gaussian random numbers.
+    /// @brief Generate a random value from Hessian @c values and Gaussian random numbers.
+    ///
+    /// @todo Behaviour if this is not a Hessian set?
     double randomValue(const vector<double>& values, const vector<double>& random, bool symmetrise=true) const;
 
     //@}

@@ -1,3 +1,8 @@
+2014-03-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Converting the uncertainty functions to add a no-copy version
+	and to return a new struct rather than a vector<double>.
+
 2014-03-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Moving new uncertainty functions into a new PDFSet.cc file to keep header clean.
