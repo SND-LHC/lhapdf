@@ -1,5 +1,10 @@
 2014-03-24  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Removing compatibility auto-cast of PDFUncertainty to
+	vector<double>, converting remaining functions to use the struct,
+	rationalising the previously split uncertainty() implementation,
+	and code tidying.
+
 	* Converting the uncertainty functions to add a no-copy version
 	and to return a new struct rather than a vector<double>.
 

@@ -23,21 +23,7 @@ namespace LHAPDF {
     PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1)
       : central(cent), errplus(eplus), errminus(eminus), errsymm(esymm), scale(scalefactor)
     {    }
-
     double central, errplus, errminus, errsymm, scale;
-
-    /// Cast operator to a vector<double>
-    /// @todo Remove? Does anyone want/need this?
-    operator std::vector<double> () const {
-      vector<double> rtn;
-      rtn.resize(5);
-      rtn[0] = this->central;
-      rtn[1] = this->errplus;
-      rtn[2] = this->errminus;
-      rtn[3] = this->errsymm;
-      rtn[4] = this->scale;
-      return rtn;
-    }
   };
 
 
@@ -211,26 +197,28 @@ namespace LHAPDF {
     /// @name PDF set uncertainty functions
     //@{
 
-    /// @brief Calculate central value and error with appropriate formulae using vector "values".
+    /// @brief Calculate central value and error from vector @c values with appropriate formulae for this set
     ///
-    /// If the PDF set is given in the form of replicas, the uncertainty is given by the
-    /// standard deviation, and the central (average) value is not necessarily "values[0]"
-    /// for quantities with a non-linear dependence on PDFs.  In the Hessian approach,
-    /// the central value is the best-fit "values[0]" and the uncertainty is given by either
-    /// the symmetric or asymmetric formula using eigenvector PDF sets.
-    PDFUncertainty uncertainty(const std::vector<double>& values) const;
-
-    /// @brief Calculate central value and error using vector @c values and optional args for stat treatment
+    /// If the PDF set is given in the form of replicas, the uncertainty is
+    /// given by the standard deviation, and the central (average) value is not
+    /// necessarily "values[0]" for quantities with a non-linear dependence on
+    /// PDFs.  In the Hessian approach, the central value is the best-fit
+    /// "values[0]" and the uncertainty is given by either the symmetric or
+    /// asymmetric formula using eigenvector PDF sets.
     ///
-    /// @todo Unify under this signature
+    /// Optional argument @c inputCL is used to rescale uncertainties to a
+    /// particular confidence level; a negative number will rescale to the
+    /// default CL for this set.
     ///
-    /// Optional argument @c inputCL to rescale uncertainties to a particular confidence level.
-    /// If the PDF set is given in the form of replicas, then optional argument @c median will
-    /// instead calculate the median and confidence interval of the probability distribution.
-    PDFUncertainty uncertainty(const std::vector<double>& values, double inputCL, bool median=false) const;
+    /// If the PDF set is given in the form of replicas, then optional argument
+    /// @c median will calculate the median and confidence interval of
+    /// the probability distribution rather than the mean and CL.
+    ///
+    /// @todo Behaviour of @c median if this is not a replica set?
+    PDFUncertainty uncertainty(const std::vector<double>& values, double inputCL=-1, bool median=false) const;
 
     /// Calculate PDF uncertainties (as above), with with efficient no-copy return to the @c rtn argument.
-    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double inputCL, bool median=false) const {
+    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double inputCL=-1, bool median=false) const {
       rtn = uncertainty(values, inputCL, median);
     }
 
@@ -238,12 +226,12 @@ namespace LHAPDF {
     ///
     /// The correlation can vary between -1 and +1 where values close to {-1,0,+1} mean that the two
     /// quantities A and B are {anticorrelated,uncorrelated,correlated}, respectively.
-    double correlation(const vector<double>& valuesA, const vector<double>& valuesB) const;
+    double correlation(const std::vector<double>& valuesA, const std::vector<double>& valuesB) const;
 
     /// @brief Generate a random value from Hessian @c values and Gaussian random numbers.
     ///
     /// @todo Behaviour if this is not a Hessian set?
-    double randomValue(const vector<double>& values, const vector<double>& random, bool symmetrise=true) const;
+    double randomValue(const std::vector<double>& values, const std::vector<double>& random, bool symmetrise=true) const;
 
     //@}
 
