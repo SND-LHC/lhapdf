@@ -230,7 +230,7 @@ namespace LHAPDF {
 
     /// @brief Generate a random value from Hessian @c values and Gaussian random numbers.
     ///
-    /// @todo Behaviour if this is not a Hessian set?
+    /// @todo Currently throws a UserError if this is not a Hessian set... return a randomly chosen replica?
     double randomValue(const std::vector<double>& values, const std::vector<double>& random, bool symmetrise=true) const;
 
     //@}
