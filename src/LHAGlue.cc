@@ -559,23 +559,23 @@ extern "C" {
   }
 
   // subroutine GetPDFuncertaintyM(nset,values,central,errplus,errminus,errsym)
-  void getpdfuncertaintym_(const int& nset, const double* values, double& central, double& errplus, double& errminus, double& errsym) {
+  void getpdfuncertaintym_(const int& nset, const double* values, double& central, double& errplus, double& errminus, double& errsymm) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     currentset = nset;
     const size_t nmem = ACTIVESETS[nset].activemember()->set().size()-1;
     const vector<double> vecvalues(values, values + nmem + 1);
-    vector<double> err = ACTIVESETS[nset].activemember()->set().uncertainty(vecvalues);
-    central = err[0];
-    errplus = err[1];
-    errminus = err[2];
-    errsym = err[3];
+    LHAPDF::PDFUncertainty err = ACTIVESETS[nset].activemember()->set().uncertainty(vecvalues);
+    central = err.central;
+    errplus = err.errplus;
+    errminus = err.errminus;
+    errsymm = err.errsymm;
   }
 
   // subroutine GetPDFuncertainty(values,central,errplus,errminus,errsym)
-  void getpdfuncertainty_(const double* values, double& central, double& errplus, double& errminus, double& errsym) {
+  void getpdfuncertainty_(const double* values, double& central, double& errplus, double& errminus, double& errsymm) {
     int nset1 = 1;
-    getpdfuncertaintym_(nset1, values, central, errplus, errminus, errsym);
+    getpdfuncertaintym_(nset1, values, central, errplus, errminus, errsymm);
   }
 
   // subroutine GetPDFcorrelationM(nset,valuesA,valuesB,correlation)

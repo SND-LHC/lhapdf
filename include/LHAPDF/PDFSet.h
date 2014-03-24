@@ -26,7 +26,7 @@ namespace LHAPDF {
 
     double central, errplus, errminus, errsymm, scale;
 
-    /// Cast operator to a vector<double>? Hmm...
+    /// Cast operator to a vector<double>
     operator std::vector<double> () const {
       vector<double> rtn;
       rtn.resize(5);
