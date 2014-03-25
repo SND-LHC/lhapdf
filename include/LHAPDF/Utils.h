@@ -155,6 +155,15 @@ namespace LHAPDF {
   template <typename N>
   inline int sgn(N val) { return (N(0) < val) - (val < N(0)); }
 
+  /// Check if a number is in a range (closed-open)
+  inline int in_range(double x, double low, double high) { return x >= low && x < high; }
+
+  /// Check if a number is in a range (closed-closed)
+  inline int in_closed_range(double x, double low, double high) { return x >= low && x <= high; }
+
+  /// Check if a number is in a range (open-open)
+  inline int in_open_range(double x, double low, double high) { return x > low && x < high; }
+
   /// @todo Add iszero() & equals(,) functions?
 
   //@}
