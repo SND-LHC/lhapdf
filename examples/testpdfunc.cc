@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
   const string setname = argv[1];
   const LHAPDF::PDFSet set(setname);
-  const int nmem = set.size()-1;
+  const size_t nmem = set.size()-1;
 
   double x = 0.1; // momentum fraction
   double Q = 100.0; // factorisation scale in GeV
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
   /// Could replace xg, xu by cross section, acceptance etc.
   const vector<LHAPDF::PDF*> pdfs = set.mkPDFs();
   vector<double> xgAll, xuAll;
-  for (int imem = 0; imem <= nmem; imem++) {
+  for (size_t imem = 0; imem <= nmem; imem++) {
     xgAll.push_back(pdfs[imem]->xfxQ(21,x,Q)); // gluon distribution
     xuAll.push_back(pdfs[imem]->xfxQ(2,x,Q)); // up-quark distribution
   }
@@ -43,31 +43,28 @@ int main(int argc, char* argv[]) {
   /// Calculate PDF uncertainty on gluon distribution.
   cout << "Gluon distribution at Q = " << Q << " GeV (normal uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xg","error+","error-","error");
-  vector<double> xgErr = set.uncertainty(xgAll);
-  double xg0 = xgErr[0], xgp = xgErr[1], xgm = xgErr[2], xgs = xgErr[3];
-  printf(numformat.c_str(),x,xg0,xgp,xgm,xgs);
+  const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll);
+  printf(numformat.c_str(), x, xgErr.central, xgErr.errplus, xgErr.errminus, xgErr.errsymm);
   cout << endl;
 
   /// Calculate PDF uncertainty on up-quark distribution.
   cout << "Up-quark distribution at Q = " << Q << " GeV (normal uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xu","error+","error-","error");
-  vector<double> xuErr = set.uncertainty(xuAll);
-  double xu0 = xuErr[0], xup = xuErr[1], xum = xuErr[2], xus = xuErr[3];
-  printf(numformat.c_str(),x,xu0,xup,xum,xus);
+  const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll);
+  printf(numformat.c_str(), x, xuErr.central, xuErr.errplus, xuErr.errminus, xuErr.errsymm);
   cout << endl;
 
   /// Calculate PDF correlation between gluon and up-quark.
-  const double corr = set.correlation(xgAll,xuAll);
+  const double corr = set.correlation(xgAll, xuAll);
   cout << "Correlation between xg and xu = " << corr << endl;
   cout << endl;
 
   /// Calculate gluon PDF uncertainty scaled to 90% C.L.
   cout << "Gluon distribution at Q = " << Q << " GeV (scaled uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xg","error+","error-","error");
-  xgErr = set.uncertainty(xgAll, 90);
-  xg0 = xgErr[0]; xgp = xgErr[1]; xgm = xgErr[2]; xgs = xgErr[3];
-  printf(numformat.c_str(),x,xg0,xgp,xgm,xgs);
-  cout << "Scaled PDF uncertainties to 90% C.L. using scale = " << xgErr[4] << endl;
+  const LHAPDF::PDFUncertainty xgErr90 = set.uncertainty(xgAll, 90);
+  printf(numformat.c_str(), x, xgErr90.central, xgErr90.errplus, xgErr90.errminus, xgErr90.errsymm);
+  cout << "Scaled PDF uncertainties to 90% C.L. using scale = " << xgErr90.scale << endl;
   cout << endl;
 
   /// Calculate up-quark PDF uncertainty scaled to 1-sigma.
@@ -75,10 +72,9 @@ int main(int argc, char* argv[]) {
   double sigma = 100*boost::math::erf(1/sqrt(2)); // 68.268949%
   cout << "Up-quark distribution at Q = " << Q << " GeV (scaled uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xu","error+","error-","error");
-  xuErr = set.uncertainty(xuAll, sigma);
-  xu0 = xuErr[0]; xup = xuErr[1]; xum = xuErr[2]; xus = xuErr[3];
-  printf(numformat.c_str(),x,xu0,xup,xum,xus);
-  cout << "Scaled PDF uncertainties to 1-sigma using scale = " << xuErr[4] << endl;
+  const LHAPDF::PDFUncertainty xuErr1s = set.uncertainty(xuAll, sigma);
+  printf(numformat.c_str(), x, xuErr1s.central, xuErr1s.errplus, xuErr1s.errminus, xuErr1s.errsymm);
+  cout << "Scaled PDF uncertainties to 1-sigma using scale = " << xuErr1s.scale << endl;
   cout << endl;
 
   if (set.errorType() == "replicas") {
@@ -86,57 +82,50 @@ int main(int argc, char* argv[]) {
     /// Calculate gluon PDF as median and 90% C.L. of replica probability distribution.
     cout << "Gluon distribution at Q = " << Q << " GeV (median and 90% C.L.)" << endl;
     printf(labformat.c_str()," #","x","xg","error+","error-","error");
-    xgErr = set.uncertainty(xgAll, 90, true);
-    xg0 = xgErr[0]; xgp = xgErr[1]; xgm = xgErr[2]; xgs = xgErr[3];
-    printf(numformat.c_str(),x,xg0,xgp,xgm,xgs);
+    const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll, 90, true);
+    printf(numformat.c_str(), x, xgErr.central, xgErr.errplus, xgErr.errminus, xgErr.errsymm);
     cout << endl;
-    
+
     /// Calculate up-quark PDF as median and 68% C.L. of replica probability distribution.
     cout << "Up-quark distribution at Q = " << Q << " GeV (median and 68% C.L.)" << endl;
     printf(labformat.c_str()," #","x","xu","error+","error-","error");
-    xuErr = set.uncertainty(xuAll, 68, true);
-    xu0 = xuErr[0]; xup = xuErr[1]; xum = xuErr[2]; xus = xuErr[3];
-    printf(numformat.c_str(),x,xu0,xup,xum,xus);
+    const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll, 68, true);
+    printf(numformat.c_str(), x, xuErr.central, xuErr.errplus, xuErr.errminus, xuErr.errsymm);
     cout << endl;
-    
+
   } else if (set.errorType() == "hessian" || set.errorType() == "symmhessian") {
 
-    /// Generate random values from Hessian best-fit and eigenvector values.
-    /// See: G. Watt and R.S. Thorne, JHEP 1208 (2012) 052 [arXiv:1205.4024 [hep-ph]].
-    /// Obtain Gaussian random numbers using Boost, but could also use C++11.
+    // Generate random values from Hessian best-fit and eigenvector values.
+    // See: G. Watt and R.S. Thorne, JHEP 1208 (2012) 052 [arXiv:1205.4024 [hep-ph]].
+    // Obtain Gaussian random numbers using Boost, but could also use C++11.
 
-    int neigen = 0; // number of eigenvectors
-    if (set.errorType() == "hessian") { 
-      neigen = nmem/2;
-    } else if (set.errorType() == "symmhessian") {
-      neigen = nmem;
-    }
+    const int neigen = (set.errorType() == "hessian") ? nmem/2 : nmem;
     const unsigned seed = 1234;
+    // C++11: default_random_engine generator(seed);
+    // C++11: normal_distribution<double> distribution; // mean 0.0, s.d. = 1.0
     boost::mt19937 rng(seed);
     boost::normal_distribution<> nd;
     boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > var_nor(rng, nd);
-    //C++11: default_random_engine generator(seed);
-    //C++11: normal_distribution<double> distribution; // mean 0.0, s.d. = 1.0
     const int nrand = 5; // generate nrand random values
     for (int irand = 1; irand <= nrand; irand++) {
       /// Fill vector "random" with neigen Gaussian random numbers.
       vector<double> random;
       for (int ieigen=1; ieigen <= neigen; ieigen++) {
-	double r = var_nor(); // using Boost
-	//C++11: double r = distribution(generator); // using C++11
-	random.push_back(r);
+        // C++11: double r = distribution(generator); // using C++11
+        double r = var_nor(); // using Boost
+        random.push_back(r);
       }
-      //const bool symmetrise = false; // average differs from best-fit
+      // const bool symmetrise = false; // average differs from best-fit
       const bool symmetrise = true; // default: average tends to best-fit
       double xgrand = set.randomValue(xgAll, random, symmetrise);
-      /// Pass *same* random numbers to preserve correlations between xg and xu.
+      // Pass *same* random numbers to preserve correlations between xg and xu.
       double xurand = set.randomValue(xuAll, random, symmetrise);
       cout << "Random " << irand << ": xg = " << xgrand << ", xu = " << xurand << endl;
     }
-    /// Random values generated in this way can subsequently be used for
-    /// applications such as Bayesian reweighting or combining predictions
-    /// from different groups (as an alternative to taking the envelope).
-    /// See, for example, material at http://mstwpdf.hepforge.org/random/.
+    // Random values generated in this way can subsequently be used for
+    // applications such as Bayesian reweighting or combining predictions
+    // from different groups (as an alternative to taking the envelope).
+    // See, for example, material at http://mstwpdf.hepforge.org/random/.
 
   }
 

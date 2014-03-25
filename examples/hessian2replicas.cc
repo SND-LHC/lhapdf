@@ -12,6 +12,7 @@ using namespace std;
 /// to "symmetrise" the Hessian predictions if they are asymmetric.
 void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& randsetname, const unsigned& seed, const unsigned& nrep, const std::string& randdir=".", const bool& symmetrise=true);
 
+
 int main(int argc, char* argv[]) {
 
   if (argc < 4) {
@@ -64,7 +65,7 @@ int main(int argc, char* argv[]) {
       if (paths[ipath] == randdir) pathfound = true;
     }
     if (!pathfound) LHAPDF::pathsAppend(randdir);
-    
+
     const LHAPDF::PDFSet randset(randsetname);
     const unsigned nmem = set.size()-1;
     const unsigned nmemRand = randset.size()-1;
@@ -83,44 +84,44 @@ int main(int argc, char* argv[]) {
       xgAllRand.push_back(randpdfs[imem]->xfxQ(21,x,Q)); // gluon distribution
       xuAllRand.push_back(randpdfs[imem]->xfxQ(2,x,Q)); // up-quark distribution
     }
-    
+
     /// Define formats for printing labels and numbers in output.
     string labformat = "%2s%10s%12s%12s%12s%12s\n";
     string numformat = "%12.4e%12.4e%12.4e%12.4e%12.4e\n";
-    
+
     /// Calculate 1-sigma PDF uncertainty on gluon and up-quark.
     const double sigma = 100*boost::math::erf(1/sqrt(2));
-    
-    const vector<double> xgErr = set.uncertainty(xgAll, sigma);
+
+    const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll, sigma);
     cout << "Gluon distribution at Q = " << Q << " GeV (original Hessian)" << endl;
     printf(labformat.c_str()," #","x","xg","error+","error-","error");
-    printf(numformat.c_str(),x,xgErr[0],xgErr[1],xgErr[2],xgErr[3]);
-    cout << "Scaled PDF uncertainties to 1-sigma using scale = " << xgErr[4] << endl;
+    printf(numformat.c_str(), x, xgErr.central, xgErr.errplus, xgErr.errminus, xgErr.errsymm);
+    cout << "Scaled PDF uncertainties to 1-sigma using scale = " << xgErr.scale << endl;
     cout << endl;
-    
-    const vector<double> xgErrRand = randset.uncertainty(xgAllRand);
+
+    const LHAPDF::PDFUncertainty xgErrRand = randset.uncertainty(xgAllRand);
     cout << "Gluon distribution at Q = " << Q << " GeV (new replicas)" << endl;
     printf(labformat.c_str()," #","x","xg","error+","error-","error");
-    printf(numformat.c_str(),x,xgErrRand[0],xgErrRand[1],xgErrRand[2],xgErrRand[3]);
+    printf(numformat.c_str(), x, xgErrRand.central, xgErrRand.errplus, xgErrRand.errminus, xgErrRand.errsymm);
     cout << endl;
-    
-    const vector<double> xuErr = set.uncertainty(xuAll, sigma);
+
+    const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll, sigma);
     cout << "Up-quark distribution at Q = " << Q << " GeV (original Hessian)" << endl;
     printf(labformat.c_str()," #","x","xu","error+","error-","error");
-    printf(numformat.c_str(),x,xuErr[0],xuErr[1],xuErr[2],xuErr[3]);
-    cout << "Scaled PDF uncertainties to 1-sigma using scale = " << xgErr[4] << endl;
+    printf(numformat.c_str(), x, xuErr.central, xuErr.errplus, xuErr.errminus, xuErr.errsymm);
+    cout << "Scaled PDF uncertainties to 1-sigma using scale = " << xgErr.scale << endl;
     cout << endl;
-    
-    const vector<double> xuErrRand = randset.uncertainty(xuAllRand);
+
+    const LHAPDF::PDFUncertainty xuErrRand = randset.uncertainty(xuAllRand);
     cout << "Up-quark distribution at Q = " << Q << " GeV (new replicas)" << endl;
     printf(labformat.c_str()," #","x","xu","error+","error-","error");
-    printf(numformat.c_str(),x,xuErrRand[0],xuErrRand[1],xuErrRand[2],xuErrRand[3]);
+    printf(numformat.c_str(), x, xuErrRand.central, xuErrRand.errplus, xuErrRand.errminus, xuErrRand.errsymm);
     cout << endl;
-  
+
     /// Calculate PDF correlation between gluon and up-quark.
-    const double corr = set.correlation(xgAll,xuAll);
+    const double corr = set.correlation(xgAll, xuAll);
     cout << "Correlation between xg and xu (original Hessian) = " << corr << endl;
-    const double randcorr = randset.correlation(xgAllRand,xuAllRand);
+    const double randcorr = randset.correlation(xgAllRand, xuAllRand);
     cout << "Correlation between xg and xu (new replicas) = " << randcorr << endl;
     cout << endl;
 
@@ -143,7 +144,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
   if (set.errorType() != "hessian" && set.errorType() != "symmhessian") {
     throw LHAPDF::MetadataError("This PDF set is not in the Hessian format.");
   }
-  
+
   if (nrep < 1 || nrep > 9999) {
     throw LHAPDF::NotImplementedError("Number of replicas must be between 1 and 9999.");
   }
@@ -199,7 +200,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
   }
   infile.close();
   outfile.close();
-  
+
   /// Loop over number of members, storing metadata and (x,Q,flavor) values.
   /// Check that (x,Q,flavor) values are equal for all members.
   /// Need to allow for different Q subgrids used in MSTW case,
@@ -316,7 +317,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 
   /// Allocate number of eigenvectors based on ErrorType.
   int neigen = 0;
-  if (set.errorType() == "hessian") { 
+  if (set.errorType() == "hessian") {
     neigen = nmem/2;
   } else if (set.errorType() == "symmhessian") {
     neigen = nmem;
@@ -350,13 +351,13 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
     }
     xfmean.push_back(xfmean_xs);
   }
-  
+
   /// Loop over number of requested replica members, plus zeroth member containing mean.
   for (unsigned ireplica = 1; ireplica <= nrep+1; ireplica++) {
-    
+
     unsigned irep = ireplica;
     if (irep == nrep+1) irep = 0; // do central member last since need average
-    
+
     /// Fill vector "random" with neigen Gaussian random numbers.
     vector<double> random;
     if (irep > 0) {
@@ -432,7 +433,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 
     /// Loop over same Q subgrids as in original grid file.
     for (size_t isub=0; isub < xs.size(); isub++) {
-      
+
       /// Write x points for this Q subgrid.
       for (size_t ix = 0; ix < xs[isub].size(); ix++) {
 	sprintf(buffer, "%2.6e", xs[isub][ix]);
