@@ -1,9 +1,8 @@
 // -*- C++ -*-
 //
 // This file is part of LHAPDF
-// Copyright (C) 2012-2013 The LHAPDF collaboration (see AUTHORS for details)
+// Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
-
 #include "LHAPDF/PDFSet.h"
 #include <boost/math/distributions/chi_squared.hpp>
 
@@ -154,24 +153,21 @@ namespace LHAPDF {
     if (errorType() == "replicas" && nmem > 1) {
 
       // Calculate the correlation using Eq. (2.7) of arXiv:1106.5788v2.
-      for (size_t imem = 1; imem <= nmem; imem++) {
+      for (size_t imem = 1; imem <= nmem; imem++)
         cor += valuesA[imem] * valuesB[imem];
-      }
       cor = (cor/nmem - errA.central*errB.central) / (errA.errsymm*errB.errsymm) * nmem/(nmem-1.0);
 
     } else if (errorType() == "symmhessian") {
 
-      for (size_t ieigen = 1; ieigen <= nmem; ieigen++) {
+      for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
         cor += (valuesA[ieigen]-errA.central) * (valuesB[ieigen]-errB.central);
-      }
       cor /= errA.errsymm * errB.errsymm;
 
     } else if (errorType() == "hessian") {
 
       // Calculate the correlation using Eq. (2.5) of arXiv:1106.5788v2.
-      for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++) {
+      for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++)
         cor += (valuesA[2*ieigen-1]-valuesA[2*ieigen]) * (valuesB[2*ieigen-1]-valuesB[2*ieigen]);
-      }
       cor /= 4.0 * errA.errsymm * errB.errsymm;
 
     }
