@@ -1,3 +1,9 @@
+2014-03-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* More tweaking of the uncertainty function behaviour.
+
+	* Adding in_range, in_open_range, in_closed_range functions.
+
 2014-03-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing compatibility auto-cast of PDFUncertainty to
