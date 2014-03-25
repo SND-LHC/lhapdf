@@ -5,6 +5,7 @@
 
 #include "LHAPDF/LHAPDF.h"
 #include <boost/random.hpp>
+#include <boost/math/distributions/chi_squared.hpp>
 using namespace std;
 
 /// Simple test program to demonstrate the four PDFSet member functions.
