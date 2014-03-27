@@ -1,16 +1,15 @@
-/// Program to convert LHAPDF6 grid files from Hessian to replicas.
-/// Written in March 2014 by G. Watt <Graeme.Watt(at)durham.ac.uk>.
-/// Extended version of http://mstwpdf.hepforge.org/random/conversion.C.
+// Program to convert LHAPDF6 grid files from Hessian to replicas.
+// Written in March 2014 by G. Watt <Graeme.Watt(at)durham.ac.uk>.
+// Extended version of http://mstwpdf.hepforge.org/random/conversion.C.
 
 #include "LHAPDF/LHAPDF.h"
 #include <boost/random.hpp>
-#include <boost/math/distributions/chi_squared.hpp>
 using namespace std;
 
-/// Function to convert Hessian "set" to replica set with name "randsetname"
-/// in directory "randdir" (default: current directory) using "seed" for
-/// random number generator with "nrep" replica PDF members and an option
-/// to "symmetrise" the Hessian predictions if they are asymmetric.
+// Function to convert Hessian "set" to replica set with name "randsetname"
+// in directory "randdir" (default: current directory) using "seed" for
+// random number generator with "nrep" replica PDF members and an option
+// to "symmetrise" the Hessian predictions if they are asymmetric.
 void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& randsetname, const unsigned& seed, const unsigned& nrep, const std::string& randdir=".", const bool& symmetrise=true);
 
 
@@ -30,15 +29,15 @@ int main(int argc, char* argv[]) {
 
   const LHAPDF::PDFSet set(setname);
 
-  /// Allocate a name for the new randomly sampled PDF set.
+  // Allocate a name for the new randomly sampled PDF set.
   const std::string randsetname = setname + "_rand" + strseed;
 
-  /// Convert Hessian "set" to replica set with name "randsetname" in current
-  /// directory using "seed" for random number generator with "nrep" replica
-  /// PDF members and symmetrised Hessian predictions (so average = best-fit).
+  // Convert Hessian "set" to replica set with name "randsetname" in current
+  // directory using "seed" for random number generator with "nrep" replica
+  // PDF members and symmetrised Hessian predictions (so average = best-fit).
   convertHessianToReplicas(set, randsetname, seed, nrep);
 
-  /// Same thing but non-default values for "randdir" or "symmetrise".
+  // Same thing but non-default values for "randdir" or "symmetrise".
   //const std::string randdir = "/tmp"; // directory to write new replica set
   const std::string randdir = "."; // default: current directory
   //convertHessianToReplicas(set, randsetname, seed, nrep, randdir);
@@ -46,20 +45,20 @@ int main(int argc, char* argv[]) {
   //const bool symmetrise = true; // default: average tends to best-fit
   //convertHessianToReplicas(set, randsetname, seed, nrep, randdir, symmetrise);
 
-  /// Code below provides a simple test comparing the Hessian and replica sets.
-  /// Note that there should be good agreement (< 1%) between the central values
-  /// and uncertainties for sufficiently large nrep and for "symmetrise = true".
-  /// However, the correlations seem to differ, even for very large nrep values,
-  /// for quantities that are not strongly correlated, such as the gluon and
-  /// up-quark distributions at x = 0.1, chosen in the test below.  This issue
-  /// deserves a more complete investigation.
+  // Code below provides a simple test comparing the Hessian and replica sets.
+  // Note that there should be good agreement (< 1%) between the central values
+  // and uncertainties for sufficiently large nrep and for "symmetrise = true".
+  // However, the correlations seem to differ, even for very large nrep values,
+  // for quantities that are not strongly correlated, such as the gluon and
+  // up-quark distributions at x = 0.1, chosen in the test below.  This issue
+  // deserves a more complete investigation.
 
   //const bool testrandset = false; // uncomment to skip test below
   const bool testrandset = true; // uncomment to activate test below
 
   if (testrandset) {
 
-    /// Add the directory containing the new replica set to the path (if not already there).
+    // Add the directory containing the new replica set to the path (if not already there).
     vector<std::string> paths = LHAPDF::paths();
     bool pathfound = false;
     for (size_t ipath = 0; ipath < paths.size(); ipath++) {
@@ -74,7 +73,7 @@ int main(int argc, char* argv[]) {
     const vector<LHAPDF::PDF*> randpdfs = randset.mkPDFs();
     double x = 0.1; // momentum fraction
     double Q = 100.0; // factorisation scale in GeV
-    /// Fill vectors xgAll and xuAll using all PDF members.
+    // Fill vectors xgAll and xuAll using all PDF members.
     vector<double> xgAll, xuAll;
     for (unsigned imem = 0; imem <= nmem; imem++) {
       xgAll.push_back(pdfs[imem]->xfxQ(21,x,Q)); // gluon distribution
@@ -86,11 +85,11 @@ int main(int argc, char* argv[]) {
       xuAllRand.push_back(randpdfs[imem]->xfxQ(2,x,Q)); // up-quark distribution
     }
 
-    /// Define formats for printing labels and numbers in output.
+    // Define formats for printing labels and numbers in output.
     string labformat = "%2s%10s%12s%12s%12s%12s\n";
     string numformat = "%12.4e%12.4e%12.4e%12.4e%12.4e\n";
 
-    /// Calculate 1-sigma PDF uncertainty on gluon and up-quark.
+    // Calculate 1-sigma PDF uncertainty on gluon and up-quark.
     const double sigma = 100*boost::math::erf(1/sqrt(2));
 
     const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll, sigma);
@@ -119,7 +118,7 @@ int main(int argc, char* argv[]) {
     printf(numformat.c_str(), x, xuErrRand.central, xuErrRand.errplus, xuErrRand.errminus, xuErrRand.errsymm);
     cout << endl;
 
-    /// Calculate PDF correlation between gluon and up-quark.
+    // Calculate PDF correlation between gluon and up-quark.
     const double corr = set.correlation(xgAll, xuAll);
     cout << "Correlation between xg and xu (original Hessian) = " << corr << endl;
     const double randcorr = randset.correlation(xgAllRand, xuAllRand);
@@ -133,13 +132,13 @@ int main(int argc, char* argv[]) {
 }
 
 
-///
+//
 
 
-/// Function to convert Hessian "set" to replica set with name "randsetname"
-/// in directory "randdir" (default: current directory) using "seed" for
-/// random number generator with "nrep" replica PDF members and an option
-/// to "symmetrise" the Hessian predictions if they are asymmetric.
+// Function to convert Hessian "set" to replica set with name "randsetname"
+// in directory "randdir" (default: current directory) using "seed" for
+// random number generator with "nrep" replica PDF members and an option
+// to "symmetrise" the Hessian predictions if they are asymmetric.
 void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& randsetname, const unsigned& seed, const unsigned& nrep, const std::string& randdir, const bool& symmetrise) {
 
   if (set.errorType() != "hessian" && set.errorType() != "symmhessian") {
@@ -150,7 +149,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
     throw LHAPDF::NotImplementedError("Number of replicas must be between 1 and 9999.");
   }
 
-  /// Make directory to store new random PDF set (if it doesn't already exist).
+  // Make directory to store new random PDF set (if it doesn't already exist).
   if (!LHAPDF::dir_exists(randdir + "/" + randsetname)) {
     std::string mkdir = "mkdir -p " + randdir + "/" +randsetname;
     if (system(mkdir.c_str()) == -1) {
@@ -162,7 +161,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
     cout << "Directory " << randdir + "/" + randsetname << " already exists" << endl;
   }
 
-  /// Copy information from original .info file to new .info file.
+  // Copy information from original .info file to new .info file.
   const std::string setinfopath = LHAPDF::findpdfsetinfopath(set.name());
   std::ifstream infile (setinfopath.c_str());
   if (infile.good()) {
@@ -202,10 +201,10 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
   infile.close();
   outfile.close();
 
-  /// Loop over number of members, storing metadata and (x,Q,flavor) values.
-  /// Check that (x,Q,flavor) values are equal for all members.
-  /// Need to allow for different Q subgrids used in MSTW case,
-  /// and different AlphaS values for each member in ABM case.
+  // Loop over number of members, storing metadata and (x,Q,flavor) values.
+  // Check that (x,Q,flavor) values are equal for all members.
+  // Need to allow for different Q subgrids used in MSTW case,
+  // and different AlphaS values for each member in ABM case.
   vector<std::string> meta; // assume same for each imem
   vector<double> alphasMZ; // assume different for each imem
   vector<double> alphasQs; // assume same for each imem
@@ -226,7 +225,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
     while (getline(infile, line)) {
       boost::algorithm::trim(line);
       iline += 1;
-      /// If the line is commented out, increment the line number but not the block line.
+      // If the line is commented out, increment the line number but not the block line.
       if (line.find("#") == 0) continue;
       iblockline += 1;
       if (line != "---") { // if we are not on a block separator line...
@@ -242,7 +241,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 	    while (line.find(",") != std::string::npos) {
 	      line.replace(line.find(","), 1, " "); // replace commas by spaces
 	    }
-	    /// Consider only the substring inside the square brackets.
+	    // Consider only the substring inside the square brackets.
 	    istringstream tokens(line.substr(line.find("[")+1, line.find("]")-1));
 	    int iq = 0;
 	    while (tokens >> token) {
@@ -258,7 +257,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 	    while (line.find(",") != std::string::npos) {
 	      line.replace(line.find(","), 1, " "); // replace commas by spaces
 	    }
-	    /// Consider only the substring inside the square brackets.
+	    // Consider only the substring inside the square brackets.
 	    istringstream tokens(line.substr(line.find("[")+1, line.find("]")-1));
 	    vector<double> alphasValstemp;
 	    while (tokens >> token) alphasValstemp.push_back(token);
@@ -266,7 +265,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 	  }
 	  continue;
 	}
-	/// Parse the data lines.
+	// Parse the data lines.
 	istringstream tokens(line);
 	if (iblockline == 1) { // x knots line
 	  vector<double> xstemp;
@@ -308,7 +307,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 	  continue;
 	}
       } else { // block separator line: "---"
-	/// Increment/reset the block and line counters.
+	// Increment/reset the block and line counters.
 	iblock += 1;
 	iblockline = 0;
       }
@@ -316,24 +315,24 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
     infile.close();
   } // end loop over members
 
-  /// Allocate number of eigenvectors based on ErrorType.
+  // Allocate number of eigenvectors based on ErrorType.
   int neigen = 0;
   if (set.errorType() == "hessian") {
     neigen = nmem/2;
   } else if (set.errorType() == "symmhessian") {
     neigen = nmem;
   }
-  /// Vector containing all original PDF members.
+  // Vector containing all original PDF members.
   const vector<LHAPDF::PDF*> pdfs = set.mkPDFs();
 
-  /// Initialise Gaussian random number generator.
+  // Initialise Gaussian random number generator.
   boost::mt19937 rng(seed); // seed passed as argument
   boost::normal_distribution<> nd; // mean 0.0, s.d. = 1.0
   boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > var_nor(rng, nd);
   //C++11: default_random_engine generator(seed); // seed passed as argument
   //C++11: normal_distribution<double> distribution; // mean 0.0, s.d. = 1.0
 
-  /// Calculate the mean over all replicas.  First initialise everything to zero.
+  // Calculate the mean over all replicas.  First initialise everything to zero.
   double alphasMZmean = 0.0;
   vector<double> alphasValsMean (alphasQs.size(), 0.0);
   vector<vector<vector<vector<double> > > > xfmean; // mean xf[isub][ix][iq][iflavor]
@@ -353,24 +352,24 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
     xfmean.push_back(xfmean_xs);
   }
 
-  /// Loop over number of requested replica members, plus zeroth member containing mean.
+  // Loop over number of requested replica members, plus zeroth member containing mean.
   for (unsigned ireplica = 1; ireplica <= nrep+1; ireplica++) {
 
     unsigned irep = ireplica;
     if (irep == nrep+1) irep = 0; // do central member last since need average
 
-    /// Fill vector "random" with neigen Gaussian random numbers.
-    vector<double> random;
+    // Fill vector "randoms" with neigen Gaussian random numbers.
+    vector<double> randoms;
     if (irep > 0) {
       for (int ieigen=1; ieigen <= neigen; ieigen++) {
 	double r = var_nor(); // using Boost
 	//C++11: double r = distribution(generator); // using C++11
-	random.push_back(r);
-	//random.push_back(0.0); // for testing purposes (all replicas equal best-fit)
+	randoms.push_back(r);
+	//randoms.push_back(0.0); // for testing purposes (all replicas equal best-fit)
       }
     }
 
-    /// Open new .dat file for this replica member.
+    // Open new .dat file for this replica member.
     const std::string randsetmempath = randdir + "/" + randsetname + "/" + randsetname + "_" + LHAPDF::to_str_zeropad(irep) + ".dat";
     std::ofstream outfile (randsetmempath.c_str());
     char buffer[256];
@@ -380,15 +379,15 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
       throw LHAPDF::Exception("Error writing to " + randsetmempath);
     }
 
-    /// Write metadata for this replica member.
+    // Write metadata for this replica member.
     for (size_t i = 0; i < meta.size(); i++) {
       if (LHAPDF::contains(meta[i], "PdfType")) {
 	if (irep == 0) outfile << "PdfType: central" << endl;
 	else outfile << "PdfType: replica" << endl;
       } else if (LHAPDF::contains(meta[i], "AlphaS_MZ")) {
-	/// Write randomly sampled value of AlphaS_MZ.
+	// Write randomly sampled value of AlphaS_MZ.
 	if (irep > 0) {
-	  double alphasMZrand = set.randomValue(alphasMZ, random, symmetrise);
+	  double alphasMZrand = set.randomValueFromHessian(alphasMZ, randoms, symmetrise);
 	  alphasMZmean += alphasMZrand;
 	  sprintf(buffer, "AlphaS_MZ: %g", alphasMZrand);
 	} else {
@@ -397,7 +396,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 	}
 	outfile << buffer << endl;
       } else if (LHAPDF::contains(meta[i], "AlphaS_Vals")) {
-	/// Write randomly sampled values of AlphaS_Vals.
+	// Write randomly sampled values of AlphaS_Vals.
 	vector<double> alphasValsRand;
 	if (irep > 0) {
 	  for (size_t iq = 0; iq < alphasQs.size(); iq++) {
@@ -405,9 +404,9 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 	    for (int imem=0; imem <= nmem; imem++) {
 	      alphasAll.push_back(alphasVals[imem][iq]);
 	    }
-	    double alphasValRand = set.randomValue(alphasAll, random, symmetrise);
+	    double alphasValRand = set.randomValueFromHessian(alphasAll, randoms, symmetrise);
 	    alphasValsRand.push_back(alphasValRand);
-	    /// Check that alphasValsMean is initialised to zero.
+	    // Check that alphasValsMean is initialised to zero.
 	    if (irep == 1 && alphasValsMean[iq] != 0.0) {
 	      throw LHAPDF::LogicError("Error: alphasValsMean[" + LHAPDF::to_str(iq) + "] = " + LHAPDF::to_str(alphasValsMean[iq]));
 	    }
@@ -432,37 +431,37 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
     }
     outfile << "---" << endl;
 
-    /// Loop over same Q subgrids as in original grid file.
+    // Loop over same Q subgrids as in original grid file.
     for (size_t isub=0; isub < xs.size(); isub++) {
 
-      /// Write x points for this Q subgrid.
+      // Write x points for this Q subgrid.
       for (size_t ix = 0; ix < xs[isub].size(); ix++) {
 	sprintf(buffer, "%2.6e", xs[isub][ix]);
 	outfile << buffer;
 	if (ix < xs[isub].size()-1) outfile << " ";
       }
       outfile << endl;
-      /// Write Q points for this Q subgrid.
+      // Write Q points for this Q subgrid.
       for (size_t iq = 0; iq < qs[isub].size(); iq++) {
 	sprintf(buffer, "%2.6e", qs[isub][iq]);
 	outfile << buffer;
 	if (iq < xs[isub].size()-1) outfile << " ";
       }
       outfile << endl;
-      /// Write internal flavour list for this Q subgrid.
+      // Write internal flavour list for this Q subgrid.
       for (size_t iflavor = 0; iflavor < flavors[isub].size(); iflavor++) {
 	outfile << flavors[isub][iflavor];
 	if (iflavor < flavors[isub].size()-1) outfile << " ";
       }
       outfile << endl;
 
-      /// Loop over x and Q points for this Q subgrid.
+      // Loop over x and Q points for this Q subgrid.
       for (size_t ix = 0; ix < xs[isub].size(); ix++) {
 	double x = xs[isub][ix];
 	for (size_t iq = 0; iq < qs[isub].size(); iq++) {
 	  double Q = qs[isub][iq];
-	  /// At subgrid boundaries, shift Q by tiny amount (but within numerical
-	  /// precision) to call PDFs on correct side of appropriate boundary.
+	  // At subgrid boundaries, shift Q by tiny amount (but within numerical
+	  // precision) to call PDFs on correct side of appropriate boundary.
 	  if (isub > 0 && iq == 0) {
 	    Q += 1e-15; // first Q value in a subgrid
 	  } else if (isub < qs.size()-1 && iq == qs[isub].size()-1) {
@@ -475,10 +474,10 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const std::string& rand
 		int flavor = flavors[isub][iflavor];
 		xfAll.push_back(pdfs[imem]->xfxQ(flavor,x,Q));
 	      }
-	      /// Get random value for PDF (scaling to 1-sigma is automatic).
-	      double xfrand = set.randomValue(xfAll, random, symmetrise);
+	      // Get random value for PDF (scaling to 1-sigma is automatic).
+	      double xfrand = set.randomValueFromHessian(xfAll, randoms, symmetrise);
 	      sprintf(buffer, "%2.8e", xfrand);
-	      /// Check that xfmean is initialised to zero.
+	      // Check that xfmean is initialised to zero.
 	      if (irep == 1 && xfmean[isub][ix][iq][iflavor] != 0.0) {
 		throw LHAPDF::LogicError("Error: xfmean[" + LHAPDF::to_str(isub) + "][" + LHAPDF::to_str(ix) + "][" + LHAPDF::to_str(iq) + "][" + LHAPDF::to_str(iflavor) + "] = " + LHAPDF::to_str(xfmean[isub][ix][iq][iflavor]));
 	      }

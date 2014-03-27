@@ -206,20 +206,18 @@ namespace LHAPDF {
     /// "values[0]" and the uncertainty is given by either the symmetric or
     /// asymmetric formula using eigenvector PDF sets.
     ///
-    /// Optional argument @c inputCL is used to rescale uncertainties to a
+    /// Optional argument @c cl is used to rescale uncertainties to a
     /// particular confidence level; a negative number will rescale to the
     /// default CL for this set.
     ///
     /// If the PDF set is given in the form of replicas, then optional argument
-    /// @c median will calculate the median and confidence interval of
-    /// the probability distribution rather than the mean and CL.
-    ///
-    /// @todo Behaviour of @c median if this is not a replica set?
-    PDFUncertainty uncertainty(const std::vector<double>& values, double inputCL=-1, bool median=false) const;
+    /// @c interval will calculate the median and confidence interval of the
+    /// probability distribution rather than the mean and (rescaled) standard deviation.
+    PDFUncertainty uncertainty(const std::vector<double>& values, double cl=-1, bool interval=false) const;
 
-    /// Calculate PDF uncertainties (as above), with with efficient no-copy return to the @c rtn argument.
-    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double inputCL=-1, bool median=false) const {
-      rtn = uncertainty(values, inputCL, median);
+    /// Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
+    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double cl=-1, bool interval=false) const {
+      rtn = uncertainty(values, cl, interval);
     }
 
     /// @brief Calculate the PDF correlation between @c valuesA and @c valuesB using appropriate formulae for this set.
@@ -230,10 +228,17 @@ namespace LHAPDF {
 
     /// @brief Generate a random value from Hessian @c values and Gaussian random numbers.
     ///
-    /// @todo Needs a lot more explanation!
-    ///
-    /// @todo Currently throws a UserError if this is not a Hessian set... return a randomly chosen replica?
-    double randomValue(const std::vector<double>& values, const std::vector<double>& random, bool symmetrise=true) const;
+    /// See Section 6 of G. Watt and R.S. Thorne, JHEP 1208 (2012) 052 [arXiv:1205.4024 [hep-ph]].
+    /// Pass a vector @c values containing a value for each member of the Hessian PDF set.
+    /// Pass a vector @c randoms containing neigen random numbers, where neigen is the number of distinct eigenvectors.
+    /// Option @c symmetrise equal to true will symmetrise the random values (in the case of an asymmetric Hessian set)
+    /// using Eq. (6.5) of arXiv:1205.4024v2, so that the average tends to the best-fit for a large number of replicas.
+    /// Option @c symmetrise equal to false will use Eq. (6.5) of arXiv:1205.4024v2 (for an asymmetric Hessian set),
+    /// then the average differs from the best-fit.  Option @c symmetrise has no effect for a symmetric Hessian set.
+    /// Random values generated in this way can subsequently be used for applications such as Bayesian reweighting
+    /// or combining predictions from different groups (as an alternative to taking the envelope).
+    /// See, for example, supplementary material at http://mstwpdf.hepforge.org/random/.
+    double randomValueFromHessian(const std::vector<double>& values, const std::vector<double>& randoms, bool symmetrise=true) const;
 
     //@}
 

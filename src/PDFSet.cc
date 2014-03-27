@@ -43,14 +43,14 @@ namespace LHAPDF {
 
 
 
-  PDFUncertainty PDFSet::uncertainty(const vector<double>& values, double cl, bool median) const {
+  PDFUncertainty PDFSet::uncertainty(const vector<double>& values, double cl, bool interval) const {
     if (size() <= 1)
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. PDF set must contain more than just the central value.");
     if (values.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Input vector must contain values for all PDF members.");
     const size_t nmem = size()-1;
 
-    // Get set- and requested conf levels and check sanity (req CL = set CL if cl < 0)
+    // Get set- and requested conf levels and check sanity (req CL = set CL if cl < 0).
     const double setCL = errorConfLevel() / 100.0; // convert from percentage
     const double reqCL = (cl >= 0) ? cl / 100.0 : setCL; // convert from percentage
     if (!in_range(reqCL, 0, 1) || !in_range(setCL, 0, 1))
@@ -58,82 +58,88 @@ namespace LHAPDF {
 
     // Return value
     PDFUncertainty rtn;
+    rtn.central = values[0];
 
-    if (errorType() == "replicas") {
-      if (median) {
+    if (interval && errorType() == "replicas") {
 
-        // Compute median and requested CL directly from probability distribution of replicas
-        // Sort "values" into increasing order, ignoring zeroth member (average over replicas)
-        vector<double> sorted = values;
-        sort(sorted.begin()+1, sorted.end());
-        const int nmem = size()-1;
-        // Define central value to be median
-        if (nmem % 2) { // odd nmem => one middle value
-          rtn.central = sorted[nmem/2 + 1];
-        } else { // even nmem => average of two middle values
-          rtn.central = 0.5*(sorted[nmem/2] + sorted[nmem/2 + 1]);
-        }
-        // Define uncertainties via quantiles with a CL given by reqCL
-        const int upper = round(0.5*(1+reqCL)*nmem); // round to nearest integer
-        const int lower = 1 + round(0.5*(1-reqCL)*nmem); // round to nearest integer
-        rtn.errplus = sorted[upper] - rtn.central;
-        rtn.errminus = rtn.central - sorted[lower];
-        rtn.errsymm = 0.5*(rtn.errplus + rtn.errminus); // symmetrised
-
-      } else {
-
-        // Calculate the average and standard deviation using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2.
-        double av = 0.0, sd = 0.0;
-        for (size_t imem = 1; imem <= nmem; imem++) {
-          av += values[imem];
-          sd += sqr(values[imem]);
-        }
-        av /= nmem; sd /= nmem;
-        sd = nmem/(nmem-1.0)*(sd-sqr(av));
-        sd = (sd > 0.0 && nmem > 1) ? sqrt(sd) : 0.0;
-        rtn.central = av;
-        /// @todo Need to scale this error to reqCL (assuming Gaussian stats?)
-        rtn.errplus = rtn.errminus = rtn.errsymm = sd;
-
+      // Compute median and requested CL directly from probability distribution of replicas.
+      // Sort "values" into increasing order, ignoring zeroth member (average over replicas).
+      vector<double> sorted = values;
+      sort(sorted.begin()+1, sorted.end());
+      const int nmem = size()-1;
+      // Define central value to be median.
+      if (nmem % 2) { // odd nmem => one middle value
+	rtn.central = sorted[nmem/2 + 1];
+      } else { // even nmem => average of two middle values
+	rtn.central = 0.5*(sorted[nmem/2] + sorted[nmem/2 + 1]);
       }
-    } else if (endswith(errorType(), "hessian")) {
+      // Define uncertainties via quantiles with a CL given by reqCL.
+      const int upper = round(0.5*(1+reqCL)*nmem); // round to nearest integer
+      const int lower = 1 + round(0.5*(1-reqCL)*nmem); // round to nearest integer
+      rtn.errplus = sorted[upper] - rtn.central;
+      rtn.errminus = rtn.central - sorted[lower];
+      rtn.errsymm = 0.5*(rtn.errplus + rtn.errminus); // symmetrised
 
-      rtn.central = values[0];
+    } else if (interval) {
 
-      if (errorType() == "symmhessian") {
-        double errsymm = 0;
-        for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
-          errsymm += sqr(values[ieigen]-values[0]);
-        rtn.errsymm = sqrt(errsymm);
-        rtn.errplus = errsymm;
-        rtn.errminus = errsymm;
-      } else if (errorType() == "hessian") {
-        // Calculate the asymmetric and symmetric Hessian uncertainties
-        // using Eqs. (2.1), (2.2) and (2.6) of arXiv:1106.5788v2.
-        double errplus = 0, errminus = 0, errsymm = 0;
-        for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++) {
-          errplus += sqr(max(max(values[2*ieigen-1]-values[0],values[2*ieigen]-values[0]), 0.0));
-          errminus += sqr(max(max(values[0]-values[2*ieigen-1],values[0]-values[2*ieigen]), 0.0));
-          errsymm += sqr(values[2*ieigen-1]-values[2*ieigen]);
-        }
-        rtn.errsymm = 0.5*sqrt(errsymm);
-        rtn.errplus = sqrt(errplus);
-        rtn.errminus = sqrt(errminus);
+      throw UserError("Error in LHAPDF::PDFSet::uncertainty. This PDF set is not in the format of replicas.");
+
+    } else if (errorType() == "replicas") {
+
+      // Calculate the average and standard deviation using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2.
+      double av = 0.0, sd = 0.0;
+      for (size_t imem = 1; imem <= nmem; imem++) {
+	av += values[imem];
+	sd += sqr(values[imem]);
       }
+      av /= nmem; sd /= nmem;
+      sd = nmem/(nmem-1.0)*(sd-sqr(av));
+      sd = (sd > 0.0 && nmem > 1) ? sqrt(sd) : 0.0;
+      rtn.central = av;
+      rtn.errplus = rtn.errminus = rtn.errsymm = sd;
+
+    } else if (errorType() == "symmhessian") {
+
+      double errsymm = 0;
+      for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
+	errsymm += sqr(values[ieigen]-values[0]);
+      rtn.errsymm = sqrt(errsymm);
+      rtn.errplus = errsymm;
+      rtn.errminus = errsymm;
+
+    } else if (errorType() == "hessian") {
+
+      // Calculate the asymmetric and symmetric Hessian uncertainties
+      // using Eqs. (2.1), (2.2) and (2.6) of arXiv:1106.5788v2.
+      double errplus = 0, errminus = 0, errsymm = 0;
+      for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++) {
+	errplus += sqr(max(max(values[2*ieigen-1]-values[0],values[2*ieigen]-values[0]), 0.0));
+	errminus += sqr(max(max(values[0]-values[2*ieigen-1],values[0]-values[2*ieigen]), 0.0));
+	errsymm += sqr(values[2*ieigen-1]-values[2*ieigen]);
+      }
+      rtn.errsymm = 0.5*sqrt(errsymm);
+      rtn.errplus = sqrt(errplus);
+      rtn.errminus = sqrt(errminus);
+      
+    } else {
+      throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::uncertainty.");
+    }
+
+    if (!interval && (setCL != reqCL)) {
+      // Apply scaling to Hessian sets or replica sets with interval=false.
 
       // Calculate the qth quantile of the chi-squared distribution with one degree of freedom.
       // Examples: quantile(dist, q) = {0.988946, 1, 2.70554, 3.84146, 4} for q = {0.68, 1-sigma, 0.90, 0.95, 2-sigma}.
       boost::math::chi_squared dist(1);
       double qsetCL = boost::math::quantile(dist, setCL);
       double qreqCL = boost::math::quantile(dist, reqCL);
+      // Scale uncertainties from the original set CL to the requested CL.
       const double scale = sqrt(qreqCL/qsetCL);
       rtn.scale = scale;
       rtn.errplus *= scale;
       rtn.errminus *= scale;
       rtn.errsymm *= scale;
 
-    } else {
-      throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::uncertainty.");
     }
 
     return rtn;
@@ -156,15 +162,15 @@ namespace LHAPDF {
       for (size_t imem = 1; imem <= nmem; imem++)
         cor += valuesA[imem] * valuesB[imem];
       cor = (cor/nmem - errA.central*errB.central) / (errA.errsymm*errB.errsymm) * nmem/(nmem-1.0);
-
+      
     } else if (errorType() == "symmhessian") {
 
       for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
         cor += (valuesA[ieigen]-errA.central) * (valuesB[ieigen]-errB.central);
       cor /= errA.errsymm * errB.errsymm;
-
+      
     } else if (errorType() == "hessian") {
-
+      
       // Calculate the correlation using Eq. (2.5) of arXiv:1106.5788v2.
       for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++)
         cor += (valuesA[2*ieigen-1]-valuesA[2*ieigen]) * (valuesB[2*ieigen-1]-valuesB[2*ieigen]);
@@ -176,9 +182,9 @@ namespace LHAPDF {
   }
 
 
-  double PDFSet::randomValue(const vector<double>& values, const vector<double>& random, bool symmetrise) const {
+  double PDFSet::randomValueFromHessian(const vector<double>& values, const vector<double>& randoms, bool symmetrise) const {
     if (values.size() != size())
-      throw UserError("Error in LHAPDF::PDFSet::randomValue. Input vector must contain values for all PDF members.");
+      throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. Input vector must contain values for all PDF members.");
 
     double frand = 0.0;
     double sigma = 100 * boost::math::erf(1/sqrt(2));
@@ -192,29 +198,28 @@ namespace LHAPDF {
     } else if (errorType() == "symmhessian") {
       neigen = nmem;
     } else {
-      throw UserError("Error in LHAPDF::PDFSet::randomValue. This PDF set is not in the Hessian format.");
+      throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. This PDF set is not in the Hessian format.");
     }
 
-    if (random.size() != neigen)
-      throw UserError("Error in LHAPDF::PDFSet::randomValue. Input vector must contain random numbers for all eigenvectors.");
+    if (randoms.size() != neigen)
+      throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. Input vector must contain random numbers for all eigenvectors.");
+
+    frand = values[0];
 
     if (errorType() == "symmhessian") {
 
-      frand = values[0];
       // Loop over number of eigenvectors.
       for (size_t ieigen = 1; ieigen <= neigen; ieigen++) {
-        double r = random[ieigen-1]; // Gaussian random number
+        double r = randoms[ieigen-1]; // Gaussian random number
         frand += r*abs(values[ieigen]-values[0])*scale;
       }
 
     } else if (errorType() == "hessian") {
 
       // Use either Eq. (6.4) or Eq. (6.5) of arXiv:1205.4024v2.
-
-      frand = values[0];
       // Loop over number of eigenvectors.
       for (size_t ieigen = 1; ieigen <= neigen; ieigen++) {
-        double r = random[ieigen-1]; // Gaussian random number
+        double r = randoms[ieigen-1]; // Gaussian random number
         if (symmetrise) {
           frand += 0.5*r*abs(values[2*ieigen-1]-values[2*ieigen]) * scale;
         } else { // not symmetrised

@@ -80,7 +80,7 @@ namespace LHAPDF {
 
   /// Does a string @a s end with the @a sub substring?
   inline bool endswith(const std::string& s, const std::string& sub) {
-    return s.find(sub) == s.length()-sub.length()-1;
+    return s.find(sub) == s.length()-sub.length();
   }
 
   //@}
