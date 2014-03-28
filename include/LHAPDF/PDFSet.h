@@ -211,13 +211,13 @@ namespace LHAPDF {
     /// default CL for this set.
     ///
     /// If the PDF set is given in the form of replicas, then optional argument
-    /// @c interval will calculate the median and confidence interval of the
+    /// @c alternative will calculate the median and confidence interval of the
     /// probability distribution rather than the mean and (rescaled) standard deviation.
-    PDFUncertainty uncertainty(const std::vector<double>& values, double cl=-1, bool interval=false) const;
+    PDFUncertainty uncertainty(const std::vector<double>& values, double cl=-1, bool alternative=false) const;
 
     /// Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
-    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double cl=-1, bool interval=false) const {
-      rtn = uncertainty(values, cl, interval);
+    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double cl=-1, bool alternative=false) const {
+      rtn = uncertainty(values, cl, alternative);
     }
 
     /// @brief Calculate the PDF correlation between @c valuesA and @c valuesB using appropriate formulae for this set.

@@ -43,7 +43,7 @@ namespace LHAPDF {
 
 
 
-  PDFUncertainty PDFSet::uncertainty(const vector<double>& values, double cl, bool interval) const {
+  PDFUncertainty PDFSet::uncertainty(const vector<double>& values, double cl, bool alternative) const {
     if (size() <= 1)
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. PDF set must contain more than just the central value.");
     if (values.size() != size())
@@ -60,7 +60,7 @@ namespace LHAPDF {
     PDFUncertainty rtn;
     rtn.central = values[0];
 
-    if (interval && errorType() == "replicas") {
+    if (alternative && errorType() == "replicas") {
 
       // Compute median and requested CL directly from probability distribution of replicas.
       // Sort "values" into increasing order, ignoring zeroth member (average over replicas).
@@ -80,7 +80,7 @@ namespace LHAPDF {
       rtn.errminus = rtn.central - sorted[lower];
       rtn.errsymm = 0.5*(rtn.errplus + rtn.errminus); // symmetrised
 
-    } else if (interval) {
+    } else if (alternative) {
 
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. This PDF set is not in the format of replicas.");
 
@@ -125,8 +125,8 @@ namespace LHAPDF {
       throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::uncertainty.");
     }
 
-    if (!interval && (setCL != reqCL)) {
-      // Apply scaling to Hessian sets or replica sets with interval=false.
+    if (!alternative && (setCL != reqCL)) {
+      // Apply scaling to Hessian sets or replica sets with alternative=false.
 
       // Calculate the qth quantile of the chi-squared distribution with one degree of freedom.
       // Examples: quantile(dist, q) = {0.988946, 1, 2.70554, 3.84146, 4} for q = {0.68, 1-sigma, 0.90, 0.95, 2-sigma}.

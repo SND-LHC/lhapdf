@@ -5,10 +5,11 @@
 
 #include "LHAPDF/LHAPDF.h"
 #include <boost/random.hpp>
+#include <boost/math/special_functions/erf.hpp>
 using namespace std;
 
 // Simple test program to demonstrate the three PDFSet member functions.
-//   set.uncertainty(values, cl=-1, interval=false);
+//   set.uncertainty(values, cl=-1, alternative=false);
 //   set.correlation(valuesA, valuesB);
 //   set.randomValueFromHessian(values, randoms, symmetrise=true);
 

@@ -4,6 +4,7 @@
 
 #include "LHAPDF/LHAPDF.h"
 #include <boost/random.hpp>
+#include <boost/math/special_functions/erf.hpp>
 using namespace std;
 
 // Function to convert Hessian "set" to replica set with name "randsetname"
