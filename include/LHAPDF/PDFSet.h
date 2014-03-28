@@ -233,7 +233,7 @@ namespace LHAPDF {
     /// Pass a vector @c randoms containing neigen random numbers, where neigen is the number of distinct eigenvectors.
     /// Option @c symmetrise equal to true will symmetrise the random values (in the case of an asymmetric Hessian set)
     /// using Eq. (6.5) of arXiv:1205.4024v2, so that the average tends to the best-fit for a large number of replicas.
-    /// Option @c symmetrise equal to false will use Eq. (6.5) of arXiv:1205.4024v2 (for an asymmetric Hessian set),
+    /// Option @c symmetrise equal to false will use Eq. (6.4) of arXiv:1205.4024v2 (for an asymmetric Hessian set),
     /// then the average differs from the best-fit.  Option @c symmetrise has no effect for a symmetric Hessian set.
     /// Random values generated in this way can subsequently be used for applications such as Bayesian reweighting
     /// or combining predictions from different groups (as an alternative to taking the envelope).
