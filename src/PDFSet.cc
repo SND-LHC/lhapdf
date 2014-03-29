@@ -103,9 +103,8 @@ namespace LHAPDF {
       double errsymm = 0;
       for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
 	errsymm += sqr(values[ieigen]-values[0]);
-      rtn.errsymm = sqrt(errsymm);
-      rtn.errplus = errsymm;
-      rtn.errminus = errsymm;
+      errsymm = sqrt(errsymm);
+      rtn.errplus = rtn.errminus = rtn.errsymm = errsymm;
 
     } else if (errorType() == "hessian") {
 
