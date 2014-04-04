@@ -28,7 +28,9 @@ p.add_option("--id", dest="META_LHAPDFID", metavar="LHAPDFID", help="a value for
 p.add_option("--pid", dest="META_PARTICLEID", metavar="PARTICLEID", help="a value for the Particle metadata field. Defaults to 2212 (proton)", type=int, default=2212)
 p.add_option("--errtype", dest="META_ERRTYPE", metavar="TYPE", help="a value for the ErrorType metadata field", default="")
 p.add_option("--cl", dest="META_CONFLEVEL", metavar="CONFLEVEL", help="a value for the ErrorConfLevel metadata field", default="")
-p.add_option("--xmin", dest="XMIN", metavar="XMIN", help="truncate the x knots array at XMIN, even if the PDF reports knots lower than that", type=float, default=None)
+p.add_option("--xmin", dest="XMIN", metavar="X", help="set flag and truncate the x knots array at X, even if the PDF reports knots lower than that", type=float, default=None)
+p.add_option("--qmin", dest="QMIN", metavar="Q", help="set flag and truncate the Q knots array at Q, even if the PDF reports knots lower than that", type=float, default=None)
+p.add_option("--qmax", dest="QMAX", metavar="Q", help="set flag and truncate the Q knots array at Q, even if the PDF reports knots higher than that", type=float, default=None)
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
 p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
 p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override the original sample grid with a new one", default=False)
@@ -120,8 +122,8 @@ for lha5name in args:
         else:
             print "Overriding original grid with a new log-lin x sampling and log Q2 sampling"
             xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
-            q2min = lhapdf.getQ2min(1)
-            q2max = lhapdf.getQ2max(1)
+            q2min = lhapdf.getQ2min(1) if opts.QMIN is None else opts.QMIN**2
+            q2max = lhapdf.getQ2max(1) if opts.QMAX is None else opts.QMAX**2
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.linspace(0.075, 0.2, 6)) + list(numpy.linspace(0.25, 1.0, 18))
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.logspace(math.log10(0.075), 0, 21))
             # xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + [1.0 - i for i in numpy.logspace(math.log10(0.002), math.log10(0.1), 18)])
@@ -233,10 +235,16 @@ for lha5name in args:
                 f.write("ErrorType: %s\n" % opts.META_ERRTYPE)
             if opts.META_CONFLEVEL:
                 f.write("ErrorConfLevel: %s\n" % opts.META_CONFLEVEL)
-            f.write("XMin: %g\n" % (lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN))
-            f.write("XMax: %g\n" % lhapdf.getXmax(1))
-            f.write("QMin: %g\n" % math.sqrt(lhapdf.getQ2min(1)))
-            f.write("QMax: %g\n" % math.sqrt(lhapdf.getQ2max(1)))
+            xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
+            xmax = lhapdf.getXmax(1) or 1.0
+            qmin = math.sqrt(lhapdf.getQ2min(1)) if opts.QMIN is None else opts.QMIN
+            qmax = math.sqrt(lhapdf.getQ2max(1)) if opts.QMAX is None else opts.QMAX
+            if not xmin or not xmax or not qmin or not qmax:
+                print "WARNING: x and/or Q limits not correctly obtained"
+            f.write("XMin: %g\n" % xmin)
+            f.write("XMax: %g\n" % xmax)
+            f.write("QMin: %g\n" % qmin)
+            f.write("QMax: %g\n" % qmax)
             f.write("MZ: %g\n" % MZ)
 
             ## If each PDF member can have different alpha_s and quark masses, don't write them to the .info file
@@ -275,10 +283,16 @@ for lha5name in args:
         f.write("Format: lhagrid1\n")
         ## If different alpha_s and quark masses for each PDF member write to each .dat file.
         if opts.DIFFASMASS:
-            f.write("XMin: %g\n" % (lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN))
-            f.write("XMax: %g\n" % lhapdf.getXmax(1))
-            f.write("QMin: %g\n" % math.sqrt(lhapdf.getQ2min(1)))
-            f.write("QMax: %g\n" % math.sqrt(lhapdf.getQ2max(1)))
+            xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
+            xmax = lhapdf.getXmax(1) or 1.0
+            qmin = math.sqrt(lhapdf.getQ2min(1)) if opts.QMIN is None else opts.QMIN
+            qmax = math.sqrt(lhapdf.getQ2max(1)) if opts.QMAX is None else opts.QMAX
+            if not xmin or not xmax or not qmin or not qmax:
+                print "WARNING: x and/or Q limits not correctly obtained"
+            f.write("XMin: %g\n" % xmin)
+            f.write("XMax: %g\n" % xmax)
+            f.write("QMin: %g\n" % qmin)
+            f.write("QMax: %g\n" % qmax)
             f.write("MZ: %g\n" % MZ)
             f.write("MUp: %g\n" % lhapdf.getQMass(1, 1))
             f.write("MDown: %g\n" % lhapdf.getQMass(1, 2))
