@@ -100,6 +100,12 @@ for lha5name in args:
         print "Converting member #%d" % member
         lhapdf.initPDF(member)
 
+        ## Find the x and Q range extremes
+        xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
+        xmax = 1.0 # this one is a given!
+        qmin = math.sqrt(lhapdf.getQ2min(1)) if opts.QMIN is None else opts.QMIN
+        qmax = math.sqrt(lhapdf.getQ2max(1)) if opts.QMAX is None else opts.QMAX
+
         ## Get the x and Q anchor point arrays
         if not opts.RESAMPLE:
             ## Use LHAPDF5 to get the exact x and q2 grid points (requires LHAPDF 5.9)
@@ -121,49 +127,65 @@ for lha5name in args:
             #print xs
         else:
             print "Overriding original grid with a new log-lin x sampling and log Q2 sampling"
-            xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
-            q2min = lhapdf.getQ2min(1) if opts.QMIN is None else opts.QMIN**2
-            q2max = lhapdf.getQ2max(1) if opts.QMAX is None else opts.QMAX**2
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.linspace(0.075, 0.2, 6)) + list(numpy.linspace(0.25, 1.0, 18))
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.logspace(math.log10(0.075), 0, 21))
             # xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + [1.0 - i for i in numpy.logspace(math.log10(0.002), math.log10(0.1), 18)])
             xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + list(numpy.linspace(0.1, 0.99, 50)))
-            qs = list(numpy.sqrt(numpy.logspace(math.log10(q2min), math.log10(q2max), 50)))
+            qs = list(numpy.sqrt(numpy.logspace(math.log10(qmin**2), math.log10(qmax**2), 50)))
             print "Manual x grid: ", ", ".join("%0.2e" % x for x in xs)
             print "Manual Q grid: ", ", ".join("%0.2e" % q for q in qs)
 
 
         ## Tidy the x knots array
-        ## Remove x == 0 points: they screw up the ipol/xpol separation
-        if xs[0] == 0.0:
-            del xs[0]
-        ## Remove other grid points below xmin, if that happens
-        xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
-        while xs[0] < xmin:
-            del xs[0]
-        ## Add xmin as the lowest point
-        if xs[0] != xmin:
-            xs.insert(0, xmin)
-        ## If there isn't an x = 1 point, create one
-        if xs[-1] != 1.0:
-            xs.append(1.0)
         ## Fill in extra x sampling points if manually specified
         if opts.EXTRAXS:
             extraxs = [float(x) for x in opts.EXTRAXS.split(",")]
             xs = sorted(xs + extraxs)
+        ## Remove x == 0 points: they screw up the ipol/xpol separation
+        if xs[0] == 0.0:
+            del xs[0]
+        ## Remove other grid points below xmin, and add xmin as the lowest point
+        if xmin:
+            while xs[0] < xmin:
+                del xs[0]
+            if xs[0] != xmin:
+                xs.insert(0, xmin)
+        ## If there isn't an x = 1 point, create one
+        if xmax and xs[-1] != xmax:
+            xs.append(xmax)
         ## Debug printout
         if opts.VERBOSE:
-            print "x grid: ", ", ".join("%0.2e" % x for x in xs)
+            print "x grid: ", ", ".join("%0.2g" % x for x in xs)
 
         ## Tidy the Q knots array
-        # TODO: Add similar knot list cleaning for Q
         ## Fill in extra Q sampling points if manually specified
         if opts.EXTRAQS:
             extraqs = [float(q) for q in opts.EXTRAQS.split(",")]
             qs = sorted(qs + extraqs)
+        ## Remove grid points beyond qmin/max, and add qmin/max as the lowest and highest points
+        if qmin:
+            while qs[0] < qmin:
+                del qs[0]
+            if qs[0] != qmin:
+                qs.insert(0, qmin)
+        if qmax:
+            while qs[-1] > qmax:
+                del qs[-1]
+            if qs[-1] != qmax:
+                qs.append(qmax)
         ## Debug printout
         if opts.VERBOSE:
-            print "Q grid: ", ", ".join("%0.2e" % q for q in qs)
+            print "Q grid: ", ", ".join("%0.2g" % q for q in qs)
+
+
+        ## Re-obtain the x and Q extrema values from the grids, just in case. Sometimes LHAPDF5 lies...
+        xmin = xs[0]
+        qmin = qs[0]
+        qmax = qs[-1]
+        # print "x = [%0.2g, %0.2g], Q = [%0.2g, %0.2g]" % (xmin, xmax, qmin, qmax)
+        if not xmin or not xmax or not qmin or not qmax:
+            print "WARNING: x and/or Q limits not correctly obtained"
+
 
         ## Detect and assign Q interpolation subgrids (use a single subgrid if there are no subgrids)
         qgrids = []
@@ -235,12 +257,6 @@ for lha5name in args:
                 f.write("ErrorType: %s\n" % opts.META_ERRTYPE)
             if opts.META_CONFLEVEL:
                 f.write("ErrorConfLevel: %s\n" % opts.META_CONFLEVEL)
-            xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
-            xmax = lhapdf.getXmax(1) or 1.0
-            qmin = math.sqrt(lhapdf.getQ2min(1)) if opts.QMIN is None else opts.QMIN
-            qmax = math.sqrt(lhapdf.getQ2max(1)) if opts.QMAX is None else opts.QMAX
-            if not xmin or not xmax or not qmin or not qmax:
-                print "WARNING: x and/or Q limits not correctly obtained"
             f.write("XMin: %g\n" % xmin)
             f.write("XMax: %g\n" % xmax)
             f.write("QMin: %g\n" % qmin)
@@ -283,12 +299,6 @@ for lha5name in args:
         f.write("Format: lhagrid1\n")
         ## If different alpha_s and quark masses for each PDF member write to each .dat file.
         if opts.DIFFASMASS:
-            xmin = lhapdf.getXmin(1) if opts.XMIN is None else opts.XMIN
-            xmax = lhapdf.getXmax(1) or 1.0
-            qmin = math.sqrt(lhapdf.getQ2min(1)) if opts.QMIN is None else opts.QMIN
-            qmax = math.sqrt(lhapdf.getQ2max(1)) if opts.QMAX is None else opts.QMAX
-            if not xmin or not xmax or not qmin or not qmax:
-                print "WARNING: x and/or Q limits not correctly obtained"
             f.write("XMin: %g\n" % xmin)
             f.write("XMax: %g\n" % xmax)
             f.write("QMin: %g\n" % qmin)
