@@ -1,3 +1,4 @@
+.*\.bak
 ^lhapdf-config$
 ^lhapdf$
 ^LHAPDF-.*\.tar\.gz$
