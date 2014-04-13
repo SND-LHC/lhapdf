@@ -1,5 +1,7 @@
 2014-04-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding a lhapdf.pc file for use by pkg-config
+
 	* Check for sizes of subgrids required by each interpolator
 	algorithm (linear ipol requires >= 2 knots, cubic requires >= 4).
 

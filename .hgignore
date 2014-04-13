@@ -1,5 +1,6 @@
 .*\.bak
 ^lhapdf-config$
+^lhapdf.pc$
 ^lhapdf$
 ^LHAPDF-.*\.tar\.gz$
 ^migration/sets$

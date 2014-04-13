@@ -1,8 +1,9 @@
+EXTRA_DIST = mkpdflist pdfsets.dox
+
 if WITH_PDFLATEX
 manual:
 	(cd manual && make)
 endif
-
 
 if WITH_DOXYGEN
 doxy:
