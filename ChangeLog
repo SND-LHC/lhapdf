@@ -1,5 +1,18 @@
 2014-04-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Renumberings of several MRST and MSTW sets's global IDs:
+	    MRST2004qed_proton 20461->20463
+	    MRST2004qed_neutron 20462->20465
+	    MSTW2008lo90cl 21041->21050
+	    MSTW2008nlo90cl 21141->21150
+	    MSTW2008nnlo90cl 21241->21250
+	    MSTW2008lo90cl_nf3 23041->23050
+	    MSTW2008lo90cl_nf4 23141->23150
+	    MSTW2008nlo90cl_nf3 23241->23250
+	    MSTW2008nlo90cl_nf4 23341->23350
+	    MSTW2008nnlo90cl_nf3 23541->23550
+	    MSTW2008nnlo90cl_nf4 23641->23650
+
 	* Updates to the CONFIGFLAGS documention, removing some unused
 	flags and adding the new Note flag.
 
