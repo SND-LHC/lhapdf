@@ -25,15 +25,15 @@ for LHAPDF6 by their authors. Red rows indicate those which have not yet been so
 approved. Unvalidated sets may still be used and have generally been seen to behave
 faithfully to their LHAPDF5 equivalents, but please take care.\n\n"""
 
-s += "See http://www.hepforge.org/archive/lhapdf/pdfsets/6.0 for data downloads.\n\n"
+s += "See http://www.hepforge.org/archive/lhapdf/pdfsets/6.1 for data downloads.\n\n"
 
 s += "  <table>\n"
-s += "    <tr><th>%LHAPDF ID</th><th>Set name</th><th>Number of set members</th><th>Latest data version</th></tr>\n"
+s += "    <tr><th>%LHAPDF ID</th><th>Set name</th><th>Number of set members</th><th>Latest data version</th><th>Notes</th></tr>\n"
 
 for lhaid, ps in sorted(sets.iteritems()):
     color = "#fee" if ps.dataversion < 0 else "#efe"
-    s += '    <tr style="background-color: {col};"><td>{id}</td><td>{name}</td><td>{size}</td><td>{version}</td></tr>\n'.\
-         format(col=color, id=lhaid, name=ps.name, size=ps.size, version=ps.dataversion)
+    s += '    <tr style="background-color: {col};"><td>{id}</td><td>{name}</td><td>{size}</td><td>{version}</td><td>{note}</td></tr>\n'.\
+         format(col=color, id=lhaid, name=ps.name, size=ps.size, version=ps.dataversion, note=ps.get_entry("Note", ""))
 
 s += "  </table>\n"
 
