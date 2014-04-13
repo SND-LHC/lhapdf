@@ -136,6 +136,7 @@ namespace LHAPDF {
       if (v > 0) {
         std::cout << "LHAPDF " << version() << " loading all " << size() << " PDFs in set " << name() << std::endl;
         this->print(std::cout, v);
+        if (this->has_key("Note")) std::cout << get_entry("Note") << std::endl;
       }
       pdfs.clear();
       pdfs.reserve(size());
