@@ -21,6 +21,7 @@ TODO:
 import optparse
 p = optparse.OptionParser(usage=__doc__)
 p.add_option("--desc", dest="META_SETDESC", metavar="DESC", help="a value for the SetDesc metadata field", default="")
+p.add_option("--note", dest="META_NOTE", metavar="NOTE", help="a value for the Note metadata field", default="")
 p.add_option("--authors", dest="META_AUTHORS", metavar="AUTHORS", help="a value for the Authors metadata field", default="")
 p.add_option("--ref", dest="META_REFERENCE", metavar="REF", help="a value for the Reference metadata field", default="")
 p.add_option("--version", dest="META_DATAVERSION", metavar="VERSION", help="a value for the DataVersion metadata field", type=int, default=-1)
@@ -262,6 +263,8 @@ for lha5name in args:
             f.write("QMin: %g\n" % qmin)
             f.write("QMax: %g\n" % qmax)
             f.write("MZ: %g\n" % MZ)
+            if opts.META_NOTE:
+                f.write("Note: \"%s\"\n" % opts.META_NOTE)
 
             ## If each PDF member can have different alpha_s and quark masses, don't write them to the .info file
             if not opts.DIFFASMASS:
