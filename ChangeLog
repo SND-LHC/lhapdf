@@ -1,5 +1,8 @@
 2014-04-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Check for sizes of subgrids required by each interpolator
+	algorithm (linear ipol requires >= 2 knots, cubic requires >= 4).
+
 	* Renumberings of several MRST and MSTW sets's global IDs:
 	    MRST2004qed_proton 20461->20463
 	    MRST2004qed_neutron 20462->20465

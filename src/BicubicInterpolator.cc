@@ -48,6 +48,11 @@ namespace LHAPDF {
 
 
   double BicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
+    if (subgrid.logxs().size() < 4)
+      throw GridError("PDF subgrids are required to have at least 4 x-knots for use with BicubicInterpolator");
+    if (subgrid.logq2s().size() < 4)
+      throw GridError("PDF subgrids are required to have at least 4 Q2-knots for use with BicubicInterpolator");
+
     /// @todo Allow interpolation right up to the borders of the grid in Q2 and x... the last inter-knot range is currently broken
 
     /// @todo Also treat the x top/bottom edges carefully, cf. the Q2 ones

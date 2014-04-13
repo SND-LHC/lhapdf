@@ -21,6 +21,10 @@ namespace LHAPDF {
 
 
   double LogBilinearInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
+    if (subgrid.logxs().size() < 2)
+      throw GridError("PDF subgrids are required to have at least 4 x-knots for use with LogBilinearInterpolator");
+    if (subgrid.logq2s().size() < 2)
+      throw GridError("PDF subgrids are required to have at least 4 Q2-knots for use with LogBilinearInterpolator");
     // First interpolate in x
     const double logx = log(x);
     const double logx0 = subgrid.logxs()[ix];
