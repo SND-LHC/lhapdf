@@ -149,9 +149,9 @@ cdef class Info:
     cdef set_ptr(self, c.Info* ptr):
         self._ptr = ptr
 
-    def metadata(self):
-        "Return the metadata in the .info file"
-        return self._ptr.metadata()
+    # def metadata(self):
+    #     "Return the metadata in the .info file"
+    #     return self._ptr.metadata()
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
@@ -239,9 +239,9 @@ cdef class PDFSet:
             objs.append(obj)
         return objs
 
-    def metadata(self):
-        "Return the metadata in the .info file"
-        return self._ptr.metadata()
+    # def metadata(self):
+    #     "Return the metadata in the .info file"
+    #     return self._ptr.metadata()
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
@@ -275,9 +275,9 @@ cdef class PDFInfo:
     cdef set_ptr(self, c.PDFInfo* ptr):
         self._ptr = ptr
 
-    def metadata(self):
-        "Return the metadata in the .info file"
-        return self._ptr.metadata()
+    # def metadata(self):
+    #     "Return the metadata in the .info file"
+    #     return self._ptr.metadata()
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"

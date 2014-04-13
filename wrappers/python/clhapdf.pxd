@@ -44,7 +44,6 @@ cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
 
 cdef extern from "../../include/LHAPDF/Info.h" namespace "LHAPDF":
     cdef cppclass Info:
-        map[string,string] metadata()
         bool has_key(string)
         bool has_key_local(string)
         string get_entry(string) except +
