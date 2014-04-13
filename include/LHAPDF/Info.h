@@ -60,15 +60,15 @@ namespace LHAPDF {
     /// @name General metadata accessors
     //@{
 
-    /// Get all metadata as a map
-    const std::map<std::string, std::string>& metadata() const {
-      return _metadict;
-    }
+    // /// Get all metadata as a map
+    // const std::map<std::string, std::string>& metadata() const {
+    //   return _metadict;
+    // }
 
-    /// Get all metadata as a map (non-const)
-    std::map<std::string, std::string>& metadata() {
-      return _metadict;
-    }
+    // /// Get all metadata as a map (non-const)
+    // std::map<std::string, std::string>& metadata() {
+    //   return _metadict;
+    // }
 
 
     /// Is a value defined for the given key on this specific object?
