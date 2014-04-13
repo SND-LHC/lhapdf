@@ -32,37 +32,35 @@ Verbosity
 
 Level of verbosity of the LHAPDF system.
 
-NOT YET IMPLEMENTED!
+
+# ShowBanner
+# ----------
+# (bool)
+#
+# Whether or not to print out an LHAPDF5-style banner to stdout upon PDF
+# initialisation.
+#
+# NOT YET IMPLEMENTED!
 
 
-ShowBanner
-----------
-(bool)
-
-Whether or not to print out an LHAPDF5-style banner to stdout upon PDF
-initialisation.
-
-NOT YET IMPLEMENTED
-
-
-UndefFlavorAction
------------------
-(enum string): return_zero, error
-
-What to do if an xf value for an unsupported PID code is requested? Either
-return 0 (i.e. there is implicitly none of that parton in the hadron) or throw
-an error.
-
-NOT YET IMPLEMENTED: TOO MUCH OVERHEAD? (A METADATA STRING WOULD BE CHECKED FOR EVERY ACCESS TO 6/-6 UNLESS CACHING IS USED)
+# UndefFlavorAction
+# -----------------
+# (enum string): return_zero, error
+#
+# What to do if an xf value for an unsupported PID code is requested? Either
+# return 0 (i.e. there is implicitly none of that parton in the hadron) or throw
+# an error.
+#
+# NOT YET IMPLEMENTED: TOO MUCH OVERHEAD? (A METADATA STRING WOULD BE CHECKED FOR EVERY ACCESS TO 6/-6 UNLESS CACHING IS USED)
 
 
-PwdInSearchPath
----------------
-(bool)
-
-Whether to implicitly include the current directory in the PDF set search path.
-
-NOT YET IMPLEMENTED!
+# PwdInSearchPath
+# ---------------
+# (bool)
+#
+# Whether to implicitly include the current directory in the PDF set search path.
+#
+# NOT YET IMPLEMENTED!
 
 
 
@@ -78,31 +76,41 @@ precedence.
 SetDesc
 -------
 MANDATORY
-(free string): A human-readable description of this PDF set.
+(string)
+
+A human-readable description of this PDF set.
 
 
 SetIndex
 --------
 OPTIONAL, but should be set for sets with assigned LHAPDF IDs
-(int): The LHAPDF global ID code for the first member in this PDF set.
+(int)
+
+The LHAPDF global ID code for the first member in this PDF set.
 
 
 Authors
 -------
 MANDATORY
-(free string): Authors of this PDF set.
+(free string)
+
+Authors of this PDF set.
 
 
 Year
 ----
 OPTIONAL
-(uint): Year in which this PDF fit was made.
+(uint)
+
+Year in which this PDF fit was made.
 
 
 Reference
 ---------
 OPTIONAL
-(free string): A reference to the paper that describes this PDF set. Use semicolons
+(free string)
+
+A reference to the paper that describes this PDF set. Use semicolons
 to separate a standard journal string, arXiv ID, DOI code, etc.
 
 
@@ -255,8 +263,8 @@ only one of these keys is defined, or if their lengths are different, a metadata
 exception will be thrown.
 
 
-AlphaS_Lambda3, AlphaS_Lambda4, AlphaS_Lambda5 (mandatory if using analytic alpha_s)
-------------------------------------------------------------------------------------
+AlphaS_Lambda3, AlphaS_Lambda4, AlphaS_Lambda5
+----------------------------------------------
 MANDATORY if AlphaS_Type = analytic
 (float): e.g. 0.192
 
@@ -288,7 +296,7 @@ If not present, assume 1-sigma = erf(1/sqrt(2)) = 68.2689...% by default.
 
 CentralMember
 -------------
-MANDATORY
+OPTIONAL
 (int): e.g. 0
 
 The member ID in this PDF set of the main ("central") member. Usually 0. A
@@ -297,7 +305,7 @@ negative value indicates that this set has no central member.
 
 FirstErrorMember
 ----------------
-OPTIONAL but should be present if there is an error set
+OPTIONAL
 (uint): e.g. 1
 
 The member ID in this PDF set of the first member of an error set. Usually 1.
@@ -320,19 +328,10 @@ OPTIONAL but should be present if some LHAPDF6 versions are incompatible.
 Minimal LHAPDF version code (integerised) needed to use this PDF.
 
 
-# Status
-# ------
-# OPTIONAL
-# (enum str: approved/prelim)
-
-# Set this to 'prelim' if you want to flag this PDF as unsuitable for production use.
-# The LHAPDF system will produce a warning printout in that case.
-
-
 DataVersion
 -----------
-OPTIONAL
-(int)
+MANDATORY
+(int, default = 0)
 
 The version of this PDF's data file, used to version fixes to the set.
 
@@ -350,6 +349,14 @@ positive (always > 0), to avoid accidental interpolation overshoots into
 negative values. If 2, force returned PDF values to be positive definite (always
 > 1e-10), to avoid both negative values and *also* ensure that the PDF is never
 exactly 0, to avoid issues with reweighting.
+
+
+Note
+----
+OPTIONAL
+(str)
+
+An optional note about this PDF set. It will be printed out at PDF initialization.
 
 
 MEMBER LEVEL
@@ -377,12 +384,9 @@ OPTIONAL
 PdfType
 -------
 MANDATORY
-(enum string): central # or 'error' or 'replica'
+(enum string): central or 'error' or 'replica'
 
 The type of this PDF, i.e. is it a central (canonical) PDF or is it meant for
 use as either a Hessian error or a replica member of a statistical ensemble.
-
-@todo Treat "posdef" and other constructions as orthogonal to the "type"?
-
 
 */
