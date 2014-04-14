@@ -1,61 +1,62 @@
-Instructions for building and running migration scripts/programs
-================================================================
+/**
+
+@page migration Instructions for building and running migration scripts/programs
 
 
-SET MIGRATION
+Set migration
 -------------
 
 To migrate a PDF, install LHAPDF5 (including the Python module) and call e.g.
 
-./creategrids CT10.LHgrid
+    ./creategrids CT10.LHgrid
 
-This will create the .info set metadata file and .lha grid data files in a (new)
-CT10 directory.
+This will create the `.info` set metadata file and `.lha` grid data files in a (new)
+`CT10` directory.
 
-The tomigrate file is a list of the LHAPDF5 PDF names to be migrated, plus any
-arguments to creategrids that those PDFs require for correct/optimal migration.
+The `tomigrate` file is a list of the LHAPDF5 PDF names to be migrated, plus any
+arguments to `creategrids` that those PDFs require for correct/optimal migration.
 A convenient way to use this file is as follows (in this case to dump all the
 HERAPDF sets):
 
-cat tomigrate | egrep -v "^#" | grep HERA | while read l; do eval "./creategrids $l"; done
+    cat tomigrate | egrep -v "^#" | grep HERA | while read l; do eval "./creategrids $l"; done
 
-(The eval is needed to preserve quote marks in arguments in the tomigrate file.)
+(The `eval` is needed to preserve quote marks in arguments in the `tomigrate` file.)
 
 
-SET VALIDATION AND PLOTTING
+Set validation and plotting
 ---------------------------
 
-To test the new PDFs, build the dumpv5 and/or dumpv6 programs. These are
+To test the new PDFs, build the `dumpv5` and/or `dumpv6` programs. These are
 compiled from the same source (with the appropriate LHAPDF library version
 installed) e.g.:
 
-(cd /path/to/lhapdf5 && make install)
-g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv5
+    (cd /path/to/lhapdf5 && make install)
+    g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv5
 
 or
 
-(cd /path/to/lhapdf6 && make install)
-g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv6
+    (cd /path/to/lhapdf6 && make install)
+    g++ dumpv5v6.cc `lhapdf-config --cppflags -cxxflags --ldflags --libs` -o dumpv6
 
 These programs are run like (from a PDF-specific validation directory in
-e.g. migration/validation/myset):
+e.g. `migration/validation/myset`):
 
-../../dumpvX <setname> <member_num>
+    ../../dumpvX <setname> <member_num>
 
-For .LHgrid sets with LHAPDF5, the setname can be given without the .LHgrid
+For `.LHgrid` sets with LHAPDF5, the setname can be given without the `.LHgrid`
 extension, i.e. the exact same arguments can be used for LHAPDF5 and 6 dumps.
-You will need to specify a .LHpdf extension if there is one, though: this ~only
+You will need to specify a `.LHpdf` extension if there is one, though: this ~only
 applies to the CTEQ6L1 set, though. You'll also need to specify the data path to
-the preliminary v6 PDF data files if they're not installed in $prefix/share/LHAPDF:
+the preliminary v6 PDF data files if they're not installed in `$prefix/share/LHAPDF`:
 
-LHAPDF_DATA_PATH=$PWD ./dumpv6 CT10 0
+    LHAPDF_DATA_PATH=$PWD ./dumpv6 CT10 0
 
 To numerically compare the PDFs and make all the validation plots, by far the
-easiest thing to do is run the cmpplotv5v6 batch script which loops over PIDs
+easiest thing to do is run the `cmpplotv5v6` batch script which loops over PIDs
 and x & Q values and runs the comparison and plotting programs. From our
 hypothetical validation/myset directory this is run like:
 
-../../cmpplotv5v6
+    ../../cmpplotv5v6
 
 (You can use a --top flag with cmpplotv5v6 to include parton IDs 6 and -6.)
 
@@ -63,30 +64,30 @@ What follows is a more detailed description of how to use the scripts called by
 this: probably you don't need to know this, at least at first!
 
 
-BULK VALIDATION
+Bulk validation
 ---------------
 
 To dump validation grids for the first (or any) member of each set, these commands
 may be helpful, to be run from the migration/validation directory:
 
-export LHAPDF_DATA_PATH=$HOME/proj/hep/lhapdf6/migration/sets
-mem=0
-for i in `ls ../sets`; do mkdir -p ${i}_validation_$mem; done
-[install LHAPDF5]
-for i in `ls ../sets`; do (cd ${i}_validation_$mem && ../../dumpv5 $i $mem); done
-[install LHAPDF6]
-for i in `ls ../sets`; do (cd ${i}_validation_$mem && ../../dumpv6 $i $mem); done
-for i in `ls ../sets`; do (cd ${i}_validation_$mem && echo $i && ../../cmpplotv5v6); done
+    export LHAPDF_DATA_PATH=$HOME/proj/hep/lhapdf6/migration/sets
+    mem=0
+    for i in `ls ../sets`; do mkdir -p ${i}_validation_$mem; done
+    [install LHAPDF5]
+    for i in `ls ../sets`; do (cd ${i}_validation_$mem && ../../dumpv5 $i $mem); done
+    [install LHAPDF6]
+    for i in `ls ../sets`; do (cd ${i}_validation_$mem && ../../dumpv6 $i $mem); done
+    for i in `ls ../sets`; do (cd ${i}_validation_$mem && echo $i && ../../cmpplotv5v6); done
 
 
-DETAILED COMPARISON AND PLOTTING SCRIPTS
+Detailed comparison and plotting scripts
 ----------------------------------------
 
-The cmpv5v6 script is used to numerically compare dumped-out PDF values between
+The `cmpv5v6` script is used to numerically compare dumped-out PDF values between
 versions 5 and 6 of LHAPDF, and writes out the fractional deviations (with an
 "epsilon" parameter to excuse very small absolute deviations):
 
-./cmpv5v6 xf_v{5,6}_scanx100_0.dat
+    ./cmpv5v6 xf_v{5,6}_scanx100_0.dat
 
 (the optional output file is written in the same format as the PDF dumps, to
 allow the values and the differences to be visualised with the same code)
@@ -95,19 +96,21 @@ The following commands (run in a subdir containing the dumped sample point
 files) are useful for batch running of the comparisons across all standard PID
 codes and for the available "discrete" x and Q values:
 
-for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do for q in 10 50 100 200 500 1000 2000 5000; do ../../cmpv5v6 xf_v*_scanx_q${q}_${pid}.dat -o xfacc_q${q}_${pid}.dat; done; done
-for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do for x in 1e-08 1e-06 0.0001 0.01 0.1 0.2 0.5 0.8; do ../../cmpv5v6 xf_v*_scanq_x${x}_${pid}.dat -o xfacc_x${x}_${pid}.dat; done; done
+    for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do for q in 10 50 100 200 500 1000 2000 5000; do ../../cmpv5v6 xf_v*_scanx_q${q}_${pid}.dat -o xfacc_q${q}_${pid}.dat; done; done
+    for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do for x in 1e-08 1e-06 0.0001 0.01 0.1 0.2 0.5 0.8; do ../../cmpv5v6 xf_v*_scanq_x${x}_${pid}.dat -o xfacc_x${x}_${pid}.dat; done; done
 
-The plotv5v6 script is useful for 1D comparison plotting of data files, either
+The `plotv5v6` script is useful for 1D comparison plotting of data files, either
 absolute PDF xf values or fractional deviations and with either x or Q on the
-x-axis of the plot. It requires the Python matplotlib library. plotv5v6 can be
+x-axis of the plot. It requires the Python matplotlib library. `plotv5v6` can be
 usefully used for batch plotting of PDF values or accuracies as follows, again
 run in a subdir in this example:
 
-## Plotting absolute PDF values (from the output of dumpv5v6) for all PIDs:
-for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xf_v*_scanx_q*_$pid.dat --type=xf --axis=x --log=x --ylim=0: -o cmpv5v6_xf_scanx_$pid.pdf; done
-for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xf_v*_scanq_x*_$pid.dat --type=xf --axis=q -o cmpv5v6_xf_scanq_$pid.pdf; done
+    ## Plotting absolute PDF values (from the output of dumpv5v6) for all PIDs:
+    for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xf_v*_scanx_q*_$pid.dat --type=xf --axis=x --log=x --ylim=0: -o cmpv5v6_xf_scanx_$pid.pdf; done
+    for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xf_v*_scanq_x*_$pid.dat --type=xf --axis=q -o cmpv5v6_xf_scanq_$pid.pdf; done
 
-## Plotting differences (from the output of cmpv5v6) for all PIDs:
-for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xfacc_q*_$pid.dat --axis=x -o cmpv5v6_xfacc_scanx_$pid.pdf; done
-for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xfacc_x*_$pid.dat --axis=q -o cmpv5v6_xfacc_scanq_$pid.pdf; done
+    ## Plotting differences (from the output of cmpv5v6) for all PIDs:
+    for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xfacc_q*_$pid.dat --axis=x -o cmpv5v6_xfacc_scanx_$pid.pdf; done
+    for pid in 0 -5 -4 -3 -2 -1 1 2 3 4 5; do ../../plotv5v6 xfacc_x*_$pid.dat --axis=q -o cmpv5v6_xfacc_scanq_$pid.pdf; done
+
+*/
