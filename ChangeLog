@@ -1,3 +1,10 @@
+2014-04-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding AlphaS_FlavorScheme and AlphaS_NumFlavors metadata flags
+	as optional specific versions for use by the AlphaS system,
+	particularly if the alpha_s QCD evolution doesn't match that of
+	the PDF itself.
+
 2014-04-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a lhapdf.pc file for use by pkg-config

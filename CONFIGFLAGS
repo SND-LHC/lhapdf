@@ -209,21 +209,20 @@ LO, 1 = NLO, etc.)
 
 FlavorScheme
 ------------
+MANDATORY
 (enum string): fixed/variable
 
-TODO: Also provide optional override AlphaS_FlavorScheme
-
-The flavour treatment scheme used in PDF/alpha_s evolution.
+The flavour treatment scheme used in the fit's QCD evolution. alpha_s evolution
+will use this value if AlphaS_FlavorScheme is not explicitly set.
 
 
 NumFlavors
 ----------
 MANDATORY
-(uint): e.g. 4 or 5
+(uint): e.g. 3, 4 or 5
 
-TODO: Also provide optional override AlphaS_NumFlavors
-
-Maximum/fixed number of flavors used in the fit. Used explicitly in alpha_s evolution.
+Maximum/fixed number of flavors used in the fit. alpha_s evolution will use
+this value if AlphaS_NumFlavors is not explicitly set.
 
 
 AlphaS_MZ
@@ -241,6 +240,26 @@ MANDATORY
 
 Maximum number of loops considered in the QCD evolution of alpha_s corresponding
 to this PDF set (i.e. 0 = LO, 1 = NLO, etc.)
+
+
+AlphaS_FlavorScheme
+-------------------
+OPTIONAL
+(enum string): fixed/variable
+
+The flavour treatment scheme used in alpha_s evolution for this PDF fit.
+If unset, alpha_s evolution will fall back to using the FlavorScheme flag which
+represents the QCD evolution used for the whole set, not just the alpha_s part.
+
+
+AlphaS_NumFlavors
+-----------------
+OPTIONAL
+(uint): e.g. 3, 4 or 5
+
+Maximum/fixed number of flavors used in alpha_s evolution for this PDF fit.
+If unset, alpha_s evolution will fall back to using the NumFlavors flag which
+represents the QCD evolution used for the whole set, not just the alpha_s part.
 
 
 AlphaS_Type
@@ -357,6 +376,7 @@ OPTIONAL
 (str)
 
 An optional note about this PDF set. It will be printed out at PDF initialization.
+
 
 
 MEMBER LEVEL

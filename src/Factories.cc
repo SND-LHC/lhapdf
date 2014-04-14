@@ -116,11 +116,11 @@ namespace LHAPDF {
     if (info.has_key("MBottom")) as->setQuarkMass(5, info.get_entry_as<double>("MBottom"));
     if (info.has_key("MTop")) as->setQuarkMass(6, info.get_entry_as<double>("MTop"));
 
-    if (info.has_key("FlavorScheme")) {
-      if (to_lower_copy(info.get_entry("FlavorScheme")) == "fixed" && info.has_key("NumFlavors")) as->setFlavorScheme(AlphaS::FIXED, info.get_entry_as<int>("NumFlavors"));
-      else if (to_lower_copy(info.get_entry("FlavorScheme")) == "variable" && info.has_key("NumFlavors")) as->setFlavorScheme(AlphaS::VARIABLE, info.get_entry_as<int>("NumFlavors"));
-      else as->setFlavorScheme(AlphaS::VARIABLE);
-    }
+    const string fscheme = to_lower_copy(info.get_entry("AlphaS_FlavorScheme", info.get_entry("FlavorScheme", "variable"))); // default is VFNS
+    const int nflavs = info.get_entry_as<int>("AlphaS_NumFlavors", info.get_entry_as<int>("NumFlavors", 5)); // default is 5 flavour evolution
+    if (fscheme == "fixed") as->setFlavorScheme(AlphaS::FIXED, nflavs);
+    else if (fscheme == "variable") as->setFlavorScheme(AlphaS::VARIABLE, nflavs);
+    else as->setFlavorScheme(AlphaS::VARIABLE, 5); // default fallback mode
 
     // Required parameter settings for each calculation mode
     if (as->type() == "ode") {
