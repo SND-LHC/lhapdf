@@ -9,6 +9,7 @@
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/Version.h"
 #include "LHAPDF/Config.h"
+#include <boost/math/special_functions/erf.hpp>
 
 namespace LHAPDF {
 
