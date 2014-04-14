@@ -150,8 +150,8 @@ namespace LHAPDF {
     if (valuesA.size() != size() || valuesB.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::correlation. Input vectors must contain values for all PDF members.");
 
-    const PDFUncertainty errA = uncertainty(valuesA);
-    const PDFUncertainty errB = uncertainty(valuesB);
+    const PDFUncertainty errA = uncertainty(valuesA, -1);
+    const PDFUncertainty errB = uncertainty(valuesB, -1);
     const size_t nmem = size()-1;
 
     double cor = 0.0;
@@ -186,8 +186,7 @@ namespace LHAPDF {
       throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. Input vector must contain values for all PDF members.");
 
     double frand = 0.0;
-    double sigma = 100 * boost::math::erf(1/sqrt(2));
-    double scale = uncertainty(values, sigma).scale;
+    double scale = uncertainty(values).scale;
     size_t nmem = size()-1;
 
     // Allocate number of eigenvectors based on ErrorType.
@@ -223,7 +222,7 @@ namespace LHAPDF {
           frand += 0.5*r*abs(values[2*ieigen-1]-values[2*ieigen]) * scale;
         } else { // not symmetrised
           if (r < 0.0) frand -= r*(values[2*ieigen]-values[0]) * scale; // negative direction
-          else frand += r*(values[2*ieigen-1]-values[0])*scale; // positive direction
+          else frand += r*(values[2*ieigen-1]-values[0]) * scale; // positive direction
         }
       }
 

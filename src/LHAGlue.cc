@@ -565,7 +565,7 @@ extern "C" {
     currentset = nset;
     const size_t nmem = ACTIVESETS[nset].activemember()->set().size()-1;
     const vector<double> vecvalues(values, values + nmem + 1);
-    LHAPDF::PDFUncertainty err = ACTIVESETS[nset].activemember()->set().uncertainty(vecvalues);
+    LHAPDF::PDFUncertainty err = ACTIVESETS[nset].activemember()->set().uncertainty(vecvalues, -1);
     central = err.central;
     errplus = err.errplus;
     errminus = err.errminus;

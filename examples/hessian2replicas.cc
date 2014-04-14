@@ -4,7 +4,6 @@
 
 #include "LHAPDF/LHAPDF.h"
 #include <boost/random.hpp>
-#include <boost/math/special_functions/erf.hpp>
 using namespace std;
 
 // Function to convert Hessian "set" to replica set with name "randsetname"
@@ -91,9 +90,8 @@ int main(int argc, char* argv[]) {
     string numformat = "%12.4e%12.4e%12.4e%12.4e%12.4e\n";
 
     // Calculate 1-sigma PDF uncertainty on gluon and up-quark.
-    const double sigma = 100*boost::math::erf(1/sqrt(2));
 
-    const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll, sigma);
+    const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll); // scale to 1-sigma (default)
     cout << "Gluon distribution at Q = " << Q << " GeV (original Hessian)" << endl;
     printf(labformat.c_str()," #","x","xg","error+","error-","error");
     printf(numformat.c_str(), x, xgErr.central, xgErr.errplus, xgErr.errminus, xgErr.errsymm);
@@ -106,7 +104,7 @@ int main(int argc, char* argv[]) {
     printf(numformat.c_str(), x, xgErrRand.central, xgErrRand.errplus, xgErrRand.errminus, xgErrRand.errsymm);
     cout << endl;
 
-    const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll, sigma);
+    const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll); // scale to 1-sigma (default)
     cout << "Up-quark distribution at Q = " << Q << " GeV (original Hessian)" << endl;
     printf(labformat.c_str()," #","x","xu","error+","error-","error");
     printf(numformat.c_str(), x, xuErr.central, xuErr.errplus, xuErr.errminus, xuErr.errsymm);

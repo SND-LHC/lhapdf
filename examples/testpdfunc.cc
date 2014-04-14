@@ -5,11 +5,10 @@
 
 #include "LHAPDF/LHAPDF.h"
 #include <boost/random.hpp>
-#include <boost/math/special_functions/erf.hpp>
 using namespace std;
 
 // Simple test program to demonstrate the three PDFSet member functions.
-//   set.uncertainty(values, cl=-1, alternative=false);
+//   set.uncertainty(values, cl=68.268949..., alternative=false);
 //   set.correlation(valuesA, valuesB);
 //   set.randomValueFromHessian(values, randoms, symmetrise=true);
 
@@ -43,14 +42,14 @@ int main(int argc, char* argv[]) {
   // Calculate PDF uncertainty on gluon distribution.
   cout << "Gluon distribution at Q = " << Q << " GeV (normal uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xg","error+","error-","error");
-  const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll);
+  const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll, -1); // -1 => same C.L. as set
   printf(numformat.c_str(), x, xgErr.central, xgErr.errplus, xgErr.errminus, xgErr.errsymm);
   cout << endl;
 
   // Calculate PDF uncertainty on up-quark distribution.
   cout << "Up-quark distribution at Q = " << Q << " GeV (normal uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xu","error+","error-","error");
-  const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll);
+  const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll, -1); // -1 => same C.L. as set
   printf(numformat.c_str(), x, xuErr.central, xuErr.errplus, xuErr.errminus, xuErr.errsymm);
   cout << endl;
 
@@ -62,17 +61,15 @@ int main(int argc, char* argv[]) {
   // Calculate gluon PDF uncertainty scaled to 90% C.L.
   cout << "Gluon distribution at Q = " << Q << " GeV (scaled uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xg","error+","error-","error");
-  const LHAPDF::PDFUncertainty xgErr90 = set.uncertainty(xgAll, 90);
+  const LHAPDF::PDFUncertainty xgErr90 = set.uncertainty(xgAll, 90); // scale to 90% C.L.
   printf(numformat.c_str(), x, xgErr90.central, xgErr90.errplus, xgErr90.errminus, xgErr90.errsymm);
   cout << "Scaled PDF uncertainties to 90% C.L. using scale = " << xgErr90.scale << endl;
   cout << endl;
 
   // Calculate up-quark PDF uncertainty scaled to 1-sigma.
-  // Note: z-sigma = erf(z/sqrt(2)) = {0.68268949, 0.95449974, 0.99730020} for z = {1, 2, 3}.
-  double sigma = 100*boost::math::erf(1/sqrt(2)); // 68.268949%
   cout << "Up-quark distribution at Q = " << Q << " GeV (scaled uncertainties)" << endl;
   printf(labformat.c_str()," #","x","xu","error+","error-","error");
-  const LHAPDF::PDFUncertainty xuErr1s = set.uncertainty(xuAll, sigma);
+  const LHAPDF::PDFUncertainty xuErr1s = set.uncertainty(xuAll); // scale to 1-sigma (default)
   printf(numformat.c_str(), x, xuErr1s.central, xuErr1s.errplus, xuErr1s.errminus, xuErr1s.errsymm);
   cout << "Scaled PDF uncertainties to 1-sigma using scale = " << xuErr1s.scale << endl;
   cout << endl;

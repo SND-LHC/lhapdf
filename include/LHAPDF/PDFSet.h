@@ -200,24 +200,28 @@ namespace LHAPDF {
 
     /// @brief Calculate central value and error from vector @c values with appropriate formulae for this set
     ///
-    /// If the PDF set is given in the form of replicas, the uncertainty is
-    /// given by the standard deviation, and the central (average) value is not
-    /// necessarily "values[0]" for quantities with a non-linear dependence on
-    /// PDFs.  In the Hessian approach, the central value is the best-fit
+    /// In the Hessian approach, the central value is the best-fit
     /// "values[0]" and the uncertainty is given by either the symmetric or
     /// asymmetric formula using eigenvector PDF sets.
+    ///
+    /// If the PDF set is given in the form of replicas, by default, the central value is
+    /// given by the mean and is not necessarily "values[0]" for quantities with a non-linear
+    /// dependence on PDFs, while the uncertainty is given by the standard deviation.
     ///
     /// Optional argument @c cl is used to rescale uncertainties to a
     /// particular confidence level; a negative number will rescale to the
     /// default CL for this set.
     ///
+    /// @note If @c cl is omitted, automatically rescale to 1-sigma uncertainties.
+    ///
     /// If the PDF set is given in the form of replicas, then optional argument
-    /// @c alternative will calculate the median and confidence interval of the
-    /// probability distribution rather than the mean and (rescaled) standard deviation.
-    PDFUncertainty uncertainty(const std::vector<double>& values, double cl=-1, bool alternative=false) const;
+    /// @c alternative equal to true (default: false) will construct a confidence
+    /// interval from the probability distribution of replicas, with the central
+    /// value given by the median.
+    PDFUncertainty uncertainty(const std::vector<double>& values, double cl=100*boost::math::erf(1/sqrt(2)), bool alternative=false) const;
 
     /// Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
-    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double cl=-1, bool alternative=false) const {
+    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double cl=100*boost::math::erf(1/sqrt(2)), bool alternative=false) const {
       rtn = uncertainty(values, cl, alternative);
     }
 
