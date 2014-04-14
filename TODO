@@ -5,6 +5,7 @@
 LHAPDF6 TODO list
 =================
 
+
 VERSION 6.1.0
 -------------
 
@@ -13,52 +14,13 @@ VERSION 6.1.0
    Archive the LHAPDF5 pages. Generate set list/details page from Python API /
    pdfsets.index file.
 
-- **Provide optional override AlphaS_FlavorScheme and AlphaS_NumFlavors (AB)**
+- **Split sampleFromHessian function to be a standalone function (GW, AB)**
 
-- **Uncertainties code and (final) flag changes (GW, AB)**
+   e.g. in a new Tools.h?
 
-   Refine Graeme's code interfaces (e.g. return struct/fill in-place rather than
-   std::vector). Clarify flag behaviours, esp. re. default ErrorConfLevel = 1 sigma.
+- **Add a single-string syntax for accessing a PDF set+member (AB)**
 
-- **AlphaS flavour threshold/mass treatment (AB/KN)**
-
-   Separate AlphaS_QThresholdB etc. from M<qname> (requested by Alex Mitov)
-
-   Add optional vector arg for flavour thresholds on ODe solver: if empty, use
-   quark masses as thresholds. Also on analytic solver or is that pointless?
-
-- **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
-
-   Add ODE behaviour to not calculate div-by-zero if x_n+1 = x_n, then insert
-   doubled evolution/ipol points on flavour thresholds.
-
-
-VALIDATION / MIGRATION / ETC.
------------------------------
-
-- **Regen all PDFs without --cl=68 (AB)**
-
-   Update versions as required.
-
-- **CTEQ PDF approval (AB)**
-
-   Approved! Need to regenerate PDFs. Versions = 1.
-
-- **MRST / MSTW renumberings (AB, GW)**
-
-   Correct MRST QED PDF numberings to match LHAPDF5.
-   Change MSTW numberings to be more obviously distinct from LHAPDF5.
-   Both for version 6.1 only?
-
-- **ATLAS & HERA PDFs (AB)**
-
-   Waiting for final approvals from Voica.
-
-- **ABM PDF approval**
-
-   Behaviour at high x looks fine: Sergey contacted again, Mar 2014. Contact
-   again, pointing out that the measure is already enforced by the grid density.
-
+   Arose in discussions about Py8 PDF configuration keys, suggest "dir style" format SETNAME/NMEM.
 
 
 WRITE PAPER
@@ -72,17 +34,72 @@ WRITE PAPER
    reporting to PYTHIA. Number of members reported correctly. **ADD MORE AS WE REMEMBER THEM**
 
 
+VALIDATION / MIGRATION / ETC.
+-----------------------------
+
+- **ABM, NNPDF PdfType correction (AB)**
+
+   Some issue reported by GW...
+
+- **ATLAS & HERA PDFs (AB)**
+
+   Waiting for final approvals from Voica.
+
+- **ABM PDF approval**
+
+   Sergey contacted again, hope for approval soon.
+
+- **GJR/JR 08,09 PDFs?**
+
+   Demand for these?
 
 
-VERSION 6.2
------------
+
+VERSION 6.1.x
+-------------
+
+- **AlphaS flavour threshold/mass treatment (AB/KN)**
+
+   Separate AlphaS_QThresholdB etc. from M<qname> (requested by Alex Mitov)
+
+   Add optional vector arg for flavour thresholds on ODe solver: if empty, use
+   quark masses as thresholds. Also on analytic solver or is that pointless?
+
+- **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
+
+   Add ODE behaviour to not calculate div-by-zero if x_n+1 = x_n, then insert
+   doubled evolution/ipol points on flavour thresholds.
 
 - **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
 
    For backward compatibility. Drop this aliasing with version 6.1, when people
    will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
 
-- **Optimize the grid PDF interpolator code a bit more**
+- **Expose LHAGLUE slots system for C++ use**
+
+   Automatic memory management can be nice for everyone. Expose as PDFManager.
+
+- **Add AlphaS mappings to Cython (SL, AB)**
+
+   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+
+- **Add debug verbosity about places being searched for PDF files**
+
+- **Translate C++ exceptions into Python exceptions**
+
+   Should be happening automatically -- Cython bug? There is a real, definite
+   Cython bug re. exception declarations on functions that return references,
+   so the exception declarations on getPDFSet() etc. are commented for now.
+
+- **Reweighting helper functions?**
+
+   e.g. getWeight(PDF*, PDF*, Q, x1, x2=-1). Too trivial, or helpful?
+
+
+VERSION 6.2
+-----------
+
+- **Optimize the grid PDF interpolator code**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
    CPU: can reduce by factor of 13 in some use cases (only one call for a whole
@@ -90,10 +107,6 @@ VERSION 6.2
    report performance increases due to being able to interpolated one flavour at
    a time, so perhaps this use case is not valid in all generators and could be
    a more complexity than it is worth.
-
-- **Reweighting helper functions?**
-
-   e.g. getWeight(PDF*, PDF*, Q, x1, x2=-1). Too trivial, or helpful?
 
 - **Speed up interpolation (MR)**
 
@@ -124,30 +137,11 @@ VERSION 6.2
    Actually this would be rather good, but requires C++11 which is not an option
    just yet.
 
-
-- **Expose LHAGLUE slots system for C++ use**
-
-   Automatic memory management can be nice for everyone. Expose as PDFManager.
-
 - **Provide a nicer Fortran interface?**
 
    Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
    away from the the theory world. Suggest prefixing all functions with "lhapdf"
    and basing it on the PDFManager, with explicit commands for switching current PDF.
-
-- **Add AlphaS mappings to Cython (SL, AB)**
-
-   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
-
-- **Add debug verbosity about places being searched for PDF files**
-
-- **Translate C++ exceptions into Python exceptions**
-
-   Should be happening automatically -- Cython bug? There is a real, definite
-   Cython bug re. exception declarations on functions that return references,
-   so the exception declarations on getPDFSet() etc. are commented for now.
-
-
 
 
 AS AND WHEN
