@@ -6,3 +6,11 @@ body, table, div, p, dl {
 p, li, .todo, dl {
     max-width: 65em;
 }
+
+h1 {
+    font-size: 1.4em;
+}
+
+h2 {
+    font-size: 1.1em;
+}

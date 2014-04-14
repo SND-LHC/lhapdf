@@ -78,129 +78,16 @@ documentaion as well as other information with regards to the project see
 http://lhapdf.hepforge.org/.
 
 
-@section install Installation
+@section installsec Installation
 
-@subsection externals External dependencies
+Full installation instructions are given on the installation page:
 
-LHAPDF6 makes use of header files from the Boost C++ utility library
-(http://www.boost.org). On Linux machines this should typically be available via
-your system's packaging mechanism, e.g. the `libboost-all-dev` package on Ubuntu
-and other Debian derivatives. On Scientific Linux 6 the system installation of
-Boost is sufficient for LHAPDF 6.0.5 and later. The system copy on SL5 is too
-old, however, but surely everyone has upgraded to v6 by now...
-
-On Mac OS X the Homebrew system (http://brew.sh/) comes recommended by several
-LHAPDF developers and contains a well-managed version of Boost. Many HEP
-packages are already available for Homebrew via the homebrew-hep project:
-http://davidchall.github.io/homebrew-hep/
-
-Building Boost by hand is not particularly simple and should not be needed in
-most cases: we recommend avoiding this! If you have access to the CERN AFS
-filesystem, you can find builds of Boost for various platforms in the
-`/afs/cern.ch/sw/lcg/external/Boost/` directory. If you really want or need to
-do it manually, version 6.0.5 and later of LHAPDF only use Boost headers
-(previous ones used compiled libraries) and rather than fully building Boost,
-you can just use the header files direct from its source tarball: this is not
-wonderfully neat, but is a lot easier than doing a full manual build and
-installation of the Boost libraries.
-
-@note In version 6.0.5, the CMake system (i.e. `cmake` command) must also be
-installed, in order to build an internal copy of the yaml-cpp parser library
-(http://code.google.com/p/yaml-cpp/) used to read the PDF metadata which is in
-YAML format (http://www.yaml.org). Thie requirement was removed in version 6.1.0.
-
-@note Until version 6.0.5, LHAPDF required yaml-cpp to be installed externally,
- either manually or by package manager. With version 6.0.5 and later, there is
- no such dependence, but the `cmake` command must be available at build time.
-
-
-@subsection lhapdf Building LHAPDF
-
-If you have downloaded a release tarball, unpack it with `tar xf
-LHAPDF-xxx.tar.gz`, then `cd` to the newly-created directory.
-
-@note If checking out from version control rather than unpacking a tarball,
-again `cd` to the new directory, but you must then also run `autoreconf -i`
-before proceeding to the instructions below. There will also be more
-requirements for external packages if you build this way, since this is the
-"developer" route to building LHAPDF and requires a bit more expertise (believe
-it or not we are trying to make life simpler for normal users ;-) )
-
-Now you should run the `configure` script to analyse your machine, compiler,
-etc. and set up the Makefiles. You will probably need to provide the `--prefix`
-argument to `configure` to tell it where you want to install LHAPDF (probably
-you don't want to install to `/usr/local`, which is the default) and perhaps use
-the `--with-boost` flag to indicate the locations of your
-Boost installation.
-
-@note These flags expect the "base" location of the package, e.g. if you have
-installed library X such that there are headers in `/foo/include/` (or
-`/foo/include/X`) and a compiled library (or libraries) in `/foo/lib/` then you
-would use `--with-X=/foo`.
-
-If you want to build the Python interface to LHAPDF (which is very nice!), you
-will need the Python development headers to be installed (e.g. via the
-`python-dev` Ubuntu package). If the `Python.h` header is not found by
-`configure`, no Python extension module will be built.
-
-In conclusion, an example call to LHAPDF's `configure` script might look like:
-
-    ./configure --prefix=$HOME/local
-
-(This should be appropriate if you have installed Boost in `/usr` via your
-machine's packaging system.) An example build script for LHAPDF6 on the CERN
-lxplus6 system is shown at the end of these instructions.
-
-If you want to use an alternative C++ compiler, then you can specify the CXX
-variable on the command line. This is essential on OS X Mavericks and later,
-where the consistent compiler suite is clang rather than gcc -- in that
-situation, use:
-
-    ./configure --prefix=... CC=clang CXX=clang++
-
-The configure script will run and produce quite a bit of output from its various
-tests. Hopefully everything will be successful: if it gets to the end without
-stopping due to an error then all is well.
-
-Then just call `make` to build the library (or e.g. `make -j4` to compile 4
-files in parallel -- if your machine has enough processor cores to do so, even
-`-j2` will speed up the build quite a bit). To install LHAPDF to the `--prefix`
-location that you specified, call `make install`. You will (or at least
-*should(!) find installed files in `$prefix/lib`, `$prefix/include/LHAPDF`, and
-`$prefix/share/LHAPDF`.
-
-
-@subsection lxplus Building on lxplus
-
-CERN's lxplus shared system is always an awkward environment to build packages,
-since the system compiler etc. are not part of the LCG supported list of
-architectures. Here is an example of how to build LHAPDF and its dependencies
-there -- although you can of course use other compilers, Python versions, build
-flags, etc. as you wish!
-
-    ## Set up build tools
-    source /afs/cern.ch/sw/lcg/contrib/gcc/4.6/x86_64-slc6-gcc46-opt/setup.sh
-    export PATH=/afs/cern.ch/sw/lcg/external/CMake/2.8.9/Linux-i386/bin/:$PATH
-
-    ## Create install dir and pre-empt appropriate path setting
-    mkdir local
-    export PATH=$PWD/local/bin:$PATH
-    export LD_LIBRARY_PATH=$PWD/local/lib:$LD_LIBRARY_PATH
-    export PYTHONPATH=$PWD/local/lib64/python2.6/site-packages:$PYTHONPATH
-
-    ## Build LHAPDF
-    LHANAME=LHAPDF-6.X.Y
-    wget http://www.hepforge.org/archive/lhapdf/$LHANAME.tar.gz -O- | tar xz
-    cd $LHANAME
-    ./configure --prefix=$PWD/../local \
-        --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
-    make -j2 && make install
-    cd ..
+- @ref install
 
 
 @section sets Official PDF sets
 
-The following PDF sets are available and officially supported:
+The following link takes you to the PDF sets which are currently available and officially supported:
 
 - @ref pdfsets
 
@@ -274,7 +161,9 @@ See the following pages:
 - @ref todo
 - @ref codingstyle
 
+
 @todo Add some developer build guides, including the autotools, Cython, etc. gotchas.
+
 
 @example ../examples/testpdf.cc
 @example ../examples/pythonexample.py

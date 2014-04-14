@@ -660,6 +660,7 @@ INPUT                  = @top_srcdir@/include/LHAPDF \
                          @top_srcdir@/DESIGN \
                          @top_srcdir@/CODINGSTYLE \
                          @top_srcdir@/CONFIGFLAGS \
+                         @top_srcdir@/INSTALL \
                          pdfsets.dox
 
 # This tag can be used to specify the character encoding of the source files
