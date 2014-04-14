@@ -29,6 +29,10 @@
 
 // Cosmetic wrapper for BOOST_FOREACH macro (until we can use C++11 range-based for loops)
 #ifndef foreach
+namespace boost {
+  // Suggested work-around for https://svn.boost.org/trac/boost/ticket/6131
+  namespace BOOST_FOREACH = foreach;
+}
 #define foreach BOOST_FOREACH
 #endif
 

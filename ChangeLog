@@ -1,5 +1,8 @@
 2014-04-14  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding the namespace protection workaround for Boost described
+	at http://www.boost.org/doc/libs/1_55_0/doc/html/foreach.html
+
 	* Adding AlphaS_FlavorScheme and AlphaS_NumFlavors metadata flags
 	as optional specific versions for use by the AlphaS system,
 	particularly if the alpha_s QCD evolution doesn't match that of
