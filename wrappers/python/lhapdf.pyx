@@ -337,11 +337,21 @@ cdef mkPDF_lhaid(int lhaid):
     obj.set_ptr(c.mkPDF(lhaid))
     return obj
 
+cdef mkPDF_setmemstr(char* setname_nmem):
+    "Factory function to make a PDF object from the set name and member number in SETNAME/NMEM string format."
+    cdef PDF obj = PDF.__new__(PDF)
+    obj.set_ptr(c.mkPDF(string(setname_nmem)))
+    return obj
+
 def mkPDF(*args):
     """Factory function to make a PDF object from the set name and member number
-    (2 args), or just the unique LHAPDF ID number for that member (1 arg)."""
-    if len(args) == 1 and type(args[0]) == int:
-        return mkPDF_lhaid(args[0])
+    (2 args), the unique LHAPDF ID number for that member (1 int arg), or the
+    SETNAME/NMEM string format."""
+    if len(args) == 1:
+        if type(args[0]) == int:
+            return mkPDF_lhaid(args[0])
+        if type(args[0]) == str:
+            return mkPDF_setmemstr(args[0])
     elif len(args) == 2 and type(args[0]) == str and type(args[1]) == int:
         return mkPDF_setmem(args[0], args[1])
     else:

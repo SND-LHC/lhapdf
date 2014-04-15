@@ -18,10 +18,6 @@ VERSION 6.1.0
 
    e.g. in a new Tools.h?
 
-- **Add a single-string syntax for accessing a PDF set+member (AB)**
-
-   Arose in discussions about Py8 PDF configuration keys, suggest "dir style" format SETNAME/NMEM.
-
 
 WRITE PAPER
 -----------

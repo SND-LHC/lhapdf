@@ -55,9 +55,22 @@ namespace LHAPDF {
     throw FactoryError("No LHAPDF factory defined for format type '" + fmt + "'");
   }
 
+
   PDF* mkPDF(int lhaid) {
     const pair<string,int> setname_memid = lookupPDF(lhaid);
     return mkPDF(setname_memid.first, setname_memid.second);
+  }
+
+
+  PDF* mkPDF(const string& setname_nmem) {
+    int nmem = 0;
+    const size_t slashpos = setname_nmem.find("/");
+    const string setname = setname_nmem.substr(0, slashpos);
+    if (slashpos != string::npos) {
+      const string smem = setname_nmem.substr(slashpos+1);
+      nmem = lexical_cast<int>(smem);
+    }
+    return mkPDF(setname, nmem);
   }
 
 

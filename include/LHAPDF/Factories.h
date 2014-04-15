@@ -85,6 +85,19 @@ namespace LHAPDF {
   /// The caller is responsible for deletion of the created object.
   PDF* mkPDF(int lhaid);
 
+  /// Create a new PDF with the given PDF set name and member ID as a single string.
+  ///
+  /// The format of the @a setname_nmem string is <setname>/<nmem>
+  /// where <nmem> must be parseable as a positive integer. The /
+  /// character is not permitted in set names due to clashes with
+  /// Unix filesystem path syntax.
+  ///
+  /// If no /<nmem> is given, member number 0 will be used.
+  ///
+  /// Returns a 'new'ed PDF by pointer.
+  /// The caller is responsible for deletion of the created object.
+  PDF* mkPDF(const std::string& setname_nmem);
+
   //@}
 
 

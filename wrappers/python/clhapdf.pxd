@@ -76,6 +76,7 @@ cdef extern from "../../include/LHAPDF/Factories.h" namespace "LHAPDF":
     cdef Info& getConfig() #except +  # TODO: re-enable when Cython refs+exceptions has been bugfixed
     cdef PDFSet& getPDFSet(string) #except +  # TODO: re-enable when Cython refs+exceptions has been bugfixed
     cdef vector[PDF*] mkPDFs(string) except +
+    cdef PDF* mkPDF(string) except +
     cdef PDF* mkPDF(string, int) except +
     cdef PDF* mkPDF(int) except +
     #cdef AlphaS* mkAlphaS(string) except +

@@ -1,3 +1,8 @@
+2014-04-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a single-string "dir style" SETNAME/NMEM syntax for
+	accessing a PDF set+member.
+
 2014-04-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding the namespace protection workaround for Boost described
