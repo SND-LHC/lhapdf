@@ -30,7 +30,12 @@ Verbosity
 ---------
 (uint)
 
-Level of verbosity of the LHAPDF system.
+Level of verbosity of the LHAPDF system. 0 is silent, 1 is the default and will
+print out minimal information about a PDF set or member when first initialized,
+2 will print out more verbose information, and higher values are reserved for
+future use to print out extremely verbose information during PDF use -- this
+will be for debugging only, since printouts during PDF evaluation will slow down
+the operation of LHAPDF by potentially large factors.
 
 
 # ShowBanner
@@ -41,6 +46,20 @@ Level of verbosity of the LHAPDF system.
 # initialisation.
 #
 # NOT YET IMPLEMENTED!
+
+
+Pythia6LambdaV5Compat
+---------------------
+(bool)
+
+An LHAPDF5 compatibility mode flag which sets all LambdaQCD common block values
+to 0.192 as was historically the case for PYTHIA6's use of LHAPDF. This
+behaviour is physically incorrect, as well as against the spirit of the PYTHIA6
+steering flags, but it is the long-term behaviour of PYTHIA6+LHAPDF and many
+PYTHIA6 MC tunes have been built around this behaviour. This flag is set 'true'
+by default to minimise user surprise -- most users will expect PYTHIA6 to behave
+the same with both LHAPDF5 and 6. If you want LHAPDF6 to report correct,
+i.e. PDF specific, values to PYTHIA6, then explicitly set this flag to be false.
 
 
 # UndefFlavorAction

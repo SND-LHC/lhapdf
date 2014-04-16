@@ -1,3 +1,16 @@
+2014-04-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding an LHAPDF5 compatibility mode flag,
+	Pythia6LambdaV5Compat, which sets all LambdaQCD common block
+	values to 0.192 as was historically the case for PYTHIA6's use of
+	LHAPDF. This behaviour is definitely physically incorrect, as well
+	as against the spirit of the PYTHIA6 steering flags, but it is the
+	long-term behaviour of PYTHIA6+LHAPDF and many PYTHIA6 MC tunes
+	have been built around this behaviour. This flag is set 'true' by
+	default to minimise user surprise -- if you want LHAPDF to report
+	correct (i.e. varying by PDF) values to PYTHIA6, then explicitly
+	set this flag to be false in lhapdf.conf or similar.
+
 2014-04-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a single-string "dir style" SETNAME/NMEM syntax for

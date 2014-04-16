@@ -467,12 +467,13 @@ extern "C" {
     lhapdfr_.qcdlha4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
     lhapdfr_.qcdlha5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
     lhapdfr_.nfllha = 4;
-    // BEGIN: used to test behaviour versus lhapdf 5.x
-    //    w50512_.qcdl4 = 0.192;
-    //    w50512_.qcdl5 = 0.192;
-    //    lhapdfr_.qcdlha4 = 0.192;
-    //    lhapdfr_.qcdlha5 = 0.192;
-    // END:  backwards compatibility test
+    // Activate legacy/compatibility LHAPDF5-type behaviour re. broken Lambda values
+    if (pdf->info().get_entry_as<bool>("Pythia6LambdaV5Compat", true)) {
+      w50512_.qcdl4 = 0.192;
+      w50512_.qcdl5 = 0.192;
+      lhapdfr_.qcdlha4 = 0.192;
+      lhapdfr_.qcdlha5 = 0.192;
+    }
   }
 
   /// PDFLIB nucleon structure function querying
