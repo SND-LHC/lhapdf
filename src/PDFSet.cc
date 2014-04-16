@@ -14,13 +14,6 @@ namespace LHAPDF {
     const string setinfopath = findpdfsetinfopath(setname);
     if (!file_exists(setinfopath))
       throw ReadError("Data file not found for PDF set '" + setname + "'");
-    /// @todo Reinstate this for 6.1.0?
-    // /// Print out a banner if sufficient verbosity is enabled
-    // const int verbosity = get_entry_as<int>("Verbosity", 1);
-    // if (verbosity > 0) {
-    //   cout << "Loading PDF set '" << setname << "'" << endl;
-    //   print(cout, verbosity);
-    // }
     // Load info file
     load(setinfopath);
     /// @todo Check that some mandatory metadata keys have been set: _check() function.
@@ -119,7 +112,7 @@ namespace LHAPDF {
       rtn.errsymm = 0.5*sqrt(errsymm);
       rtn.errplus = sqrt(errplus);
       rtn.errminus = sqrt(errminus);
-      
+
     } else {
       throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::uncertainty.");
     }
@@ -161,15 +154,15 @@ namespace LHAPDF {
       for (size_t imem = 1; imem <= nmem; imem++)
         cor += valuesA[imem] * valuesB[imem];
       cor = (cor/nmem - errA.central*errB.central) / (errA.errsymm*errB.errsymm) * nmem/(nmem-1.0);
-      
+
     } else if (errorType() == "symmhessian") {
 
       for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
         cor += (valuesA[ieigen]-errA.central) * (valuesB[ieigen]-errB.central);
       cor /= errA.errsymm * errB.errsymm;
-      
+
     } else if (errorType() == "hessian") {
-      
+
       // Calculate the correlation using Eq. (2.5) of arXiv:1106.5788v2.
       for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++)
         cor += (valuesA[2*ieigen-1]-valuesA[2*ieigen]) * (valuesB[2*ieigen-1]-valuesB[2*ieigen]);
