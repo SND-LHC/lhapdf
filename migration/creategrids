@@ -28,6 +28,7 @@ p.add_option("--version", dest="META_DATAVERSION", metavar="VERSION", help="a va
 p.add_option("--id", dest="META_LHAPDFID", metavar="LHAPDFID", help="a value for the SetIndex metadata field", type=int, default=None)
 p.add_option("--pid", dest="META_PARTICLEID", metavar="PARTICLEID", help="a value for the Particle metadata field. Defaults to 2212 (proton)", type=int, default=2212)
 p.add_option("--errtype", dest="META_ERRTYPE", metavar="TYPE", help="a value for the ErrorType metadata field", default="")
+p.add_option("--pdftype", dest="META_PDFTYPE", help="the PdfType field value for members other than 0. Defaults to 'error' unless --errtype=replicas", default="")
 p.add_option("--cl", dest="META_CONFLEVEL", metavar="CONFLEVEL", help="a value for the ErrorConfLevel metadata field", default="")
 p.add_option("--xmin", dest="XMIN", metavar="X", help="set flag and truncate the x knots array at X, even if the PDF reports knots lower than that", type=float, default=None)
 p.add_option("--qmin", dest="QMIN", metavar="Q", help="set flag and truncate the Q knots array at Q, even if the PDF reports knots lower than that", type=float, default=None)
@@ -84,6 +85,13 @@ for lha5name in args:
     ## Perhaps override the automatically determined numberPDF
     if opts.FORCE_NUMMEMS is not None:
         numMembers = opts.FORCE_NUMMEMS
+
+    ## Choose the default non-central PDF type
+    if not opts.META_PDFTYPE:
+        opts.META_PDFTYPE = "replica" if opts.META_ERRTYPE == "replicas" else "error"
+        ## If opts.DIFFASMASS is set, then usually every member set is "central" rather than "error".
+        if opts.DIFFASMASS:
+            opts.META_PDFTYPE = "central"
 
     ## Determine the active flavors
     # TODO: Re-order this list as e.g. [0, 1, -1, 2, -2, 3, -3, 4 -4, 5, -5]
@@ -297,8 +305,7 @@ for lha5name in args:
         mempath = os.path.join(outdir, memname)
         f = open(mempath, "w")
         #f.write("PdfDesc: \n")
-        ## NOTE: If opts.DIFFASMASS is set, then usually every member set is "central" rather than "error".
-        f.write("PdfType: %s\n" % ("central" if (member == 0 or opts.DIFFASMASS) else "error"))
+        f.write("PdfType: %s\n" % ("central" if member == 0 else opts.META_PDFTYPE)
         f.write("Format: lhagrid1\n")
         ## If different alpha_s and quark masses for each PDF member write to each .dat file.
         if opts.DIFFASMASS:
