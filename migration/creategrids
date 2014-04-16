@@ -89,9 +89,9 @@ for lha5name in args:
     ## Choose the default non-central PDF type
     if not opts.META_PDFTYPE:
         opts.META_PDFTYPE = "replica" if opts.META_ERRTYPE == "replicas" else "error"
-        ## If opts.DIFFASMASS is set, then usually every member set is "central" rather than "error".
-        if opts.DIFFASMASS:
-            opts.META_PDFTYPE = "central"
+        # ## If opts.DIFFASMASS is set, then usually every member set is "central" rather than "error".
+        # if opts.DIFFASMASS:
+        #     opts.META_PDFTYPE = "central"
 
     ## Determine the active flavors
     # TODO: Re-order this list as e.g. [0, 1, -1, 2, -2, 3, -3, 4 -4, 5, -5]
@@ -305,8 +305,8 @@ for lha5name in args:
         mempath = os.path.join(outdir, memname)
         f = open(mempath, "w")
         #f.write("PdfDesc: \n")
-        f.write("PdfType: %s\n" % ("central" if member == 0 else opts.META_PDFTYPE)
-        f.write("Format: lhagrid1\n")
+        f.write("PdfType: %s\n" % ("central" if member == 0 else opts.META_PDFTYPE))
+        f.write("Format: lhagrid1\n") # update here if grid format changes
         ## If different alpha_s and quark masses for each PDF member write to each .dat file.
         if opts.DIFFASMASS:
             f.write("XMin: %g\n" % xmin)
