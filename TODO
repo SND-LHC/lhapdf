@@ -14,10 +14,6 @@ VERSION 6.1.0
    Archive the LHAPDF5 pages. Generate set list/details page from Python API /
    pdfsets.index file.
 
-- **Split sampleFromHessian function to be a standalone function (GW, AB)**
-
-   e.g. in a new Tools.h?
-
 
 WRITE PAPER
 -----------
