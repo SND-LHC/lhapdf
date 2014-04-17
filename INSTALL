@@ -99,23 +99,23 @@ architectures. Here is an example of how to build LHAPDF and its dependencies
 there -- although you can of course use other compilers, Python versions, build
 flags, etc. as you wish!
 
-    ## Set up build tools
-    source /afs/cern.ch/sw/lcg/contrib/gcc/4.6/x86_64-slc6-gcc46-opt/setup.sh
-    export PATH=/afs/cern.ch/sw/lcg/external/CMake/2.8.9/Linux-i386/bin/:$PATH
-
-    ## Create install dir and pre-empt appropriate path setting
+    ## Set up build tools and install directory
+    source /afs/cern.ch/sw/lcg/contrib/gcc/4.7/x86_64-slc6-gcc47-opt/setup.sh
     mkdir local
+
+    ## Build LHAPDF
+    wget http://www.hepforge.org/archive/lhapdf/LHAPDF-6.X.Y.tar.gz -O- | tar xz
+    cd LHAPDF-6.X.Y
+    ./configure --prefix=$PWD/../local
+    make -j2 && make install
+    cd ..
+
+    ## Set environment variables
     export PATH=$PWD/local/bin:$PATH
     export LD_LIBRARY_PATH=$PWD/local/lib:$LD_LIBRARY_PATH
     export PYTHONPATH=$PWD/local/lib64/python2.6/site-packages:$PYTHONPATH
 
-    ## Build LHAPDF
-    LHANAME=LHAPDF-6.X.Y
-    wget http://www.hepforge.org/archive/lhapdf/$LHANAME.tar.gz -O- | tar xz
-    cd $LHANAME
-    ./configure --prefix=$PWD/../local \
-        --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
-    make -j2 && make install
-    cd ..
-
+    ## Test the scripts
+    lhapdf-config --help
+    lhapdf list
 */
