@@ -234,16 +234,24 @@ namespace LHAPDF {
 
     /// @brief Generate a random value from Hessian @c values and Gaussian random numbers.
     ///
+    /// @note This routine is intended for advanced users!
+    ///
     /// See Section 6 of G. Watt and R.S. Thorne, JHEP 1208 (2012) 052 [arXiv:1205.4024 [hep-ph]].
+    ///
     /// Pass a vector @c values containing a value for each member of the Hessian PDF set.
     /// Pass a vector @c randoms containing neigen random numbers, where neigen is the number of distinct eigenvectors.
+    ///
     /// Option @c symmetrise equal to true will symmetrise the random values (in the case of an asymmetric Hessian set)
     /// using Eq. (6.5) of arXiv:1205.4024v2, so that the average tends to the best-fit for a large number of replicas.
+    ///
     /// Option @c symmetrise equal to false will use Eq. (6.4) of arXiv:1205.4024v2 (for an asymmetric Hessian set),
     /// then the average differs from the best-fit.  Option @c symmetrise has no effect for a symmetric Hessian set.
+    ///
     /// Random values generated in this way can subsequently be used for applications such as Bayesian reweighting
     /// or combining predictions from different groups (as an alternative to taking the envelope).
     /// See, for example, supplementary material at http://mstwpdf.hepforge.org/random/.
+    ///
+    /// Use of this routine with a non-Hessian PDF set will throw a UserError.
     double randomValueFromHessian(const std::vector<double>& values, const std::vector<double>& randoms, bool symmetrise=true) const;
 
     //@}
