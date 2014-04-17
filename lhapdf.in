@@ -201,10 +201,10 @@ def get_reference_list(filepath):
         for row in reader:
             # <= 6.0.5
             if len(row) == 2:
-                id_code, version, name = int(row[0]), None, str(row[1])
-            # >= 6.0.6
+                id_code, name, version = int(row[0]), str(row[1]), None
+            # >= 6.1.0
             elif len(row) == 3:
-                id_code, version, name = int(row[0]), int(row[1]), str(row[2])
+                id_code, name, version = int(row[0]), str(row[1]), int(row[2])
             else:
                 raise ValueError
             database.append(PdfSet(name, id_code, version))

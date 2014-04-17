@@ -1,5 +1,7 @@
 2014-04-17  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fix pdfsets.index parsing (column order) in lhapdf script.
+
 	* Supporting the pkg-config type --cflags and --libs switches on
 	lhapdf-config.
 
