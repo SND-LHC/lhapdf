@@ -21,9 +21,11 @@ namespace LHAPDF {
   /// Structure for storage of uncertainty info calculated over a PDF error set
   /// @todo Exact role of scale and default value?
   struct PDFUncertainty {
+    /// Constructor
     PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1)
       : central(cent), errplus(eplus), errminus(eminus), errsymm(esymm), scale(scalefactor)
     {    }
+    /// Variables for the central value, +ve, -ve & symmetrised errors, and a CL scalefactor
     double central, errplus, errminus, errsymm, scale;
   };
 
