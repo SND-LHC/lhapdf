@@ -1,0 +1,112 @@
+/**
+
+@mainpage
+
+@tableofcontents
+
+@section intro Introduction
+
+LHAPDF is a general purpose C++ interpolator, used for evaluating PDFs from
+discretised data files.  Previous versions of LHAPDF were written in Fortran
+77/90.
+
+LHAPDF6 vastly reduces the memory overhead of the Fortran LHAPDF (from gigabytes
+to megabytes!), entirely removes restrictions on numbers of concurrent PDFs,
+allows access to single PDF members without needing to load whole sets, and
+separates a new standardised PDF data format from the code library so that new
+PDF sets may be created and released easier and faster. The C++ LHAPDF6 also
+permits arbitrary parton contents via the standard PDG ID code scheme, is
+computationally more efficient (particularly if only one or two flavours are
+required at each phase space point, as in PDF reweighting), and uses a flexible
+metadata system which fixes many fundamental metadata and concurrency bugs in
+LHAPDF5.
+
+Compatibility routines are provided as standard for existing C++ and Fortran
+codes using the LHAPDF5 and PDFLIB legacy interfaces, so you can keep using your
+existing codes. But the new interface is much more powerful and pleasant to work
+with, so we think you'll want to switch once you've used it!
+
+
+@section installsec Installation
+
+Full installation instructions are given on the installation page:
+
+- @ref install
+
+
+@section sets Official PDF sets
+
+In the move to LHAPDF6 we have migrated the most recent PDF set families of each
+major PDF fitting group from LHAPDF5 to the new unified LHAPDF6 format. With a
+few exceptions for particularly significant older PDF sets, this means an
+effective age cutoff of ~2005 on the migrated sets.
+
+If you need older sets you are at first encouraged either to continue with
+LHAPDF5, or request a data migration if you really want to use LHAPDF6. You can
+do the migration yourself: see the @ref migration page.
+
+The following link takes you to the PDF sets which are currently available and officially supported:
+
+- @ref pdfsets
+
+Please contact the LHAPDF authors at lhapdf@projects.hepforge.org if you want to
+add new PDF sets to the standard collection. You are expected to create and
+validate these PDF data files yourself, and to fix and update them in the case of
+user-reported bugs in the public files.
+
+
+@section usage Usage
+
+As for previous versions, LHAPDF6 is a programmatic library. It can be accessed
+via user code written in C++, and to a more limited extent from Python and
+Fortran programs.
+
+PDF sets (each of which is stored in a unique filesystem directory) should
+usually be installed in the `$prefix/share/LHAPDF/` directory (i.e. the PDF dirs
+are at the same level as the global `lhapdf.conf` file). To make use of PDF sets
+installed in other places, those search paths should be listed in the
+`LHAPDF_DATA_PATH` environment variable. [`LHAPDF_DATA_PATH` is an extension of
+the old `LHAPATH` variable which supports multiple search paths separated by
+colon (`:`) characters, cf. standard system paths like `PATH`,
+`LD_LIBRARY_PATH`, etc.]
+
+Here are some reference documents on the library design and the system of
+PDF/set/config metadata flags:
+
+- Design rationale: @ref design
+- PDF metadata flags: @ref config
+
+Many code usage examples are collected here:
+
+- Code examples: @ref codeexamples
+
+
+@section authors Authors
+
+@include AUTHORS
+
+
+@section dev For developers
+
+See the following pages:
+
+- @ref todolist
+- @ref todo
+- @ref migration
+- @ref codingstyle
+
+
+@todo Add some developer build guides, including the autotools, Cython, etc. gotchas.
+
+
+@example ../examples/testpdf.cc
+@example ../examples/pythonexample.py
+@example ../examples/compatibility.cc
+@example ../tests/testgrid.cc
+@example ../tests/testinfo.cc
+@example ../tests/testindex.cc
+@example ../tests/testpaths.cc
+@example ../tests/testalphas.cc
+@example ../examples/analytic.cc
+
+*/

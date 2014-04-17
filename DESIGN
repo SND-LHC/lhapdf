@@ -1,8 +1,73 @@
 /**
 @page design Design
 
-LHAPDF6 DESIGN
+LHAPDF6 design
 ==============
+
+Introduction
+------------
+
+There are several reasons for this rewrite and the migration to C++, the
+main ones being:
+
+- Hugely reduced memory overhead
+  - Although modern Fortran compilers can now dynamically allocate memory,
+    LHAPDF was written with F77 and static memory allocation in mind. The
+    memory overhead of LHAPDF5 is therefore proportional to the number of
+    supported PDF sets, then multiplied again by the number of simultaneous
+    PDF sets that can be used. The uninitialized static memory footprint is
+    hence huge: at more than 2 GB it is incompatible with running LHAPDF on
+    the Grid in "full memory" mode. This excludes use of standard LHAPDF
+    builds for PDF reweighting and other tasks on the standard LHC computing
+    resources. Dynamic memory allocation in LHAPDF6 entirely solves this problem,
+    while removing all restrictions on the number of simultaneous PDF sets.
+
+- Speed
+  - Early tests show that LHAPDF6 can be substantially faster than LHAPDF5 in
+    event generation, largely due to the ability to now evolve each PDF flavour
+    independently.
+
+- Encapsulation
+  - The multi-set features of LHAPDF5 were added in retrospect, after the
+    writing of PDF set wrapper codes which assumed only one PDF set would be
+    used at one time. As a result, the parallel use of multiple sets returns
+    correct PDF values, but does not work correctly for "metadata" such as
+    alpha_s, number of flavours, etc. The new version stores such information
+    in Info and AlphaS objects which are strictly bound to the PDF being
+    accessed, so these problems of global state are no longer an issue.
+
+- Generality
+  - Previous versions of LHAPDF evolved slowly over time.  The original code
+    was not written with certain added features in mind.  Taking the above
+    case of multiple PDF loading as an example; the current Fortan version of
+    LHAPDF has specific functionality to deal with this case.  The C++
+    version that we propose deals with multiple PDF loading as standard,
+    using the same functionality as for the single PDF case.  Other examples
+    of this include dealing with special parton cases such as photons.
+    Although this has little to do with language limitation; a rewrite with
+    these general cases in mind, in any language, will allow for clearer
+    code.  Along with this, current Fortran code has been modified
+    extensively to deal with different PDF file formats, each with their own
+    parameter space and interpolation rules.  One of the largest improvements
+    implement in this C++ version is a unified PDF file format, with general
+    parton flavour content (using the PDG MC particle ID scheme).
+    This removes the need for special wrapper codes for each PDF, avoids the
+    need for special functions to access e.g. photon PDFs, and means that
+    new PDF sets can be made available without requiring a new LHAPDF release.
+
+- Extensibility
+  - Extensions to the current Fortan code are difficult considering how much it
+    has evolved since its conception.  By exploiting object orientated
+    practises, the C++ version will allow for the easy extension of several
+    features.  An example of this is the Interpolator interface.  By
+    implementing this; users can add to the current list of general
+    interpolation methods that can be called on any PDF set, rather than dealing
+    with specific interpolation rules being included in the individual authors'
+    wrapper files.  The modular nature of the program means that any
+    unforeseeable requirements in the future can, hopefully, be implemented
+    easily.
+
+
 
 Terminology
 -----------

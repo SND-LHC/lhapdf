@@ -1,0 +1,36 @@
+/**
+
+@page codeexamples Code examples
+
+The following examples should help you to get to grips with using LHAPDF from C++:
+
+@section ex1 Using and testing PDFs in C++
+@include examples/testpdf.cc
+
+@include tests/testperf.cc
+
+@section ex2 Using and testing PDFs in Python
+@include examples/pythonexample.py
+
+@section ex3 Handling LHAPDF v5/v6 compatibility in C++
+@include examples/compatibility.cc
+
+@section ex4 Using and testing PDF grids in C++
+@include tests/testgrid.cc
+
+@section ex5 Testing the Info system in C++
+@include tests/testinfo.cc
+
+@section ex6 Testing the LHAPDF ID indexing system in C++
+@include tests/testindex.cc
+
+@section ex7 Testing the path searching system in C++
+@include tests/testpaths.cc
+
+@section ex8 Testing the AlphaS classes in C++
+@include tests/testalphas.cc
+
+@section ex9 Making a new PDF subclass in C++
+@include examples/analytic.cc
+
+*/

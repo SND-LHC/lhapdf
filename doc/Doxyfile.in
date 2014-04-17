@@ -655,14 +655,13 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = @top_srcdir@/include/LHAPDF \
-                         LHAPDF.dox \
+                         main.dox pdfsets.dox examples.dox \
                          @top_srcdir@/TODO \
                          @top_srcdir@/DESIGN \
                          @top_srcdir@/CODINGSTYLE \
                          @top_srcdir@/CONFIGFLAGS \
                          @top_srcdir@/INSTALL \
-                         @top_srcdir@/migration/README \
-                         pdfsets.dox
+                         @top_srcdir@/migration/README
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
