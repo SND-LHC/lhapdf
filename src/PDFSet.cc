@@ -10,10 +10,11 @@ namespace LHAPDF {
 
 
   PDFSet::PDFSet(const string& setname) {
+    /// @todo Hmm, this relies on the standard search path system ... no specific-path API.
     _setname = setname;
     const string setinfopath = findpdfsetinfopath(setname);
     if (!file_exists(setinfopath))
-      throw ReadError("Data file not found for PDF set '" + setname + "'");
+      throw ReadError("Info file not found for PDF set '" + setname + "'");
     // Load info file
     load(setinfopath);
     /// @todo Check that some mandatory metadata keys have been set: _check() function.

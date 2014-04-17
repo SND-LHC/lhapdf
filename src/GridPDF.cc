@@ -39,6 +39,7 @@ namespace LHAPDF {
 
 
   namespace {
+
     // A wrapper for std::strtod and std::strtol, for fast tokenizing when all
     // input is guaranteed to be numeric (as in this data block). Based very
     // closely on FastIStringStream by Gavin Salam.
@@ -77,7 +78,9 @@ namespace LHAPDF {
       char *_next, *_new_next;
       bool _error;
     };
+
   }
+
 
   void GridPDF::_loadData(const std::string& mempath) {
     string line;

@@ -45,7 +45,8 @@ namespace LHAPDF {
 
     void _loadInfo(const std::string& mempath) {
       _mempath = mempath;
-      _info = PDFInfo(_setname(), memberID());
+      _info = PDFInfo(mempath);
+      //_info = PDFInfo(_setname(), memberID());
       /// Check that this is a sufficient version LHAPDF for this PDF
       if (_info.has_key("MinLHAPDFVersion")) {
         if (_info.get_entry_as<int>("MinLHAPDFVersion") > LHAPDF_VERSION_CODE) {

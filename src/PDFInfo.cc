@@ -10,6 +10,20 @@
 namespace LHAPDF {
 
 
+  /// Constructor from a path to a member data file.
+  PDFInfo::PDFInfo(const std::string& mempath) {
+    if (mempath.empty())
+      throw UserError("Empty/invalid data path given to PDFInfo constructor");
+    load(mempath);
+
+    // Extract the set name and member ID from the filename.
+    _setname = basename(dirname(mempath));
+    const string memname = file_stem(mempath);
+    assert(memname.length() > 5); // There must be more to the filename stem than just the _nnnn suffix
+    _member = lexical_cast<int>(memname.substr(memname.length()-4)); //< Last 4 chars should be the member number
+  }
+
+
   /// Constructor from a set name and member ID.
   PDFInfo::PDFInfo(const std::string& setname, int member) {
     _setname = setname;

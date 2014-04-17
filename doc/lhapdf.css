@@ -3,6 +3,10 @@ body, table, div, p, dl {
     line-height: 140%;
 }
 
+table {
+    max-width: 75em;
+}
+
 p, li, .todo, dl {
     max-width: 65em;
 }

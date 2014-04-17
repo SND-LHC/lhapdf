@@ -20,8 +20,17 @@ namespace LHAPDF {
     //@{
 
     /// Default constructor (for container compatibility)
+    ///
+    /// @note Don't use explicitly!
+    ///
     /// @todo Remove?
     PDFInfo() { }
+
+    /// Constructor from a PDF member's data path.
+    ///
+    /// @todo Bypasses standard path searching hence used by the path-based
+    /// GridPDF constructor, for example.
+    PDFInfo(const std::string& mempath);
 
     /// Constructor from a set name and member ID.
     PDFInfo(const std::string& setname, int member);
