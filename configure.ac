@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.1.0beta0],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.1.0beta1],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -14,7 +14,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 ## Library version flags (at least update the version comment with each new release version)
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION, "$PACKAGE_VERSION", "LHAPDF version string")
 # TODO: improve this sed'ing so that it'll work with version digits > 9
-PACKAGE_VERSION_CODE=[`echo $PACKAGE_VERSION | sed -e 's/\./0/g' -e 's/\([0-9]\+\).*/\1/'`]
+#PACKAGE_VERSION_CODE=[`echo $PACKAGE_VERSION | sed -e 's/\./0/g' -e 's/\([0-9]\+\).*/\1/'`] # sed \+ doesn't work on OS X!
+PACKAGE_VERSION_CODE=[`echo $PACKAGE_VERSION | sed -e 's/\./0/g' -e 's/\([0-9]*\).*/\1/'`]
 PACKAGE_MAJOR_VERSION=[`echo $PACKAGE_VERSION | sed -e 's/^\(.\..\).*/\1/'`]
 AC_DEFINE_UNQUOTED(LHAPDF_VERSION_CODE, $PACKAGE_VERSION_CODE, "LHAPDF version as an int")
 

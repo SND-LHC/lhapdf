@@ -1,3 +1,7 @@
+2014-04-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Derive LHAPDF_VERSION_CODE integer using a Mac-safe sed regex.
+
 2014-04-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix pdfsets.index parsing (column order) in lhapdf script.
