@@ -33,4 +33,7 @@ The following examples should help you to get to grips with using LHAPDF from C+
 @section ex9 Making a new PDF subclass in C++
 @include examples/analytic.cc
 
+@section ex10 Calculating PDF uncertainties in C++
+@include examples/testpdfunc.cc
+
 */
