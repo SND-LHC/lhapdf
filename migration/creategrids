@@ -33,9 +33,11 @@ p.add_option("--cl", dest="META_CONFLEVEL", metavar="CONFLEVEL", help="a value f
 p.add_option("--xmin", dest="XMIN", metavar="X", help="set flag and truncate the x knots array at X, even if the PDF reports knots lower than that", type=float, default=None)
 p.add_option("--qmin", dest="QMIN", metavar="Q", help="set flag and truncate the Q knots array at Q, even if the PDF reports knots lower than that", type=float, default=None)
 p.add_option("--qmax", dest="QMAX", metavar="Q", help="set flag and truncate the Q knots array at Q, even if the PDF reports knots higher than that", type=float, default=None)
+p.add_option("--xsfile", dest="XSFILE", metavar="FILE", help="file of sample knots in x", default=None)
+p.add_option("--qsfile", dest="QSFILE", metavar="FILE", help="file of sample knots in Q", default=None)
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
 p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
-p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override the original sample grid with a new one", default=False)
+p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override the original sample grid with a new one (hard coded)", default=False)
 p.add_option("--ffn", dest="FIXED_NF", action="store_true", help="specify a fixed number of flavours [default=variable NF]", default=False)
 p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify the number of flavours [default=%default]", default=5)
 p.add_option("--top", dest="NUM_FLAVS", action="store_const", const=6, help="generate explicit grid entries for top (and antitop) PDFs", default=5)
@@ -140,10 +142,26 @@ for lha5name in args:
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.logspace(math.log10(0.075), 0, 21))
             # xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + [1.0 - i for i in numpy.logspace(math.log10(0.002), math.log10(0.1), 18)])
             xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + list(numpy.linspace(0.1, 0.99, 50)))
-            qs = list(numpy.sqrt(numpy.logspace(math.log10(qmin**2), math.log10(qmax**2), 50)))
+            qs = list(numpy.sqrt(numpy.logspace(math.log10(qmin**2), math.log10(qmax**2), 50))) ## TODO: why did I do a Q2 sampling then take sqrt? History?
             print "Manual x grid: ", ", ".join("%0.2e" % x for x in xs)
             print "Manual Q grid: ", ", ".join("%0.2e" % q for q in qs)
 
+        ## If a file of x knots is provided, override whatever was calculated before
+        if opts.XSFILE:
+            xs = []
+            f = open(opts.XSFILE)
+            for l in f:
+                xs += [float(sx) for sx in l.split()]
+            xs.sort()
+            print "Overriding x knots with:", ["%4g" % x for x in xs]
+        ## Same for Qs from override file
+        if opts.QSFILE:
+            qs = []
+            f = open(opts.QSFILE)
+            for l in f:
+                qs += [float(sq) for sq in l.split()]
+            qs.sort()
+            print "Overriding Q knots with:", ["%4g" % q for q in qs]
 
         ## Tidy the x knots array
         ## Fill in extra x sampling points if manually specified

@@ -27,7 +27,7 @@ abm12lhc_5_nnlo.LHgrid --diffasmass --nf=5 --ffn --errtype=symmhessian --id=4236
 
 
 ## ATLAS
-ATLAS-epWZ12-EIG.LHgrid --xmin=1e-6 --errtype=hessian             --id=65000 --desc="" --authors="ATLAS Collaboration"
+ATLAS-epWZ12-EIG.LHgrid --xmin=1e-6 --errtype=hessian             --id=65000 --desc="" --authors="ATLAS Collaboration" --xs=ATLAS-epWZ12-EIG_HF_xs.dat --qs=ATLAS-epWZ12-EIG_HF_Qs.dat
 ATLAS-epWZ12-VAR.LHgrid --xmin=1e-6 --errtype=custom --diffasmass --id=65040 --desc="" --authors="ATLAS Collaboration"
 
 
