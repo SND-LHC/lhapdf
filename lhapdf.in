@@ -440,8 +440,13 @@ if __name__ == '__main__':
                 logging.warn('PDF already installed: %s (use --upgrade to force install)' % pdf)
                 continue
 
+            unvalidated = ''
+            if master_list[pdf].version == -1:
+                unvalidated = 'unvalidated/'
+                logging.warn('PDF unvalidated: %s' % pdf)
+
             tar_filename = pdf + '.tar.gz'
-            if download_file(urlbase + tar_filename, options.pdfdir, dryrun=suboptions.dryrun):
+            if download_file(urlbase + unvalidated + tar_filename, options.pdfdir, dryrun=suboptions.dryrun):
                 try:
                     tar_file = tarfile.open(os.path.join(options.pdfdir, tar_filename), 'r:gz')
                     tar_file.extractall(options.pdfdir)
