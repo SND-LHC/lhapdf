@@ -153,7 +153,8 @@ for lha5name in args:
             for l in f:
                 xs += [float(sx) for sx in l.split()]
             xs.sort()
-            print "Overriding x knots with:", ["%4g" % x for x in xs]
+            if member == 0:
+                print "Overriding x knots with:", ["%4.2g" % x for x in xs]
         ## Same for Qs from override file
         if opts.QSFILE:
             qs = []
@@ -161,7 +162,8 @@ for lha5name in args:
             for l in f:
                 qs += [float(sq) for sq in l.split()]
             qs.sort()
-            print "Overriding Q knots with:", ["%4g" % q for q in qs]
+            if member == 0:
+                print "Overriding Q knots with:", ["%4.2g" % q for q in qs]
 
         ## Tidy the x knots array
         ## Fill in extra x sampling points if manually specified
