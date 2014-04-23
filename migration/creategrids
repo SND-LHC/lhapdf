@@ -262,7 +262,7 @@ for lha5name in args:
         if member == 0:
             metapath = os.path.join(outdir, setname + '.info')
             f = open(metapath, "w")
-            f.write("SetDesc: \"%s\"\n" % opts.META_SETDESC.replace("\\n","\n")) # Note line break insertion and quoting
+            f.write("SetDesc: \"%s\"\n" % opts.META_SETDESC.replace(r"\n","\n")) # Note line break insertion and quoting
             if opts.META_LHAPDFID is not None:
                 f.write("SetIndex: %d\n" % opts.META_LHAPDFID)
             f.write("Authors: %s\n" % opts.META_AUTHORS)
