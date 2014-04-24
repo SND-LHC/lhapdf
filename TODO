@@ -50,6 +50,13 @@ VALIDATION / MIGRATION / ETC.
 VERSION 6.1.x
 -------------
 
+- **Return -1 for errorConfLevel on replica PDF sets.**
+
+   Requires corresponding changes in uncertainties code, which uses a -1 CL as a
+   flag for the replicas "alternative" mode. This "magic numbers" approach is
+   flaky, and especially undesirable since it leads to returning a misleading CL
+   value in the user interface.
+
 - **AlphaS flavour threshold/mass treatment (AB/KN)**
 
    Separate AlphaS_QThresholdB etc. from M<qname> (requested by Alex Mitov)
