@@ -50,12 +50,10 @@ VALIDATION / MIGRATION / ETC.
 VERSION 6.1.x
 -------------
 
-- **Return -1 for errorConfLevel on replica PDF sets.**
+- **Enable some make check and make benchmark tests (AB)**
 
-   Requires corresponding changes in uncertainties code, which uses a -1 CL as a
-   flag for the replicas "alternative" mode. This "magic numbers" approach is
-   flaky, and especially undesirable since it leads to returning a misleading CL
-   value in the user interface.
+   Sort out the examples vs. tests separation, and coplain sensibly about
+   missing required PDF data for running tests.
 
 - **AlphaS flavour threshold/mass treatment (AB/KN)**
 

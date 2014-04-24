@@ -80,7 +80,8 @@ namespace LHAPDF {
 
     /// @brief Get the confidence level of the Hessian eigenvectors, in percent.
     ///
-    /// If not defined, assume 1-sigma = erf(1/sqrt(2)) = 68.268949% by default.
+    /// If not defined, assume 1-sigma = erf(1/sqrt(2)) = 68.268949% by default,
+    /// unless this is a replica set for which return -1.
     double errorConfLevel() const;
 
     /// Number of members in this set
