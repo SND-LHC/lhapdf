@@ -1,3 +1,9 @@
+2014-04-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Return -1 for errorConfLevel on replica PDF sets.
+
+	* Mapping uncertainty functions into Python.
+
 2014-04-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Derive LHAPDF_VERSION_CODE integer using a Mac-safe sed regex.

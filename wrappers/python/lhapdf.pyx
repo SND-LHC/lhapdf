@@ -175,6 +175,25 @@ cdef class Info:
         self._ptr.set_entry(key, str(value))
 
 
+cdef class PDFUncertainty:
+    """\
+    A simple struct containing components of a value with uncertainties calculated
+    from a PDF set. Attributes are central, errplus, errminus, errsymm, and scale.
+    """
+    #cdef c.PDFUncertainty* _ptr
+    #cdef set_ptr(self, c.PDF* ptr):
+    #    self._ptr = ptr
+    #
+    #def __dealloc__(self):
+    #    del self._ptr
+    def __init__(self, central=0.0, errplus=0.0, errminus=0.0, errsymm=0.0, scale=0.0):
+        self.central  = central
+        self.errplus  = errplus
+        self.errminus = errminus
+        self.errsymm  = errsymm
+        self.scale    = scale
+
+
 cdef class PDFSet:
     """\
     A collection of PDFs with related fits, most typically a central PDF and a
@@ -219,8 +238,13 @@ cdef class PDFSet:
 
     @property
     def errorType(self):
-        "Type of error treatment in this PDF's set."
+        "Type of error treatment in this PDF set."
         return self._ptr.errorType()
+
+    @property
+    def errorConfLevel(self):
+        "Confidence level of error treatment in percent, if one is defined for this set."
+        return self._ptr.errorConfLevel()
 
     def mkPDF(self, mem):
         cdef c.PDF* ptr = self._ptr.mkPDF(mem)
@@ -263,6 +287,20 @@ cdef class PDFSet:
     def _print(self):
         "Print a short summary to stdout"
         self._ptr._print()
+
+    def uncertainty(self, vals, cl=0.6826895, alternative=False):
+        """Return a PDFUncertainty object corresponding to central value and errors computed
+        from the vals list. If unspecified (as a percentage), the confidence level cl defaults
+        to 1-sigma. The boolean alternative parameter switches the replica central and uncertainty
+        calculation to ignore the central member and use the median & quantiles of replicas instead."""
+        cdef c.PDFUncertainty unc = self._ptr.uncertainty(vals, cl, bool)
+        return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale)
+
+    def correlation(self, valsA, valsB):
+        return self._ptr.correlation(valsA, valsB)
+
+    def randomValueFromHessian(self, valsA, valsB, symmetrise=True):
+        return self._ptr.randomValueFromHessian(valsA, valsB, symmetrise)
 
 
 

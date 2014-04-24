@@ -65,8 +65,21 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         string description()
         int lhapdfID() except +
         int dataversion() except +
-        string errorType() except +
         void _print "print" () except + # TODO: map the second (verbosity) argument
+        string errorType() except +
+        double errorConfLevel() except +
+        PDFUncertainty uncertainty(vector[double]&, double, bool) except +
+        #void uncertainty(PDFUncertainty&, vector[double]&, double, bool) except +
+        double correlation(vector[double]&, vector[double]&) except +
+        double randomValueFromHessian(vector[double]&, vector[double]&, bool) except +
+
+cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
+    cdef cppclass PDFUncertainty:
+        double central
+        double errplus
+        double errminus
+        double errsymm
+        double scale
 
 cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
     cdef cppclass PDFInfo(Info.Info):
