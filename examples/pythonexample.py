@@ -6,6 +6,7 @@ import lhapdf
 
 ## Getting a PDF member object
 p = lhapdf.mkPDF("CT10", 0)
+p = lhapdf.mkPDF("CT10/0")
 
 ## Gluon PDF querying at x=0.001, Q2=10000
 print p.xfxQ2(21, 1e-3, 1e4)
@@ -15,6 +16,11 @@ for pid in p.flavors():
     print p.xfxQ(pid, 0.01, 91.2)
 
 # TODO: demonstrate looping over PDF set members
+pset = lhapdf.getPDFSet("CT10nlo")
+print pset.description
+pcentral = pset.mkPDF(0)
+pdfs1 = pset.mkPDFs()
+pdfs2 = lhapdf.mkPDFs("CT10nlo") # a direct way to get all the set's PDFs
 
 ## Filling a numpy 2D array with xf(x,Q) samples
 import numpy as np
