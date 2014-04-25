@@ -1,3 +1,7 @@
+2014-04-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* 6.1.0 release!
+
 2014-04-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Return -1 for errorConfLevel on replica PDF sets.
