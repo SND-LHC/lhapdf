@@ -1,6 +1,12 @@
 /**
 @page install Installation instructions
 
+
+@section downloads Source file downloads
+
+The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
+
+
 @section externals External dependencies
 
 LHAPDF6 makes use of header files from the Boost C++ utility library

@@ -29,6 +29,8 @@ with, so we think you'll want to switch once you've used it!
 
 @section installsec Installation
 
+The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
+
 Full installation instructions are given on the installation page:
 
 - @ref install
@@ -48,6 +50,8 @@ do the migration yourself: see the @ref migration page.
 The following link takes you to the PDF sets which are currently available and officially supported:
 
 - @ref pdfsets
+
+The PDF set data files can be downloaded from https://www.hepforge.org/archive/lhapdf/pdfsets/6.1/
 
 Please contact the LHAPDF authors at lhapdf@projects.hepforge.org if you want to
 add new PDF sets to the standard collection. You are expected to create and
