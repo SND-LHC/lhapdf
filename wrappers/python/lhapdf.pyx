@@ -282,19 +282,23 @@ cdef class PDFSet:
         "Print a short summary to stdout"
         self._ptr._print()
 
-    def uncertainty(self, vals, cl=68.26895, alternative=False):
+    def uncertainty(self, vals, cl=68.268949, alternative=False):
         """Return a PDFUncertainty object corresponding to central value and errors computed
         from the vals list. If unspecified (as a percentage), the confidence level cl defaults
-        to 1-sigma. The boolean alternative parameter switches the replica central and uncertainty
-        calculation to ignore the central member and use the median & quantiles of replicas instead."""
+        to 1-sigma. For replicas, by default (alternative=False) the central value is given by
+        the mean and the uncertainty by the standard deviation (possibly rescaled to cl), but
+        setting alternative=True will instead construct a confidence interval from the
+        probability distribution of replicas, with the central value given by the median."""
         cdef c.PDFUncertainty unc = self._ptr.uncertainty(vals, cl, alternative)
         return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale)
 
     def correlation(self, valsA, valsB):
+    	"""Return the PDF correlation between valsA and valsB using appropriate formulae for this set."""
         return self._ptr.correlation(valsA, valsB)
 
-    def randomValueFromHessian(self, valsA, valsB, symmetrise=True):
-        return self._ptr.randomValueFromHessian(valsA, valsB, symmetrise)
+    def randomValueFromHessian(self, vals, randoms, symmetrise=True):
+    	"""Return a random value from Hessian vals and Gaussian random numbers."""
+        return self._ptr.randomValueFromHessian(vals, randoms, symmetrise)
 
 
 

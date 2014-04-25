@@ -32,7 +32,7 @@ namespace LHAPDF {
 
 
   double PDFSet::errorConfLevel() const {
-    // Return -1 or similar invalid value if errorType is replica: requires changes in uncertainty code "alternative mode" below
+    // Return -1 or similar invalid value if errorType is replica: requires changes in uncertainty code below.
     return get_entry_as<double>("ErrorConfLevel", (errorType() != "replicas") ? 100*boost::math::erf(1/sqrt(2)) : -1);
   }
 
@@ -46,7 +46,7 @@ namespace LHAPDF {
     const size_t nmem = size()-1;
 
     // Get set- and requested conf levels (converted from %) and check sanity (req CL = set CL if cl < 0).
-    // For replica sets, we internally use a nominal setCL corresponding to 1-sigma, since errorConfLevel() == -1
+    // For replica sets, we internally use a nominal setCL corresponding to 1-sigma, since errorConfLevel() == -1.
     const double setCL = (errorType() != "replicas") ? errorConfLevel() / 100.0 : boost::math::erf(1/sqrt(2));
     const double reqCL = (cl >= 0) ? cl / 100.0 : setCL; // convert from percentage
     if (!in_range(reqCL, 0, 1) || !in_range(setCL, 0, 1))

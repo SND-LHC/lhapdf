@@ -25,21 +25,21 @@ for imem in xrange(pset.size):
 
 ## Calculate 1-sigma PDF uncertainty on gluon distribution.
 unc = pset.uncertainty(xgAll)
-print "xg = %.3g + %.3g - %.3g (+- %.3g)" % (unc.central, unc.errplus, unc.errminus, unc.errsymm)
-print "Scale = ", unc.scale
+print "xg = %.4g + %.4g - %.4g (+- %.4g)" % (unc.central, unc.errplus, unc.errminus, unc.errsymm)
+print "Scale = %.4g" % unc.scale
 
 ## Calculate 1-sigma PDF uncertainty on up-quark distribution.
 unc = pset.uncertainty(xuAll)
-print "xu = %.3g + %.3g - %.3g (+- %.3g)" % (unc.central, unc.errplus, unc.errminus, unc.errsymm)
-print "Scale = ", unc.scale
+print "xu = %.4g + %.4g - %.4g (+- %.4g)" % (unc.central, unc.errplus, unc.errminus, unc.errsymm)
+print "Scale = %.4g" % unc.scale
 
 ## Calculate PDF correlation between gluon and up-quark.
 corr = pset.correlation(xgAll, xuAll)
-print "Correlation = ",corr
+print "Correlation = %.4g" % corr
 
 ## Generate random values from Hessian best-fit and eigenvector values.
 ## Random numbers are just set to zero here for testing purposes.
 randoms = [0.0 for ir in xrange(nmem/2)]
 xgrand = pset.randomValueFromHessian(xgAll, randoms)
 xurand = pset.randomValueFromHessian(xuAll, randoms)
-print "Random: xg = %.3g, xu = %.3g" % (xgrand, xurand)
+print "Random: xg = %.4g, xu = %.4g" % (xgrand, xurand)
