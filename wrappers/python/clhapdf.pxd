@@ -74,7 +74,7 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         double randomValueFromHessian(vector[double]&, vector[double]&, bool) except +
 
 cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
-    cdef cppclass PDFUncertainty:
+    cdef struct PDFUncertainty:
         double central
         double errplus
         double errminus

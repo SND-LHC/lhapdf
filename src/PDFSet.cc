@@ -33,7 +33,7 @@ namespace LHAPDF {
 
   double PDFSet::errorConfLevel() const {
     // Return -1 or similar invalid value if errorType is replica: requires changes in uncertainty code "alternative mode" below
-    return get_entry_as<double>("ErrorConfLevel", (errorType() != "replica") ? 100*boost::math::erf(1/sqrt(2)) : -1);
+    return get_entry_as<double>("ErrorConfLevel", (errorType() != "replicas") ? 100*boost::math::erf(1/sqrt(2)) : -1);
   }
 
 
