@@ -5,50 +5,52 @@
 LHAPDF6 TODO list
 =================
 
-
-VERSION 6.1.0
--------------
-
-- **Make LHAPDF6 the main LHAPDF web page (AB)**
-
-   Archive the LHAPDF5 pages. Generate set list/details page from Python API /
-   pdfsets.index file.
-
-
 WRITE PAPER
 -----------
 
-- ** Target at EPJC Tools**
+- **'Parton density evaluation for the LHC precision era'**
+
+   Other suggestions? Target at EPJC Tools since we already have been encouraged
+   to do so.
+
+- **Intro (AB)**
+
+   Explain background and restriction to ipol/xpol.
+
+- **Describe API and design (AB)**
+
+- **Benchmarking, validation and performance advice (JF,AB)**
+
+- **Describe metadata system (AB)**
+
+- **Describe interpolator (and xpol) system (AB,SL,MR)**
+
+- **Describe data format (AB)**
+
+   Also mention here the separation of data and interpolation routines, and the
+   update/distribution/versioning + lhapdf script.
+
+- **Describe alpha_s system (KN)**
+
+- **Describe uncertainty system (GW)**
+
+- **Describe compatibility routines (JF,AB)**
+
+   Include use of LHAPDF_MAJOR_VERSION macro.
 
 - **Note fixed problems**
 
    Support for different set sizes. alpha_s etc. in multi-set mode. Lambda
-   reporting to PYTHIA. Number of members reported correctly. **ADD MORE AS WE REMEMBER THEM**
-
-
-VALIDATION / MIGRATION / ETC.
------------------------------
-
-- **ABM, NNPDF PdfType correction (AB)**
-
-   Some issue reported by GW...
-
-- **ATLAS & HERA PDFs (AB)**
-
-   Waiting for final approvals from Voica.
-
-- **ABM PDF approval**
-
-   Sergey contacted again, hope for approval soon.
-
-- **GJR/JR 08,09 PDFs?**
-
-   Demand for these?
-
+   reporting to PYTHIA and compat mode. Number of members now reported
+   correctly & consistently.
 
 
 VERSION 6.1.x
 -------------
+
+- **ABM PDF approval**
+
+   Hope for approval soon.
 
 - **Enable some make check and make benchmark tests (AB)**
 
