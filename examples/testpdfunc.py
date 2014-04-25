@@ -3,7 +3,6 @@
 ## Python LHAPDF6 usage example for PDF uncertainty code (G. Watt, 24/04/2014)
 
 import lhapdf
-import numpy as np
 
 x = 0.1
 q = 100.0
@@ -17,8 +16,8 @@ print "Error type = ", pset.errorType
 print "Error conf level = ", pset.errorConfLevel
 
 ## Fill vectors xgAll and xuAll using all PDF members.
-xgAll = np.empty([pset.size])
-xuAll = np.empty([pset.size])
+xgAll = [0.0 for i in xrange(pset.size)]
+xuAll = [0.0 for i in xrange(pset.size)]
 for imem in xrange(pset.size):
     xgAll[imem] = pdfs[imem].xfxQ(21, x, q)
     xuAll[imem] = pdfs[imem].xfxQ(2, x, q)
@@ -40,7 +39,6 @@ print "Correlation = ",corr
 
 ## Generate random values from Hessian best-fit and eigenvector values.
 ## Random numbers are just set to zero here for testing purposes.
-#randoms = np.empty([nmem/2])
 randoms = [0.0 for ir in xrange(nmem/2)]
 xgrand = pset.randomValueFromHessian(xgAll, randoms)
 xurand = pset.randomValueFromHessian(xuAll, randoms)
