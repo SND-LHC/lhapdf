@@ -293,11 +293,11 @@ cdef class PDFSet:
         return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale)
 
     def correlation(self, valsA, valsB):
-    	"""Return the PDF correlation between valsA and valsB using appropriate formulae for this set."""
+        """Return the PDF correlation between valsA and valsB using appropriate formulae for this set."""
         return self._ptr.correlation(valsA, valsB)
 
     def randomValueFromHessian(self, vals, randoms, symmetrise=True):
-    	"""Return a random value from Hessian vals and Gaussian random numbers."""
+        """Return a random value from Hessian vals and Gaussian random numbers."""
         return self._ptr.randomValueFromHessian(vals, randoms, symmetrise)
 
 
