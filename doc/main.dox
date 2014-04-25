@@ -8,7 +8,7 @@
 
 LHAPDF is a general purpose C++ interpolator, used for evaluating PDFs from
 discretised data files.  Previous versions of LHAPDF were written in Fortran
-77/90.
+77/90 and are documented at http://lhapdf.hepforge.org/lhapdf5/.
 
 LHAPDF6 vastly reduces the memory overhead of the Fortran LHAPDF (from gigabytes
 to megabytes!), entirely removes restrictions on numbers of concurrent PDFs,
