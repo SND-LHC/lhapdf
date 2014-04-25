@@ -52,6 +52,10 @@ VERSION 6.1.x
 
    Hope for approval soon.
 
+- **HERA 1.0 and LHeC PDF migration and approval**
+
+   Same procedure as for ATLAS and HERA 1.5, in contact with Voica.
+
 - **Enable some make check and make benchmark tests (AB)**
 
    Sort out the examples vs. tests separation, and coplain sensibly about
