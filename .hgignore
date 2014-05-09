@@ -3,8 +3,9 @@
 ^lhapdf.pc$
 ^lhapdf$
 ^LHAPDF-.*\.tar\.gz$
-^migration/sets$
-^migration/settarballs$
+^sets$
+^settarballs$
+^migration/sets*
 ^migration/validation.*
 ^migration/backup$
 ^migration/lhapdf(5|6)sets$
