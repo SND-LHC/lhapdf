@@ -30,6 +30,9 @@ WRITE PAPER
    Also mention here the separation of data and interpolation routines, and the
    update/distribution/versioning + lhapdf script.
 
+   PDF data dirs can be cut down to the single central PDF for uses which don't
+   care about error sets, e.g. Grid MC production. Very significant space saving!
+
 - **Describe alpha_s system (KN)**
 
 - **Describe uncertainty system (GW)**
