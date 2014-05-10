@@ -153,16 +153,11 @@ VERSION 6.2
 AS AND WHEN
 -----------
 
-- **Improved high-x interpolation (??)**
+- **Improved high-Q extrapolation (??)**
 
-   Sergey Alekhin mentioned that their native treatment of the high-x region is
-   rather careful, interpolating in a log(1-x) rather than log(x) space. I'm not
-   sure how a smooth handover between the two measures is done: a smooth
-   interpolation between modes? Perhaps we could / should implement something
-   similar for this region. High-x is definitely an awkward case, given that the
-   PDFs vary rapidly in that region and a log measure is maybe not best suited
-   to accurately interpolating there... but dense gridding seems to be
-   sufficient so far.
+   Needed for FCC studies, etc. Graeme has ideas.
+
+- **Improved high-x extrapolation (??)**
 
    Graeme, etc.: x -> 1 extrapolation should be done carefully to ensure that
    all PDFs -> 0 at x = 1.0, (usually) without going negative. This probably

@@ -51,6 +51,32 @@ namespace LHAPDF {
     INTERPOLATE = 1, LHGRID = 1
   };
 
+  /// Level of noisiness.
+  enum Verbosity { SILENT=0, LOWKEY=1, DEFAULT=2 };
+
+  /// Get LHAPDF version string (prefer LHAPDF::version())
+  inline std::string getVersion() {
+
+  }
+
+  /// Get max allowed number of concurrent sets (there is no limit anymore)
+  inline int getMaxNumSets() { return 1000; }
+
+  /// Global initialisation (there is none)
+  inline void initLHAPDF() {}
+
+  /// Extrapolate beyond grid edges (not an option at present)
+  /// @todo Use this to set the default extrapolator when there is a physical extrapolation option
+  inline void extrapolate(bool extrapolate=true) {}
+
+  /// Choose level of noisiness.
+  void setVerbosity(Verbosity noiselevel);
+
+  /// Set a steering parameter (does nothing!)
+  inline void setParameter(const std::string& parm) {
+    std::cerr << "LHAPDF::setParameter() has no effect in LHAPDF6: "
+              << "please update your code to use the native C++ interface" << std::endl;
+  }
 
   /// Check if the PDF includes a photon member
   bool hasPhoton();

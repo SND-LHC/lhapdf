@@ -1,3 +1,7 @@
+2014-05-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding initLHAPDF() and a few other do-nothing compatibility functions.
+
 2014-04-25  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 6.1.0 release!

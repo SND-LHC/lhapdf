@@ -603,6 +603,11 @@ extern "C" {
 // LHAPDF namespace C++ compatibility code
 #ifdef ENABLE_LHAGLUE_CXX
 
+
+void LHAPDF::setVerbosity(LHAPDF::Verbosity noiselevel) {
+  LHAPDF::setVerbosity((int) noiselevel);
+}
+
 void LHAPDF::setPDFPath(const string& path) {
   pathsPrepend(path);
 }
