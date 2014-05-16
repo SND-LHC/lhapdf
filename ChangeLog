@@ -1,3 +1,7 @@
+2014-05-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remigrate all NNPDF sets to remove duplicate Qmax points.
+
 2014-05-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding initLHAPDF() and a few other do-nothing compatibility functions.
