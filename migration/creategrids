@@ -165,6 +165,11 @@ for lha5name in args:
             if member == 0:
                 print "Overriding Q knots with:", ["%4.2g" % q for q in qs]
 
+        def fuzzyeq(a, b, tol=1e-6):
+            if a == b:
+                return True
+            return 2*abs(a-b)/(abs(a)+abs(b)) < tol
+
         ## Tidy the x knots array
         ## Fill in extra x sampling points if manually specified
         if opts.EXTRAXS:
@@ -177,10 +182,10 @@ for lha5name in args:
         if xmin:
             while xs[0] < xmin:
                 del xs[0]
-            if xs[0] != xmin:
+            if not fuzzyeq(xs[0], xmin):
                 xs.insert(0, xmin)
         ## If there isn't an x = 1 point, create one
-        if xmax and xs[-1] != xmax:
+        if xmax and not fuzzyeq(xs[-1], xmax):
             xs.append(xmax)
         ## Debug printout
         if opts.VERBOSE:
@@ -195,12 +200,12 @@ for lha5name in args:
         if qmin:
             while qs[0] < qmin:
                 del qs[0]
-            if qs[0] != qmin:
+            if not fuzzyeq(qs[0], qmin):
                 qs.insert(0, qmin)
         if qmax:
             while qs[-1] > qmax:
                 del qs[-1]
-            if qs[-1] != qmax:
+            if not fuzzyeq(qs[-1], qmax):
                 qs.append(qmax)
         ## Debug printout
         if opts.VERBOSE:
