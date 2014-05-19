@@ -29,6 +29,8 @@ with, so we think you'll want to switch once you've used it!
 
 @section installsec Installation
 
+The latest version of LHAPDF is **6.1.0**.
+
 The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
 
 Full installation instructions are given on the installation page:
@@ -51,7 +53,10 @@ The following link takes you to the PDF sets which are currently available and o
 
 - @ref pdfsets
 
-The PDF set data files can be downloaded from https://www.hepforge.org/archive/lhapdf/pdfsets/6.1/
+The PDF set data files can be downloaded from
+https://www.hepforge.org/archive/lhapdf/pdfsets/6.1/ and the latest versions are
+installed (as tarballs and expanded into directories) on CERN AFS at
+/afs/cern.ch/sw/lcg/external/lhapdfsets/current/.
 
 Please contact the LHAPDF authors at lhapdf@projects.hepforge.org if you want to
 add new PDF sets to the standard collection. You are expected to create and
@@ -89,7 +94,33 @@ Many code usage examples are collected here:
 
 @include AUTHORS
 
-Please contact the authors at lhapdf@projects.hepforge.org
+
+@section support Support and bug reporting
+
+If you need assistance with LHAPDF, please contact the authors at
+lhapdf@projects.hepforge.org . Please also send feature suggestions to this
+address: please don't contact individual developers if you can avoid it.  We
+also accept compliments ;-)
+
+You are _very_ strongly advised to make sure that you are running the latest
+version of the LHAPDF library, since issues are often fixed in later
+releases. Please supply some information about which version you are using, what
+type of system and compiler you are using, a copy of the LHAPDF config.log file,
+a reasonably full copy of the errors you are getting, and the output of
+downloading and running this script:
+https://users.hepforge.org/~buckley/sysdebug.sh .
+
+Please do not send us screenshots of your terminal! To capture the output of a
+command, use a shell redirection like this: `make &> makelog.txt` or `bash
+sysdebug.sh &> sysdebug.txt` (you may prefer to use a redirection like `|& tee
+foolog.txt` but probably you don't need our advice if you have such preferences!)
+
+Lastly, please try to _read_ the configure/compiler/runtime error message: once
+decoded it may tell you something simple e.g. you have not got the required
+compiler, you are compiling against a 32 bit library on a 64 bit system, or you
+have not installed a PDF data file. If you can't parse the error messages then
+try Googling for generic-looking bits of the message before asking for direct
+assistance: there are often good explanations and solutions online.
 
 
 @section dev For developers

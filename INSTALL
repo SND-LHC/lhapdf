@@ -13,8 +13,8 @@ LHAPDF6 makes use of header files from the Boost C++ utility library
 (http://www.boost.org). On Linux machines this should typically be available via
 your system's packaging mechanism, e.g. the `libboost-all-dev` package on Ubuntu
 and other Debian derivatives. On Scientific Linux 6 the system installation of
-Boost is sufficient for LHAPDF 6.0.5 and later. The system copy on SL5 is too
-old, however, but surely everyone has upgraded to v6 by now...
+Boost is sufficient for LHAPDF 6.0.5 and later. By comparison, the system copy
+on SL5 is too old, but surely everyone has upgraded to v6 by now...
 
 On Mac OS X the Homebrew system (http://brew.sh/) comes recommended by several
 LHAPDF developers and contains a well-managed version of Boost. Many HEP
@@ -34,11 +34,10 @@ installation of the Boost libraries.
 @note In version 6.0.5, the CMake system (i.e. `cmake` command) must also be
 installed, in order to build an internal copy of the yaml-cpp parser library
 (http://code.google.com/p/yaml-cpp/) used to read the PDF metadata which is in
-YAML format (http://www.yaml.org). Thie requirement was removed in version 6.1.0.
-
-@note Until version 6.0.5, LHAPDF required yaml-cpp to be installed externally,
- either manually or by package manager. With version 6.0.5 and later, there is
- no such dependence, but the `cmake` command must be available at build time.
+YAML format (http://www.yaml.org). Before this you needed to install an external
+version of yaml-cpp. Both these requirements were removed in version 6.1.0,
+where a special version of yaml-cpp is built internally without needing CMake at
+all: you should upgrade to the v6.1 releases to make life easy!
 
 
 @section lhapdf Building LHAPDF
