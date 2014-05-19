@@ -121,7 +121,7 @@ namespace LHAPDF {
 
       vector<double> alphas;
       double low_lim = 0;
-      foreach (double q2, _q2s) {
+      BOOST_FOREACH (double q2, _q2s) {
         // If q2 is lower than a value that already diverged, it will also diverge
         if ( q2 < low_lim ) {
           alphas.push_back( std::numeric_limits<double>::max() );
@@ -174,7 +174,7 @@ namespace LHAPDF {
       std::sort(grid.begin(), grid.end(),
                 boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
 
-      // Need to do this since foreach can't deal with arguments
+      // Need to do this since BOOST_FOREACH can't deal with arguments
       // with ,s (and I don't want to clutter with a typedef)
       for ( size_t x = 0; x < grid.size(); ++x ) {
          alphas.push_back(grid.at(x).second);

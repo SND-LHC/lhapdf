@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i <= 1; ++i) {
     const GridPDF pdf(setname, i);
 
-    foreach (const string& p, paths()) cout << p << " : "; cout << endl;
+    BOOST_FOREACH (const string& p, paths()) cout << p << " : "; cout << endl;
 
     safeprint(pdf, "Verbosity");
     safeprint(pdf, "PdfDesc");
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     cout << "Flavors (str) = " << pdf.info().get_entry("Flavors") << endl;
     vector<int> pids = pdf.info().get_entry_as< vector<int> >("Flavors");
     cout << "Flavors (ints) = ";
-    foreach (int f, pids) cout << f << " "; cout << endl;
+    BOOST_FOREACH (int f, pids) cout << f << " "; cout << endl;
     cout << "Flavors (vec<int>) = " << LHAPDF::to_str(pids) << endl;
 
     cout << "x0, Q0 = " << pdf.subgrid(21, 100).xf(0, 0) << endl;
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 
     cout << pdf.xfxQ(21, 0.7, 10.0) << endl;
     cout << pdf.xfxQ2(21, 0.2, 126) << endl;
-    foreach (int pid, pdf.flavors()) {
+    BOOST_FOREACH (int pid, pdf.flavors()) {
       cout << pid << " = " << pdf.xfxQ2(pid, 0.2, 124) << endl;
     }
 

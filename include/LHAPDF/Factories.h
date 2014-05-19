@@ -119,7 +119,7 @@ namespace LHAPDF {
     mkPDFs(setname, rawptrs);
     pdfs.clear();
     pdfs.reserve(rawptrs.size());
-    foreach (const PDF* p, rawptrs)
+    BOOST_FOREACH (const PDF* p, rawptrs)
       pdfs.push_back(PTR(p));
   }
 

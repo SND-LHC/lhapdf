@@ -1,3 +1,7 @@
+2014-05-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Replace all internal uses of "foreach" with explicit BOOST_FOREACH until C++11.
+
 2014-05-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Remigrate all NNPDF sets to remove duplicate Qmax points.

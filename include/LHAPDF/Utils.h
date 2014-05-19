@@ -27,14 +27,6 @@
 // System includes
 #include "sys/stat.h"
 
-// Cosmetic wrapper for BOOST_FOREACH macro (until we can use C++11 range-based for loops)
-#ifndef foreach
-namespace boost {
-  // Suggested work-around for https://svn.boost.org/trac/boost/ticket/6131
-  namespace BOOST_FOREACH = foreach;
-}
-#define foreach BOOST_FOREACH
-#endif
 
 /// Namespace for all LHAPDF functions and classes
 namespace LHAPDF {
@@ -61,7 +53,7 @@ namespace LHAPDF {
   template <typename T>
   inline std::string to_str(const std::vector<T>& vec) {
     vector<string> svec; svec.reserve(vec.size());
-    foreach (const T& t, vec) svec.push_back( to_str(t) );
+    BOOST_FOREACH (const T& t, vec) svec.push_back( to_str(t) );
     return join(svec, ",");
   }
 

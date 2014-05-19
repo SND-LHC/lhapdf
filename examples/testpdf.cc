@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
   const double DQ2 = 0.01;
   const int NQ2 = (int) floor((MAXLOGQ2 - MINLOGQ2)/DQ2) + 1;
 
-  foreach (int pid, pids) {
+  BOOST_FOREACH (int pid, pids) {
     const string spid = boost::lexical_cast<string>(pid);
     const string filename = setname + "_" + smem + "_" + spid + ".dat";
     ofstream f(filename.c_str());

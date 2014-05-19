@@ -152,7 +152,7 @@ namespace LHAPDF {
     /// @param rtn Map of PDF xf(x,q2) values, to be filled
     void xfxQ2(double x, double q2, std::map<int, double>& rtn) const {
       rtn.clear();
-      foreach (int id, flavors()) rtn[id] = xfxQ2(id, x, q2);
+      BOOST_FOREACH (int id, flavors()) rtn[id] = xfxQ2(id, x, q2);
     }
 
 

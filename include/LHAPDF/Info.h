@@ -186,7 +186,7 @@ namespace LHAPDF {
     const vector<string> strs = get_entry_as< vector<string> >(key);
     vector<int> rtn;
     rtn.reserve(strs.size());
-    foreach (const string& s, strs) rtn.push_back( lexical_cast<int>(s) );
+    BOOST_FOREACH (const string& s, strs) rtn.push_back( lexical_cast<int>(s) );
     assert(rtn.size() == strs.size());
     return rtn;
   }
@@ -196,7 +196,7 @@ namespace LHAPDF {
     const vector<string> strs = get_entry_as< vector<string> >(key);
     vector<double> rtn;
     rtn.reserve(strs.size());
-    foreach (const string& s, strs) rtn.push_back( lexical_cast<double>(s) );
+    BOOST_FOREACH (const string& s, strs) rtn.push_back( lexical_cast<double>(s) );
     assert(rtn.size() == strs.size());
     return rtn;
   }
