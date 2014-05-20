@@ -5,20 +5,21 @@ pkginclude_HEADERS = \
   Config.h \
   PDFSet.h \
   PDFInfo.h \
+  PDF.h \
+  GridPDF.h \
+  KnotArray.h \
   Utils.h \
   Paths.h \
   Exceptions.h \
   Factories.h \
   PDFIndex.h \
-  PDF.h \
-  GridPDF.h \
-  KnotArray.h \
+  Reweighting.h \
   Interpolator.h \
-  Extrapolator.h \
   BilinearInterpolator.h \
   BicubicInterpolator.h \
   LogBilinearInterpolator.h \
   LogBicubicInterpolator.h \
+  Extrapolator.h \
   ErrExtrapolator.h \
   NearestPointExtrapolator.h \
   AlphaS.h

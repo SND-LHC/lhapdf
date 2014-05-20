@@ -1,3 +1,7 @@
+2014-05-20  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add LHAPDF/Reweighting.h with a few handy functions for doing 'naive' PDF reweighting.
+
 2014-05-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Replace all internal uses of "foreach" with explicit BOOST_FOREACH until C++11.

@@ -56,7 +56,7 @@ namespace LHAPDF {
 
   /// Get LHAPDF version string (prefer LHAPDF::version())
   inline std::string getVersion() {
-
+    return version();
   }
 
   /// Get max allowed number of concurrent sets (there is no limit anymore)

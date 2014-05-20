@@ -1,4 +1,4 @@
-noinst_PROGRAMS = testpdf testpdfset analyticpdf compatibility testpdfunc hessian2replicas
+noinst_PROGRAMS = testpdf testpdfset analyticpdf compatibility testpdfunc hessian2replicas reweight
 EXTRA_DIST = pythonexample.py testpdfunc.py
 
 AM_CPPFLAGS += -I$(top_srcdir)/include -I$(prefix)/include $(BOOST_CPPFLAGS)
@@ -11,3 +11,4 @@ analyticpdf_SOURCES = analytic.cc
 compatibility_SOURCES = compatibility.cc
 testpdfunc_SOURCES = testpdfunc.cc
 hessian2replicas_SOURCES = hessian2replicas.cc
+reweight_SOURCES = reweight.cc
