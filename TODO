@@ -59,6 +59,8 @@ VERSION 6.1.x
 
    Same procedure as for ATLAS and HERA 1.5, in contact with Voica.
 
+- **Reweighting functions in Python (AB)**
+
 - **Enable some make check and make benchmark tests (AB)**
 
    Sort out the examples vs. tests separation, and coplain sensibly about

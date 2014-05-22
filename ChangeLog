@@ -1,3 +1,7 @@
+2014-05-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding warnings about mismatching alpha_s in reweighting, with a default tolerance of 5%.
+
 2014-05-20  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add LHAPDF/Reweighting.h with a few handy functions for doing 'naive' PDF reweighting.
