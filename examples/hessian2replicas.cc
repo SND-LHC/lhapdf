@@ -161,6 +161,7 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const string& randsetna
   }
 
   // Copy information from original .info file to new .info file.
+  /// @todo Wouldn't it be nicer to use the PDFSet metadata system for this rather than re-parse the .info?
   const string setinfopath = LHAPDF::findpdfsetinfopath(set.name());
   ifstream infile (setinfopath.c_str());
   if (infile.good()) {
@@ -194,8 +195,12 @@ void convertHessianToReplicas(const LHAPDF::PDFSet& set, const string& randsetna
     } else if (LHAPDF::contains(line, "ErrorConfLevel")) {
       // Miss out ErrorConfLevel.
     } else {
-      outfile << line << endl;
-    };
+      // outfile << line << endl;
+      istringstream tokens(line);
+      string word;
+      tokens >> word;
+      if (LHAPDF::endswith(word, ":")) outfile << line << endl;
+    }
   }
   infile.close();
   outfile.close();

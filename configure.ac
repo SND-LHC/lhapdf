@@ -74,7 +74,6 @@ if test x$enable_debug == xyes; then
 #  AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
 fi
 
-
 ## Enable LHAGLUE compatibility fns for Fortran and the old C++ interface
 AC_ARG_ENABLE([lhaglue],
   [AC_HELP_STRING(--disable-lhaglue, [build without LHAPDF5 compatibility routines])],
