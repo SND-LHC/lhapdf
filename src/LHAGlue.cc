@@ -445,7 +445,7 @@ extern "C" {
       // Take PDF ID from value[2]
       ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
     } else if (my_par.find("DEFAULT") != string::npos) {
-      cout << "==== POWHEG USING LHAPDFv6 ====" << endl;
+      cout << "==== POWHEG (OR POSSIBLY HERWIG) WILL USE LHAPDFv6 ====" << endl;
       // Take PDF ID from value[0]
       ACTIVESETS[1] = PDFSetHandler(value[0]);
     } else {
