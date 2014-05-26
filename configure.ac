@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.1.0],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.1.1],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -64,15 +64,16 @@ AC_PROG_LN_S
 AC_PROG_LIBTOOL
 
 
-## Enable debugging symbols and assert checking
-AC_ARG_ENABLE([debug],
-  [AC_HELP_STRING(--enable-debug, [build with debugging symbols (default=no)])],
-  [enable_debug=yes], [enable_debug=no])
-if test x$enable_debug == xyes; then
-  AM_CXXFLAGS="$AM_CXXFLAGS -g"
-#else
-#  AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
-fi
+dnl autotools default is -g -O2 : --enable-debug doesn't work (anymore)
+dnl ## Enable debugging symbols and assert checking
+dnl AC_ARG_ENABLE([debug],
+dnl   [AC_HELP_STRING(--enable-debug, [build with debugging symbols (default=no)])],
+dnl   [enable_debug=yes], [enable_debug=no])
+dnl if test x$enable_debug == xyes; then
+dnl   AM_CXXFLAGS="$AM_CXXFLAGS -g"
+dnl #else
+dnl #  AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
+dnl fi
 
 ## Enable LHAGLUE compatibility fns for Fortran and the old C++ interface
 AC_ARG_ENABLE([lhaglue],
