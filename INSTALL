@@ -1,6 +1,8 @@
 /**
 @page install Installation instructions
 
+@tableofcontents
+
 
 @section downloads Source file downloads
 
@@ -111,8 +113,8 @@ architectures. Here is an example of how to build LHAPDF and its dependencies
 there -- although you can of course use other compilers, Python versions, build
 flags, etc. as you wish!
 
-    ## Set up build tools and install directory
-    source /afs/cern.ch/sw/lcg/contrib/gcc/4.7/x86_64-slc6-gcc47-opt/setup.sh
+    ## Set up LCG build tools (optional) and install directory
+    #source /afs/cern.ch/sw/lcg/contrib/gcc/4.7/x86_64-slc6-gcc47-opt/setup.sh
     mkdir local
 
     ## Build LHAPDF
