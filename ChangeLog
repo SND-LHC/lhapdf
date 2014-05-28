@@ -1,7 +1,12 @@
+2014-05-27  Andy Buckley  <andy.buckley@cern.ch>
+
+	* 6.1.1 release!
+
 2014-05-26  James Ferrando <james.ferrando@glasgow.ac.uk>
 
-	* Modify printout in PDFLIB backwards compatibility routine to avoid confusion for some herwig use cases
-	
+	* Modify printout in PDFLIB backwards compatibility routine to
+	avoid confusion for some HERWIG use cases
+
 2014-05-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding warnings about mismatching alpha_s in reweighting, with a default tolerance of 5%.

@@ -1,10 +1,24 @@
 /**
 @page install Installation instructions
 
+@tableofcontents
+
 
 @section downloads Source file downloads
 
 The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
+
+
+@section compilers Build tools
+
+LHAPDF6 just needs your system to have a copy of Make and a C++ compiler: there
+is no Fortran code and hence no need for gfortran. We have tested with both the
+g++ and clang++ compilers and LHAPDF6 compiles with all known versions.
+
+Building LHAPDF is typically straightforward on Linux systems, including SLC6
+and Ubuntu. Mac OS X, however, can cause problems due to inconsistent compiler
+and Python versions, and other such fun. If you want to build LHAPDF on a Mac,
+please see @ref osx.
 
 
 @section externals External dependencies
@@ -15,11 +29,6 @@ your system's packaging mechanism, e.g. the `libboost-all-dev` package on Ubuntu
 and other Debian derivatives. On Scientific Linux 6 the system installation of
 Boost is sufficient for LHAPDF 6.0.5 and later. By comparison, the system copy
 on SL5 is too old, but surely everyone has upgraded to v6 by now...
-
-On Mac OS X the Homebrew system (http://brew.sh/) comes recommended by several
-LHAPDF developers and contains a well-managed version of Boost. Many HEP
-packages are already available for Homebrew via the homebrew-hep project:
-http://davidchall.github.io/homebrew-hep/
 
 Building Boost by hand is not particularly simple and should not be needed in
 most cases: we recommend avoiding this! If you have access to the CERN AFS
@@ -104,8 +113,8 @@ architectures. Here is an example of how to build LHAPDF and its dependencies
 there -- although you can of course use other compilers, Python versions, build
 flags, etc. as you wish!
 
-    ## Set up build tools and install directory
-    source /afs/cern.ch/sw/lcg/contrib/gcc/4.7/x86_64-slc6-gcc47-opt/setup.sh
+    ## Set up LCG build tools (optional) and install directory
+    #source /afs/cern.ch/sw/lcg/contrib/gcc/4.7/x86_64-slc6-gcc47-opt/setup.sh
     mkdir local
 
     ## Build LHAPDF
@@ -123,4 +132,38 @@ flags, etc. as you wish!
     ## Test the scripts
     lhapdf-config --help
     lhapdf list
+
+
+@section osx Building on Mac OS X
+
+Builds are typically straightforward on Linux, but Mac OS X unfortunately has a
+long history of incoherent system compiler setups, which have been worked around
+manually by users' private installations of Fink, MacPorts, HomeBrew and manual
+tarball installations of required tools. These work-arounds can themselves be
+the source of problems when the native compilers or Python libraries get
+updated, and due to the ad hoc nature of such installations we are restricted in
+how much we can help to get LHAPDF to compile on a broken system: it is the
+user's responsibility to make sure that their machine has a consistent set of
+build tools!
+
+From experience, the simplest reliable route seems to be to
+run a fresh copy of OS X 10.9 Mavericks (or later) without any additional manual
+compiler installations: if you use the clang++ compiler on such a system,
+LHAPDF6 building should "just work".
+
+@note At the time of writing there is a bug in the Mac Python version which
+requires that you call `export CPPFLAGS=-Qunused-arguments` and `export
+CFLAGS=-Qunused-arguments` before building. Alternatively you can run the
+configure script with `--disable-python`, which avoids the bug at the cost of
+not building the very useful Python interface to LHAPDF.
+
+The Mac OS X "Homebrew" system (http://brew.sh/) comes recommended by several
+LHAPDF developers. Many HEP packages are already available for Homebrew via the
+homebrew-hep project: http://davidchall.github.io/homebrew-hep/ Success has also
+been reported with the MacPorts system (http://www.macports.org/). With both
+these approaches, you should set your environment to *only* use compilers and
+Python from the Brew/Ports area and to ignore the system packages: a hybrid
+approach will only cause unnecessary pain.
+
+
 */

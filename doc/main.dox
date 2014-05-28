@@ -29,13 +29,11 @@ with, so we think you'll want to switch once you've used it!
 
 @section installsec Installation
 
-The latest version of LHAPDF is **6.1.0**.
+The latest version of LHAPDF is **6.1.1**.
 
 The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
 
-Full installation instructions are given on the installation page:
-
-- @ref install
+Full installation and troubleshooting details are given at @ref install .
 
 
 @section sets Official PDF sets
