@@ -1,3 +1,11 @@
+2014-05-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* 6.1.2 release!
+
+2014-05-28  James Ferrando <james.ferrando@glasgow.ac.uk>
+
+	* Fix HWLHAPDF behaviour in pdfset
+
 2014-05-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 6.1.1 release!
