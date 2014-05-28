@@ -442,14 +442,14 @@ extern "C" {
     } else if (my_par.find("HWLHAPDF") != string::npos) {
       /// @todo Remove noisiness? Useful for now
       cout << "==== HERWIG WILL USE LHAPDFv6 ====" << endl;
-      // Take PDF ID from value[2]
-      ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
+      // Take PDF ID from value[0]
+      ACTIVESETS[1] = PDFSetHandler(value[0]);
     } else if (my_par.find("DEFAULT") != string::npos) {
       cout << "==== POWHEG (OR POSSIBLY HERWIG) WILL USE LHAPDFv6 ====" << endl;
       // Take PDF ID from value[0]
       ACTIVESETS[1] = PDFSetHandler(value[0]);
     } else {
-      cout << "==== UNKNOWN GENERATOR WILL USE LHAPDFv6 ====" << endl;
+      cout << "==== UNKNOWN GENERATOR WILL USE LHAPDFv6 IN PDFLIB STYLE ====" << endl;
       // Take PDF ID from value[2]
       ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
     }
