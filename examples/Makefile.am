@@ -7,7 +7,7 @@ LIBS = -lLHAPDF
 
 testpdf_SOURCES = testpdf.cc
 testpdfset_SOURCES = testpdfset.cc
-analyticpdf_SOURCES = analytic.cc
+analyticpdf_SOURCES = analyticpdf.cc
 compatibility_SOURCES = compatibility.cc
 testpdfunc_SOURCES = testpdfunc.cc
 hessian2replicas_SOURCES = hessian2replicas.cc
