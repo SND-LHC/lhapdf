@@ -28,6 +28,9 @@ namespace LHAPDF {
     // typedef AlphaS* AlphaSPtr;
     typedef auto_ptr<AlphaS> AlphaSPtr;
 
+    /// Force initialization of the only non-class member.
+    PDF() : _forcePos(0) { }
+
 
   public:
 
