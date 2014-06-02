@@ -37,8 +37,12 @@ s += "    <tr><th>%LHAPDF ID</th><th>Set name</th><th>Number of set members</th>
 
 for lhaid, ps in sorted(sets.iteritems()):
     color = "#fee" if ps.dataversion < 0 else "#efe"
-    s += '    <tr style="background-color: {col};"><td>{id}</td><td>{name}</td><td>{size}</td><td>{version}</td><td>{note}</td></tr>\n'.\
-         format(col=color, id=lhaid, name=ps.name, size=ps.size, version=ps.dataversion, note=ps.get_entry("Note", ""))
+    baseurl = "http://www.hepforge.org/archive/lhapdf/pdfsets/" + str(lhamajversion)
+    if ps.dataversion < 0:
+        baseurl += "/unvalidated"
+    url = baseurl + ("/%s.tar.gz" % ps.name)
+    s += '    <tr style="background-color: {col};"><td>{id}</td><td><a href="{url}">{name}</a></td><td>{size}</td><td>{version}</td><td>{note}</td></tr>\n'.\
+         format(col=color, id=lhaid, url=url, name=ps.name, size=ps.size, version=ps.dataversion, note=ps.get_entry("Note", ""))
 
 s += "  </table>\n"
 
