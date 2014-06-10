@@ -171,8 +171,7 @@ namespace LHAPDF {
   /// Does the vector<T> @a container contain @a item?
   template <typename T>
   inline bool contains(const std::vector<T>& container, const T& item) {
-    return find(container.begin(), container.end(), item)
-    		!= container.end();
+    return find(container.begin(), container.end(), item) != container.end();
   }
 
   // /// Does the set<T> @a container contain @a item?
