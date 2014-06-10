@@ -88,6 +88,34 @@ Many code usage examples are collected here:
 - Code examples: @ref codeexamples
 
 
+@subsection zip Trick to use zipped data files
+
+For special applications where PDF initialization speed or disk space are _very_
+critical, you may wish to use zipped PDF data files. Since the data files are
+plain text, they compress well, by a factor of 4 or so, but for most
+applications this is largely irrelevant since you will usually not need to
+install more than about 100 MB of data files to use the main modern PDF sets,
+and set initialisation time is less than one second... and that happens only
+once per run.
+
+Actually reading zipped data files would make LHAPDF's code and (more
+importantly) build process much more awkward, so we haven't done that. However,
+if you really need to squeeze the maximum out of limited space and time then
+there is a trick you can play -- at least on Linux systems -- using
+`LD_PRELOAD`. This environment variable specifies libraries to be loaded before
+starting a process, and is a mechanism for replacing system library functions
+with modified versions.
+
+In this case, we can override the `open("foo")` function with a version which
+will attempt to transparently read `foo.gz`, uncompressed into the `/tmp`
+directory, by setting `LD_PRELOAD=/lib/uncompress.so` in your job. LHAPDF6
+itself needs no modification, but you will need to `cd` into your PDF sets and
+run `for i in *.dat; do gzip $i; done` in each one that you want to compress.
+
+This is rather a hack and may not work on Macs... but it can be useful in
+special circumstances. Please let us know your experiences if you use it!
+
+
 @section authors Authors
 
 @include AUTHORS
