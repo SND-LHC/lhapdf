@@ -108,9 +108,11 @@ with modified versions.
 
 In this case, we can override the `open("foo")` function with a version which
 will attempt to transparently read `foo.gz`, uncompressed into the `/tmp`
-directory, by setting `LD_PRELOAD=/lib/uncompress.so` in your job. LHAPDF6
-itself needs no modification, but you will need to `cd` into your PDF sets and
-run `for i in *.dat; do gzip $i; done` in each one that you want to compress.
+directory, by setting `LD_PRELOAD=/lib/uncompress.so` in your job. See the
+[zlibc](http://www.delorie.com/gnu/docs/zlibc/zlibc.3.html) documentation for
+more details. LHAPDF6 itself needs no modification, but you will need to `cd`
+into your PDF sets and run `for i in *.dat; do gzip $i; done` in each one that
+you want to compress.
 
 This is rather a hack and may not work on Macs... but it can be useful in
 special circumstances. Please let us know your experiences if you use it!
