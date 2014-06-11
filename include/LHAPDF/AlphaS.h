@@ -75,7 +75,7 @@ namespace LHAPDF {
     /// @brief Set the @a {i}th Lambda constant for @a i active flavors
     ///
     /// Used explicitly in the analytic solver.
-    virtual void setLambda(unsigned int i, double lambda) {};
+    virtual void setLambda(unsigned int, double) {};
 
     //@}
 
