@@ -1,3 +1,9 @@
+2014-06-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Bump version number for next release.
+
+	* Add mapping of reweighting functions into Python.
+
 2014-06-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix compiler warnings re. unused variables in LHAGlue.h and AlphaS.h headers.
