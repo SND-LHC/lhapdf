@@ -48,6 +48,25 @@ WRITE PAPER
    correctly & consistently.
 
 
+
+VERSION 6.1.3
+-------------
+
+- **Add AlphaS mappings to Cython (SL, AB)**
+
+   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+
+- **Decide if cteq6ll aliasing should be in mkPDF/mkPDFs/getPDFSet functions**
+
+   Or only in LHAGlue? We do want people to update their steering files.
+
+- **Enable some make check and make benchmark tests (AB)**
+
+   Sort out the examples vs. tests separation, and coplain sensibly about
+   missing required PDF data for running tests.
+
+
+
 VERSION 6.1.x
 -------------
 
@@ -58,13 +77,6 @@ VERSION 6.1.x
 - **HERA 1.0 and LHeC PDF migration and approval**
 
    Same procedure as for ATLAS and HERA 1.5, in contact with Voica.
-
-- **Reweighting functions in Python (AB)**
-
-- **Enable some make check and make benchmark tests (AB)**
-
-   Sort out the examples vs. tests separation, and coplain sensibly about
-   missing required PDF data for running tests.
 
 - **Make it possible to find all metadata keys both locally and in total (AB)**
 
@@ -80,20 +92,9 @@ VERSION 6.1.x
    Add ODE behaviour to not calculate div-by-zero if x_n+1 = x_n, then insert
    doubled evolution/ipol points on flavour thresholds.
 
-- **Add/move the cteq6ll aliasing to mkPDF/mkPDFs/getPDFSet functions?**
-
-   For backward compatibility. Drop this aliasing with version 6.1, when people
-   will have had time to adapt? Or 6.2, along with LHAPDF5 C++ functions?
-
 - **Expose LHAGLUE slots system for C++ use**
 
    Automatic memory management can be nice for everyone. Expose as PDFManager.
-
-- **Add AlphaS mappings to Cython (SL, AB)**
-
-   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
-
-- **Add debug verbosity about places being searched for PDF files**
 
 - **Translate C++ exceptions into Python exceptions**
 
@@ -101,9 +102,6 @@ VERSION 6.1.x
    Cython bug re. exception declarations on functions that return references,
    so the exception declarations on getPDFSet() etc. are commented for now.
 
-- **Reweighting helper functions?**
-
-   e.g. getWeight(PDF*, PDF*, Q, x1, x2=-1). Too trivial, or helpful?
 
 
 VERSION 6.2

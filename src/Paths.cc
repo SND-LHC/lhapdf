@@ -5,6 +5,7 @@
 //
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Info.h"
+#include "LHAPDF/Config.h"
 
 namespace LHAPDF {
 
@@ -26,6 +27,20 @@ namespace LHAPDF {
 
   void setPaths(const std::string& pathstr) {
     setenv("LHAPDF_DATA_PATH", pathstr.c_str(), 1);
+  }
+
+
+  string findFile(const string& target) {
+    if (target.empty()) return "";
+    BOOST_FOREACH (const string& base, paths()) {
+      const string p = startswith(target, "/") ? target : base / target;
+      // if (verbosity() > 2) cout << "Trying file: " << p << endl;
+      if (file_exists(p)) {
+        // if (verbosity() > 1) cout << "Found file: " << p << endl;
+        return p;
+      }
+    }
+    return "";
   }
 
 

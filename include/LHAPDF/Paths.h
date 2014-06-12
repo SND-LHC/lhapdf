@@ -46,15 +46,7 @@ namespace LHAPDF {
   /// Return the first location in which a file is found
   ///
   /// If no matching file is found, return an empty path.
-  inline std::string findFile(const std::string& target) {
-    if (target.empty()) return "";
-    BOOST_FOREACH (const string& base, paths()) {
-      const string p = startswith(target, "/") ? target : base / target;
-      if (file_exists(p)) return p;
-    }
-    return "";
-  }
-
+  std::string findFile(const std::string& target);
   //@}
 
 
