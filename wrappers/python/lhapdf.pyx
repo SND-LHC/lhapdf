@@ -334,6 +334,10 @@ cdef class PDFInfo:
 
 
 
+# TODO: map AlphaS
+
+
+
 def getConfig():
     """Factory function to get the global config object."""
     cdef c.Info* ptr = &c.getConfig()
@@ -395,7 +399,25 @@ def mkPDF(*args):
 
 
 
-# TODO: map AlphaS
+def weightxQ(int id, double x, double Q, PDF basepdf, PDF newpdf, aschk=5e-2):
+    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    from cython.operator import dereference
+    return c.weightxQ(id, x, Q, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
+
+def weightxQ2(int id, double x, double Q2, PDF basepdf, PDF newpdf, aschk=5e-2):
+    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    from cython.operator import dereference
+    return c.weightxQ2(id, x, Q2, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
+
+def weightxxQ(int id1, int id2, double x1, double x2, double Q, PDF basepdf, PDF newpdf, aschk=5e-2):
+    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    from cython.operator import dereference
+    return c.weightxxQ(id1, id2, x1, x2, Q, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
+
+def weightxxQ2(int id1, int id2, double x1, double x2, double Q2, PDF basepdf, PDF newpdf, aschk=5e-2):
+    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    from cython.operator import dereference
+    return c.weightxxQ2(id1, id2, x1, x2, Q2, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
 
 
 
@@ -404,7 +426,6 @@ def version():
     return c.version()
 
 __version__ = version()
-
 
 
 def verbosity():

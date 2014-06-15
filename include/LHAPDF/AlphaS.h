@@ -57,33 +57,33 @@ namespace LHAPDF {
 
     /// Set quark masses by PDG code
     ///
-    /// Used explicitly in the analytic and ODE solvers.
+    /// Used in the analytic and ODE solvers.
     void setQuarkMass(int id, double value);
 
     /// Set flavour thresholds by "PDG code" (overrides quark masses)
     ///
-    /// Used explicitly in the analytic and ODE solvers.
+    /// Used in the analytic and ODE solvers.
     void setFlavourThreshold(int id, double value);
 
     /// @brief Set the order of QCD (expressed as number of loops)
     ///
-    /// Used explicitly in the analytic and ODE solvers.
+    /// Used in the analytic and ODE solvers.
     void setOrderQCD(int order) { _qcdorder = order; }
 
     /// @brief Set the Z mass used in this alpha_s
     ///
-    /// Used explicitly in the ODE solver.
+    /// Used in the ODE solver.
     void setMZ(double mz) { _mz = mz; }
 
     /// @brief Set the alpha_s(MZ) used in this alpha_s
     ///
-    /// Used explicitly in the ODE solver.
+    /// Used in the ODE solver.
     void setAlphaSMZ(double alphas) { _alphas_mz = alphas; }
 
     /// @brief Set the @a {i}th Lambda constant for @a i active flavors
     ///
-    /// Used explicitly in the analytic solver.
-    virtual void setLambda(unsigned int i, double lambda) {};
+    /// Used in the analytic solver.
+    virtual void setLambda(unsigned int, double) {};
 
     //@}
 
@@ -129,8 +129,8 @@ namespace LHAPDF {
     double _alphas_mz;
 
     /// Masses of quarks in GeV
-    /// Used for working out flavor thresholds and the number of quarks that are
-    /// active at energy scale Q.
+    /// Used for working out flavor thresholds and the number of quarks
+    /// that are active at energy scale Q if flavour thresholds not set.
     std::map<int, double> _quarkmasses;
 
     /// Flavour thresholds in GeV

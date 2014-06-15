@@ -93,3 +93,9 @@ cdef extern from "../../include/LHAPDF/Factories.h" namespace "LHAPDF":
     cdef PDF* mkPDF(string, int) except +
     cdef PDF* mkPDF(int) except +
     #cdef AlphaS* mkAlphaS(string) except +
+
+cdef extern from "../../include/LHAPDF/Reweighting.h" namespace "LHAPDF":
+    cdef double weightxQ2(int id, double x, double Q2, PDF& basepdf, PDF& newpdf, double aschk)
+    cdef double weightxQ(int id, double x, double Q, const PDF& basepdf, const PDF& newpdf, double aschk)
+    cdef double weightxxQ2(int id1, int id2, double x1, double x2, double Q2, const PDF& basepdf, const PDF& newpdf, double aschk)
+    cdef double weightxxQ(int id1, int id2, double x1, double x2, double Q, const PDF& basepdf, const PDF& newpdf, double aschk)

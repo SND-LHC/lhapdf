@@ -1,3 +1,17 @@
+2014-06-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Bump version number for next release.
+
+	* Add mapping of reweighting functions into Python.
+
+2014-06-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix compiler warnings re. unused variables in LHAGlue.h and AlphaS.h headers.
+
+2014-06-09  David Grellscheid  <david.grellscheid@durham.ac.uk>
+
+	* Fix attempted use of non-existent std::vector::find method.
+
 2014-05-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Change source name of analyticpdf example.

@@ -67,13 +67,16 @@ namespace LHAPDF {
 
   /// Extrapolate beyond grid edges (not an option at present)
   /// @todo Use this to set the default extrapolator when there is a physical extrapolation option
-  inline void extrapolate(bool extrapolate=true) {}
+  // This form commented due to unused variable warnings, until this can actually have an effect
+  // inline void extrapolate(bool extrapolate=true) {}
+  inline void extrapolate(bool) {}
+  inline void extrapolate() {}
 
   /// Choose level of noisiness.
   void setVerbosity(Verbosity noiselevel);
 
   /// Set a steering parameter (does nothing!)
-  inline void setParameter(const std::string& parm) {
+  inline void setParameter(const std::string&) {
     std::cerr << "LHAPDF::setParameter() has no effect in LHAPDF6: "
               << "please update your code to use the native C++ interface" << std::endl;
   }
