@@ -123,7 +123,7 @@ namespace LHAPDF {
       vector<double> alphas;
       double low_lim = 0;
       double last_val = -1;
-//      BOOST_FOREACH (double q2, _q2s)
+      //      BOOST_FOREACH (double q2, _q2s)
       for ( size_t ind = 0; ind < _q2s.size(); ++ind) {
         double q2 = _q2s[ind];
         /// Deal with cases with two identical adjacent points (thresholds) by decreasing step size,

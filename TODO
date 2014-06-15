@@ -52,9 +52,7 @@ WRITE PAPER
 VERSION 6.1.3
 -------------
 
-- **Add AlphaS mappings to Cython (SL, AB)**
-
-   And alphasQ(q) etc. to PDF, plus 2-arg versions of xfxQ(x, q) etc.
+- **Fix AlphaS Cython mapping (AB)**
 
 - **Decide if cteq6ll aliasing should be in mkPDF/mkPDFs/getPDFSet functions**
 
@@ -80,18 +78,6 @@ VERSION 6.1.x
 
 - **Make it possible to find all metadata keys both locally and in total (AB)**
 
-- **AlphaS flavour threshold/mass treatment (AB/KN)**
-
-   Separate AlphaS_QThresholdB etc. from M<qname> (requested by Alex Mitov)
-
-   Add optional vector arg for flavour thresholds on ODe solver: if empty, use
-   quark masses as thresholds. Also on analytic solver or is that pointless?
-
-- **Use alpha_s ipol subgrids on thresholds when building an ipol from the ODE solver (KN)**
-
-   Add ODE behaviour to not calculate div-by-zero if x_n+1 = x_n, then insert
-   doubled evolution/ipol points on flavour thresholds.
-
 - **Expose LHAGLUE slots system for C++ use**
 
    Automatic memory management can be nice for everyone. Expose as PDFManager.
@@ -100,7 +86,7 @@ VERSION 6.1.x
 
    Should be happening automatically -- Cython bug? There is a real, definite
    Cython bug re. exception declarations on functions that return references,
-   so the exception declarations on getPDFSet() etc. are commented for now.
+   so the exception declarations on getPDFSet(), alphaS() etc. are commented for now.
 
 
 

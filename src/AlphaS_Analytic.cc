@@ -19,7 +19,7 @@ namespace LHAPDF {
     if ( _flavorscheme == FIXED ) return _fixflav;
     int nf = _nfmin;
     /// Use quark masses if flavour threshold not set explicitly
-    if ( _flavourthresholds.empty() ) {
+    if ( _flavorthresholds.empty() ) {
       for ( int it = _nfmin; it <= _nfmax; ++it ) {
         std::map<int, double>::const_iterator element = _quarkmasses.find(it);
         if ( element == _quarkmasses.end() ) continue;
@@ -27,8 +27,8 @@ namespace LHAPDF {
       }
     } else {
       for ( int it = _nfmin; it <= _nfmax; ++it ) {
-        std::map<int, double>::const_iterator element = _flavourthresholds.find(it);
-        if ( element == _flavourthresholds.end() ) continue;
+        std::map<int, double>::const_iterator element = _flavorthresholds.find(it);
+        if ( element == _flavorthresholds.end() ) continue;
         if ( sqr(element->second) < q2 ) nf = it;
       }
     }

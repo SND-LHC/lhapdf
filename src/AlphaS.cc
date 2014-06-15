@@ -22,7 +22,7 @@ namespace LHAPDF {
     if ( _flavorscheme == FIXED ) return _fixflav;
     int nf = 0;
     /// Use quark masses if flavour threshold not set explicitly
-    if ( _flavourthresholds.empty() ) {
+    if ( _flavorthresholds.empty() ) {
       for (int it = 1; it <= 6; ++it) {
         std::map<int, double>::const_iterator element = _quarkmasses.find(it);
         if ( element == _quarkmasses.end() ) continue;
@@ -30,8 +30,8 @@ namespace LHAPDF {
       }
     } else {
       for (int it = 1; it <= 6; ++it) {
-        std::map<int, double>::const_iterator element = _flavourthresholds.find(it);
-        if ( element == _flavourthresholds.end() ) continue;
+        std::map<int, double>::const_iterator element = _flavorthresholds.find(it);
+        if ( element == _flavorthresholds.end() ) continue;
         if ( sqr(element->second) < q2 ) nf = it;
       }
     }
@@ -63,15 +63,15 @@ namespace LHAPDF {
   // Set a quark mass, explicitly giving its ID
   void AlphaS::setQuarkMass(int id, double value) {
     if (abs(id) > 6 || id == 0)
-      throw Exception("Invalid id " + to_str(id) + " for quark given (should be 1-6).");
+      throw Exception("Invalid ID " + to_str(id) + " for quark given (should be 1-6).");
     _quarkmasses[abs(id)] = value;
   }
 
     // Set a flavour threshold, explicitly giving its ID
-  void AlphaS::setFlavourThreshold(int id, double value) {
+  void AlphaS::setQuarkThreshold(int id, double value) {
     if (abs(id) > 6 || id == 0)
-      throw Exception("Invalid id " + to_str(id) + " for flavour threshold given (should be 1-6).");
-    _flavourthresholds[abs(id)] = value;
+      throw Exception("Invalid ID " + to_str(id) + " for flavour threshold given (should be 1-6).");
+    _flavorthresholds[abs(id)] = value;
   }
 
   // Get a quark mass by ID
@@ -83,9 +83,9 @@ namespace LHAPDF {
   }
 
     // Get a quark mass by ID
-  double AlphaS::flavourThreshold(int id) const {
-    std::map<int, double>::const_iterator threshold = _flavourthresholds.find(abs(id));
-    if ( threshold == _flavourthresholds.end() )
+  double AlphaS::quarkThreshold(int id) const {
+    std::map<int, double>::const_iterator threshold = _flavorthresholds.find(abs(id));
+    if ( threshold == _flavorthresholds.end() )
        throw Exception("Flavour threshold " + to_str(id) + " not set!");
     return threshold->second;
   }

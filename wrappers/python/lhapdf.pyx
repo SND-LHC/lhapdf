@@ -28,7 +28,6 @@ cdef class PDF:
         "The LHAPDF ID number of this PDF member."
         return self._ptr.lhapdfID()
 
-    # TODO: Need another name than "type" in Python?
     @property
     def type(self):
         "The type of PDF member, e.g. central, error."
@@ -63,6 +62,12 @@ cdef class PDF:
     def q2Max(self):
         "Maximum valid value of x to be used with this PDF"
         return self._ptr.q2Max()
+
+    def alphaS(self):
+        "Get the AlphaS object used to calculate alpha_s(q)"
+        cdef AlphaS obj = AlphaS.__new__(AlphaS)
+        obj.set_ptr(&(self._ptr.alphaS()))
+        return obj
 
     def alphasQ(self, q):
         "Return alpha_s at q"
@@ -334,7 +339,78 @@ cdef class PDFInfo:
 
 
 
-# TODO: map AlphaS
+cdef class AlphaS:
+    """\
+    Interface to alpha_s calculations using various schemes.
+    """
+    cdef c.AlphaS* _ptr
+    cdef set_ptr(self, c.AlphaS* ptr):
+        self._ptr = ptr
+
+    def __dealloc__(self):
+        #del self._ptr
+        pass
+
+    def type(self):
+        "Get the method of alpha_s calculation as a string"
+        return self._ptr.type()
+
+
+    def alphasQ(self, double q):
+        "Get alpha_s value at scale q"
+        return self._ptr.alphasQ(q)
+
+    def alphasQ2(self, double q2):
+        "Get alpha_s value at scale q"
+        return self._ptr.alphasQ2(q2)
+
+    def numFlavorsQ(self, double q):
+        "Get number of active flavors at scale q"
+        return self._ptr.numFlavorsQ(q)
+
+    def numFlavorsQ2(self, double q2):
+        "Get number of active flavors at scale q"
+        return self._ptr.numFlavorsQ2(q2)
+
+    def quarkMass(self, int id):
+        "Get mass of quark with PID code id"
+        return self._ptr.quarkMass(id)
+
+    def setQuarkMass(self, int id, double value):
+        "Set mass of quark with PID code id"
+        self._ptr.setQuarkMass(id, value)
+
+    def quarkThreshold(self, int id):
+        "Get activation threshold of quark with PID code id"
+        return self._ptr.quarkThreshold(id)
+
+    def setQuarkThreshold(self, int id, double value):
+        "Set activation threshold of quark with PID code id"
+        self._ptr.setQuarkThreshold(id, value)
+
+    def orderQCD(self):
+        "Get the QCD running order (max num loops) for this alphaS"
+        return self._ptr.orderQCD()
+
+    def setOrderQCD(self, int order):
+        "Set the QCD running order (max num loops) for this alphaS"
+        self._ptr.setOrderQCD(order)
+
+    def setMZ(self, double mz):
+        "Set the Z mass (used in ODE solver)"
+        self._ptr.setMZ(mz)
+
+    def setAlphaSMZ(self, double alphas):
+        "Set alpha_s at the Z mass (used in ODE solver)"
+        self._ptr.setAlphaSMZ(alphas)
+
+    def setLambda(self, int id, double val):
+        "Set the id'th LambdaQCD value (used in analytic solver)"
+        self._ptr.setLambda(id, val)
+
+    # enum FlavorScheme { FIXED, VARIABLE };
+    # void setFlavorScheme(self, FlavorScheme scheme, int nf)
+    # FlavorScheme flavorScheme(self)
 
 
 

@@ -497,15 +497,22 @@ namespace LHAPDF {
       _alphas.reset(alphas);
     }
 
-    /// @todo Add a const AlphaS& alphaS() const function.
-
-
     /// @brief Check if an AlphaS calculator is set
     bool hasAlphaS() const {
       return _alphas.get() != 0;
     }
 
-    /// @brief Value of alpha_s(Q2) used by this PDF set.
+    /// @brief Retrieve the AlphaS object for this PDF
+    AlphaS& alphaS() {
+      return *_alphas;
+    }
+
+    /// @brief Retrieve the AlphaS object for this PDF (const)
+    const AlphaS& alphaS() const {
+      return *_alphas;
+    }
+
+    /// @brief Value of alpha_s(Q2) used by this PDF
     ///
     /// Calculated numerically, analytically, or interpolated according to
     /// metadata, using the AlphaS classes.
@@ -513,7 +520,7 @@ namespace LHAPDF {
       return alphasQ2(q*q);
     }
 
-    /// @brief Value of alpha_s(Q2) used by this PDF set.
+    /// @brief Value of alpha_s(Q2) used by this PDF
     ///
     /// Calculated numerically, analytically, or interpolated according to
     /// metadata, using the AlphaS classes.
