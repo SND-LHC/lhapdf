@@ -21,10 +21,19 @@ namespace LHAPDF {
   int AlphaS::numFlavorsQ2(double q2) const {
     if ( _flavorscheme == FIXED ) return _fixflav;
     int nf = 0;
-    for (int it = 1; it <= 6; ++it) {
-      std::map<int, double>::const_iterator element = _quarkmasses.find(it);
-      if ( element == _quarkmasses.end() ) continue;
-      if ( sqr(element->second) < q2 ) nf = it;
+    /// Use quark masses if flavour threshold not set explicitly
+    if ( _flavourthresholds.empty() ) {
+      for (int it = 1; it <= 6; ++it) {
+        std::map<int, double>::const_iterator element = _quarkmasses.find(it);
+        if ( element == _quarkmasses.end() ) continue;
+        if ( sqr(element->second) < q2 ) nf = it;
+      }
+    } else {
+      for (int it = 1; it <= 6; ++it) {
+        std::map<int, double>::const_iterator element = _flavourthresholds.find(it);
+        if ( element == _flavourthresholds.end() ) continue;
+        if ( sqr(element->second) < q2 ) nf = it;
+      }
     }
     if ( _fixflav != -1 && nf > _fixflav ) nf = _fixflav;
     return nf;
@@ -58,6 +67,12 @@ namespace LHAPDF {
     _quarkmasses[abs(id)] = value;
   }
 
+    // Set a flavour threshold, explicitly giving its ID
+  void AlphaS::setFlavourThreshold(int id, double value) {
+    if (abs(id) > 6 || id == 0)
+      throw Exception("Invalid id " + to_str(id) + " for flavour threshold given (should be 1-6).");
+    _flavourthresholds[abs(id)] = value;
+  }
 
   // Get a quark mass by ID
   double AlphaS::quarkMass(int id) const {
@@ -65,6 +80,14 @@ namespace LHAPDF {
     if ( quark == _quarkmasses.end() )
        throw Exception("Quark mass " + to_str(id) + " not set!");
     return quark->second;
+  }
+
+    // Get a quark mass by ID
+  double AlphaS::flavourThreshold(int id) const {
+    std::map<int, double>::const_iterator threshold = _flavourthresholds.find(abs(id));
+    if ( threshold == _flavourthresholds.end() )
+       throw Exception("Flavour threshold " + to_str(id) + " not set!");
+    return threshold->second;
   }
 
   void AlphaS::setFlavorScheme(FlavorScheme scheme, int nf) {

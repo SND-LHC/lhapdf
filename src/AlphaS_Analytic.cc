@@ -18,10 +18,19 @@ namespace LHAPDF {
   int AlphaS_Analytic::numFlavorsQ2(double q2) const {
     if ( _flavorscheme == FIXED ) return _fixflav;
     int nf = _nfmin;
-    for ( int it = _nfmin; it <= _nfmax; ++it ) {
-      std::map<int, double>::const_iterator element = _quarkmasses.find(it);
-      if ( element == _quarkmasses.end() ) continue;
-      if ( sqr(element->second) < q2 ) nf = it;
+    /// Use quark masses if flavour threshold not set explicitly
+    if ( _flavourthresholds.empty() ) {
+      for ( int it = _nfmin; it <= _nfmax; ++it ) {
+        std::map<int, double>::const_iterator element = _quarkmasses.find(it);
+        if ( element == _quarkmasses.end() ) continue;
+        if ( sqr(element->second) < q2 ) nf = it;
+      }
+    } else {
+      for ( int it = _nfmin; it <= _nfmax; ++it ) {
+        std::map<int, double>::const_iterator element = _flavourthresholds.find(it);
+        if ( element == _flavourthresholds.end() ) continue;
+        if ( sqr(element->second) < q2 ) nf = it;
+      }
     }
     if ( _fixflav != -1 && nf > _fixflav ) nf = _fixflav;
     return nf;

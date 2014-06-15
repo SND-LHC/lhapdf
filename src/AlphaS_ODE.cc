@@ -58,6 +58,7 @@ namespace LHAPDF {
   // efficient
   void AlphaS_ODE::_solve(double q2, double& t, double& y,
                           const double& allowed_relative, double h, double accuracy) const {
+    if ( q2 == t ) return;
     while (fabs(q2 - t) > accuracy) {
       /// Make the allowed change smaller as the q2 scale gets greater
       const double allowed_change = allowed_relative / t;
@@ -65,7 +66,7 @@ namespace LHAPDF {
       /// Mechanism to shrink the steps if accuracy < stepsize and we are close to Q2
       if (fabs(h) > accuracy && fabs(q2 - t)/h < 10 && t > 1.) h = accuracy/2.1;
       /// Take constant steps for Q2 < 1 GeV
-      if (fabs(h) > 0.01 && t < 1.) {accuracy = 0.00051; h = 0.001;}
+      if (fabs(h) > 0.01 && t < 1.) { accuracy = 0.00051; h = 0.001; }
       // Check if we are going to run forward or backwards in energy scale towards target Q2.
       /// @todo C++11's std::copysign would be perfect here
       if ((q2 < t && sgn(h) > 0) || (q2 > t && sgn(h) < 0)) h *= -1;
@@ -121,19 +122,42 @@ namespace LHAPDF {
 
       vector<double> alphas;
       double low_lim = 0;
-      BOOST_FOREACH (double q2, _q2s) {
+      double last_val = -1;
+//      BOOST_FOREACH (double q2, _q2s)
+      for ( size_t ind = 0; ind < _q2s.size(); ++ind) {
+        double q2 = _q2s[ind];
+        /// Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
+        /// allowed errors, and accuracy.
+        if ( ind != _q2s.size() - 1 ) {
+          if ( q2 == _q2s[ind+1] ) {
+            last_val = q2;
+            _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
+            alphas.push_back(y);
+            // Define divergence after y > 2. -- we have no accuracy after that any way
+            if ( y > 2. ) { low_lim = q2; }
+            continue;
+          }
+        }
         // If q2 is lower than a value that already diverged, it will also diverge
         if ( q2 < low_lim ) {
           alphas.push_back( std::numeric_limits<double>::max() );
           t = sqr(_mz);
           y = _alphas_mz;
           continue;
+        // If last point was the same we don't need to recalculate
+        } else if ( q2 == last_val ) {
+          alphas.push_back(y);
+          continue;
+        // Else calculate
+        } else {
+          last_val = q2;
+          _solve(q2, t, y, allowed_relative, h, accuracy);
+          alphas.push_back(y);
+          // Define divergence after y > 2. -- we have no accuracy after that any way
+          if ( y > 2. ) { low_lim = q2; }
         }
-        _solve(q2, t, y, allowed_relative, h, accuracy);
-        alphas.push_back(y);
-        // Define divergence after y > 2. -- we have no accuracy after that any way
-        if ( y > 2. ) { low_lim = q2; }
       }
+
       _ipol.setQ2Values(_q2s);
       _ipol.setAlphaSValues(alphas);
 
@@ -171,6 +195,9 @@ namespace LHAPDF {
 
       // Sorting the values in the correct order
       /// @todo AB: Probably this "magic" isn't needed? Not that it's wrong, but it is obscure -- at least add an explanatory comment!
+      /// KN: This just sorts the calculated alpha_s values into the correct order (since I interpolate first down from M_Z to sqrt(0.5), and then
+      /// go back to M_Z and go up). There's probably a cleaner way to do it, this is a modified StackExchange suggestion!
+      /// It sorts the vector<pair<int, double> > by ascending int values, it is required since the interpolator assumes the vectors to be ordered
       std::sort(grid.begin(), grid.end(),
                 boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
 
