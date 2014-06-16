@@ -482,9 +482,12 @@ namespace LHAPDF {
     /// "Order" is defined here and throughout LHAPDF as the maximum number of
     /// loops included in the matrix elements, in order to have an integer value
     /// for easy use in comparisons, as opposed to "LO", "NLO", etc. strings.
-    int qcdOrder() const {
-      return info().get_entry_as<int>("QcdOrder");
+    int orderQCD() const {
+      return info().get_entry_as<int>("OrderQCD");
     }
+    /// @deprecated Use orderQCD instead
+    int qcdOrder() const {
+      return orderQCD(); }
 
     //@}
 

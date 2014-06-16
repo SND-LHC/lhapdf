@@ -1,5 +1,7 @@
 2014-06-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fix bug in PDF::qcdOrder method, and deprecate that method in favour of orderQCD (to match AlphaS and the flag name).
+
 	* Further improvements to error messages when trying to load an invalid PDF.
 
 	* Tweak output of testalphas.cc
@@ -9,8 +11,6 @@
 2014-06-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Flavour thresholds in alpha_s solvers, and threshold subgrids from ODE solver (by Karl Nordstrom)
-
-	* Add Python mapping of the AlphaS interface (but no setting... yet).
 
 	* Add accessors to a PDF's AlphaS object and to an AlphaS' QCD order.
 

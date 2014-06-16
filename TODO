@@ -52,8 +52,6 @@ WRITE PAPER
 VERSION 6.1.3
 -------------
 
-- **Fix AlphaS Cython mapping (AB)**
-
 - **Decide if cteq6ll aliasing should be in mkPDF/mkPDFs/getPDFSet functions**
 
    Or only in LHAGlue? We do want people to update their steering files.

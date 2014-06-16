@@ -73,15 +73,6 @@ i.e. PDF specific, values to PYTHIA6, then explicitly set this flag to be false.
 # NOT YET IMPLEMENTED: TOO MUCH OVERHEAD? (A METADATA STRING WOULD BE CHECKED FOR EVERY ACCESS TO 6/-6 UNLESS CACHING IS USED)
 
 
-# PwdInSearchPath
-# ---------------
-# (bool)
-#
-# Whether to implicitly include the current directory in the PDF set search path.
-#
-# NOT YET IMPLEMENTED!
-
-
 
 SET LEVEL
 =========

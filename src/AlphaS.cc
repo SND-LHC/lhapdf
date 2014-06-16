@@ -12,6 +12,7 @@ namespace LHAPDF {
   // Base class constructor for default param setup
   AlphaS::AlphaS() {
     _qcdorder = 4;
+    _mz = 91.1876;
     _flavorscheme = VARIABLE;
     _fixflav = -1;
   }

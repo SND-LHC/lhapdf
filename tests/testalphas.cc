@@ -11,13 +11,17 @@ using namespace std;
 using namespace boost::assign;
 
 int main() {
+
+  // Set up three standalone AlphaS solvers:
+
+
   AlphaS_Analytic as_ana;
 
   // Can set order of QCD (up to 4)
-  // 0 returns a constant value -- needs to be set by
-  // as_ana.setAlphaSMZ(double value);
+  // 0 returns a constant value -- needs to be set by as_ana.setAlphaSMZ(double value);
   as_ana.setOrderQCD(4);
 
+  // Set quark masses for evolution (both transition points and gradients by default)
   as_ana.setQuarkMass(1, 0.0017);
   as_ana.setQuarkMass(2, 0.0041);
   as_ana.setQuarkMass(3, 0.1);
@@ -28,8 +32,19 @@ int main() {
   as_ana.setLambda(4, 0.296);
   as_ana.setLambda(5, 0.213);
 
+  // Can override quark masses for Nf transitions thresholds by setting them explicitly
+  // You can't mix the two: if you set one flavour threshold explicitly you need to set all of them.
+  //as_ode.setQuarkThreshold(6, 650);
+  //as_ode.setQuarkThreshold(5, 10);
+  //as_ode.setQuarkThreshold(4, 2);
+  //as_ode.setQuarkThreshold(3, 0.3);
+  //as_ode.setQuarkThreshold(2, 0.1);
+  //as_ode.setQuarkThreshold(1, 0.08);
+
   // Uncomment to use fixed favour scheme for analytic solver
-  //  as_ana.setFlavorScheme(AlphaS::FIXED, 5);
+  // as_ana.setFlavorScheme(AlphaS::FIXED, 5);
+
+
 
   AlphaS_ODE as_ode;
 
@@ -47,27 +62,19 @@ int main() {
   as_ode.setQuarkMass(5, 4.1);
   as_ode.setQuarkMass(6, 172.5);
 
-  /// Can override quark masses and use custom thresholds by setting
-  /// them explicitly (works for both the analytic and ODE solver)
-  /// Note you can't mix the two, so if you set one flavour threshold
-  /// explicitly you need to set all of them.
-  // as_ode.setQuarkThreshold(6, 650);
-  // as_ode.setQuarkThreshold(5, 10);
-  // as_ode.setQuarkThreshold(4, 2);
-  // as_ode.setQuarkThreshold(3, 0.3);
-  // as_ode.setQuarkThreshold(2, 0.1);
-  // as_ode.setQuarkThreshold(1, 0.08);
-  //
-  // as_ana.setQuarkThreshold(6, 650);
-  // as_ana.setQuarkThreshold(5, 10);
-  // as_ana.setQuarkThreshold(4, 2);
-  // as_ana.setQuarkThreshold(3, 0.3);
-  // as_ana.setQuarkThreshold(2, 0.1);
-  // as_ana.setQuarkThreshold(1, 0.08);
-
+  // Can override quark masses for Nf transitions thresholds by setting them explicitly
+  // You can't mix the two: if you set one flavour threshold explicitly you need to set all of them.
+  //as_ode.setQuarkThreshold(6, 650);
+  //as_ode.setQuarkThreshold(5, 10);
+  //as_ode.setQuarkThreshold(4, 2);
+  //as_ode.setQuarkThreshold(3, 0.3);
+  //as_ode.setQuarkThreshold(2, 0.1);
+  //as_ode.setQuarkThreshold(1, 0.08);
 
   // Uncomment to use fixed flavour scheme for ODE solver
   // as_ode.setFlavorScheme(AlphaS::VARIABLE, 4);
+
+
 
   AlphaS_Ipol as_ipol;
   vector<double> qs; qs += 1.300000e+00, 1.300000e+00, 1.300000e+00, 1.560453e+00, 1.873087e+00, 2.248357e+00, 2.698811e+00, 3.239513e+00, 3.888544e+00, 4.667607e+00, 5.602754e+00, 6.725257e+00, 8.072650e+00, 9.689992e+00, 1.163137e+01, 1.396169e+01, 1.675889e+01, 2.011651e+01, 2.414681e+01, 2.898459e+01, 3.479160e+01, 4.176203e+01, 5.012899e+01, 6.017224e+01, 7.222765e+01, 8.669834e+01, 1.040682e+02, 1.249181e+02, 1.499452e+02, 1.799865e+02, 2.160465e+02, 2.593310e+02, 3.112875e+02, 3.736534e+02, 4.485143e+02, 5.383733e+02, 6.462355e+02, 7.757077e+02, 9.311194e+02, 1.117668e+03, 1.341590e+03, 1.610376e+03, 1.933012e+03, 2.320287e+03, 2.785153e+03, 3.343154e+03, 4.012949e+03, 4.816936e+03, 4.816936e+03;
@@ -77,6 +84,11 @@ int main() {
 
   // Can interpolate ODE with given knots in Q
   as_ode.setQValues(qs);
+
+
+  ///////////////////////////////
+  // Test these solvers and the CT10nlo PDF's default behaviours:
+
 
   PDF* pdf = mkPDF("CT10nlo", 0);
   const double inf = numeric_limits<double>::infinity();
