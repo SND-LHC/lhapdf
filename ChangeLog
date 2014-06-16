@@ -1,5 +1,7 @@
 2014-06-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add CVMFS and AFS downloading (by preference) to the lhapdf script, as well as user-configurable download sources and tarball removal.
+
 	* Fix bug in PDF::qcdOrder method, and deprecate that method in favour of orderQCD (to match AlphaS and the flag name).
 
 	* Further improvements to error messages when trying to load an invalid PDF.
