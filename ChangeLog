@@ -1,5 +1,7 @@
 2014-06-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Further improvements to error messages when trying to load an invalid PDF.
+
 	* Tweak output of testalphas.cc
 
 	* Adding first make check targets (requires CT10nlo to be installed).

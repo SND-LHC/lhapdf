@@ -46,8 +46,12 @@ namespace LHAPDF {
 
 
   PDF* mkPDF(const string& setname, int member) {
+    // Find the member data file and ensure that it exists
+    const string searchpath = findpdfmempath(setname, member);
+    if (searchpath.empty())
+      throw UserError("Can't find a valid PDF " + setname + "/" + to_str(member));
     // First create an Info object to work out what format of PDF this is:
-    Info info(findpdfmempath(setname, member));
+    Info info(searchpath);
     const string fmt = info.get_entry("Format");
     // Then use the format information to call the appropriate concrete PDF constructor:
     if (fmt == "lhagrid1") return new GridPDF(setname, member);
@@ -66,9 +70,13 @@ namespace LHAPDF {
     int nmem = 0;
     const size_t slashpos = setname_nmem.find("/");
     const string setname = setname_nmem.substr(0, slashpos);
-    if (slashpos != string::npos) {
-      const string smem = setname_nmem.substr(slashpos+1);
-      nmem = lexical_cast<int>(smem);
+    try {
+      if (slashpos != string::npos) {
+        const string smem = setname_nmem.substr(slashpos+1);
+        nmem = lexical_cast<int>(smem);
+      }
+    } catch (...) {
+      throw UserError("Could not parse PDF identity string " + setname_nmem);
     }
     return mkPDF(setname, nmem);
   }
@@ -77,6 +85,7 @@ namespace LHAPDF {
   void mkPDFs(const string& setname, vector<PDF*>& pdfs) {
     getPDFSet(setname).mkPDFs(pdfs);
   }
+
 
   vector<PDF*> mkPDFs(const string& setname) {
     return getPDFSet(setname).mkPDFs();

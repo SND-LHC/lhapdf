@@ -47,6 +47,8 @@ namespace LHAPDF {
     //@{
 
     void _loadInfo(const std::string& mempath) {
+      if (mempath.empty())
+        throw UserError("Tried to initialize a PDF with a null data file path... oops");
       _mempath = mempath;
       _info = PDFInfo(mempath);
       //_info = PDFInfo(_setname(), memberID());
@@ -71,7 +73,9 @@ namespace LHAPDF {
     }
 
     void _loadInfo(const std::string& setname, int member) {
-      const string searchpath = findFile(pdfmempath(setname, member));
+      const string searchpath = findpdfmempath(setname, member);
+      if (searchpath.empty())
+        throw UserError("Can't find a valid PDF " + setname + "/" + to_str(member));
       _loadInfo(searchpath);
     }
 
