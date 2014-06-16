@@ -13,5 +13,4 @@ testperf_SOURCES = testperf.cc
 testsetperf_SOURCES = testsetperf.cc
 testnsetperf_SOURCES = testnsetperf.cc
 
-TESTS = testalphas
-# testgrid.sh testindex.sh testinfo.sh testpaths.sh
+TESTS = testalphas testgrid testindex testpaths
