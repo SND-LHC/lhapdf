@@ -1,4 +1,4 @@
-noinst_PROGRAMS = testalphas testgrid testindex testinfo testpaths testperf testsetperf testnsetperf
+check_PROGRAMS = testalphas testgrid testindex testinfo testpaths testperf testsetperf testnsetperf
 
 AM_CPPFLAGS += -I$(top_srcdir)/include $(BOOST_CPPFLAGS)
 AM_LDFLAGS += -L$(top_builddir)/src
@@ -12,3 +12,6 @@ testpaths_SOURCES = testpaths.cc
 testperf_SOURCES = testperf.cc
 testsetperf_SOURCES = testsetperf.cc
 testnsetperf_SOURCES = testnsetperf.cc
+
+TESTS = testalphas
+# testgrid.sh testindex.sh testinfo.sh testpaths.sh

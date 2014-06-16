@@ -1,3 +1,9 @@
+2014-06-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Tweak output of testalphas.cc
+
+	* Adding first make check targets (requires CT10nlo to be installed).
+
 2014-06-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Flavour thresholds in alpha_s solvers, and threshold subgrids from ODE solver (by Karl Nordstrom)

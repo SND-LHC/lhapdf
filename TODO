@@ -58,11 +58,6 @@ VERSION 6.1.3
 
    Or only in LHAGlue? We do want people to update their steering files.
 
-- **Enable some make check and make benchmark tests (AB)**
-
-   Sort out the examples vs. tests separation, and coplain sensibly about
-   missing required PDF data for running tests.
-
 
 
 VERSION 6.1.x

@@ -29,7 +29,7 @@ int main() {
   as_ana.setLambda(5, 0.213);
 
   // Uncomment to use fixed favour scheme for analytic solver
-//  as_ana.setFlavorScheme(AlphaS::FIXED, 5);
+  //  as_ana.setFlavorScheme(AlphaS::FIXED, 5);
 
   AlphaS_ODE as_ode;
 
@@ -51,23 +51,23 @@ int main() {
   /// them explicitly (works for both the analytic and ODE solver)
   /// Note you can't mix the two, so if you set one flavour threshold
   /// explicitly you need to set all of them.
-//  as_ode.setFlavourThreshold(6, 650);
-//  as_ode.setFlavourThreshold(5, 10);
-//  as_ode.setFlavourThreshold(4, 2);
-//  as_ode.setFlavourThreshold(3, 0.3);
-//  as_ode.setFlavourThreshold(2, 0.1);
-//  as_ode.setFlavourThreshold(1, 0.08);
-
-//  as_ana.setFlavourThreshold(6, 650);
-//  as_ana.setFlavourThreshold(5, 10);
-//  as_ana.setFlavourThreshold(4, 2);
-//  as_ana.setFlavourThreshold(3, 0.3);
-//  as_ana.setFlavourThreshold(2, 0.1);
-//  as_ana.setFlavourThreshold(1, 0.08);
+  // as_ode.setQuarkThreshold(6, 650);
+  // as_ode.setQuarkThreshold(5, 10);
+  // as_ode.setQuarkThreshold(4, 2);
+  // as_ode.setQuarkThreshold(3, 0.3);
+  // as_ode.setQuarkThreshold(2, 0.1);
+  // as_ode.setQuarkThreshold(1, 0.08);
+  //
+  // as_ana.setQuarkThreshold(6, 650);
+  // as_ana.setQuarkThreshold(5, 10);
+  // as_ana.setQuarkThreshold(4, 2);
+  // as_ana.setQuarkThreshold(3, 0.3);
+  // as_ana.setQuarkThreshold(2, 0.1);
+  // as_ana.setQuarkThreshold(1, 0.08);
 
 
   // Uncomment to use fixed flavour scheme for ODE solver
-//  as_ode.setFlavorScheme(AlphaS::VARIABLE, 4);
+  // as_ode.setFlavorScheme(AlphaS::VARIABLE, 4);
 
   AlphaS_Ipol as_ipol;
   vector<double> qs; qs += 1.300000e+00, 1.300000e+00, 1.300000e+00, 1.560453e+00, 1.873087e+00, 2.248357e+00, 2.698811e+00, 3.239513e+00, 3.888544e+00, 4.667607e+00, 5.602754e+00, 6.725257e+00, 8.072650e+00, 9.689992e+00, 1.163137e+01, 1.396169e+01, 1.675889e+01, 2.011651e+01, 2.414681e+01, 2.898459e+01, 3.479160e+01, 4.176203e+01, 5.012899e+01, 6.017224e+01, 7.222765e+01, 8.669834e+01, 1.040682e+02, 1.249181e+02, 1.499452e+02, 1.799865e+02, 2.160465e+02, 2.593310e+02, 3.112875e+02, 3.736534e+02, 4.485143e+02, 5.383733e+02, 6.462355e+02, 7.757077e+02, 9.311194e+02, 1.117668e+03, 1.341590e+03, 1.610376e+03, 1.933012e+03, 2.320287e+03, 2.785153e+03, 3.343154e+03, 4.012949e+03, 4.816936e+03, 4.816936e+03;
@@ -79,26 +79,30 @@ int main() {
   as_ode.setQValues(qs);
 
   PDF* pdf = mkPDF("CT10nlo", 0);
-
-  double inf = numeric_limits<double>::infinity();
-
+  const double inf = numeric_limits<double>::infinity();
   ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat"), fi("alphas_ipol.dat"), fc("alphas_ct10nlo.dat");
+  cout << endl;
   for (double log10q = -0.5; log10q < 3; log10q += 0.05) {
     const double q = pow(10, log10q);
     const double as_ana_q = as_ana.alphasQ(q);
     cout << fixed;
-    cout << setprecision(3) << "Q = " << q << " GeV" << endl;
-    cout << setprecision(3) << "Analytical solution:           " << ( (as_ana_q > 2) ? inf : as_ana_q ) << "    " << "NumFlav: " << as_ana.numFlavorsQ(q) << endl;
+    cout << "Q = " << setprecision(3) << q << " GeV" << endl;
+    cout << "Analytical solution:           " << setprecision(3) << setw(6)  << ( (as_ana_q > 2) ? inf : as_ana_q )
+         << "    num flavs = " << as_ana.numFlavorsQ(q) << endl;
     fa << q << " " << as_ana_q << endl;
     const double as_ode_q = as_ode.alphasQ(q);
-    cout << setprecision(3) << "ODE solution:                  " << ( (as_ode_q > 2) ? inf : as_ode_q ) << "    " << "NumFlav: " << as_ode.numFlavorsQ(q) << endl;
+    cout << "ODE solution:                  " << setprecision(3) << setw(6)  << ( (as_ode_q > 2) ? inf : as_ode_q )
+         << "    num flavs = " << as_ode.numFlavorsQ(q) << endl;
     fo << q << " " << as_ode_q << endl;
     const double as_ipol_q = as_ipol.alphasQ(q);
-    cout << setprecision(3) << "Interpolated solution:         " << ( (as_ipol_q > 2) ? inf : as_ipol_q ) << endl;
+    cout << "Interpolated solution:         " << setprecision(3) << setw(6)  << ( (as_ipol_q > 2) ? inf : as_ipol_q ) << endl;
     fi << q << " " << as_ipol_q << endl;
     const double as_ct10_q = pdf->alphasQ(q);
-    cout << setprecision(3) << "CT10 solution:                 " << as_ct10_q << endl;
+    cout << "CT10 solution:                 " << setprecision(3) << setw(6) << as_ct10_q << endl;
     fc << q << " " << as_ct10_q << endl;
+    const double as_ct10_q_2 = pdf->alphaS().alphasQ(q);
+    cout << "CT10 AlphaS solution:          " << setprecision(3) << setw(6)  << as_ct10_q_2
+         << "    agrees = " << boolalpha << (as_ct10_q == as_ct10_q_2) << endl;
     cout << endl;
   }
   fa.close(); fo.close(); fi.close(); fc.close();

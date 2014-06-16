@@ -75,23 +75,23 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
 
 cdef extern from "../../include/LHAPDF/AlphaS.h" namespace "LHAPDF":
     cdef cppclass AlphaS:
-        string type() except +
-        double alphasQ(double q) except +
-        double alphasQ2(double q2) except +
-        int numFlavorsQ(double q) except +
-        int numFlavorsQ2(double q2) except +
-        double quarkMass(int id) except +
-        void setQuarkMass(int id, double value) except +
-        double quarkThreshold(int id) except +
-        void setQuarkThreshold(int id, double val) except +
+        # string type() except +
+        # double alphasQ(double q) except +
+        # double alphasQ2(double q2) except +
+        # int numFlavorsQ(double q) except +
+        # int numFlavorsQ2(double q2) except +
+        # double quarkMass(int id) except +
+        # void setQuarkMass(int id, double value) except +
+        # double quarkThreshold(int id) except +
+        # void setQuarkThreshold(int id, double val) except +
         int orderQCD() except +
         void setOrderQCD(int order) except +
-        void setMZ(double mz) except +
-        void setAlphaSMZ(double alphas) except +
-        void setLambda(unsigned int, double) except +
-        #enum FlavorScheme { FIXED, VARIABLE } except +
-        #void setFlavorScheme(FlavorScheme scheme, int nf) except +
-        #FlavorScheme flavorScheme() except +
+        # void setMZ(double mz) except +
+        # void setAlphaSMZ(double alphas) except +
+        # void setLambda(unsigned int, double) except +
+        # #enum FlavorScheme { FIXED, VARIABLE } except +
+        # #void setFlavorScheme(FlavorScheme scheme, int nf) except +
+        # #FlavorScheme flavorScheme() except +
 
 cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
     cdef struct PDFUncertainty:
