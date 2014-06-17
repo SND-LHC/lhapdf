@@ -13,4 +13,6 @@ testperf_SOURCES = testperf.cc
 testsetperf_SOURCES = testsetperf.cc
 testnsetperf_SOURCES = testnsetperf.cc
 
-TESTS = testalphas testgrid testindex testpaths
+TESTS = testpaths 
+## testalphas testgrid testindex
+
