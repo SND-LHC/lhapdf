@@ -13,6 +13,12 @@ testperf_SOURCES = testperf.cc
 testsetperf_SOURCES = testsetperf.cc
 testnsetperf_SOURCES = testnsetperf.cc
 
-TESTS = testpaths 
-## testalphas testgrid testindex
+TESTS = testpaths
 
+#testalphas testgrid testindex
+installcheck-local: check
+	lhapdf install CT10nlo
+	lhapdf list
+	./testalphas
+	./testgrid
+	./testindex

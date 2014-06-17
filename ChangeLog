@@ -1,3 +1,7 @@
+2014-06-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* tests/Makefile.am: Add appropriate programs to "make installcheck".
+
 2014-06-17  David Grellscheid  <David.Grellscheid@durham.ac.uk>
 
 	* wrappers/python/Makefile.am: 'make distcheck' and out-of-source
@@ -5,9 +9,12 @@
 
 2014-06-16  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Add CVMFS and AFS downloading (by preference) to the lhapdf script, as well as user-configurable download sources and tarball removal.
+	* Add CVMFS and AFS downloading (by preference) to the lhapdf
+	script, as well as user-configurable download sources and tarball
+	removal.
 
-	* Fix bug in PDF::qcdOrder method, and deprecate that method in favour of orderQCD (to match AlphaS and the flag name).
+	* Fix bug in PDF::qcdOrder method, and deprecate that method in
+	favour of orderQCD (to match AlphaS and the flag name).
 
 	* Further improvements to error messages when trying to load an invalid PDF.
 
@@ -17,7 +24,8 @@
 
 2014-06-15  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Flavour thresholds in alpha_s solvers, and threshold subgrids from ODE solver (by Karl Nordstrom)
+	* Flavour thresholds in alpha_s solvers, and threshold subgrids
+	from ODE solver (by Karl Nordstrom)
 
 	* Add accessors to a PDF's AlphaS object and to an AlphaS' QCD order.
 
