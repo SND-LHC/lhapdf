@@ -49,8 +49,10 @@ WRITE PAPER
 
 
 
-VERSION 6.1.x
--------------
+UNVERSIONED
+-----------
+
+- **Document the lhapdf command on the website**
 
 - **ABM PDF approval**
 
@@ -63,6 +65,11 @@ VERSION 6.1.x
 - **HERA 1.0 and LHeC PDF migration and approval**
 
    Same procedure as for ATLAS and HERA 1.5, in contact with Voica.
+
+
+
+VERSION 6.1.x
+-------------
 
 - **Make it possible to find all metadata keys both locally and in total (AB)**
 
