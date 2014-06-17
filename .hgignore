@@ -3,6 +3,7 @@
 ^lhapdf.pc$
 ^lhapdf$
 ^LHAPDF-.*\.tar\.gz$
+^LHAPDF-.\..\..$
 ^sets$
 ^settarballs$
 ^migration/sets*
@@ -16,6 +17,7 @@
 ^include/LHAPDF/stamp-.*$
 ^wrappers/python/lhapdf\.cpp$
 ^wrappers/python/setup\.py$
+^wrappers/python/fix-out-of-source$
 ^tests/test([^\.]+)
 ^tests/[^\.]+\.dat$
 ^examples/[^\.]+

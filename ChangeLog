@@ -1,3 +1,8 @@
+2014-06-17  David Grellscheid  <David.Grellscheid@durham.ac.uk>
+
+	* wrappers/python/Makefile.am: 'make distcheck' and out-of-source
+        builds should work now.
+
 2014-06-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add CVMFS and AFS downloading (by preference) to the lhapdf script, as well as user-configurable download sources and tarball removal.
