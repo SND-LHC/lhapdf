@@ -29,7 +29,7 @@ with, so we think you'll want to switch once you've used it!
 
 @section installsec Installation
 
-The latest version of LHAPDF is **6.1.2**.
+The latest version of LHAPDF is **6.1.3**.
 
 The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
 
@@ -86,6 +86,17 @@ PDF/set/config metadata flags:
 Many code usage examples are collected here:
 
 - Code examples: @ref codeexamples
+
+
+@subsection strip Trick to remove unwanted PDF members
+
+A typical LHAPDF6 PDF set with error members is between 20 and 100 MB in
+size. If you only intend to use a subset of these (e.g. in MC production where
+you will only use the central member), you can simply remove the unneeded `.dat`
+files from the PDF set directory. It will work fine, as long as you don't try to
+load one of the missing members of course! In grid job submissions this can
+reduce the tarball of data that you send with your job by a large amount, since
+PDF sets often dominate such job tarballs.
 
 
 @subsection zip Trick to use zipped data files
