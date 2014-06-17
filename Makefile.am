@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = mkindex
 
 SUBDIRS = src include wrappers tests
-DIST_SUBDIRS = $(SUBDIRS) examples tests doc
+DIST_SUBDIRS = $(SUBDIRS) examples doc
 
 bin_SCRIPTS = lhapdf-config lhapdf
 dist_pkgdata_DATA = lhapdf.conf pdfsets.index
