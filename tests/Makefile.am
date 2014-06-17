@@ -17,8 +17,13 @@ TESTS = testpaths
 
 #testalphas testgrid testindex
 installcheck-local: check
-	lhapdf install CT10nlo
-	lhapdf list
+	$(bindir)/lhapdf install CT10nlo
+	$(bindir)/lhapdf list
 	./testalphas
 	./testgrid
 	./testindex
+
+uninstall-local:
+	rm -rf $(pkgdatadir)/CT10nlo
+
+CLEANFILES = alphas_ct10nlo.dat alphas_ipol.dat pdf.dat alphas_ana.dat alphas_ode.dat
