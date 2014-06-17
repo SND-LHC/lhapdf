@@ -84,8 +84,16 @@ namespace LHAPDF {
     // Using base 10 for logs to get constant gradient extrapolation in
     // a log 10 - log 10 plot
     if (q2 < _q2s.front()) {
-      const double dlogq2  = log10( _q2s[1] / _q2s[0] );
-      const double dlogas  = log10( _as[1]  / _as[0]  );
+      // Remember to take situations where the first knot also is a
+      // flavor threshold into account
+      double dlogq2, dlogas;
+      if( _q2s[0] != _q2s[1] ) {
+        dlogq2  = log10( _q2s[1] / _q2s[0] );
+        dlogas  = log10( _as[1]  / _as[0]  );
+      } else {
+        dlogq2  = log10( _q2s[2] / _q2s[0] );
+        dlogas  = log10( _as[2]  / _as[0]  );
+      }
       const double loggrad = dlogas / dlogq2;
       return _as[0] * pow( q2/_q2s[0] , loggrad );
     }
