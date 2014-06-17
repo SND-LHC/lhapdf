@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_Exceptions_H
+#define LHAPDF_Exceptions_H
 
 #include <exception>
 #include <stdexcept>
@@ -123,3 +125,4 @@ namespace LHAPDF {
 
 
 }
+#endif

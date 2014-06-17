@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_GridPDF_H
+#define LHAPDF_GridPDF_H
 
 #include "LHAPDF/PDF.h"
 #include "LHAPDF/Interpolator.h"
@@ -265,3 +267,4 @@ namespace LHAPDF {
 
 
 }
+#endif

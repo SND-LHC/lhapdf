@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_Info_H
+#define LHAPDF_Info_H
 
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
@@ -205,3 +207,4 @@ namespace LHAPDF {
 
 
 }
+#endif

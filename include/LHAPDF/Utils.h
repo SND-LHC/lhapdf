@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_Utils_H
+#define LHAPDF_Utils_H
 
 // STL includes
 #include <cassert>
@@ -232,3 +234,4 @@ namespace LHAPDF {
   //@}
 
 }
+#endif

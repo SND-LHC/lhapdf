@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_LHAPDF_H
+#define LHAPDF_LHAPDF_H
 
 /// @file LHAPDF.h
 /// Just a convenience header that pulls in the main functionality with a single include
@@ -16,3 +18,5 @@
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/LHAGlue.h"
+
+#endif

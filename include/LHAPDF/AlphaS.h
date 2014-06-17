@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_AlphaS_H
+#define LHAPDF_AlphaS_H
 
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Exceptions.h"
@@ -304,3 +306,4 @@ namespace LHAPDF {
 
 
 }
+#endif

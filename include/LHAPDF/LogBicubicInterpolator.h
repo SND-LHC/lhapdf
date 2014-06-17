@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_LogBicubicInterpolator_H
+#define LHAPDF_LogBicubicInterpolator_H
 
 #include "LHAPDF/Interpolator.h"
 
@@ -20,3 +22,4 @@ namespace LHAPDF {
 
 
 }
+#endif

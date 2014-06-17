@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_PDFSet_H
+#define LHAPDF_PDFSet_H
 
 #include "LHAPDF/Info.h"
 #include "LHAPDF/Factories.h"
@@ -269,3 +271,4 @@ namespace LHAPDF {
 
 
 }
+#endif

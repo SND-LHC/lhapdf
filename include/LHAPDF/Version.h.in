@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2013 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_Version_H
+#define LHAPDF_Version_H
 
 #include <string>
 
@@ -33,3 +35,5 @@ namespace LHAPDF {
 
 
 }
+#endif
+

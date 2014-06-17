@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_Interpolator_H
+#define LHAPDF_Interpolator_H
 
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/KnotArray.h"
@@ -80,3 +82,5 @@ namespace LHAPDF {
 
 
 }
+
+#endif

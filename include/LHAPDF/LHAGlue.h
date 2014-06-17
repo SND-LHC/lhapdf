@@ -4,6 +4,8 @@
 // Copyright (C) 2012-2014 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
+#ifndef LHAPDF_LHAGlue_H
+#define LHAPDF_LHAGlue_H
 
 /// @file LHAGlue.h
 /// A file that provides backwards compatibility for some C functions from LHAPDF 5.x
@@ -360,4 +362,5 @@ namespace LHAPDF {
 
 }
 
+#endif
 #endif
