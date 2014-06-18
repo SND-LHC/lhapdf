@@ -120,19 +120,38 @@ namespace LHAPDF {
     // If a vector of knots in q2 has been given, solve for those.
     if ( !_q2s.empty() ) {
 
+      // If for some reason the highest q2 knot is below m_{Z},
+      // force a knot there anyway (since we know it, might as well
+      // use it)
+      if ( _q2s[_q2s.size()-1] < sqr(_mz) ) _q2s.push_back(sqr(_mz));
+
+      // Find the index of the knot right below m_{Z}
+      unsigned int index_of_mz_lower = 0;
+
+      while ( _q2s[index_of_mz_lower + 1] < sqr(_mz) ) {
+        if ( index_of_mz_lower == _q2s.size() -1 ) break;
+        index_of_mz_lower++;
+      }
+
+      vector<pair<int, double> > grid; // for storing in correct order
+
       vector<double> alphas;
       double low_lim = 0;
       double last_val = -1;
-      //      BOOST_FOREACH (double q2, _q2s)
-      for ( size_t ind = 0; ind < _q2s.size(); ++ind) {
-        double q2 = _q2s[ind];
-        /// Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
-        /// allowed errors, and accuracy.
-        if ( ind != _q2s.size() - 1 ) {
-          if ( q2 == _q2s[ind+1] ) {
+      bool threshold = false;
+
+      // We do this by starting from m_{Z}, going down to the lowest q2,
+      // and then jumping back up to m_{Z} to avoid calculating things twice
+      for ( size_t ind = index_of_mz_lower; ind >= 0; --ind) {
+        const double q2 = _q2s[ind];
+        // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
+        // allowed errors, and accuracy.
+        if ( ind != 0 ) {
+          if ( q2 == _q2s[ind-1] ) {
             last_val = q2;
+            threshold = true;
             _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
-            alphas.push_back(y);
+            grid.push_back(make_pair(ind, y));
             // Define divergence after y > 2. -- we have no accuracy after that any way
             if ( y > 2. ) { low_lim = q2; }
             continue;
@@ -141,8 +160,42 @@ namespace LHAPDF {
         // If q2 is lower than a value that already diverged, it will also diverge
         if ( q2 < low_lim ) {
           alphas.push_back( std::numeric_limits<double>::max() );
-          t = sqr(_mz);
-          y = _alphas_mz;
+          continue;
+        // If last point was the same we don't need to recalculate
+        } else if ( q2 == last_val ) {
+          alphas.push_back(y);
+          continue;
+        // Else calculate
+        } else {
+          last_val = q2;
+          if ( threshold ) { _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5); threshold = false; }
+          else { _solve(q2, t, y, allowed_relative, h, accuracy); }
+          grid.push_back(make_pair(ind, y));
+          // Define divergence after y > 2. -- we have no accuracy after that any way
+          if ( y > 2. ) { low_lim = q2; }
+        }
+      }
+
+      t = sqr(_mz); // starting point
+      y = _alphas_mz; // starting value
+
+      for ( size_t ind = index_of_mz_lower + 1; ind < _q2s.size(); ++ind) {
+        double q2 = _q2s[ind];
+        // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
+        // allowed errors, and accuracy.
+        if ( ind != _q2s.size() - 1 ) {
+          if ( q2 == _q2s[ind+1] ) {
+            last_val = q2;
+            _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
+            grid.push_back(make_pair(ind, y));
+            // Define divergence after y > 2. -- we have no accuracy after that any way
+            if ( y > 2. ) { low_lim = q2; }
+            continue;
+          }
+        }
+        // If q2 is lower than a value that already diverged, it will also diverge
+        if ( q2 < low_lim ) {
+          alphas.push_back( std::numeric_limits<double>::max() );
           continue;
         // If last point was the same we don't need to recalculate
         } else if ( q2 == last_val ) {
@@ -152,10 +205,17 @@ namespace LHAPDF {
         } else {
           last_val = q2;
           _solve(q2, t, y, allowed_relative, h, accuracy);
-          alphas.push_back(y);
+          grid.push_back(make_pair(ind, y));
           // Define divergence after y > 2. -- we have no accuracy after that any way
           if ( y > 2. ) { low_lim = q2; }
         }
+      }
+
+      std::sort(grid.begin(), grid.end(),
+                boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+
+      for ( size_t x = 0; x < grid.size(); ++x ) {
+         alphas.push_back(grid.at(x).second);
       }
 
       _ipol.setQ2Values(_q2s);
@@ -201,8 +261,6 @@ namespace LHAPDF {
       std::sort(grid.begin(), grid.end(),
                 boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
 
-      // Need to do this since BOOST_FOREACH can't deal with arguments
-      // with ,s (and I don't want to clutter with a typedef)
       for ( size_t x = 0; x < grid.size(); ++x ) {
          alphas.push_back(grid.at(x).second);
       }

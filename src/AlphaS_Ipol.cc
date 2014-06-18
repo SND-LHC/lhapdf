@@ -87,13 +87,10 @@ namespace LHAPDF {
       // Remember to take situations where the first knot also is a
       // flavor threshold into account
       double dlogq2, dlogas;
-      if( _q2s[0] != _q2s[1] ) {
-        dlogq2  = log10( _q2s[1] / _q2s[0] );
-        dlogas  = log10( _as[1]  / _as[0]  );
-      } else {
-        dlogq2  = log10( _q2s[2] / _q2s[0] );
-        dlogas  = log10( _as[2]  / _as[0]  );
-      }
+      unsigned int next_point = 1;
+      while ( _q2s[0] == _q2s[next_point] ) next_point++;
+      dlogq2  = log10( _q2s[next_point] / _q2s[0] );
+      dlogas  = log10( _as[next_point]  / _as[0]  );
       const double loggrad = dlogas / dlogq2;
       return _as[0] * pow( q2/_q2s[0] , loggrad );
     }

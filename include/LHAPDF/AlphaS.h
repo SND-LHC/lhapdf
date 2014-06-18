@@ -294,7 +294,7 @@ namespace LHAPDF {
   private:
 
     /// Vector of Q2s in case specific anchor points are used
-    std::vector<double> _q2s;
+    mutable std::vector<double> _q2s;
 
     /// Whether or not the ODE has been solved yet
     mutable bool _calculated;
