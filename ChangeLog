@@ -1,3 +1,7 @@
+2014-06-18 Karl Nordstrom <karl.nordstrom@cern.ch>
+
+  * Improved AlphaS ODE solver performance.
+
 2014-06-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 6.1.3 release!
