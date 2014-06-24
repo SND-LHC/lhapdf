@@ -38,14 +38,13 @@ will be for debugging only, since printouts during PDF evaluation will slow down
 the operation of LHAPDF by potentially large factors.
 
 
-# ShowBanner
-# ----------
-# (bool)
-#
-# Whether or not to print out an LHAPDF5-style banner to stdout upon PDF
-# initialisation.
-#
-# NOT YET IMPLEMENTED!
+ShowBanner
+----------
+(bool)
+
+Whether or not to print out an LHAPDF5-style banner to stdout. (Triggered in Config destructor)
+
+NOT YET IMPLEMENTED! Will be once an LHAPDF6 paper is available to cite...
 
 
 Pythia6LambdaV5Compat
@@ -60,18 +59,6 @@ PYTHIA6 MC tunes have been built around this behaviour. This flag is set 'true'
 by default to minimise user surprise -- most users will expect PYTHIA6 to behave
 the same with both LHAPDF5 and 6. If you want LHAPDF6 to report correct,
 i.e. PDF specific, values to PYTHIA6, then explicitly set this flag to be false.
-
-
-# UndefFlavorAction
-# -----------------
-# (enum string): return_zero, error
-#
-# What to do if an xf value for an unsupported PID code is requested? Either
-# return 0 (i.e. there is implicitly none of that parton in the hadron) or throw
-# an error.
-#
-# NOT YET IMPLEMENTED: TOO MUCH OVERHEAD? (A METADATA STRING WOULD BE CHECKED FOR EVERY ACCESS TO 6/-6 UNLESS CACHING IS USED)
-
 
 
 SET LEVEL
