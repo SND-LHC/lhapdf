@@ -142,7 +142,7 @@ namespace LHAPDF {
 
       // We do this by starting from m_{Z}, going down to the lowest q2,
       // and then jumping back up to m_{Z} to avoid calculating things twice
-      for ( size_t ind = index_of_mz_lower; ind >= 0; --ind) {
+      for ( int ind = index_of_mz_lower; ind >= 0; --ind) {
         const double q2 = _q2s[ind];
         // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
         // allowed errors, and accuracy.
