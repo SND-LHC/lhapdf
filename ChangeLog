@@ -1,5 +1,9 @@
 2014-07-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Remove the LHAPDF ID from the warning printout about unvalidated
+	PDFs, since in that case there will usually be no standard ID
+	number and it just gets unhelpfully reported as -1.
+
 	* Detect and report improperly terminated grid files (ones missing a --- final line).
 
 	* Replace asserts with exceptions and improve subgrid error reporting in GridPDF.
