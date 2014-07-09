@@ -1,6 +1,10 @@
+2014-07-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improve testgrid to use PDFNAME/MEMNUM arg syntax.
+
 2014-06-18 Karl Nordstrom <karl.nordstrom@cern.ch>
 
-  * Improved AlphaS ODE solver performance.
+	* Improved AlphaS ODE solver performance.
 
 2014-06-17  Andy Buckley  <andy.buckley@cern.ch>
 
