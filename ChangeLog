@@ -16,6 +16,12 @@
 
 	* Improve testgrid to use PDFNAME/MEMNUM arg syntax.
 
+2014-07-7 David Grellscheid <david.grellscheid@ippp.dur.ac.uk>
+
+	* Forbid compilation if the demon combination of Boost < 1.47 and
+	GCC >= 4.6, with a serious bug in BOOST_FOREACH, is found:
+	http://code-muse.com/2013/08/06/boostforeach-and-compiler-bugs
+
 2014-06-18 Karl Nordstrom <karl.nordstrom@cern.ch>
 
 	* Improved AlphaS ODE solver performance.

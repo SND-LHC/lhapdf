@@ -168,6 +168,7 @@ BOOST_FIND_HEADER([boost/random.hpp])
 BOOST_FIND_HEADER([boost/math/distributions/chi_squared.hpp])
 BOOST_FIND_HEADER([boost/math/special_functions/erf.hpp])
 
+BOOST_BUG_IN_FOREACH
 
 ## Export base compiler flags
 AC_SUBST(AM_CPPFLAGS)
