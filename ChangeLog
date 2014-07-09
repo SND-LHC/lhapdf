@@ -1,5 +1,7 @@
 2014-07-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Treat a DataVersion of 0 as unvalidated: valid numbers now start at 1.
+
 	* Remove the LHAPDF ID from the warning printout about unvalidated
 	PDFs, since in that case there will usually be no standard ID
 	number and it just gets unhelpfully reported as -1.

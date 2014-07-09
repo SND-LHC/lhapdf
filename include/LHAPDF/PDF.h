@@ -68,7 +68,7 @@ namespace LHAPDF {
         print(std::cout, v);
       }
       /// Print out a warning message if this PDF data is unvalidated
-      if (_info.get_entry_as<int>("DataVersion", -1) < 0) {
+      if (_info.get_entry_as<int>("DataVersion", -1) <= 0) {
         std::cerr << "WARNING: this PDF is preliminary, unvalidated, and not for production use!" << std::endl;
       }
     }
