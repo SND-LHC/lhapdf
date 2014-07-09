@@ -139,7 +139,7 @@ MANDATORY
 How many members there are in the set, including the central member(s) and error
 set members.
 
-Note: there is no guarantee that all members are installed or that they are
+@note There is no guarantee that all members are installed or that they are
 consecutively numbered. This number is the official number of members in the
 released set.
 
@@ -156,7 +156,7 @@ TODO: Default to NumMembers - 1?
 
 Assumed structure of PDF sets has first error member at Nmem = 1?
 
-Note: there is no guarantee that all members are installed or that they are
+@note There is no guarantee that all members are installed or that they are
 consecutively numbered. This number is the official number of error set members
 in the released set.
 
@@ -166,17 +166,20 @@ Interpolator
 MANDATORY (for grid PDFs)
 (enum string): linear, cubic
 
-The factory name string of the PDF grid interpolator to use (if overriding the
-default). Could also be member-specific.
+The factory name string of the PDF grid interpolator to use -- only *needs* to
+be specified if overriding the default, which is cubic. Could also be
+member-specific, if necessary.
 
 
 Extrapolator
 ------------
 MANDATORY (for grid PDFs)
-(enum string): error
+(enum string): nearest,error
 
-The factory name string of the PDF grid extrapolator to use (if overriding the
-default). Could also be member-specific.
+The factory name string of the PDF grid extrapolator to use. It is recommended
+that this not be set to the "error" value in PDF data files; the choice of
+whether out-of-range PDFs should throw errors should primarily be made by the
+code *user*, and it is not the normally expected behaviour.
 
 
 XMin, XMax
@@ -347,11 +350,11 @@ Minimal LHAPDF version code (integerised) needed to use this PDF.
 DataVersion
 -----------
 MANDATORY
-(int, default = 0)
+(int, default = -1)
 
 The version of this PDF's data file, used to version fixes to the set.
 
-@note Use a negative value to flag this PDF as unsuitable for production
+@note Use a zero or negative value to flag this PDF as unsuitable for production
 use. The LHAPDF system will produce a warning printout in that case.
 
 
@@ -372,7 +375,10 @@ Note
 OPTIONAL
 (str)
 
-An optional note about this PDF set. It will be printed out at PDF initialization.
+An important short piece of usage information about this PDF set. Only use it
+exceptionally, e.g. for marking that a PDF set is deprecated and users should
+avoid it. The note will be printed into the online PDF table, and possibly used
+by other external programs, but does not affect normal runtime behaviour.
 
 
 
