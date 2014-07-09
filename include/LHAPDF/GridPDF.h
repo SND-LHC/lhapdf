@@ -177,9 +177,12 @@ namespace LHAPDF {
     /// Get the N-flavour subgrid containing Q2 = q2
     const KnotArrayNF& subgrid(double q2) const {
       assert(q2 >= 0);
+      assert(!q2Knots().empty());
       map<double, KnotArrayNF>::const_iterator it = _knotarrays.upper_bound(q2);
-      if (it == _knotarrays.begin()) throw GridError("Requested Q2 " + to_str(q2) + " is lower than any available Q2 subgrid");
-      if (it == _knotarrays.end() && q2 > q2Knots().back()) throw GridError("Requested Q2 " + to_str(q2) + " is higher than any available Q2 subgrid");
+      if (it == _knotarrays.begin())
+        throw GridError("Requested Q2 " + to_str(q2) + " is lower than any available Q2 subgrid (lowest Q2 = " + to_str(q2Knots().front()) + ")");
+      if (it == _knotarrays.end() && q2 > q2Knots().back())
+        throw GridError("Requested Q2 " + to_str(q2) + " is higher than any available Q2 subgrid (highest Q2 = " + to_str(q2Knots().back()) + ")");
       --it; // upper_bound (and lower_bound) returns the entry *above* q2: we need to decrement by one element
       // std::cout << "Using subgrid #" << std::distance(_knotarrays.begin(), it) << std::endl;
       return it->second;
@@ -209,8 +212,8 @@ namespace LHAPDF {
         for (map<double, KnotArrayNF>::const_iterator isub = _knotarrays.begin(); isub != _knotarrays.end(); ++isub) {
           const KnotArrayNF& subgrid = isub->second;
           const KnotArray1F& grid1 = subgrid.get_first();
-          if (grid1.q2s().empty()) continue;
-          BOOST_FOREACH (const double& q2, grid1.q2s()) {
+          if (grid1.q2s().empty()) continue; //< @todo This shouldn't be possible, right? Throw instead, or ditch the check?
+          BOOST_FOREACH (double q2, grid1.q2s()) {
             if (_q2knots.empty() || q2 != _q2knots.back()) _q2knots.push_back(q2);
           }
         }

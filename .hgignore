@@ -1,3 +1,4 @@
+^tmp$
 .*\.bak
 ^lhapdf-config$
 ^lhapdf.pc$

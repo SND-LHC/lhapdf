@@ -83,7 +83,7 @@ namespace LHAPDF {
 
 
   void GridPDF::_loadData(const std::string& mempath) {
-    string line;
+    string line, prevline;
     int iblock(0), iblockline(0), iline(0);
     vector<double> xs, q2s;
     const size_t npid = flavors().size();
@@ -95,6 +95,7 @@ namespace LHAPDF {
       while (getline(file, line)) {
         // Trim the current line to ensure that there is no effect of leading spaces, etc.
         trim(line);
+        prevline = line; // used to test the last line after the while loop fails
 
         // If the line is commented out, increment the line number but not the block line
         iline += 1;
@@ -113,8 +114,13 @@ namespace LHAPDF {
           nparser.reset(line);
           if (iblockline == 1) { // x knots line
             while (nparser >> token) xs.push_back(token);
+            if (xs.empty())
+              throw ReadError("Empty x knot array on line " + to_str(iline));
           } else if (iblockline == 2) { // Q knots line
             while (nparser >> token) q2s.push_back(token*token); // note Q -> Q2
+            if (q2s.empty())
+              throw ReadError("Empty Q knot array on line " + to_str(iline));
+            cout << q2s.size() << ", " << q2s.front() << ", " << q2s.back() << endl;
           } else if (iblockline == 3) { // internal flavor IDs line
             // DO NOTHING FOR NOW: only handling this for prospective forward compatibility
             /// @todo Handle internal partial flavour representations
@@ -149,11 +155,9 @@ namespace LHAPDF {
           // Escape here if we've just finished reading the 0th (metadata) block
           if (iblock == 1) continue;
 
-          // Die with an assert if the block was of zero size
-          /// @todo Convert to throwing some exception? Is this ever allowable?
-          assert(xs.size() > 0);
-          assert(q2s.size() > 0);
-          assert(ipid_xfs.size() > 0);
+          // Throw if the block was of zero size
+          if (ipid_xfs.empty())
+            throw ReadError("Empty xf values array in block " + to_str(iblock) + ", ended on line " + to_str(iline));
 
           // Register data from the previous (>0th) block into the GridPDF data structure
           KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
@@ -167,9 +171,11 @@ namespace LHAPDF {
           //cout << _knotarrays.size() << endl;
           xs.clear(); q2s.clear();
           for (size_t ipid = 0; ipid < npid; ++ipid) ipid_xfs[ipid].clear();
-
         }
       }
+      // File reading finished: complain if it was not properly terminated
+      if (prevline != "---")
+        throw ReadError("Grid file " + mempath + " is not properly terminated: .dat files MUST end with a --- separator line");
     } catch (Exception& e) {
       throw;
     } catch (std::exception& e) {

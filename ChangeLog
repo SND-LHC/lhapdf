@@ -1,5 +1,9 @@
 2014-07-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Detect and report improperly terminated grid files (ones missing a --- final line).
+
+	* Replace asserts with exceptions and improve subgrid error reporting in GridPDF.
+
 	* Report the value of Q2 that causes a subgrid-finding failure.
 
 	* Improve testgrid to use PDFNAME/MEMNUM arg syntax.

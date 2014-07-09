@@ -40,9 +40,9 @@ int main(int argc, char* argv[]) {
   cout << "x1, Q1 = " << pdf.subgrid(21, 100).xf(1, 1) << endl;
 
   cout << pdf.xfxQ(21, 0.7, 10.0) << endl;
-  cout << pdf.xfxQ2(21, 0.2, 126) << endl;
+  cout << pdf.xfxQ(21, 0.2, 126) << endl;
   BOOST_FOREACH (int pid, pdf.flavors()) {
-    cout << pid << " = " << pdf.xfxQ2(pid, 0.2, 124) << endl;
+    cout << pid << " = " << pdf.xfxQ(pid, 0.2, 124) << endl;
   }
 
   ofstream f("pdf.dat");
