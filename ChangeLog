@@ -1,5 +1,7 @@
 2014-07-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Report the value of Q2 that causes a subgrid-finding failure.
+
 	* Improve testgrid to use PDFNAME/MEMNUM arg syntax.
 
 2014-06-18 Karl Nordstrom <karl.nordstrom@cern.ch>
