@@ -1,3 +1,8 @@
+2014-07-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Clarify in lhapdf script help that 'list' by default shows all
+	available sets, not those installed on the user's system.
+
 2014-07-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Update CONFIGFLAGS docs to fix some errors w.r.t. actual flag usage.

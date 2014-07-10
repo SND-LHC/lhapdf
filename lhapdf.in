@@ -366,8 +366,9 @@ if __name__ == '__main__':
         help='update list of available PDF sets')
 
     list_cmd = Subcommand('list', aliases=('ls',), usage='%prog [options] pattern...',
-        description='List all available PDF sets, or search using a pattern.' + pattern_match_desc,
-        help='list installed/available PDF sets')
+        description='List all standard PDF sets, or search using a pattern.' + pattern_match_desc,
+        help='list PDF sets (by default lists all sets available for download; ' +
+             'use --installed or --outdated to explore those installed on the current system)')
     list_cmd.parser.add_option('--installed', dest="INSTALLED", action='store_true',
         help='list installed PDF sets')
     list_cmd.parser.add_option('--outdated', dest="OUTDATED", action='store_true',
