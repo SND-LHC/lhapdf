@@ -159,11 +159,12 @@ not building the very useful Python interface to LHAPDF.
 
 The Mac OS X "Homebrew" system (http://brew.sh/) comes recommended by several
 LHAPDF developers. Many HEP packages are already available for Homebrew via the
-homebrew-hep project: http://davidchall.github.io/homebrew-hep/ Success has also
-been reported with the MacPorts system (http://www.macports.org/). With both
-these approaches, you should set your environment to *only* use compilers and
-Python from the Brew/Ports area and to ignore the system packages: a hybrid
-approach will only cause unnecessary pain.
+homebrew-hep project: http://davidchall.github.io/homebrew-hep/ . Success has
+also been reported with the MacPorts system (http://www.macports.org/): please
+see HepForge's information about MacPorts at https://www.hepforge.org/docs/macosx .
+With both these approaches, you should set your environment to *only* use
+compilers and Python from the Brew/Ports area and to ignore the system packages:
+a hybrid approach will only cause unnecessary pain.
 
 
 */
