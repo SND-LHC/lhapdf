@@ -120,7 +120,7 @@ namespace LHAPDF {
             while (nparser >> token) q2s.push_back(token*token); // note Q -> Q2
             if (q2s.empty())
               throw ReadError("Empty Q knot array on line " + to_str(iline));
-            cout << q2s.size() << ", " << q2s.front() << ", " << q2s.back() << endl;
+            //cout << q2s.size() << ", " << q2s.front() << ", " << q2s.back() << endl;
           } else if (iblockline == 3) { // internal flavor IDs line
             // DO NOTHING FOR NOW: only handling this for prospective forward compatibility
             /// @todo Handle internal partial flavour representations
