@@ -1,3 +1,8 @@
+2014-07-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Treat PID 0 as an alias for 21 in PDF::hasFlavor as well as the
+	PDF::xf* functions. Thanks to Nathan Hartland for the report.
+
 2014-07-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Clarify in lhapdf script help that 'list' by default shows all

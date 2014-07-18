@@ -114,13 +114,9 @@ namespace LHAPDF {
         throw RangeError("Unphysical Q2 given: " + to_str(q2));
       }
       // Treat PID = 0 as always equivalent to a gluon: query as PID = 21
-      const int id2 = (id != 0) ? id : 21;
+      const int id2 = (id != 0) ? id : 21; //< @note Treat 0 as an alias for 21
       // Undefined PIDs
-      if (!hasFlavor(id2)) {
-        /// @todo Should look up the UndefFlavorAction flag, but efficiency hit for top?
-        //throw FlavorError("Undefined flavour requested: " + to_str(id));
-        return 0.0;
-      }
+      if (!hasFlavor(id2)) return 0.0;
       // Call the delegated method in the concrete PDF object to calculate the in-range value
       double xfx = _xfxQ2(id2, x, q2);
       // Apply positivity forcing at the enabled level
@@ -474,8 +470,9 @@ namespace LHAPDF {
 
     /// Checks whether @a id is a valid parton for this PDF.
     bool hasFlavor(int id) const {
+      const int id2 = (id != 0) ? id : 21; //< @note Treat 0 as an alias for 21
       const vector<int>& ids = flavors();
-      return find(ids.begin(), ids.end(), id) != ids.end();
+      return find(ids.begin(), ids.end(), id2) != ids.end();
     }
 
     /// @brief Order of QCD at which this PDF has been constructed
@@ -487,8 +484,7 @@ namespace LHAPDF {
       return info().get_entry_as<int>("OrderQCD");
     }
     /// @deprecated Use orderQCD instead
-    int qcdOrder() const {
-      return orderQCD(); }
+    int qcdOrder() const { return orderQCD(); }
 
     //@}
 
