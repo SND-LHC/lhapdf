@@ -20,3 +20,17 @@ Testing, advice, etc.:
   Juan Rojo
   Marek Schoenherr
   Mike Whalley
+
+
+CITATION
+========
+
+Please cite the contribution
+
+  "New access to PDF data via LHAPDF6", by A. Buckley
+  in "Les Houches 2013: Physics at TeV Colliders: Standard Model Working Group Report"
+  http://arxiv.org/abs/1405.1067
+  http://inspirehep.net/search?p=find+eprint+1405.1067
+
+A full write-up of LHAPDF6 will appear as soon as possible and
+will replace this current recommendation.
