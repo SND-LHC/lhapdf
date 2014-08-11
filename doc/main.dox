@@ -165,6 +165,11 @@ assistance: there are often good explanations and solutions online.
 
 @section dev For developers
 
+To check out LHAPDF6 from Mercurial, use this command for read-only: `hg clone
+https://lhapdf.hepforge.org/hg/lhapdf`, and this for read-write: `hg clone
+ssh://USER@login.hepforge.org//hepforge/hg/lhapdf/public/lhapdf` (requires a
+HepForge login account; replace `USER` with your actual HF user name.)
+
 See the following pages:
 
 - Code browser: https://lhapdf.hepforge.org/trac/browser
