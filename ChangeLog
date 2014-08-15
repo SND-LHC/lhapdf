@@ -1,5 +1,7 @@
 2014-08-15  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding multiset variants of the 5 getmin/max LHAGlue functions.
+
 	* Adding the 'unofficial' getminmax Fortran function to LHAGlue.cc
 	(thanks to Andrey Sapronov for the report and patch).
 

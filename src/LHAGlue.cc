@@ -507,37 +507,61 @@ extern "C" {
   }
 
 
+  void getxminm_(const int& nset, const int& nmem, double& xmin) {
+    ACTIVESETS[nset].loadMember(nmem);
+    xmin = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMin");
+  }
+
   void getxmin_(const int& nmem, double& xmin) {
     currentset = 1;
-    ACTIVESETS[1].loadMember(nmem);
-    xmin = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMin");
+    getxminm_(currentset, nmem, xmin);
+  }
+
+
+  void getxmaxm_(const int& nset, const int& nmem, double& xmax) {
+    ACTIVESETS[nset].loadMember(nmem);
+    xmax = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMax");
   }
 
   void getxmax_(const int& nmem, double& xmax) {
     currentset = 1;
-    ACTIVESETS[1].loadMember(nmem);
-    xmax = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMax");
+    getxmaxm_(currentset, nmem, xmax);
+  }
+
+
+  void getq2minm_(const int& nset, const int& nmem, double& q2min) {
+    ACTIVESETS[nset].loadMember(nmem);
+    q2min = LHAPDF::sqr(ACTIVESETS[nset].activemember()->info().get_entry_as<double>("QMin"));
   }
 
   void getq2min_(const int& nmem, double& q2min) {
     currentset = 1;
-    ACTIVESETS[1].loadMember(nmem);
-    q2min = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMin"));
+    getq2minm_(currentset, nmem, q2min);
+  }
+
+
+  void getq2maxm_(const int& nset, const int& nmem, double& q2max) {
+    ACTIVESETS[nset].loadMember(nmem);
+    q2max = LHAPDF::sqr(ACTIVESETS[nset].activemember()->info().get_entry_as<double>("QMax"));
   }
 
   void getq2max_(const int& nmem, double& q2max) {
     currentset = 1;
-    ACTIVESETS[1].loadMember(nmem);
-    q2max = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMax"));
+    getq2maxm_(currentset, nmem, q2max);
   }
+
+
+  void getminmaxm_(const int& nset, const int& nmem, double& xmin, double& xmax, double& q2min, double& q2max) {
+     ACTIVESETS[nset].loadMember(nmem);
+     xmin = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMin");
+     xmax = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("XMax");
+     q2min = LHAPDF::sqr(ACTIVESETS[nset].activemember()->info().get_entry_as<double>("QMin"));
+     q2max = LHAPDF::sqr(ACTIVESETS[nset].activemember()->info().get_entry_as<double>("QMax"));
+   }
 
   void getminmax_(const int& nmem, double& xmin, double& xmax, double& q2min, double& q2max) {
      currentset = 1;
-     ACTIVESETS[1].loadMember(nmem);
-     xmin = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMin");
-     xmax = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMax");
-     q2min = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMin"));
-     q2max = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMax"));
+     getminmaxm_(currentset, nmem, xmin, xmax, q2min, q2max);
    }
 
 
