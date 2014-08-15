@@ -1,7 +1,7 @@
 /**
 @page pdfsets PDF sets
 
-<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 262 available, of which 247 are validated.</b>
+<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 264 available, of which 249 are validated.</b>
 
 See http://www.hepforge.org/archive/lhapdf/pdfsets/6.1 for data downloads.
 
@@ -272,6 +272,8 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>247000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_lo_as_0130_qed.tar.gz">NNPDF23_lo_as_0130_qed</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>247200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0119_qed_mc.tar.gz">NNPDF23_nlo_as_0119_qed_mc</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>247400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0119_qed_mc.tar.gz">NNPDF23_nnlo_as_0119_qed_mc</a></td><td>101</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>250000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDFpol10_100.tar.gz">NNPDFpol10_100</a></td><td>101</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>251000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDFpol11_100.tar.gz">NNPDFpol11_100</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>260000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0118.tar.gz">NNPDF30_nlo_as_0118</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>260200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0118_nf_3.tar.gz">NNPDF30_nlo_as_0118_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>260400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0118_nf_4.tar.gz">NNPDF30_nlo_as_0118_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
