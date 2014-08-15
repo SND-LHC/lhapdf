@@ -98,6 +98,14 @@ VERSION 6.1.x
 VERSION 6.2
 -----------
 
+- **Nuclear PDFs**
+
+   There's definitely a need for interfaces both to individual nuclear modification
+   functions (like PDFs themselves, a function of x,Q2) for application on top
+   of nucleon PDFs, and for all-inclusive nuclear PDFs. Individual "sets" for
+   each nucleus (A) as well as error sets: need to decide on groupings as well
+   as the API. Quite active, cf. "Lisbon Accord".
+
 - **Optimize the grid PDF interpolator code**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
