@@ -1,3 +1,8 @@
+2014-08-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding the 'unofficial' getminmax Fortran function to LHAGlue.cc
+	(thanks to Andrey Sapronov for the report and patch).
+
 2014-07-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Treat PID 0 as an alias for 21 in PDF::hasFlavor as well as the

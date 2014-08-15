@@ -531,6 +531,15 @@ extern "C" {
     q2max = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMax"));
   }
 
+  void getminmax_(const int& nmem, double& xmin, double& xmax, double& q2min, double& q2max) {
+     currentset = 1;
+     ACTIVESETS[1].loadMember(nmem);
+     xmin = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMin");
+     xmax = ACTIVESETS[1].activemember()->info().get_entry_as<double>("XMax");
+     q2min = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMin"));
+     q2max = LHAPDF::sqr(ACTIVESETS[1].activemember()->info().get_entry_as<double>("QMax"));
+   }
+
 
   /// Backwards compatibility functions for LHAPDF5 calculations of
   /// PDF uncertainties and PDF correlations (G. Watt, March 2014).
