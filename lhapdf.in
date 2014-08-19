@@ -342,6 +342,24 @@ def download_url(source, dest_dir, dryrun=False):
     return True
 
 
+def extract_tarball(tar_filename, dest_dir, keep_tarball):
+    """Extracts a tarball to the destination directory."""
+
+    tarpath = os.path.join(dest_dir, tar_filename)
+    try:
+        import tarfile
+        tar_file = tarfile.open(tarpath, 'r:gz')
+        tar_file.extractall(dest_dir)
+        tar_file.close()
+    except:
+        logging.error('Unable to extract %s' % tar_filename)
+    if not keep_tarball:
+        try:
+            os.remove(tarpath)
+        except:
+            logging.error('Unable to remove %s after expansion' % tar_filename)
+
+
 def convertBytes(size, nDecimalPoints=1):
     units = ('B', 'KB', 'MB', 'GB')
     import math
@@ -386,13 +404,19 @@ if __name__ == '__main__':
     install_cmd.parser.add_option('--keep', dest="KEEP_TARBALLS", action='store_true',
         help='Keep the downloaded tarballs')
 
+    upgrade_cmd = Subcommand('upgrade',
+        description='Reinstall all PDF sets considered outdated by the local reference list',
+        help='reinstall outdated PDF sets')
+    upgrade_cmd.parser.add_option('--keep', dest="KEEP_TARBALLS", action='store_true',
+        help='Keep the downloaded tarballs')
+
     ######################################
     #  Set up global parser and options  #
     ######################################
     parser = SubcommandsOptionParser(
         description = 'LHAPDF is an interface to parton distribution functions. This program is intended for browsing and installing the PDFs.',
         version     = __version__,
-        subcommands = (update_cmd, list_cmd, install_cmd)
+        subcommands = (update_cmd, list_cmd, install_cmd, upgrade_cmd)
     )
     parser.add_option('-q', '--quiet', help='Suppress normal messages',
         dest='LOGLEVEL', action='store_const', const=logging.WARNING, default=logging.INFO)
@@ -498,16 +522,13 @@ if __name__ == '__main__':
             tar_filename = pdf + '.tar.gz'
             # if download_file(urlbase + unvalidated + tar_filename, options.PDFDIR, dryrun=suboptions.dryrun):
             if download_file(tar_filename, options.PDFDIR, dryrun=suboptions.DRYRUN):
-                tarpath = os.path.join(options.PDFDIR, tar_filename)
-                try:
-                    import tarfile
-                    tar_file = tarfile.open(tarpath, 'r:gz')
-                    tar_file.extractall(options.PDFDIR)
-                    tar_file.close()
-                except:
-                    logging.error('Unable to extract %s' % tar_filename)
-                if not suboptions.KEEP_TARBALLS:
-                    try:
-                        os.remove(tarpath)
-                    except:
-                        logging.error('Unable to remove %s after expansion' % tar_filename)
+                extract_tarball(tar_filename, options.PDFDIR, suboptions.KEEP_TARBALLS)
+
+
+    if subcommand is upgrade_cmd:
+        outdated_pdfs = [pdf for pdf in master_list.keys() if master_list[pdf].outdated]  # dict comprehension requires >=2.7
+
+        for pdf in outdated_pdfs:
+            tar_filename = pdf + '.tar.gz'
+            if download_file(tar_filename, options.PDFDIR):
+                extract_tarball(tar_filename, options.PDFDIR, suboptions.KEEP_TARBALLS)
