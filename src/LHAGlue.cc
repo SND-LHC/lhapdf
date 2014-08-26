@@ -435,21 +435,19 @@ extern "C" {
     // Identify the calling program (yuck!)
     string my_par(par);
     if (my_par.find("NPTYPE") != string::npos) {
-      /// @todo Remove noisiness? Useful for now
-      cout << "==== PYTHIA WILL USE LHAPDFv6 ====" << endl;
+      cout << "==== LHAPDF6 USING PYTHIA-TYPE LHAGLUE INTERFACE ====" << endl;
       // Take PDF ID from value[2]
       ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
     } else if (my_par.find("HWLHAPDF") != string::npos) {
-      /// @todo Remove noisiness? Useful for now
-      cout << "==== HERWIG WILL USE LHAPDFv6 ====" << endl;
+      cout << "==== LHAPDF6 USING HERWIG-TYPE LHAGLUE INTERFACE ====" << endl;
       // Take PDF ID from value[0]
       ACTIVESETS[1] = PDFSetHandler(value[0]);
     } else if (my_par.find("DEFAULT") != string::npos) {
-      cout << "==== POWHEG (OR POSSIBLY HERWIG) WILL USE LHAPDFv6 ====" << endl;
+      cout << "==== LHAPDF6 USING DEFAULT-TYPE LHAGLUE INTERFACE ====" << endl;
       // Take PDF ID from value[0]
       ACTIVESETS[1] = PDFSetHandler(value[0]);
     } else {
-      cout << "==== UNKNOWN GENERATOR WILL USE LHAPDFv6 IN PDFLIB STYLE ====" << endl;
+      cout << "==== LHAPDF6 USING PDFLIB-TYPE LHAGLUE INTERFACE ====" << endl;
       // Take PDF ID from value[2]
       ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
     }
