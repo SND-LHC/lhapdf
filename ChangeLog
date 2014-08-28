@@ -1,3 +1,8 @@
+2014-08-28  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Fallback to bilinear interpolator if using bicubic
+	interpolator with only 2 or 3 Q2 knots in a subgrid.
+
 2014-08-26  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improve LHAGlue info messages to not specify that particular
