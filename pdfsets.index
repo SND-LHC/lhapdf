@@ -1,3 +1,4 @@
+10000 cteq6 -1
 10042 cteq6l1 4
 10550 cteq66 1
 10770 CT09MCS 1
@@ -74,7 +75,6 @@
 12000 CJ12min -1
 12100 CJ12mid -1
 12200 CJ12max -1
-19050 cteq5m -1
 20460 MRST2004qed -1
 20463 MRST2004qed_proton 3
 20465 MRST2004qed_neutron 3
