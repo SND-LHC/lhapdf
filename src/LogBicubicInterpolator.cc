@@ -11,6 +11,13 @@ namespace LHAPDF {
 
   namespace { // Unnamed namespace
 
+    // One-dimensional linear interpolation for y(x)
+    inline double _interpolateLinear(double x, double xl, double xh, double yl, double yh)	{
+      assert(x >= xl);
+      assert(xh >= x);
+      return yl + (x - xl) / (xh - xl) * (yh - yl);
+    }
+
     // One-dimensional cubic interpolation
     inline double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH) {
       // Pre-calculate powers of T
@@ -52,8 +59,19 @@ namespace LHAPDF {
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
     if (subgrid.logxs().size() < 4)
       throw GridError("PDF subgrids are required to have at least 4 x-knots for use with LogBicubicInterpolator");
-    if (subgrid.logq2s().size() < 4)
-      throw GridError("PDF subgrids are required to have at least 4 Q2-knots for use with LogBicubicInterpolator");
+    if (subgrid.logq2s().size() < 4) {
+      if (subgrid.logq2s().size() > 1) {
+	// Fallback to LogBilinearInterpolator if either 2 or 3 Q2-knots
+	// First interpolate in x
+	const double logx = log(x);
+	const double logx0 = subgrid.logxs()[ix];
+	const double logx1 = subgrid.logxs()[ix+1];
+	const double f_ql = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2), subgrid.xf(ix+1, iq2));
+	const double f_qh = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2+1), subgrid.xf(ix+1, iq2+1));
+	// Then interpolate in Q2, using the x-ipol results as anchor points
+	return _interpolateLinear(log(q2), subgrid.logq2s()[iq2], subgrid.logq2s()[iq2+1], f_ql, f_qh);
+      } else throw GridError("PDF subgrids are required to have at least 2 Q2-knots for use with LogBicubicInterpolator");
+    }
 
     const double logx = log(x);
     const double logq2 = log(q2);

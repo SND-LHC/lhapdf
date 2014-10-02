@@ -11,6 +11,13 @@ namespace LHAPDF {
 
   namespace { // Unnamed namespace
 
+    // One-dimensional linear interpolation for y(x)
+    inline double _interpolateLinear(double x, double xl, double xh, double yl, double yh)	{
+      assert(x >= xl);
+      assert(xh >= x);
+      return yl + (x - xl) / (xh - xl) * (yh - yl);
+    }
+
     // One-dimensional cubic interpolation
     inline double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH) {
       // Pre-calculate powers of T
@@ -50,8 +57,16 @@ namespace LHAPDF {
   double BicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
     if (subgrid.logxs().size() < 4)
       throw GridError("PDF subgrids are required to have at least 4 x-knots for use with BicubicInterpolator");
-    if (subgrid.logq2s().size() < 4)
-      throw GridError("PDF subgrids are required to have at least 4 Q2-knots for use with BicubicInterpolator");
+    if (subgrid.logq2s().size() < 4) {
+      if (subgrid.logq2s().size() > 1) {
+	// Fallback to BilinearInterpolator if either 2 or 3 Q2-knots
+	// First interpolate in x
+	const double f_ql = _interpolateLinear(x, subgrid.xs()[ix], subgrid.xs()[ix+1], subgrid.xf(ix, iq2), subgrid.xf(ix+1, iq2));
+	const double f_qh = _interpolateLinear(x, subgrid.xs()[ix], subgrid.xs()[ix+1], subgrid.xf(ix, iq2+1), subgrid.xf(ix+1, iq2+1));
+	// Then interpolate in Q2, using the x-ipol results as anchor points
+	return _interpolateLinear(q2, subgrid.q2s()[iq2], subgrid.q2s()[iq2+1], f_ql, f_qh);
+      } else throw GridError("PDF subgrids are required to have at least 2 Q2-knots for use with BicubicInterpolator");
+    }
 
     /// @todo Allow interpolation right up to the borders of the grid in Q2 and x... the last inter-knot range is currently broken
 
