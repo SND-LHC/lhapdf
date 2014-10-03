@@ -36,8 +36,8 @@ namespace LHAPDF {
     }
 
 
-    // Provides d/dx at all grid locations
-    double _ddlogx(const KnotArray1F& subgrid, size_t ix, size_t iq2) {
+    // Calculate adjacent d(xf)/dx at all grid locations for fixed iq2
+    double _dxf_dlogx(const KnotArray1F& subgrid, size_t ix, size_t iq2) {
       if (ix != 0 && ix != subgrid.xs().size()-1) { //< If central, use the central difference
         /// @note We evaluate the most likely condition first to help compiler branch prediction
         const double lddx = (subgrid.xf(ix, iq2) - subgrid.xf(ix-1, iq2)) / (subgrid.logxs()[ix] - subgrid.logxs()[ix-1]);
@@ -58,16 +58,21 @@ namespace LHAPDF {
 
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
     const size_t nxknots = subgrid.logxs().size();
-    const size_t nqknots = subgrid.logq2s().size();
+    const size_t nq2knots = subgrid.logq2s().size();
 
     // Raise an error if there are too few knots even for a linear fall-back
     if (nxknots < 4)
       throw GridError("PDF subgrids are required to have at least 4 x-knots for use with LogBicubicInterpolator");
-    if (nqknots < 2)
+    if (nq2knots < 2)
       throw GridError("PDF subgrids are required to have at least 2 Q-knots for use with LogBicubicInterpolator");
 
     // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
-    if (nqknots < 4) {
+    if (nq2knots < 4) {
+      // Check x and q index ranges
+      if (ix+1 < nxknots-1) // also true if ix is off the end
+        throw GridError("Attempting to access an x-knot index past the end of the array, in linear fallback mode");
+      if (iq2+1 < nq2knots-1) // also true if iq2 is off the end
+        throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
       // First interpolate in x
       const double logx = log(x);
       const double logx0 = subgrid.logxs()[ix];
@@ -78,58 +83,61 @@ namespace LHAPDF {
       return _interpolateLinear(log(q2), subgrid.logq2s()[iq2], subgrid.logq2s()[iq2+1], f_ql, f_qh);
     }
 
+    // Check x and q index ranges for cubic interpolation (requires i-1 and i+2 indices)
+    if (ix+1 < nxknots-1) // also true if ix is off the end
+      throw GridError("Attempting to access an x-knot index past the end of the array, in linear fallback mode");
+    if (iq2+1 < nq2knots-1) // also true if iq2 is off the end
+      throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
+
     const double logx = log(x);
     const double logq2 = log(q2);
 
     // Distance parameters
-    const double dlogx = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
-    const double tlogx = (logx - subgrid.logxs()[ix]) / dlogx;
-    /// Only compute these if the +1 and +2 indices are guaranteed to be valid
+    const double dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
+    const double tlogx = (logx - subgrid.logxs()[ix]) / dlogx_1;
     const double dlogq_0 = subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1];
     const double dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
     const double dlogq_2 = subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1];
-    const double dlogq = dlogq_1;
-    const double tlogq = (logq2 - subgrid.logq2s()[iq2]) / dlogq;
+    const double tlogq = (logq2 - subgrid.logq2s()[iq2]) / dlogq_1;
 
     // Points in Q2
-    double vl = _interpolateCubic(tlogx, subgrid.xf(ix, iq2), _ddlogx(subgrid, ix, iq2) * dlogx,
-                                         subgrid.xf(ix+1, iq2), _ddlogx(subgrid, ix+1, iq2) * dlogx);
-    double vh = _interpolateCubic(tlogx, subgrid.xf(ix, iq2+1), _ddlogx(subgrid, ix, iq2+1) * dlogx,
-                                         subgrid.xf(ix+1, iq2+1), _ddlogx(subgrid, ix+1, iq2+1) * dlogx);
+    double vl = _interpolateCubic(tlogx, subgrid.xf(ix, iq2), _dxf_dlogx(subgrid, ix, iq2) * dlogx_1,
+                                         subgrid.xf(ix+1, iq2), _dxf_dlogx(subgrid, ix+1, iq2) * dlogx_1);
+    double vh = _interpolateCubic(tlogx, subgrid.xf(ix, iq2+1), _dxf_dlogx(subgrid, ix, iq2+1) * dlogx_1,
+                                         subgrid.xf(ix+1, iq2+1), _dxf_dlogx(subgrid, ix+1, iq2+1) * dlogx_1);
 
     // Derivatives in Q2
     double vdl, vdh;
     if (iq2 != 0 && iq2+1 != subgrid.q2s().size()-1) {
       // Central difference for both q
       /// @note We evaluate the most likely condition first to help compiler branch prediction
-      double vll = _interpolateCubic(tlogx, subgrid.xf(ix, iq2-1), _ddlogx(subgrid, ix, iq2-1) * dlogx,
-                                            subgrid.xf(ix+1, iq2-1), _ddlogx(subgrid, ix+1, iq2-1) * dlogx);
+      double vll = _interpolateCubic(tlogx, subgrid.xf(ix, iq2-1), _dxf_dlogx(subgrid, ix, iq2-1) * dlogx_1,
+                                            subgrid.xf(ix+1, iq2-1), _dxf_dlogx(subgrid, ix+1, iq2-1) * dlogx_1);
       vdl = ( (vh - vl)/dlogq_1 + (vl - vll)/dlogq_0 ) / 2.0;
-      double vhh = _interpolateCubic(tlogx, subgrid.xf(ix, iq2+2), _ddlogx(subgrid, ix, iq2+2) * dlogx,
-                                            subgrid.xf(ix+1, iq2+2), _ddlogx(subgrid, ix+1, iq2+2) * dlogx);
+      double vhh = _interpolateCubic(tlogx, subgrid.xf(ix, iq2+2), _dxf_dlogx(subgrid, ix, iq2+2) * dlogx_1,
+                                            subgrid.xf(ix+1, iq2+2), _dxf_dlogx(subgrid, ix+1, iq2+2) * dlogx_1);
       vdh = ( (vh - vl)/dlogq_1 + (vhh - vh)/dlogq_2 ) / 2.0;
     }
     else if (iq2 == 0) {
       // Forward difference for lower q
       vdl = (vh - vl) / dlogq_1;
       // Central difference for higher q
-      double vhh = _interpolateCubic(tlogx, subgrid.xf(ix, iq2+2), _ddlogx(subgrid, ix, iq2+2) * dlogx,
-                                            subgrid.xf(ix+1, iq2+2), _ddlogx(subgrid, ix+1, iq2+2) * dlogx);
+      double vhh = _interpolateCubic(tlogx, subgrid.xf(ix, iq2+2), _dxf_dlogx(subgrid, ix, iq2+2) * dlogx_1,
+                                            subgrid.xf(ix+1, iq2+2), _dxf_dlogx(subgrid, ix+1, iq2+2) * dlogx_1);
       vdh = (vdl + (vhh - vh)/dlogq_2) / 2.0;
     }
     else if (iq2+1 == subgrid.q2s().size()-1) {
       // Backward difference for higher q
       vdh = (vh - vl) / dlogq_1;
       // Central difference for lower q
-      double vll = _interpolateCubic(tlogx, subgrid.xf(ix, iq2-1), _ddlogx(subgrid, ix, iq2-1) * dlogx,
-                                            subgrid.xf(ix+1, iq2-1), _ddlogx(subgrid, ix+1, iq2-1) * dlogx);
+      double vll = _interpolateCubic(tlogx, subgrid.xf(ix, iq2-1), _dxf_dlogx(subgrid, ix, iq2-1) * dlogx_1,
+                                            subgrid.xf(ix+1, iq2-1), _dxf_dlogx(subgrid, ix+1, iq2-1) * dlogx_1);
       vdl = (vdh + (vl - vll)/dlogq_0) / 2.0;
     }
     else throw LogicError("We shouldn't be able to get here!");
 
-    vdl *= dlogq;
-    vdh *= dlogq;
-
+    vdl *= dlogq_1;
+    vdh *= dlogq_1;
     return _interpolateCubic(tlogq, vl, vdl, vh, vdh);
   }
 
