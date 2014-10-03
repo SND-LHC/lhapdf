@@ -38,14 +38,15 @@ namespace LHAPDF {
 
     // Calculate adjacent d(xf)/dx at all grid locations for fixed iq2
     double _dxf_dlogx(const KnotArray1F& subgrid, size_t ix, size_t iq2) {
-      if (ix != 0 && ix != subgrid.xs().size()-1) { //< If central, use the central difference
+      const size_t nxknots = subgrid.xs().size();
+      if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
         /// @note We evaluate the most likely condition first to help compiler branch prediction
         const double lddx = (subgrid.xf(ix, iq2) - subgrid.xf(ix-1, iq2)) / (subgrid.logxs()[ix] - subgrid.logxs()[ix-1]);
         const double rddx = (subgrid.xf(ix+1, iq2) - subgrid.xf(ix, iq2)) / (subgrid.logxs()[ix+1] - subgrid.logxs()[ix]);
         return (lddx + rddx) / 2.0;
       } else if (ix == 0) { //< If at leftmost edge, use forward difference
         return (subgrid.xf(ix+1, iq2) - subgrid.xf(ix, iq2)) / (subgrid.logxs()[ix+1] - subgrid.logxs()[ix]);
-      } else if (ix == subgrid.xs().size() - 1) { //< If at rightmost edge, use backward difference
+      } else if (ix == nxknots-1) { //< If at rightmost edge, use backward difference
         return (subgrid.xf(ix, iq2) - subgrid.xf(ix-1, iq2)) / (subgrid.logxs()[ix] - subgrid.logxs()[ix-1]);
       } else {
         throw LogicError("We shouldn't be able to get here!");
@@ -57,47 +58,43 @@ namespace LHAPDF {
 
 
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
+    // Raise an error if there are too few knots even for a linear fall-back
     const size_t nxknots = subgrid.logxs().size();
     const size_t nq2knots = subgrid.logq2s().size();
-
-    // Raise an error if there are too few knots even for a linear fall-back
     if (nxknots < 4)
       throw GridError("PDF subgrids are required to have at least 4 x-knots for use with LogBicubicInterpolator");
     if (nq2knots < 2)
       throw GridError("PDF subgrids are required to have at least 2 Q-knots for use with LogBicubicInterpolator");
 
-    // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
-    if (nq2knots < 4) {
-      // Check x and q index ranges
-      if (ix+1 >= nxknots) // also true if ix is off the end
-        throw GridError("Attempting to access an x-knot index past the end of the array, in linear fallback mode");
-      if (iq2+1 >= nq2knots) // also true if iq2 is off the end
-        throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
-      // First interpolate in x
-      const double logx = log(x);
-      const double logx0 = subgrid.logxs()[ix];
-      const double logx1 = subgrid.logxs()[ix+1];
-      const double f_ql = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2), subgrid.xf(ix+1, iq2));
-      const double f_qh = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2+1), subgrid.xf(ix+1, iq2+1));
-      // Then interpolate in Q2, using the x-ipol results as anchor points
-      return _interpolateLinear(log(q2), subgrid.logq2s()[iq2], subgrid.logq2s()[iq2+1], f_ql, f_qh);
-    }
-
-    // Check x and q index ranges for cubic interpolation (requires i-1 and i+2 indices)
-    if (ix+1 >= nxknots) // also true if ix is off the end
+    // Check x and q index ranges -- we always need i and i+1 indices to be valid
+    const size_t ixmax = nxknots - 1;
+    const size_t iq2max = nq2knots - 1;
+    if (ix+1 > ixmax) // also true if ix is off the end
       throw GridError("Attempting to access an x-knot index past the end of the array, in linear fallback mode");
-    if (iq2+1 >= nq2knots) // also true if iq2 is off the end
+    if (iq2+1 > iq2max) // also true if iq2 is off the end
       throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
 
     const double logx = log(x);
     const double logq2 = log(q2);
 
-    // Distance parameters
+    // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
+    if (nq2knots < 4) {
+      // First interpolate in x
+      const double logx0 = subgrid.logxs()[ix];
+      const double logx1 = subgrid.logxs()[ix+1];
+      const double f_ql = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2), subgrid.xf(ix+1, iq2));
+      const double f_qh = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2+1), subgrid.xf(ix+1, iq2+1));
+      // Then interpolate in Q2, using the x-ipol results as anchor points
+      return _interpolateLinear(logq2, subgrid.logq2s()[iq2], subgrid.logq2s()[iq2+1], f_ql, f_qh);
+    }
+    // else proceed with cubic interpolation:
+
+    // Pre-calculate parameters
     const double dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
     const double tlogx = (logx - subgrid.logxs()[ix]) / dlogx_1;
-    const double dlogq_0 = subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1];
+    const double dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
     const double dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
-    const double dlogq_2 = subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1];
+    const double dlogq_2 = (iq2+1 != iq2max) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
     const double tlogq = (logq2 - subgrid.logq2s()[iq2]) / dlogq_1;
 
     // Points in Q2
@@ -108,7 +105,7 @@ namespace LHAPDF {
 
     // Derivatives in Q2
     double vdl, vdh;
-    if (iq2 != 0 && iq2+1 != subgrid.q2s().size()-1) {
+    if (iq2 > 0 && iq2+1 < iq2max) {
       // Central difference for both q
       /// @note We evaluate the most likely condition first to help compiler branch prediction
       double vll = _interpolateCubic(tlogx, subgrid.xf(ix, iq2-1), _dxf_dlogx(subgrid, ix, iq2-1) * dlogx_1,
@@ -126,7 +123,7 @@ namespace LHAPDF {
                                             subgrid.xf(ix+1, iq2+2), _dxf_dlogx(subgrid, ix+1, iq2+2) * dlogx_1);
       vdh = (vdl + (vhh - vh)/dlogq_2) / 2.0;
     }
-    else if (iq2+1 == subgrid.q2s().size()-1) {
+    else if (iq2+1 == iq2max) {
       // Backward difference for higher q
       vdh = (vh - vl) / dlogq_1;
       // Central difference for lower q
