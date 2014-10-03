@@ -58,6 +58,10 @@ UNVERSIONED
 
    Hope for approval soon.
 
+- **CJ12 PDF approval**
+
+   Bugs fixed upstream, new grid files awaited.
+
 - **JR14 PDF integration**
 
    Awaiting data files from Pedro Jiminez.
@@ -71,9 +75,11 @@ UNVERSIONED
 VERSION 6.1.x
 -------------
 
+- **Don't change active PDF member when returning x, q min/max, etc.**
+
 - **Make it possible to find all metadata keys both locally and in total (AB)**
 
-- **Expose LHAGLUE slots system for C++ use**
+- **Expose LHAGLUE slots system for C++ use?**
 
    Automatic memory management can be nice for everyone. Or just leave as pointers?
 
