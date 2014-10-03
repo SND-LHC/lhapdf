@@ -69,9 +69,9 @@ namespace LHAPDF {
     // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
     if (nq2knots < 4) {
       // Check x and q index ranges
-      if (ix+1 < nxknots-1) // also true if ix is off the end
+      if (ix+1 >= nxknots) // also true if ix is off the end
         throw GridError("Attempting to access an x-knot index past the end of the array, in linear fallback mode");
-      if (iq2+1 < nq2knots-1) // also true if iq2 is off the end
+      if (iq2+1 >= nq2knots) // also true if iq2 is off the end
         throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
       // First interpolate in x
       const double logx = log(x);
