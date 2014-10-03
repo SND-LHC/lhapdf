@@ -84,9 +84,9 @@ namespace LHAPDF {
     }
 
     // Check x and q index ranges for cubic interpolation (requires i-1 and i+2 indices)
-    if (ix+1 < nxknots-1) // also true if ix is off the end
+    if (ix+1 >= nxknots) // also true if ix is off the end
       throw GridError("Attempting to access an x-knot index past the end of the array, in linear fallback mode");
-    if (iq2+1 < nq2knots-1) // also true if iq2 is off the end
+    if (iq2+1 >= nq2knots) // also true if iq2 is off the end
       throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
 
     const double logx = log(x);
