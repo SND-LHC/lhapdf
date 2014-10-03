@@ -57,20 +57,25 @@ namespace LHAPDF {
 
 
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
-    if (subgrid.logxs().size() < 4)
+    const size_t nxknots = subgrid.logxs().size();
+    const size_t nqknots = subgrid.logq2s().size();
+
+    // Raise an error if there are too few knots even for a linear fall-back
+    if (nxknots < 4)
       throw GridError("PDF subgrids are required to have at least 4 x-knots for use with LogBicubicInterpolator");
-    if (subgrid.logq2s().size() < 4) {
-      if (subgrid.logq2s().size() > 1) {
-	// Fallback to LogBilinearInterpolator if either 2 or 3 Q2-knots
-	// First interpolate in x
-	const double logx = log(x);
-	const double logx0 = subgrid.logxs()[ix];
-	const double logx1 = subgrid.logxs()[ix+1];
-	const double f_ql = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2), subgrid.xf(ix+1, iq2));
-	const double f_qh = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2+1), subgrid.xf(ix+1, iq2+1));
-	// Then interpolate in Q2, using the x-ipol results as anchor points
-	return _interpolateLinear(log(q2), subgrid.logq2s()[iq2], subgrid.logq2s()[iq2+1], f_ql, f_qh);
-      } else throw GridError("PDF subgrids are required to have at least 2 Q2-knots for use with LogBicubicInterpolator");
+    if (nqknots < 2)
+      throw GridError("PDF subgrids are required to have at least 2 Q-knots for use with LogBicubicInterpolator");
+
+    // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
+    if (nqknots < 4) {
+      // First interpolate in x
+      const double logx = log(x);
+      const double logx0 = subgrid.logxs()[ix];
+      const double logx1 = subgrid.logxs()[ix+1];
+      const double f_ql = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2), subgrid.xf(ix+1, iq2));
+      const double f_qh = _interpolateLinear(logx, logx0, logx1, subgrid.xf(ix, iq2+1), subgrid.xf(ix+1, iq2+1));
+      // Then interpolate in Q2, using the x-ipol results as anchor points
+      return _interpolateLinear(log(q2), subgrid.logq2s()[iq2], subgrid.logq2s()[iq2+1], f_ql, f_qh);
     }
 
     const double logx = log(x);
@@ -79,7 +84,7 @@ namespace LHAPDF {
     // Distance parameters
     const double dlogx = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
     const double tlogx = (logx - subgrid.logxs()[ix]) / dlogx;
-    /// @todo Only compute these if the +1 and +2 indices are guaranteed to be valid
+    /// Only compute these if the +1 and +2 indices are guaranteed to be valid
     const double dlogq_0 = subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1];
     const double dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
     const double dlogq_2 = subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1];
