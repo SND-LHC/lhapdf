@@ -115,6 +115,8 @@ namespace LHAPDF {
       return new NearestPointExtrapolator();
     else if (iname == "error")
       return new ErrExtrapolator();
+    else if (iname == "continuation")
+      return new ContinuationExtrapolator();
     else
       throw FactoryError("Undeclared extrapolator requested: " + name);
   }
