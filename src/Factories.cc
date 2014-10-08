@@ -15,6 +15,7 @@
 #include "LHAPDF/LogBicubicInterpolator.h"
 #include "LHAPDF/ErrExtrapolator.h"
 #include "LHAPDF/NearestPointExtrapolator.h"
+#include "LHAPDF/ContinuationExtrapolator.h"
 #include "LHAPDF/AlphaS.h"
 
 namespace LHAPDF {
