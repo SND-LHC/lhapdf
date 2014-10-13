@@ -1,0 +1,88 @@
+#! /usr/bin/env python
+
+"""\
+Usage: %prog <PDF1> [<PDF2> [...]]
+
+Plot PDF and alpha_s values for the named LHAPDF6 sets.
+"""
+
+import optparse, os, sys
+
+op = optparse.OptionParser(usage=__doc__)
+op.add_option("--xmin", dest="XMIN", metavar="NUM", help="minimum x value [default: %default]", type=float, default=1e-10)
+op.add_option("--qmax", dest="QMAX", metavar="NUM", help="maximum Q value in GeV [default: %default]", type=float, default=1e4)
+opts, args = op.parse_args()
+
+if not args:
+    print __doc__
+    sys.exit(1)
+
+
+import matplotlib.pyplot as plt
+plt.rcParams["font.family"] = "serif"
+# plt.rcParams["font.serif"] = "Computer Modern Roman"
+# plt.rcParams["text.usetex"] = True
+
+STYLES = ["-", ":", "--", "-."]
+COLORS = ["red", "blue", "darkgreen", "orange", "purple", "magenta", "gray", "cyan"]
+PARTONS = {-5:r"$\bar{b}$",-4:r"$\bar{c}$",-3:r"$\bar{s}$",-2:r"$\bar{u}$",-1:r"$\bar{d}$",
+           1:r"$d$",2:r"$u$",3:r"$s$",4:r"$c$",5:r"$b$",0:r"$g$"}
+
+def tex_float(f):
+    float_str = "{0:.2g}".format(f)
+    if "e" in float_str:
+        mant, exp = float_str.split("e")
+        exp = int(exp)
+        return r"{0} \times 10^{{{1}}}".format(mant, exp)
+    else:
+        return float_str
+
+
+## Get sampling points in x,Q
+from math import log10
+import numpy as np
+xs = np.logspace(log10(opts.XMIN), 0, 100)
+qs = np.logspace(0, log10(opts.QMAX), 100)
+xs_few = [1e-5, 1e-3, 1e-2, 1e-1]
+qs_few = [10, 100, 1000, 10000]
+
+
+## Load PDFs for plotting, indexed by name
+import lhapdf
+pdfs = { pname : lhapdf.mkPDF(pname) for pname in args }
+
+
+## Make PDF x & Q plots for each parton flavour, and a single alpha_s vs Q plot
+fig = plt.figure()
+ax = fig.add_subplot(111)
+for i, pname in enumerate(args):
+    color = COLORS[i % len(COLORS)]
+    as_vals = [pdfs[pname].alphasQ(q) for q in qs]
+    ax.plot(qs, as_vals, label=pname, color=color, ls="-")
+ax.set_xlabel("$Q$")
+ax.set_ylabel(r"$\alpha_s(Q)$")
+ax.set_ylim(bottom=0)
+ax.set_xscale("log")
+l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
+fig.savefig("alpha_s.pdf")
+
+for pid in xrange(0, 5+1):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.text(0.05, 0.95, "PID={:d}".format(pid), transform=ax.transAxes, ha="left", va="top")
+    ax.set_xlabel("$x$")
+    ax.set_ylabel("$xf(x,Q)$")
+    for i, pname in enumerate(args):
+        for j, q in enumerate(qs_few):
+            color = COLORS[i % len(COLORS)]
+            style = STYLES[j % len(STYLES)]
+            xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
+            plt.plot(xs, xf_vals, label="{}, $Q={}$ ID={:d}".format(pname, tex_float(q), pid), color=color, ls=style, lw=1.0)
+            # if pid != 0:
+            #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
+            #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
+    ax.set_ylim(bottom=0)
+    ax.set_xscale("log")
+    ax.set_yscale("symlog")
+    l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
+    fig.savefig("pdf_pid{:d}.pdf".format(pid))
