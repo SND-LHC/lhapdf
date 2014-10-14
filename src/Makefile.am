@@ -11,6 +11,7 @@ libLHAPDF_la_SOURCES = \
   Interpolator.cc BilinearInterpolator.cc BicubicInterpolator.cc \
   LogBilinearInterpolator.cc LogBicubicInterpolator.cc \
   ErrExtrapolator.cc NearestPointExtrapolator.cc \
+  ContinuationExtrapolator.cc \
   AlphaS.cc AlphaS_Analytic.cc AlphaS_ODE.cc AlphaS_Ipol.cc \
   Factories.cc
 

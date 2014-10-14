@@ -22,6 +22,7 @@ pkginclude_HEADERS = \
   Extrapolator.h \
   ErrExtrapolator.h \
   NearestPointExtrapolator.h \
+  ContinuationExtrapolator.h \
   AlphaS.h
 
 if ENABLE_LHAGLUE

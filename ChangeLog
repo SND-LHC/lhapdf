@@ -1,3 +1,8 @@
+2014-10-08  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Added new ContinuationExtrapolator to provide same extrapolation
+	as in the MSTW standalone code (and LHAPDF5 when using MSTW sets).
+
 2014-10-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Better code organisation and protection against out-of-bounds

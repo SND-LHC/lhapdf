@@ -15,6 +15,7 @@
 #include "LHAPDF/LogBicubicInterpolator.h"
 #include "LHAPDF/ErrExtrapolator.h"
 #include "LHAPDF/NearestPointExtrapolator.h"
+#include "LHAPDF/ContinuationExtrapolator.h"
 #include "LHAPDF/AlphaS.h"
 
 namespace LHAPDF {
@@ -115,6 +116,8 @@ namespace LHAPDF {
       return new NearestPointExtrapolator();
     else if (iname == "error")
       return new ErrExtrapolator();
+    else if (iname == "continuation")
+      return new ContinuationExtrapolator();
     else
       throw FactoryError("Undeclared extrapolator requested: " + name);
   }
