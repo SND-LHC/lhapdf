@@ -1,3 +1,11 @@
+2014-10-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add parsing and use of the internal PID data line in GridPDF.cc,
+	in preference to the PDF::flavors() method. This fixes a bug,
+	since flavors() was sorting the list, meaning that data files
+	without monotonically sorted PID columns would wrongly assign PDFs
+	to PIDs.
+
 2014-10-08  Graeme Watt  <graeme.watt@durham.ac.uk>
 
 	* Added new ContinuationExtrapolator to provide same extrapolation

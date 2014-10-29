@@ -86,12 +86,12 @@ namespace LHAPDF {
     string line, prevline;
     int iblock(0), iblockline(0), iline(0);
     vector<double> xs, q2s;
-    const size_t npid = flavors().size();
-    vector< vector<double> > ipid_xfs(npid);
+    vector<int> pids;
+    vector< vector<double> > ipid_xfs;
 
     try {
       ifstream file(mempath.c_str());
-      NumParser nparser; double token;
+      NumParser nparser; double ftoken; int itoken;
       while (getline(file, line)) {
         // Trim the current line to ensure that there is no effect of leading spaces, etc.
         trim(line);
@@ -113,31 +113,35 @@ namespace LHAPDF {
           // Parse the data lines
           nparser.reset(line);
           if (iblockline == 1) { // x knots line
-            while (nparser >> token) xs.push_back(token);
+            while (nparser >> ftoken) xs.push_back(ftoken);
             if (xs.empty())
               throw ReadError("Empty x knot array on line " + to_str(iline));
           } else if (iblockline == 2) { // Q knots line
-            while (nparser >> token) q2s.push_back(token*token); // note Q -> Q2
+            while (nparser >> ftoken) q2s.push_back(ftoken*ftoken); // note Q -> Q2
             if (q2s.empty())
               throw ReadError("Empty Q knot array on line " + to_str(iline));
             //cout << q2s.size() << ", " << q2s.front() << ", " << q2s.back() << endl;
-          } else if (iblockline == 3) { // internal flavor IDs line
-            // DO NOTHING FOR NOW: only handling this for prospective forward compatibility
-            /// @todo Handle internal partial flavour representations
-            //while (nparser >> token) intflavors.push_back(token);
+          } else if (iblockline == 3) { // internal flavor IDs ordering line
+            while (nparser >> itoken) pids.push_back(itoken);
+            // Check that each line has many tokens as there should be flavours
+            if (pids.size() != flavors().size())
+              throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(pids.size()) +
+                              " parton flavors declared but " + to_str(flavors().size()) + " expected from Flavors metadata");
+            /// @todo Handle sea/valence representations via internal pseudo-PIDs
           } else {
             if (iblockline == 4) { // on the first line of the xf block, resize the arrays
-              for (size_t ipid = 0; ipid < npid; ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
+              ipid_xfs.resize(pids.size());
+              for (size_t ipid = 0; ipid < pids.size(); ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
             }
             size_t ipid = 0;
-            while (nparser >> token) {
-              ipid_xfs[ipid].push_back(token);
+            while (nparser >> ftoken) {
+              ipid_xfs[ipid].push_back(ftoken);
               ipid += 1;
             }
             // Check that each line has many tokens as there should be flavours
-            if (ipid != npid)
+            if (ipid != pids.size())
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
-                              " flavor entries seen but " + to_str(npid) + " expected");
+                              " flavor entries seen but " + to_str(pids.size()) + " expected");
           }
 
         } else { // we *are* on a block separator line
@@ -161,8 +165,8 @@ namespace LHAPDF {
 
           // Register data from the previous (>0th) block into the GridPDF data structure
           KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
-          for (size_t ipid = 0; ipid < npid; ++ipid) {
-            const int pid = flavors()[ipid];
+          for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
+            const int pid = pids[ipid];
             // Create the 2D array with the x and Q2 knot positions
             arraynf[pid] = KnotArray1F(xs, q2s);
             // Populate the xf data array
@@ -170,7 +174,7 @@ namespace LHAPDF {
           }
           //cout << _knotarrays.size() << endl;
           xs.clear(); q2s.clear();
-          for (size_t ipid = 0; ipid < npid; ++ipid) ipid_xfs[ipid].clear();
+          for (size_t ipid = 0; ipid < pids.size(); ++ipid) ipid_xfs[ipid].clear();
         }
       }
       // File reading finished: complain if it was not properly terminated
