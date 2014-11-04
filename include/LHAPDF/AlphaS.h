@@ -282,6 +282,10 @@ namespace LHAPDF {
     /// Calculate the derivative at Q2 = t, alpha_S = y
     double _derivative(double t, double y, const std::vector<double>& beta) const;
 
+    /// Calculate the decoupling relation when going from num. flav. = ni -> nf
+    /// abs(ni - nf) must be = 1
+    double _decouple(double y, unsigned int ni, unsigned int nf) const;
+
     /// Calculate the next step using RK4 with adaptive step size
     void _rk4(double& t, double& y, double h, const double allowed_change, const vector<double>& bs) const;
 
