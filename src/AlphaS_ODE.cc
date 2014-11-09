@@ -26,6 +26,31 @@ namespace LHAPDF {
     return - d / t;
   }
 
+  // Calculate decoupling for transition from num. flavour = ni -> nf
+  double AlphaS_ODE::_decouple(double y, unsigned int ni, unsigned int nf) const {
+    if ( ni == nf || _qcdorder == 0 ) return 1.;
+    double as = y / M_PI;
+    double as2 = 0, as3 = 0, as4 = 0;
+    if ( ni > nf ) {
+      as2 = 0.152778*as*as;
+      as3 = (0.972057 - 0.0846515*nf)*as*as*as;
+      as4 = (5.17035 - 1.00993*nf - 0.0219784*nf*nf)*as*as*as*as;
+    }
+    if ( nf > ni ) {
+      as2 = - 0.152778*as*as;
+      as3 = (- 0.972057 + 0.0846515*ni)*as*as*as;
+      as4 = (- 5.10032 + 1.00993*ni + 0.0219784*ni*ni)*as*as*as*as;
+    }
+    double decoupling = 1.;
+    if ( _qcdorder == 1 ) return decoupling;
+    decoupling += as2;
+    if ( _qcdorder == 2 ) return decoupling;
+    decoupling += as3;
+    if ( _qcdorder == 3 ) return decoupling;
+    decoupling += as4;
+    return decoupling;
+  }
+
 
   // Calculate the next step, using recursion to achieve
   // adaptive step size. Passing by reference explained
@@ -146,12 +171,13 @@ namespace LHAPDF {
         const double q2 = _q2s[ind];
         // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
         // allowed errors, and accuracy.
-        if ( ind != 0 ) {
+        if ( ind != 0 && ind != 1 ) {
           if ( q2 == _q2s[ind-1] ) {
             last_val = q2;
             threshold = true;
             _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
             grid.push_back(make_pair(ind, y));
+            y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind-2]));
             // Define divergence after y > 2. -- we have no accuracy after that any way
             if ( y > 2. ) { low_lim = q2; }
             continue;
@@ -183,11 +209,12 @@ namespace LHAPDF {
         double q2 = _q2s[ind];
         // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
         // allowed errors, and accuracy.
-        if ( ind != _q2s.size() - 1 ) {
+        if ( ind != _q2s.size() - 1 && ind != _q2s.size() - 2 ) {
           if ( q2 == _q2s[ind+1] ) {
             last_val = q2;
             _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
             grid.push_back(make_pair(ind, y));
+            y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind+2]));
             // Define divergence after y > 2. -- we have no accuracy after that any way
             if ( y > 2. ) { low_lim = q2; }
             continue;
