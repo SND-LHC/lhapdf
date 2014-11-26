@@ -1,7 +1,7 @@
 /**
 @page pdfsets PDF sets
 
-<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 340 available, of which 329 are validated.</b>
+<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 341 available, of which 329 are validated.</b>
 
 See http://www.hepforge.org/archive/lhapdf/pdfsets/6.1 for data downloads.
 
@@ -283,14 +283,14 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>261200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0118_nf_3.tar.gz">NNPDF30_nnlo_as_0118_nf_3</a></td><td>101</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>261400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0118_nf_4.tar.gz">NNPDF30_nnlo_as_0118_nf_4</a></td><td>101</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>261600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0118_nf_6.tar.gz">NNPDF30_nnlo_as_0118_nf_6</a></td><td>101</td><td>2</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>262000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118.tar.gz">NNPDF30_lo_as_0118</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>262200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118_nf_3.tar.gz">NNPDF30_lo_as_0118_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>262400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118_nf_4.tar.gz">NNPDF30_lo_as_0118_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>262600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118_nf_6.tar.gz">NNPDF30_lo_as_0118_nf_6</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>263000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130.tar.gz">NNPDF30_lo_as_0130</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>263200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130_nf_3.tar.gz">NNPDF30_lo_as_0130_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>263400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130_nf_4.tar.gz">NNPDF30_lo_as_0130_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>263600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130_nf_6.tar.gz">NNPDF30_lo_as_0130_nf_6</a></td><td>101</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>262000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118.tar.gz">NNPDF30_lo_as_0118</a></td><td>101</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>262200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118_nf_3.tar.gz">NNPDF30_lo_as_0118_nf_3</a></td><td>101</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>262400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118_nf_4.tar.gz">NNPDF30_lo_as_0118_nf_4</a></td><td>101</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>262600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0118_nf_6.tar.gz">NNPDF30_lo_as_0118_nf_6</a></td><td>101</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>263000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130.tar.gz">NNPDF30_lo_as_0130</a></td><td>101</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>263200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130_nf_3.tar.gz">NNPDF30_lo_as_0130_nf_3</a></td><td>101</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>263400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130_nf_4.tar.gz">NNPDF30_lo_as_0130_nf_4</a></td><td>101</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>263600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_lo_as_0130_nf_6.tar.gz">NNPDF30_lo_as_0130_nf_6</a></td><td>101</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>264000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0115.tar.gz">NNPDF30_nlo_as_0115</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>264200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0115_nf_3.tar.gz">NNPDF30_nlo_as_0115_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>264400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0115_nf_4.tar.gz">NNPDF30_nlo_as_0115_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
@@ -302,7 +302,7 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>266200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0119_nf_3.tar.gz">NNPDF30_nlo_as_0119_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>266400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0119_nf_4.tar.gz">NNPDF30_nlo_as_0119_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>266600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0119_nf_6.tar.gz">NNPDF30_nlo_as_0119_nf_6</a></td><td>101</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>267000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0121.tar.gz">NNPDF30_nnlo_as_0121</a></td><td>101</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>267000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0121.tar.gz">NNPDF30_nlo_as_0121</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>267200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0121_nf_3.tar.gz">NNPDF30_nlo_as_0121_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>267400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0121_nf_4.tar.gz">NNPDF30_nlo_as_0121_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>267600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nlo_as_0121_nf_6.tar.gz">NNPDF30_nlo_as_0121_nf_6</a></td><td>101</td><td>1</td><td></td></tr>
@@ -318,6 +318,7 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>270200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0119_nf_3.tar.gz">NNPDF30_nnlo_as_0119_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>270400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0119_nf_4.tar.gz">NNPDF30_nnlo_as_0119_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>270600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0119_nf_6.tar.gz">NNPDF30_nnlo_as_0119_nf_6</a></td><td>101</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>271000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0121.tar.gz">NNPDF30_nnlo_as_0121</a></td><td>101</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>271200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0121_nf_3.tar.gz">NNPDF30_nnlo_as_0121_nf_3</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>271400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0121_nf_4.tar.gz">NNPDF30_nnlo_as_0121_nf_4</a></td><td>101</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>271600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF30_nnlo_as_0121_nf_6.tar.gz">NNPDF30_nnlo_as_0121_nf_6</a></td><td>101</td><td>1</td><td></td></tr>
