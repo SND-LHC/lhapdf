@@ -75,6 +75,8 @@ VERSION 6.2
 
    Automatic memory management can be nice for everyone. Or just leave as pointers?
 
+- **Add num members optional (?) column to pdfsets.index for range-checking**
+
 - **Nuclear PDFs**
 
    There's definitely a need for interfaces both to individual nuclear modification
