@@ -1,3 +1,9 @@
+2014-12-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove obsolete config flags from lhapdf.conf
+
+	* examples/compatibility.cc: Simplify compatibility macro checking.
+
 2014-10-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add parsing and use of the internal PID data line in GridPDF.cc,
