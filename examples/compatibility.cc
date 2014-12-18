@@ -8,7 +8,7 @@
 int main() {
   const double x = 1e-3, Q = 200;
 
-  #if defined LHAPDF_MAJOR_VERSION && LHAPDF_MAJOR_VERSION == 6
+  #if LHAPDF_MAJOR_VERSION == 6
   LHAPDF::PDF* pdf = LHAPDF::mkPDF("CT10nlo", 0);
   std::cout << "xf_g = " << pdf->xfxQ(21, x, Q) << std::endl;
   delete pdf;
