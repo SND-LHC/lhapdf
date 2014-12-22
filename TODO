@@ -9,24 +9,25 @@ LHAPDF6 TODO list
 UNVERSIONED
 -----------
 
-- **WRITE PAPER**
+- **Document the lhapdf command**
 
-   NOW!!!!!!!!!!!!
+   On the website
 
 - **JR14 PDF integration**
 
    Done: release along with v6.1.5
 
-- **Document the lhapdf command on the website**
+- **MMHT PDF integration**
+
+   Test and release with 6.1.5 (no version requirement)
 
 - **ABM PDF approval**
 
-   Still no response.
+   Still no response. Remove after new year if no confirmation.
 
 - **HERA 1.0 and LHeC PDF migration and approval**
 
-   Same procedure as for ATLAS and HERA 1.5, in contact with Voica.
-
+   Same procedure as for ATLAS and HERA 1.5. Prod Voica for an update.
 
 
 VERSION 6.1.5
@@ -38,7 +39,7 @@ VERSION 6.1.5
 
 - **Add getdatapath_() in Fortran, returning colon-sep list**
 
-   TODO
+   TODO. Plus more missing Fortran functions.
 
 - **Add getpdfsets_() in Fortran, returning colon-sep list**
 
@@ -46,26 +47,37 @@ VERSION 6.1.5
 
 - **Grid format flavour ordering bugfix**
 
-   Done. (AB)
+   Done (AB). BlocksJR14 release. Check why MRST sets not working (need new
+   pre-release test scripts in make check).
 
-- **Make it possible to find all metadata keys both locally and in total (AB)**
+
+VERSION 6.1.6
+-------------
+
+- **Provide optional AlphaS_*Threshold keys, hooked into AlphaS factory**
+
+   KARL!
 
 - **Improved high-Q extrapolation (??)**
 
    Needed for FCC studies, etc.
 
-   Graeme suggests extrapolation at low-Q established from the anomalous
-   dimension of the function within the grid closest to that point. What's most
-   appropriate at high-Q? Gradient extrapolation in log space may be a good
-   option at low-x.
+   At low-Q Graeme suggests extrapolation established from the anomalous
+   dimension of the function within the grid closest to that point.
 
-- **Improved high-x interpolation/extrapolation (??)**
+   What's done in the continuation extrapolator?
+
+- **Improved low/high-x interpolation/extrapolation (??)**
+
+   Gradient extrapolation in log space may be a good option at low-x.
 
    Graeme, etc.: x -> 1 interpolation should be done carefully to ensure that
    all PDFs -> 0 at x = 1.0, (usually) without going negative. There should
    always be a point at x = 1 to root the interpolator. This probably deserves
    specialisation beyond generic splines. Graeme will look at what's done in the
    CTEQ code (other than interpolating in x**0.3)
+
+- **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
 
 
 VERSION 6.2
