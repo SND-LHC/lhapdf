@@ -32,18 +32,6 @@ UNVERSIONED
 - **Pion PDF(s)**
 
 
-VERSION 6.1.5
--------------
-
-- **Better error handling in PDF index lookup
-
-   Plus set-length checks, maybe in 6.1.6
-
-- **Reproduce/find/fix valgrind warning / leak**
-
-   Run the testpdf program in memcheck.
-
-
 VERSION 6.1.6
 -------------
 

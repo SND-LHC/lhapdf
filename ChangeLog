@@ -1,5 +1,7 @@
 2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* 6.1.5 release.
+
 	* Better error handling in PDF index lookup, including clearer
 	reporting of set-unmatched PDF IDs and member numbers which are
 	out of range for a valid set.
