@@ -35,10 +35,6 @@ UNVERSIONED
 VERSION 6.1.5
 -------------
 
-- **Don't change active PDF member when returning x, q min/max, etc.**
-
-   TODO
-
 - **Provide a single-string-arg version of lookupPDF**
 
 - **Better error handling in PDF index lookup
