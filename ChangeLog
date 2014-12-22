@@ -1,5 +1,8 @@
 2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add missing Fortran getdatapath function, cf. LHAPDF5 but with
+	colon separators between multiple paths if appropriate.
+
 	* Add Fortran lhapdf_getpdfsetlist function, returning the list of
 	available PDF sets as a space-separated string. Note the lhapdf_
 	prefix -- this is the intended 'namespace' form for a new Fortran

@@ -155,8 +155,10 @@ extern "C" {
   /// List of available PDF sets, returned as a space-separated string
   void lhapdf_getpdfsetlist_(char* s, size_t len) {
     string liststr;
-    BOOST_FOREACH(const string& setname, LHAPDF::availablePDFSets()) liststr += setname + " ";
-    boost::trim_right(liststr);
+    BOOST_FOREACH(const string& setname, LHAPDF::availablePDFSets()) {
+      if (!liststr.empty()) liststr += " ";
+      liststr += setname;
+    }
     strncpy(s, liststr.c_str(), len);
   }
 
@@ -180,11 +182,23 @@ extern "C" {
 
   /// Set path
   void setpdfpath_(const char* s, size_t len) {
-    /// @todo Works? Need to check Fortran string return, C-string copying, null termination
+    /// @todo Works? Need to check C-string copying, null termination
     char s2[1024];
     s2[len] = '\0';
     strncpy(s2, s, len);
     LHAPDF::pathsPrepend(s2);
+  }
+
+
+  /// Get path (colon-separated if there is more than one element)
+  void getdatapath_(char* s, size_t len) {
+    /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
+    string pathstr;
+    BOOST_FOREACH(const string& path, LHAPDF::paths()) {
+      if (!pathstr.empty()) pathstr += ":";
+      pathstr += path;
+    }
+    strncpy(s, pathstr.c_str(), len);
   }
 
 

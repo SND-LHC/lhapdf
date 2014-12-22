@@ -39,10 +39,6 @@ VERSION 6.1.5
 
    TODO
 
-- **Add getdatapath_() in Fortran, returning colon-sep list**
-
-   TODO. Plus more missing Fortran functions.
-
 - **Add getdescm_() in Fortran**
 
    TODO
