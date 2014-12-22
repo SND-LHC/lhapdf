@@ -33,6 +33,18 @@ UNVERSIONED
 VERSION 6.1.5
 -------------
 
+index lookup better error handling (and length checks)
+remove #pragma once
+(fix valgrind warning / leak)
+(string accessor for lookupPDF)
+
+- **Release testing scripts**
+
+- **Grid format flavour ordering bugfix**
+
+   Done (AB). BlocksJR14 release. Check why MRST sets not working (need new
+   pre-release test scripts in make check).
+
 - **Don't change active PDF member when returning x, q min/max, etc.**
 
    TODO
@@ -45,14 +57,20 @@ VERSION 6.1.5
 
    TODO
 
-- **Grid format flavour ordering bugfix**
+- **Add getdescm_() in Fortran**
 
-   Done (AB). BlocksJR14 release. Check why MRST sets not working (need new
-   pre-release test scripts in make check).
+   TODO
 
 
 VERSION 6.1.6
 -------------
+
+- **Python3 support**
+
+- **.LHgrid etc. "tolerance" control -- TranslateLHA5Names flag?**
+
+- **LHAPDF_DATA_PATH non-fallback with trailing ::**
+
 
 - **Provide optional AlphaS_*Threshold keys, hooked into AlphaS factory**
 
@@ -82,6 +100,13 @@ VERSION 6.1.6
 
 VERSION 6.2
 -----------
+
+- **Allow nPDFs**
+
+   In contact with Hannu. Extend string access syntax to include multiplication
+   of PDFs e.g. mkPDF("foo/0 * bar"), mkPDF("foo * bar/0"), mkPDF("foo * bar")
+   returns PDF <- CompositePDF
+   More general than just nPDFs. Move extended ID string decoding to user-accessible functions.
 
 - **Expose LHAGLUE slots system for C++ use?**
 
