@@ -33,12 +33,7 @@ UNVERSIONED
 VERSION 6.1.5
 -------------
 
-index lookup better error handling (and length checks)
-remove #pragma once
-(fix valgrind warning / leak)
-(string accessor for lookupPDF)
-
-- **Release testing scripts**
+- **Release-testing scripts**
 
 - **Grid format flavour ordering bugfix**
 
@@ -60,6 +55,16 @@ remove #pragma once
 - **Add getdescm_() in Fortran**
 
    TODO
+
+- **Better error handling in PDF index lookup
+
+   Plus set-length checks, maybe in 6.1.6
+
+- **Remove #pragma once -- not fully portable**
+
+- **Provide a single-string-arg version of lookupPDF**
+
+- **Reproduce/find/fix valgrind warning / leak**
 
 
 VERSION 6.1.6
