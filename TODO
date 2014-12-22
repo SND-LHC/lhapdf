@@ -33,10 +33,6 @@ UNVERSIONED
 VERSION 6.1.5
 -------------
 
-- **Grid format flavour ordering bugfix**
-
-   Done (AB). BlocksJR14 release.
-
 - **Don't change active PDF member when returning x, q min/max, etc.**
 
    TODO
