@@ -39,10 +39,6 @@ VERSION 6.1.5
 
    TODO
 
-- **Add getdescm_() in Fortran**
-
-   TODO
-
 - **Better error handling in PDF index lookup
 
    Plus set-length checks, maybe in 6.1.6

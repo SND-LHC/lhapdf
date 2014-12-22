@@ -1,5 +1,7 @@
 2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add missing getdescm_ and getdesc_ Fortran functions.
+
 	* Add missing Fortran getdatapath function, cf. LHAPDF5 but with
 	colon separators between multiple paths if appropriate.
 

@@ -268,6 +268,19 @@ extern "C" {
   }
 
 
+  /// Print current set description to stdout
+  void getdescm_(int& nset) {
+    nset = currentset;
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    cout << ACTIVESETS[nset].activemember()->description() << endl;
+  }
+  void getdesc_() {
+    int nset1 = 1;
+    getdescm_(nset1);
+  }
+
+
   void getnset_(int& nset) {
     nset = currentset;
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
