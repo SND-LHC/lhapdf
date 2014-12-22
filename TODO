@@ -33,12 +33,9 @@ UNVERSIONED
 VERSION 6.1.5
 -------------
 
-- **Release-testing scripts**
-
 - **Grid format flavour ordering bugfix**
 
-   Done (AB). BlocksJR14 release. Check why MRST sets not working (need new
-   pre-release test scripts in make check).
+   Done (AB). BlocksJR14 release.
 
 - **Don't change active PDF member when returning x, q min/max, etc.**
 
