@@ -40,3 +40,5 @@ Makefile\.in$
 ^autom4te\..*$
 ^a.out$
 \#.*\#$
+^NEW$
+TEST
