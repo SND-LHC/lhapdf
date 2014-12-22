@@ -39,13 +39,13 @@ VERSION 6.1.5
 
    TODO
 
+- **Provide a single-string-arg version of lookupPDF**
+
 - **Better error handling in PDF index lookup
 
    Plus set-length checks, maybe in 6.1.6
 
 - **Remove #pragma once -- not fully portable**
-
-- **Provide a single-string-arg version of lookupPDF**
 
 - **Reproduce/find/fix valgrind warning / leak**
 
@@ -59,10 +59,12 @@ VERSION 6.1.6
 
 - **LHAPDF_DATA_PATH non-fallback with trailing ::**
 
+- **Provide optional (AlphaS_)Threshold* keys, hooked into AlphaS factory**
 
-- **Provide optional AlphaS_*Threshold keys, hooked into AlphaS factory**
-
-   KARL!
+   KARL! Prefer AlphaS_* keys in AlphaS system, fall back to Threshold*
+   versions, then fall back to (AlphaS_)M*. Do we also need to provide a
+   getThreshold(i) function somewhere cf. LHAGlue? Check that the LHAGlue
+   getthresholdm_ etc. are working.
 
 - **Improved high-Q extrapolation (??)**
 

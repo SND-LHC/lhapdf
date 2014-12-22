@@ -167,10 +167,23 @@ extern "C" {
 
   // LHAPDF5 / PDFLIB COMPATIBILITY INTERFACE FUNCTIONS
 
-  /// LHAPDF version
+
+  // System-level info
+
+  /// LHAPDF library version
   void getlhapdfversion_(char* s, size_t len) {
     /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
     strncpy(s, LHAPDF_VERSION, len);
+  }
+
+
+  /// Does nothing, only provided for backward compatibility
+  void lhaprint_(int& a) {  }
+
+
+  /// Set LHAPDF parameters -- does nothing in LHAPDF6!
+  void setlhaparm_(const char* par, int parlength) {
+    /// @todo Can any Fortran LHAPDF params be usefully mapped?
   }
 
 
@@ -180,7 +193,7 @@ extern "C" {
   }
 
 
-  /// Set path
+  /// Set PDF data path
   void setpdfpath_(const char* s, size_t len) {
     /// @todo Works? Need to check C-string copying, null termination
     char s2[1024];
@@ -189,8 +202,7 @@ extern "C" {
     LHAPDF::pathsPrepend(s2);
   }
 
-
-  /// Get path (colon-separated if there is more than one element)
+  /// Get PDF data path (colon-separated if there is more than one element)
   void getdatapath_(char* s, size_t len) {
     /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
     string pathstr;
@@ -201,6 +213,8 @@ extern "C" {
     strncpy(s, pathstr.c_str(), len);
   }
 
+
+  // PDF initialisation and switching
 
   /// Load a PDF set
   ///
@@ -268,38 +282,29 @@ extern "C" {
   }
 
 
-  /// Print current set description to stdout
-  void getdescm_(int& nset) {
-    nset = currentset;
-    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    cout << ACTIVESETS[nset].activemember()->description() << endl;
-  }
-  void getdesc_() {
-    int nset1 = 1;
-    getdescm_(nset1);
-  }
-
-
+  /// Get the current set number (i.e. allocation slot index)
   void getnset_(int& nset) {
     nset = currentset;
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
   }
 
+  /// Set the current set number (i.e. allocation slot index)
   void setnset_(const int& nset) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-      throw LHAPDF::UserError("Trying to use LHAGLUE set #" +
-                              LHAPDF::to_str(nset) + " but it is not initialised");
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     currentset = nset;
   }
 
+
+  /// Get the current member number in slot nset
   void getnmem_(int& nset, int& nmem) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     nmem = ACTIVESETS[nset].currentmem;
   }
 
+  /// Set the current member number in slot nset
   void setnmem_(const int& nset, const int& nmem) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" +
@@ -307,6 +312,9 @@ extern "C" {
     ACTIVESETS[nset].loadMember(nmem);
   }
 
+
+
+  // PDF evolution functions
 
   /// Get xf(x) values for common partons from current PDF
   void evolvepdfm_(const int& nset, const double& x, const double& q, double* fxq) {
@@ -370,22 +378,7 @@ extern "C" {
   }
 
 
-  /// Get the number of members in the set
-  void numberpdfm_(const int& nset, int& numpdf) {
-    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    currentset = nset;
-    // set equal to the number of members  for the requested set
-    numpdf=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumMembers");
-    // reproduce old lhapdf v5 behaviour , subtract 1 if more than 1 member set
-    if (numpdf > 1) numpdf-=1;
-  }
-  /// Get the number of members in the set (non-multiset version)
-  void numberpdf_(int& numpdf) {
-    int nset1 = 1;
-    numberpdfm_(nset1, numpdf);
-  }
-
+  // alpha_s evolution
 
   /// Get the alpha_s order for the set
   void getorderasm_(const int& nset, int& oas) {
@@ -402,13 +395,46 @@ extern "C" {
   }
 
 
-  /// Get the number of flavours
+  /// Get the alpha_s(Q) value for set nset
+  double alphaspdfm_(const int& nset, const double& Q){
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    currentset = nset;
+    return ACTIVESETS[nset].activemember()->alphasQ(Q);
+  }
+  /// Get the alpha_s(Q) value for the set (non-multiset version)
+  double alphaspdf_(const double& Q){
+    int nset1 = 1;
+    return alphaspdfm_(nset1, Q);
+  }
+
+
+  // Metadata functions
+
+  /// Get the number of error members in the set (with special treatment for single member sets)
+  void numberpdfm_(const int& nset, int& numpdf) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    // Set equal to the number of members  for the requested set
+    numpdf=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumMembers");
+    // Reproduce old LHAPDF v5 behaviour, i.e. subtract 1 if more than 1 member set
+    if (numpdf > 1) numpdf -= 1;
+    //currentset = nset;
+  }
+  /// Get the number of error members in the set (non-multiset version)
+  void numberpdf_(int& numpdf) {
+    int nset1 = 1;
+    numberpdfm_(nset1, numpdf);
+  }
+
+
+  /// Get the max number of active flavours
   void getnfm_(const int& nset, int& nf) {
     //nf = ACTIVESETS[nset].activemember()->info().get_entry_as<int>("AlphaS_NumFlavors");
     nf = ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumFlavors");
-    currentset = nset;
+    //currentset = nset;
   }
-  /// Get the number of flavours (non-multiset version)
+  /// Get the max number of active flavours (non-multiset version)
   void getnf_(int& nf) {
     int nset1 = 1;
     getnfm_(nset1, nf);
@@ -419,14 +445,14 @@ extern "C" {
   void getqmassm_(const int& nset, const int& nf, double& mass) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    currentset = nset;
-    if (nf*nf == 1) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MDown");
-    else if (nf*nf == 4) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MUp");
-    else if (nf*nf == 9) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MStrange");
+    if      (nf*nf ==  1) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MDown");
+    else if (nf*nf ==  4) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MUp");
+    else if (nf*nf ==  9) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MStrange");
     else if (nf*nf == 16) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MCharm");
     else if (nf*nf == 25) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MBottom");
     else if (nf*nf == 36) mass = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("MTop");
     else throw LHAPDF::UserError("Trying to get quark mass for invalid quark ID #" + LHAPDF::to_str(nf));
+    //currentset = nset;
   }
   /// Get nf'th quark mass (non-multiset version)
   void getqmass_(const int& nf, double& mass) {
@@ -436,10 +462,21 @@ extern "C" {
 
 
   /// Get the nf'th quark threshold
-  /// @todo Update when we can support generalized thresholds
   void getthresholdm_(const int& nset, const int& nf, double& Q) {
-    currentset = nset;
-    getqmassm_(nset, nf, Q);
+    try {
+      if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+        throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+      if      (nf*nf ==  1) Q = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("ThresholdDown");
+      else if (nf*nf ==  4) Q = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("ThresholdUp");
+      else if (nf*nf ==  9) Q = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("ThresholdStrange");
+      else if (nf*nf == 16) Q = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("ThresholdCharm");
+      else if (nf*nf == 25) Q = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("ThresholdBottom");
+      else if (nf*nf == 36) Q = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("ThresholdTop");
+      //else throw LHAPDF::UserError("Trying to get quark threshold for invalid quark ID #" + LHAPDF::to_str(nf));
+    } catch (...) {
+      getqmassm_(nset, nf, Q);
+    }
+    //currentset = nset;
   }
   /// Get the nf'th quark threshold
   void getthreshold_(const int& nf, double& Q) {
@@ -448,106 +485,16 @@ extern "C" {
   }
 
 
-  /// @todo Doc and better arg name
-  void lhaprint_(int& a){
-    // Do nothing for now
-    /// @todo Can this be mapped?
-  }
-
-
-  /// @brief Set LHAPDF parameters
-  ///
-  /// Does nothing for now
-  void setlhaparm_(const char* par, int parlength) {
-    /// @todo Can any Fortran LHAPDF params be usefully mapped?
-  }
-
-
-  double alphaspdfm_(const int& nset, const double& Q){
+  /// Print PDF set's description to stdout
+  void getdescm_(const int& nset) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    currentset = nset;
-    return ACTIVESETS[nset].activemember()->alphasQ(Q);
+    cout << ACTIVESETS[nset].activemember()->description() << endl;
+    //currentset = nset;
   }
-  double alphaspdf_(const double& Q){
+  void getdesc_() {
     int nset1 = 1;
-    return alphaspdfm_(nset1, Q);
-  }
-
-
-  /// PDFLIB initialisation function
-  void pdfset_(const char* par, const double* value, int parlength) {
-
-    // Identify the calling program (yuck!)
-    string my_par(par);
-    if (my_par.find("NPTYPE") != string::npos) {
-      cout << "==== LHAPDF6 USING PYTHIA-TYPE LHAGLUE INTERFACE ====" << endl;
-      // Take PDF ID from value[2]
-      ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
-    } else if (my_par.find("HWLHAPDF") != string::npos) {
-      cout << "==== LHAPDF6 USING HERWIG-TYPE LHAGLUE INTERFACE ====" << endl;
-      // Take PDF ID from value[0]
-      ACTIVESETS[1] = PDFSetHandler(value[0]);
-    } else if (my_par.find("DEFAULT") != string::npos) {
-      cout << "==== LHAPDF6 USING DEFAULT-TYPE LHAGLUE INTERFACE ====" << endl;
-      // Take PDF ID from value[0]
-      ACTIVESETS[1] = PDFSetHandler(value[0]);
-    } else {
-      cout << "==== LHAPDF6 USING PDFLIB-TYPE LHAGLUE INTERFACE ====" << endl;
-      // Take PDF ID from value[2]
-      ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
-    }
-
-    currentset = 1;
-
-    // Extract parameters for common blocks (with sensible fallback values)
-    PDFPtr pdf = ACTIVESETS[1].activemember();
-    w50513_.xmin = pdf->info().get_entry_as<double>("XMin", 0.0);
-    w50513_.xmax = pdf->info().get_entry_as<double>("XMax", 1.0);
-    w50513_.q2min = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMin", 1.0));
-    w50513_.q2max = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMax", 1.0e5));
-    w50512_.qcdl4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
-    w50512_.qcdl5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
-    lhapdfr_.qcdlha4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
-    lhapdfr_.qcdlha5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
-    lhapdfr_.nfllha = 4;
-    // Activate legacy/compatibility LHAPDF5-type behaviour re. broken Lambda values
-    if (pdf->info().get_entry_as<bool>("Pythia6LambdaV5Compat", true)) {
-      w50512_.qcdl4 = 0.192;
-      w50512_.qcdl5 = 0.192;
-      lhapdfr_.qcdlha4 = 0.192;
-      lhapdfr_.qcdlha5 = 0.192;
-    }
-  }
-
-  /// PDFLIB nucleon structure function querying
-  void structm_(const double& x, const double& q,
-                double& upv, double& dnv, double& usea, double& dsea,
-                double& str, double& chm, double& bot, double& top, double& glu) {
-    currentset = 1;
-    /// Fill (partial) parton return variables
-    PDFPtr pdf = ACTIVESETS[1].activemember();
-    dsea = pdf->xfxQ(-1, x, q);
-    usea = pdf->xfxQ(-2, x, q);
-    dnv = pdf->xfxQ(1, x, q) - dsea;
-    upv = pdf->xfxQ(2, x, q) - usea;
-    str = pdf->xfxQ(3, x, q);
-    chm = (pdf->hasFlavor(4)) ? pdf->xfxQ(4, x, q) : 0;
-    bot = (pdf->hasFlavor(5)) ? pdf->xfxQ(5, x, q) : 0;
-    top = (pdf->hasFlavor(6)) ? pdf->xfxQ(6, x, q) : 0;
-    glu = pdf->xfxQ(21, x, q);
-  }
-
-  /// PDFLIB photon structure function querying
-  void structp_(const double& x, const double& q2, const double& p2, const double& ip2,
-                double& upv, double& dnv, double& usea, double& dsea,
-                double& str, double& chm, double& bot, double& top, double& glu) {
-    throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
-  }
-
-  /// PDFLIB statistics on PDF under/overflows
-  void pdfsta_() {
-    /// @note Can't do anything...
+    getdescm_(nset1);
   }
 
 
@@ -671,6 +618,87 @@ extern "C" {
   void getpdfcorrelation_(const double* valuesA, const double* valuesB, double& correlation) {
     int nset1 = 1;
     getpdfcorrelationm_(nset1, valuesA, valuesB, correlation);
+  }
+
+
+  ///////////////////////////////////////
+
+
+  /// REALLY OLD PDFLIB COMPATILITY FUNCTIONS
+
+  /// PDFLIB initialisation function
+  void pdfset_(const char* par, const double* value, int parlength) {
+
+    // Identify the calling program (yuck!)
+    string my_par(par);
+    if (my_par.find("NPTYPE") != string::npos) {
+      cout << "==== LHAPDF6 USING PYTHIA-TYPE LHAGLUE INTERFACE ====" << endl;
+      // Take PDF ID from value[2]
+      ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
+    } else if (my_par.find("HWLHAPDF") != string::npos) {
+      cout << "==== LHAPDF6 USING HERWIG-TYPE LHAGLUE INTERFACE ====" << endl;
+      // Take PDF ID from value[0]
+      ACTIVESETS[1] = PDFSetHandler(value[0]);
+    } else if (my_par.find("DEFAULT") != string::npos) {
+      cout << "==== LHAPDF6 USING DEFAULT-TYPE LHAGLUE INTERFACE ====" << endl;
+      // Take PDF ID from value[0]
+      ACTIVESETS[1] = PDFSetHandler(value[0]);
+    } else {
+      cout << "==== LHAPDF6 USING PDFLIB-TYPE LHAGLUE INTERFACE ====" << endl;
+      // Take PDF ID from value[2]
+      ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
+    }
+
+    currentset = 1;
+
+    // Extract parameters for common blocks (with sensible fallback values)
+    PDFPtr pdf = ACTIVESETS[1].activemember();
+    w50513_.xmin = pdf->info().get_entry_as<double>("XMin", 0.0);
+    w50513_.xmax = pdf->info().get_entry_as<double>("XMax", 1.0);
+    w50513_.q2min = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMin", 1.0));
+    w50513_.q2max = LHAPDF::sqr(pdf->info().get_entry_as<double>("QMax", 1.0e5));
+    w50512_.qcdl4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
+    w50512_.qcdl5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
+    lhapdfr_.qcdlha4 = pdf->info().get_entry_as<double>("AlphaS_Lambda4", 0.0);
+    lhapdfr_.qcdlha5 = pdf->info().get_entry_as<double>("AlphaS_Lambda5", 0.0);
+    lhapdfr_.nfllha = 4;
+    // Activate legacy/compatibility LHAPDF5-type behaviour re. broken Lambda values
+    if (pdf->info().get_entry_as<bool>("Pythia6LambdaV5Compat", true)) {
+      w50512_.qcdl4 = 0.192;
+      w50512_.qcdl5 = 0.192;
+      lhapdfr_.qcdlha4 = 0.192;
+      lhapdfr_.qcdlha5 = 0.192;
+    }
+  }
+
+  /// PDFLIB nucleon structure function querying
+  void structm_(const double& x, const double& q,
+                double& upv, double& dnv, double& usea, double& dsea,
+                double& str, double& chm, double& bot, double& top, double& glu) {
+    currentset = 1;
+    /// Fill (partial) parton return variables
+    PDFPtr pdf = ACTIVESETS[1].activemember();
+    dsea = pdf->xfxQ(-1, x, q);
+    usea = pdf->xfxQ(-2, x, q);
+    dnv = pdf->xfxQ(1, x, q) - dsea;
+    upv = pdf->xfxQ(2, x, q) - usea;
+    str = pdf->xfxQ(3, x, q);
+    chm = (pdf->hasFlavor(4)) ? pdf->xfxQ(4, x, q) : 0;
+    bot = (pdf->hasFlavor(5)) ? pdf->xfxQ(5, x, q) : 0;
+    top = (pdf->hasFlavor(6)) ? pdf->xfxQ(6, x, q) : 0;
+    glu = pdf->xfxQ(21, x, q);
+  }
+
+  /// PDFLIB photon structure function querying
+  void structp_(const double& x, const double& q2, const double& p2, const double& ip2,
+                double& upv, double& dnv, double& usea, double& dsea,
+                double& str, double& chm, double& bot, double& top, double& glu) {
+    throw LHAPDF::NotImplementedError("Photon structure functions are not yet supported");
+  }
+
+  /// PDFLIB statistics on PDF under/overflows
+  void pdfsta_() {
+    /// @note Can't do anything...
   }
 
 

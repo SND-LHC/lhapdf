@@ -1,5 +1,11 @@
 2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Attempt to use Threshold* metadata keys for Fortran
+	getthresholdm_. Not yet fully supported in the rest of the system
+	but we may as well pre-empt it while editing LHAGlue.cc.
+
+	* Making LHAGlue Fortran interface *not* switch current set slat when using get* functions.
+
 	* Add missing getdescm_ and getdesc_ Fortran functions.
 
 	* Add missing Fortran getdatapath function, cf. LHAPDF5 but with
