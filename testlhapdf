@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+set -e
+
+./testpdfs CT10nlo/0
+./testpdfs MSTW2008lo68cl/0
+./testpdfs NNPDF30_nlo_as_0118/0
