@@ -35,7 +35,6 @@ UNVERSIONED
 VERSION 6.1.5
 -------------
 
-- **Provide a single-string-arg version of lookupPDF**
 
 - **Better error handling in PDF index lookup
 
@@ -48,6 +47,11 @@ VERSION 6.1.6
 -------------
 
 - **Python3 support**
+
+- **Provide a single-string-arg version of lookupPDF**
+
+   Needs the signature of the function(s) for PDF string decoding to be final
+   before exposing in the API; it's currently in an anon namespace in Factories.cc.
 
 - **Remove #pragma once -- not fully portable**
 

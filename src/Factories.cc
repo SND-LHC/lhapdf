@@ -61,25 +61,37 @@ namespace LHAPDF {
   }
 
 
-  PDF* mkPDF(int lhaid) {
-    const pair<string,int> setname_memid = lookupPDF(lhaid);
-    return mkPDF(setname_memid.first, setname_memid.second);
+  namespace { // Keep this in an unnamed namespace for now, until stable/final for API
+
+    /// Decode the standard string format for referring to a PDF
+    /// @todo Extend to decode a product (or more general?) of PDFs
+    pair<string,int> decodePDFStr(const string& setname_nmem) {
+      int nmem = 0;
+      const size_t slashpos = setname_nmem.find("/");
+      const string setname = setname_nmem.substr(0, slashpos);
+      try {
+        if (slashpos != string::npos) {
+          const string smem = setname_nmem.substr(slashpos+1);
+          nmem = lexical_cast<int>(smem);
+        }
+      } catch (...) {
+        throw UserError("Could not parse PDF identity string " + setname_nmem);
+      }
+      return make_pair(setname, nmem);
+    }
+
   }
 
 
   PDF* mkPDF(const string& setname_nmem) {
-    int nmem = 0;
-    const size_t slashpos = setname_nmem.find("/");
-    const string setname = setname_nmem.substr(0, slashpos);
-    try {
-      if (slashpos != string::npos) {
-        const string smem = setname_nmem.substr(slashpos+1);
-        nmem = lexical_cast<int>(smem);
-      }
-    } catch (...) {
-      throw UserError("Could not parse PDF identity string " + setname_nmem);
-    }
-    return mkPDF(setname, nmem);
+    pair<string,int> idpair = decodePDFStr(setname_nmem);
+    return mkPDF(idpair.first, idpair.second);
+  }
+
+
+  PDF* mkPDF(int lhaid) {
+    const pair<string,int> setname_nmem = lookupPDF(lhaid);
+    return mkPDF(setname_nmem.first, setname_nmem.second);
   }
 
 

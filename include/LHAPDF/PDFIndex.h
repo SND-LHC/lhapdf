@@ -65,14 +65,21 @@ namespace LHAPDF {
   ///
   /// If lookup fails, -1 is returned, otherwise the LHAPDF ID code.
   /// NB. This function is relatively slow, since it requires std::map reverse lookup.
-  inline int lookupLHAPDFID(const std::string& setname, int memid) {
+  inline int lookupLHAPDFID(const std::string& setname, int nmem) {
     // const map<int, string>& = getPDFIndex();
     typedef pair<int, string> MapPair;
     BOOST_FOREACH (const MapPair& id_name, getPDFIndex()) {
-      if (id_name.second == setname) return id_name.first + memid;
+      if (id_name.second == setname) return id_name.first + nmem;
     }
     return -1; //< failure value
   }
+
+
+  /// @todo Add this when the decodePDFStr function is finalised and can be moved out of Factories.cc
+  // inline int lookupLHAPDFID(const std::string& setname_nmem) {
+  //   std::pair<std::string,int> idpair = decodePDFStr(setname_nmem);
+  //   return lookupLHAPDFID(idpair.first, idpair.second);
+  // }
 
   //@}
 

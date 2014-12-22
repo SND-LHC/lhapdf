@@ -1,5 +1,9 @@
 2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Restoring original active set member in LHAGlue metadata get*
+	functions which were previously switching focus as a result of
+	calling loadMember() to get numerical grid data.
+
 	* Making LHAGlue Fortran interface switch the current set slot
 	more coherently (has_photon is the exception).
 
