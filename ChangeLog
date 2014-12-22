@@ -1,3 +1,10 @@
+2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add Fortran lhapdf_getpdfsetlist function, returning the list of
+	available PDF sets as a space-separated string. Note the lhapdf_
+	prefix -- this is the intended 'namespace' form for a new Fortran
+	interface at some point.
+
 2014-12-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Remove obsolete config flags from lhapdf.conf

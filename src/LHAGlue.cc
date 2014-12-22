@@ -145,6 +145,25 @@ string lhaglue_get_current_pdf(int nset) {
 
 extern "C" {
 
+  // NEW FORTRAN INTERFACE FUNCTIONS
+
+  /// List of available sets
+  void lhapdf_getversion_(char* s, size_t len) {
+    strncpy(s, LHAPDF_VERSION, len);
+  }
+
+  /// List of available PDF sets, returned as a space-separated string
+  void lhapdf_getpdfsetlist_(char* s, size_t len) {
+    string liststr;
+    BOOST_FOREACH(const string& setname, LHAPDF::availablePDFSets()) liststr += setname + " ";
+    boost::trim_right(liststr);
+    strncpy(s, liststr.c_str(), len);
+  }
+
+
+  //////////////////
+
+  // LHAPDF5 / PDFLIB COMPATIBILITY INTERFACE FUNCTIONS
 
   /// LHAPDF version
   void getlhapdfversion_(char* s, size_t len) {

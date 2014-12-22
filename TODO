@@ -29,6 +29,8 @@ UNVERSIONED
 
    Same procedure as for ATLAS and HERA 1.5. Prod Voica for an update.
 
+- **Pion PDF(s)**
+
 
 VERSION 6.1.5
 -------------
@@ -40,10 +42,6 @@ VERSION 6.1.5
 - **Add getdatapath_() in Fortran, returning colon-sep list**
 
    TODO. Plus more missing Fortran functions.
-
-- **Add getpdfsets_() in Fortran, returning colon-sep list**
-
-   TODO
 
 - **Add getdescm_() in Fortran**
 
