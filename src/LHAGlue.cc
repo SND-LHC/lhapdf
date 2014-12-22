@@ -69,6 +69,10 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     /// Constructor from a PDF set's LHAPDF ID code
     PDFSetHandler(int lhaid) {
       pair<string,int> set_mem = LHAPDF::lookupPDF(lhaid);
+      // First check that the lookup was successful, i.e. it was a valid ID for the LHAPDF6 set collection
+      if (set_mem.first.empty() || set_mem.second < 0)
+        throw LHAPDF::UserError("Could not find a valid PDF with LHAPDF ID = " + LHAPDF::to_str(lhaid));
+      // Try to load this PDF (checking that the member number is in the set's range is done in mkPDF, called by loadMember)
       setname = set_mem.first;
       loadMember(set_mem.second);
     }

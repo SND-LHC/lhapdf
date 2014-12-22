@@ -49,8 +49,12 @@ namespace LHAPDF {
   PDF* mkPDF(const string& setname, int member) {
     // Find the member data file and ensure that it exists
     const string searchpath = findpdfmempath(setname, member);
-    if (searchpath.empty())
+    if (searchpath.empty()) {
+      const int setsize = getPDFSet(setname).size();
+      if (member > setsize-1)
+        throw UserError("PDF " + setname + "/" + to_str(member) + " is out of the member range of set " + setname);
       throw UserError("Can't find a valid PDF " + setname + "/" + to_str(member));
+    }
     // First create an Info object to work out what format of PDF this is:
     Info info(searchpath);
     const string fmt = info.get_entry("Format");
