@@ -134,12 +134,17 @@ namespace LHAPDF {
 
     // Configure the QCD params on this AlphaS
     if (info.has_key("AlphaS_OrderQCD")) as->setOrderQCD(info.get_entry_as<int>("AlphaS_OrderQCD"));
+    /// @todo Fall back to generic OrderQCD?
+
+    /// @todo Add AlphaS_Specific mass metadata, used by preference if available
     if (info.has_key("MUp")) as->setQuarkMass(1, info.get_entry_as<double>("MUp"));
     if (info.has_key("MDown")) as->setQuarkMass(2, info.get_entry_as<double>("MDown"));
     if (info.has_key("MStrange")) as->setQuarkMass(3, info.get_entry_as<double>("MStrange"));
     if (info.has_key("MCharm")) as->setQuarkMass(4, info.get_entry_as<double>("MCharm"));
     if (info.has_key("MBottom")) as->setQuarkMass(5, info.get_entry_as<double>("MBottom"));
     if (info.has_key("MTop")) as->setQuarkMass(6, info.get_entry_as<double>("MTop"));
+
+    /// @todo Get thresholds with fallback chain AlphaS_Threshold* -> Threshold* -> AlphaS_M* -> M*
 
     const string fscheme = to_lower_copy(info.get_entry("AlphaS_FlavorScheme", info.get_entry("FlavorScheme", "variable"))); // default is VFNS
     const int nflavs = info.get_entry_as<int>("AlphaS_NumFlavors", info.get_entry_as<int>("NumFlavors", 5)); // default is 5 flavour evolution

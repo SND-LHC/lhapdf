@@ -41,8 +41,6 @@ VERSION 6.1.5
 
    Plus set-length checks, maybe in 6.1.6
 
-- **Remove #pragma once -- not fully portable**
-
 - **Reproduce/find/fix valgrind warning / leak**
 
 
@@ -50,6 +48,8 @@ VERSION 6.1.6
 -------------
 
 - **Python3 support**
+
+- **Remove #pragma once -- not fully portable**
 
 - **.LHgrid etc. "tolerance" control -- TranslateLHA5Names flag?**
 
