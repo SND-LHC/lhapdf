@@ -122,7 +122,9 @@ namespace LHAPDF {
               throw ReadError("Empty Q knot array on line " + to_str(iline));
             //cout << q2s.size() << ", " << q2s.front() << ", " << q2s.back() << endl;
           } else if (iblockline == 3) { // internal flavor IDs ordering line
+            cout << pids.size() << endl;
             while (nparser >> itoken) pids.push_back(itoken);
+            cout << pids.size() << endl;
             // Check that each line has many tokens as there should be flavours
             if (pids.size() != flavors().size())
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(pids.size()) +
@@ -173,7 +175,7 @@ namespace LHAPDF {
             arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end());
           }
           //cout << _knotarrays.size() << endl;
-          xs.clear(); q2s.clear();
+          xs.clear(); q2s.clear(); pids.clear();
           for (size_t ipid = 0; ipid < pids.size(); ++ipid) ipid_xfs[ipid].clear();
         }
       }
