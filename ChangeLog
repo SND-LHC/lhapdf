@@ -1,6 +1,8 @@
-2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
+2014-12-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 6.1.5 release.
+
+2014-12-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Better error handling in PDF index lookup, including clearer
 	reporting of set-unmatched PDF IDs and member numbers which are
