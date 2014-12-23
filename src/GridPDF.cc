@@ -107,8 +107,8 @@ namespace LHAPDF {
           // Block 0 is the metadata, which we ignore here
           if (iblock == 0) continue;
 
-          // Debug
-          //cout << line << " @ " << iline << " = block line #" << iblockline << endl;
+          // Debug printout
+          // cout << iline << " = block line #" << iblockline << " => " << line << endl;
 
           // Parse the data lines
           nparser.reset(line);
@@ -120,7 +120,6 @@ namespace LHAPDF {
             while (nparser >> ftoken) q2s.push_back(ftoken*ftoken); // note Q -> Q2
             if (q2s.empty())
               throw ReadError("Empty Q knot array on line " + to_str(iline));
-            //cout << q2s.size() << ", " << q2s.front() << ", " << q2s.back() << endl;
           } else if (iblockline == 3) { // internal flavor IDs ordering line
             while (nparser >> itoken) pids.push_back(itoken);
             // Check that each line has many tokens as there should be flavours
@@ -131,7 +130,10 @@ namespace LHAPDF {
           } else {
             if (iblockline == 4) { // on the first line of the xf block, resize the arrays
               ipid_xfs.resize(pids.size());
-              for (size_t ipid = 0; ipid < pids.size(); ++ipid) { ipid_xfs[ipid].reserve(xs.size() * q2s.size()); }
+              const size_t subgridsize = xs.size() * q2s.size();
+              for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
+                ipid_xfs[ipid].reserve(subgridsize);
+              }
             }
             size_t ipid = 0;
             while (nparser >> ftoken) {
@@ -152,34 +154,38 @@ namespace LHAPDF {
                             to_str(iblockline-1) + " data lines were seen in block " + to_str(iblock-1) +
                             " but " + to_str(xs.size()*q2s.size() + 3) + " expected");
 
-          // Increment/reset the block and line counters
+          // Ignore block registration if we've just finished reading the 0th (metadata) block
+          if (iblock > 0) {
+
+            // Throw if the last subgrid block was of zero size
+            if (ipid_xfs.empty())
+              throw ReadError("Empty xf values array in data block " + to_str(iblock) + ", ending on line " + to_str(iline));
+
+            // Register data from the block into the GridPDF data structure
+            KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
+            for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
+              const int pid = pids[ipid];
+              // Create the 2D array with the x and Q2 knot positions
+              arraynf[pid] = KnotArray1F(xs, q2s);
+              // Populate the xf data array
+              arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end());
+            }
+          }
+
+          // Increment/reset the block and line counters, subgrid arrays, etc.
           iblock += 1;
           iblockline = 0;
-
-          // Escape here if we've just finished reading the 0th (metadata) block
-          if (iblock == 1) continue;
-
-          // Throw if the block was of zero size
-          if (ipid_xfs.empty())
-            throw ReadError("Empty xf values array in block " + to_str(iblock) + ", ended on line " + to_str(iline));
-
-          // Register data from the previous (>0th) block into the GridPDF data structure
-          KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
-          for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
-            const int pid = pids[ipid];
-            // Create the 2D array with the x and Q2 knot positions
-            arraynf[pid] = KnotArray1F(xs, q2s);
-            // Populate the xf data array
-            arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end());
-          }
-          //cout << _knotarrays.size() << endl;
-          xs.clear(); q2s.clear(); pids.clear();
-          for (size_t ipid = 0; ipid < pids.size(); ++ipid) ipid_xfs[ipid].clear();
+          xs.clear(); q2s.clear();
+          for (size_t ipid = 0; ipid < pids.size(); ++ipid)
+            ipid_xfs[ipid].clear();
+          pids.clear();
         }
       }
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")
         throw ReadError("Grid file " + mempath + " is not properly terminated: .dat files MUST end with a --- separator line");
+
+    // Error handling
     } catch (Exception& e) {
       throw;
     } catch (std::exception& e) {
