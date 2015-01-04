@@ -38,9 +38,11 @@ p.add_option("--qsfile", dest="QSFILE", metavar="FILE", help="file of sample kno
 p.add_option("--extraxs", dest="EXTRAXS", metavar="X1,X2,...", help="comma-separated list of extra sample knots in x", default=None)
 p.add_option("--extraqs", dest="EXTRAQS", metavar="Q1,Q2,...", help="comma-separated list of extra sample knots in Q", default=None)
 p.add_option("--resample", dest="RESAMPLE", action="store_true", help="override the original sample grid with a new one (hard coded)", default=False)
+p.add_option("--resample-alphas", dest="RESAMPLE_ALPHAS", action="store_true", help="override the original alpha_s(Q) sample grid with a new one (hard coded)", default=False)
 p.add_option("--ffn", dest="FIXED_NF", action="store_true", help="specify a fixed number of flavours [default=variable NF]", default=False)
 p.add_option("--nf", dest="NUM_FLAVS", type=int, help="specify the number of flavours [default=%default]", default=5)
 p.add_option("--top", dest="NUM_FLAVS", action="store_const", const=6, help="generate explicit grid entries for top (and antitop) PDFs", default=5)
+p.add_option("--no-lambda", dest="NO_LAMBDA", action="store_true", help="don't write Lambda4,5 metadata values, even if they are non-zero", default=False)
 p.add_option("--diffasmass", dest="DIFFASMASS", action="store_true", help="different alpha_s and quark masses for each member", default=False)
 p.add_option("--subgrids", dest="USE_SUBGRIDS", action="store_true", help="make distinct xf and alpha_s ipol grids between flavour thresholds", default=False)
 p.add_option("--info-only", dest="INFO_ONLY", action="store_true", help="only dump the .info file", default=False)
@@ -137,14 +139,14 @@ for lha5name in args:
             del q2s
             #print xs
         else:
-            print "Overriding original grid with a new log-lin x sampling and log Q2 sampling"
+            print "Overriding original grid with a new log-lin x sampling and log Q sampling"
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.linspace(0.075, 0.2, 6)) + list(numpy.linspace(0.25, 1.0, 18))
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.logspace(math.log10(0.075), 0, 21))
             # xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + [1.0 - i for i in numpy.logspace(math.log10(0.002), math.log10(0.1), 18)])
             xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + list(numpy.linspace(0.1, 0.99, 50)))
-            qs = list(numpy.sqrt(numpy.logspace(math.log10(qmin**2), math.log10(qmax**2), 50))) ## TODO: why did I do a Q2 sampling then take sqrt? History?
-            print "Manual x grid: ", ", ".join("%0.2e" % x for x in xs)
-            print "Manual Q grid: ", ", ".join("%0.2e" % q for q in qs)
+            qs = [qmin] + list(numpy.logspace(math.log10(qmin), math.log10(qmax), 100))[1:-1] + [qmax] # dense resampling in logQ between Qmin and Qmax (with care re. exact endpoints)
+            print "Manual x grid: ", ", ".join("%0.2g" % x for x in xs)
+            print "Manual Q grid: ", ", ".join("%0.2g" % q for q in qs)
 
         ## If a file of x knots is provided, override whatever was calculated before
         if opts.XSFILE:
@@ -255,11 +257,17 @@ for lha5name in args:
         ## Remove the Qs array, since using it now would be inconsistent
         del qs
 
-        ## Use the PDF grid's Q knot values for alpha_s interpolation, with subgrid edge doubling and MZ included
-        alphas_qs = []
-        for qs in qgrids:
-            alphas_qs += qs
-        alphas_qs = sorted( alphas_qs + [MZ] )
+        ## Use the PDF grid's Q knot values for alpha_s interpolation, with subgrid edge doubling and mC, mB, mZ included
+        if not opts.RESAMPLE_ALPHAS:
+            alphas_qs = []
+            for qs in qgrids:
+                alphas_qs += qs
+        else:
+            print "Overriding original alpha_s grid with a new log Q sampling"
+            alphas_qs = [qmin] + list(numpy.logspace(math.log10(qmin), math.log10(qmax), 100))[1:-1] + [qmax] # dense resampling in logQ between Qmin and Qmax
+            print "Manual alpha_s Q grid: ", ", ".join("%0.2g" % q for q in alphas_qs)
+        ## Add explicit sampling points at heavy quark and Z masses
+        alphas_qs = sorted( alphas_qs + [lhapdf.getQMass(1, 4), lhapdf.getQMass(1, 5), MZ] )
         if opts.VERBOSE:
             print "alpha_s Qs =", alphas_qs
 
@@ -315,10 +323,11 @@ for lha5name in args:
                     f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in alphas_qs))
                 else:
                     f.write("AlphaS_Type: analytic\n")
-                if lhapdf.getLam4(1) > 0:
-                    f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
-                if lhapdf.getLam5(1) > 0:
-                    f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
+                if not opts.NO_LAMBDA:
+                    if lhapdf.getLam4(1) > 0:
+                        f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
+                    if lhapdf.getLam5(1) > 0:
+                        f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
         f.close()
 
         ## Escape here if only writing the .info file
@@ -353,10 +362,11 @@ for lha5name in args:
                 f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in alphas_qs))
             else:
                 f.write("AlphaS_Type: analytic\n")
-            if lhapdf.getLam4(1) > 0:
-                f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
-            if lhapdf.getLam5(1) > 0:
-                f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
+            if not opts.NO_LAMBDA:
+                if lhapdf.getLam4(1) > 0:
+                    f.write("AlphaS_Lambda4: %g\n" % lhapdf.getLam4(1))
+                if lhapdf.getLam5(1) > 0:
+                    f.write("AlphaS_Lambda5: %g\n" % lhapdf.getLam5(1))
         f.write("---\n")
 
         ## Get the xf values for this PDF member in each Q subgrid
