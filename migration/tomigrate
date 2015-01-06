@@ -9,21 +9,28 @@
 ## Use the --diffasmass flag if the members of the PDF set can have different alpha_s and quark mass values.
 ## Use the --pid flag if the parent particle is not a proton.
 
+## ABKM09
+abkm09_3_nlo.LHgrid  --version=1 --diffasmass --nf=3 --ffn --xmin=1.3e-7 --qmin=1.1 --resample-alphas --no-lambda --errtype=symmhessian --id=40650 --desc="NLO 3-flavour PDFs for the ABKM09 set"  --ref="Phys.Rev.D81(2010)014032 (arXiv:0908.2766)" --authors="S. Alekhin, J. Bluemlein, S.Klein, S. Moch"
+abkm09_3_nnlo.LHgrid --version=1 --diffasmass --nf=3 --ffn --xmin=1.3e-7 --qmin=1.1 --resample-alphas --no-lambda --errtype=symmhessian --id=40750 --desc="NNLO 3-flavour PDFs for the ABKM09 set" --ref="Phys.Rev.D81(2010)014032 (arXiv:0908.2766)" --authors="S. Alekhin, J. Bluemlein, S.Klein, S. Moch"
+abkm09_4_nlo.LHgrid  --version=1 --diffasmass --nf=4 --ffn --xmin=1.3e-7 --qmin=1.1 --resample-alphas --no-lambda --errtype=symmhessian --id=40780 --desc="NLO 4-flavour PDFs for the ABKM09 set"  --ref="Phys.Rev.D81(2010)014032 (arXiv:0908.2766)" --authors="S. Alekhin, J. Bluemlein, S.Klein, S. Moch"
+abkm09_4_nnlo.LHgrid --version=1 --diffasmass --nf=4 --ffn --xmin=1.3e-7 --qmin=1.1 --resample-alphas --no-lambda --errtype=symmhessian --id=40810 --desc="NNLO 4-flavour PDFs for the ABKM09 set" --ref="Phys.Rev.D81(2010)014032 (arXiv:0908.2766)" --authors="S. Alekhin, J. Bluemlein, S.Klein, S. Moch"
+abkm09_5_nlo.LHgrid  --version=1 --diffasmass --nf=5 --ffn --xmin=1.3e-7 --qmin=1.1 --resample-alphas --no-lambda --errtype=symmhessian --id=40850 --desc="NLO 5-flavour PDFs for the ABKM09 set"  --ref="Phys.Rev.D81(2010)014032 (arXiv:0908.2766)" --authors="S. Alekhin, J. Bluemlein, S.Klein, S. Moch"
+abkm09_5_nnlo.LHgrid --version=1 --diffasmass --nf=5 --ffn --xmin=1.3e-7 --qmin=1.1 --resample-alphas --no-lambda --errtype=symmhessian --id=40950 --desc="NNLO 5-flavour PDFs for the ABKM09 set" --ref="Phys.Rev.D81(2010)014032 (arXiv:0908.2766)" --authors="S. Alekhin, J. Bluemlein, S.Klein, S. Moch"
 
 ## ABM11
-abm11_3n_nlo.LHgrid  --diffasmass --nf=3 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42000 --desc="NLO 3-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm11_3n_nnlo.LHgrid --diffasmass --nf=3 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42100 --desc="NNLO 3-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm11_4n_nlo.LHgrid  --diffasmass --nf=4 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42030 --desc="NLO 4-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm11_4n_nnlo.LHgrid --diffasmass --nf=4 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42130 --desc="NNLO 4-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm11_5n_nlo.LHgrid  --diffasmass --nf=5 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42060 --desc="NLO 5-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm11_5n_nnlo.LHgrid --diffasmass --nf=5 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42160 --desc="NNLO 5-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm11_5n_as_nlo.LHgrid  --diffasmass --pdftype=central --nf=5 --ffn --resample-alphas --no-lambda --id=42200 --desc="NLO 5-flavour PDFs for the ABM11 set, with a scan of alphas(Mz) fixed at 0.110 for mem=0; 0.111 for mem=1; ... ; and 0.130 for mem=20" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm11_5n_as_nnlo.LHgrid --diffasmass --pdftype=central --nf=5 --ffn --resample-alphas --no-lambda --id=42230 --desc="NNLO 5-flavour PDFs for the ABM11 set, with a scan of alphas(Mz) fixed at 0.104 for mem=0; 0.105 for mem=1; ... ; and 0.120 for mem=16" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_3n_nlo.LHgrid  --version=1 --diffasmass --nf=3 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42000 --desc="NLO 3-flavour PDFs for the ABM11 set"  --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_3n_nnlo.LHgrid --version=1 --diffasmass --nf=3 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42100 --desc="NNLO 3-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_4n_nlo.LHgrid  --version=1 --diffasmass --nf=4 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42030 --desc="NLO 4-flavour PDFs for the ABM11 set"  --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_4n_nnlo.LHgrid --version=1 --diffasmass --nf=4 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42130 --desc="NNLO 4-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_nlo.LHgrid  --version=1 --diffasmass --nf=5 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42060 --desc="NLO 5-flavour PDFs for the ABM11 set"  --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_nnlo.LHgrid --version=1 --diffasmass --nf=5 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42160 --desc="NNLO 5-flavour PDFs for the ABM11 set" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_as_nlo.LHgrid  --version=1 --diffasmass --pdftype=central --nf=5 --ffn --resample-alphas --no-lambda --id=42200 --desc="NLO 5-flavour PDFs for the ABM11 set, with a scan of alphas(Mz) fixed at 0.110 for mem=0; 0.111 for mem=1; ... ; and 0.130 for mem=20" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm11_5n_as_nnlo.LHgrid --version=1 --diffasmass --pdftype=central --nf=5 --ffn --resample-alphas --no-lambda --id=42230 --desc="NNLO 5-flavour PDFs for the ABM11 set, with a scan of alphas(Mz) fixed at 0.104 for mem=0; 0.105 for mem=1; ... ; and 0.120 for mem=16" --ref="arXiv:1202.2281" --authors="S. Alekhin, J. Bluemlein, S. Moch"
 
 ## ABM12
-abm12lhc_3_nnlo.LHgrid --diffasmass --nf=3 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42300 --desc=90% eigenvector"NNLO 3-flavour PDFs for the ABM12 set" --ref="arXiv:1310.3059" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm12lhc_4_nnlo.LHgrid --diffasmass --nf=4 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42330 --desc="NNLO 4-flavour PDFs for the ABM12 set" --ref="arXiv:1310.3059" --authors="S. Alekhin, J. Bluemlein, S. Moch"
-abm12lhc_5_nnlo.LHgrid --diffasmass --nf=5 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42360 --desc="NNLO 5-flavour PDFs for the ABM12 set" --ref="arXiv:1310.3059" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm12lhc_3_nnlo.LHgrid --version=1 --diffasmass --nf=3 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42300 --desc="NNLO 3-flavour PDFs for the ABM12 set" --ref="arXiv:1310.3059" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm12lhc_4_nnlo.LHgrid --version=1 --diffasmass --nf=4 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42330 --desc="NNLO 4-flavour PDFs for the ABM12 set" --ref="arXiv:1310.3059" --authors="S. Alekhin, J. Bluemlein, S. Moch"
+abm12lhc_5_nnlo.LHgrid --version=1 --diffasmass --nf=5 --ffn --resample-alphas --no-lambda --errtype=symmhessian --id=42360 --desc="NNLO 5-flavour PDFs for the ABM12 set" --ref="arXiv:1310.3059" --authors="S. Alekhin, J. Bluemlein, S. Moch"
 
 
 ## ATLAS
