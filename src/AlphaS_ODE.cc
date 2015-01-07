@@ -85,13 +85,13 @@ namespace LHAPDF {
                           const double& allowed_relative, double h, double accuracy) const {
     if ( q2 == t ) return;
     while (fabs(q2 - t) > accuracy) {
-      /// Make the allowed change smaller as the q2 scale gets greater
-      const double allowed_change = allowed_relative / t;
+      /// Can make the allowed change smaller as the q2 scale gets greater, does not seem necessary
+      const double allowed_change = allowed_relative;
 
       /// Mechanism to shrink the steps if accuracy < stepsize and we are close to Q2
       if (fabs(h) > accuracy && fabs(q2 - t)/h < 10 && t > 1.) h = accuracy/2.1;
       /// Take constant steps for Q2 < 1 GeV
-      if (fabs(h) > 0.01 && t < 1.) { accuracy = 0.00051; h = 0.001; }
+      if (fabs(h) > 0.01 && t < 1.) { accuracy = 0.0051; h = 0.01; }
       // Check if we are going to run forward or backwards in energy scale towards target Q2.
       /// @todo C++11's std::copysign would be perfect here
       if ((q2 < t && sgn(h) > 0) || (q2 > t && sgn(h) < 0)) h *= -1;
@@ -132,11 +132,10 @@ namespace LHAPDF {
     // Initial step size
     double h = 2.0;
     /// This the the relative error allowed for the adaptive step size.
-    /// @todo Should be optimised.
     const double allowed_relative = 0.01;
 
     /// Accuracy of Q2 (error in Q2 within this / 2)
-    double accuracy = 0.01;
+    double accuracy = 0.001;
 
     // Run in Q2 using RK4 algorithm until we are within our defined accuracy
     double t = sqr(_mz); // starting point
@@ -251,28 +250,37 @@ namespace LHAPDF {
     } else {
 
       // Start evolution in Q at MZ, and assemble a grid of anchor points.
+
+      // Density of interpolation grid (relative measure, real density depends on
+      // where in q2 we are)
+      double interp_accuracy = 0.1;
+
       vector<double> q2s, alphas;
       vector<pair<int, double> > grid; // for storing in correct order
       int index = 0; // for sorting in the correct order
 
-      // To save time we solve from MZ down to Q=0.5, then go back to MZ and solve up to Q=1000
+      // To save time we solve from MZ down to Q=0.2 GeV, then go back to MZ and solve up to Q=14000 GeV
       /// @todo The knots are not optimised at the moment
       double knot = sqr(_mz);
-      while ( knot > sqr(0.5) ) {
+      while ( knot > sqr(0.2) ) {
         _solve(knot, t, y, allowed_relative, h, accuracy);
         q2s.push_back(t);
 //        alphas.push_back(y);
         grid.push_back(make_pair(index, y));
         index--;
         if ( y > 2. ) break;
-        knot -= (10 * accuracy * t);
+        if (knot < sqr(2)) knot -= (1 * interp_accuracy * sqrt(t));
+        else knot -= (5 * interp_accuracy * sqrt(t));
       }
+      accuracy = 0.1;
+      h = 100.;
       t = sqr(_mz); // starting point
       y = _alphas_mz; // starting value
       knot = sqr(_mz);
       index = 1;
-      while ( knot < sqr(1000) ) {
-        knot += (10 * accuracy * t);
+      while ( knot < sqr(14000) ) {
+        if (knot > sqr(1000)) knot += (1000 * interp_accuracy * sqrt(t));
+        else knot += (20 * interp_accuracy * sqrt(t));
         _solve(knot, t, y, allowed_relative, h, accuracy);
         q2s.push_back(t);
 //        alphas.push_back(y);
@@ -282,7 +290,7 @@ namespace LHAPDF {
 
       // Sorting the values in the correct order
       /// @todo AB: Probably this "magic" isn't needed? Not that it's wrong, but it is obscure -- at least add an explanatory comment!
-      /// KN: This just sorts the calculated alpha_s values into the correct order (since I interpolate first down from M_Z to sqrt(0.5), and then
+      /// KN: This just sorts the calculated alpha_s values into the correct order (since I interpolate first down from M_Z to 0.2, and then
       /// go back to M_Z and go up). There's probably a cleaner way to do it, this is a modified StackExchange suggestion!
       /// It sorts the vector<pair<int, double> > by ascending int values, it is required since the interpolator assumes the vectors to be ordered
       std::sort(grid.begin(), grid.end(),
@@ -293,6 +301,7 @@ namespace LHAPDF {
       }
 
       std::sort(q2s.begin(), q2s.end());
+//      BOOST_FOREACH(double q2_, q2s) cout << sqrt(q2_) << endl;
 //      std::sort(alphas.begin(), alphas.end(), std::greater<double>());
 
       // Set interpolation knots and values
