@@ -672,7 +672,7 @@ extern "C" {
   ///////////////////////////////////////
 
 
-  /// REALLY OLD PDFLIB COMPATILITY FUNCTIONS
+  /// REALLY OLD PDFLIB COMPATIBILITY FUNCTIONS
 
   /// PDFLIB initialisation function
   void pdfset_(const char* par, const double* value, int parlength) {
