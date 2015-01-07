@@ -1,7 +1,7 @@
 /**
 @page pdfsets PDF sets
 
-<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 360 available, of which 347 are validated.</b>
+<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 366 available, of which 364 are validated.</b>
 
 See http://www.hepforge.org/archive/lhapdf/pdfsets/6.1 for data downloads.
 
@@ -163,17 +163,23 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>25260</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/MMHT2014nlo_asmzsmallrange.tar.gz">MMHT2014nlo_asmzsmallrange</a></td><td>5</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>25300</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/MMHT2014nnlo68cl.tar.gz">MMHT2014nnlo68cl</a></td><td>51</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>25360</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/MMHT2014nnlo_asmzsmallrange.tar.gz">MMHT2014nnlo_asmzsmallrange</a></td><td>3</td><td>1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_3n_nlo.tar.gz">abm11_3n_nlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42030</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_4n_nlo.tar.gz">abm11_4n_nlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42060</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_5n_nlo.tar.gz">abm11_5n_nlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42100</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_3n_nnlo.tar.gz">abm11_3n_nnlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42130</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_4n_nnlo.tar.gz">abm11_4n_nnlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42160</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_5n_nnlo.tar.gz">abm11_5n_nnlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_5n_as_nlo.tar.gz">abm11_5n_as_nlo</a></td><td>21</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42230</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm11_5n_as_nnlo.tar.gz">abm11_5n_as_nnlo</a></td><td>17</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42300</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm12lhc_3_nnlo.tar.gz">abm12lhc_3_nnlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42330</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm12lhc_4_nnlo.tar.gz">abm12lhc_4_nnlo</a></td><td>29</td><td>-1</td><td></td></tr>
-    <tr style="background-color: #fee;"><td>42360</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/unvalidated/abm12lhc_5_nnlo.tar.gz">abm12lhc_5_nnlo</a></td><td>29</td><td>-1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>40650</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abkm09_3_nlo.tar.gz">abkm09_3_nlo</a></td><td>26</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>40750</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abkm09_3_nnlo.tar.gz">abkm09_3_nnlo</a></td><td>26</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>40780</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abkm09_4_nlo.tar.gz">abkm09_4_nlo</a></td><td>26</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>40810</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abkm09_4_nnlo.tar.gz">abkm09_4_nnlo</a></td><td>26</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>40850</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abkm09_5_nlo.tar.gz">abkm09_5_nlo</a></td><td>26</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>40950</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abkm09_5_nnlo.tar.gz">abkm09_5_nnlo</a></td><td>26</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_3n_nlo.tar.gz">abm11_3n_nlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42030</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_4n_nlo.tar.gz">abm11_4n_nlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42060</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_5n_nlo.tar.gz">abm11_5n_nlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42100</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_3n_nnlo.tar.gz">abm11_3n_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42130</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_4n_nnlo.tar.gz">abm11_4n_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42160</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_5n_nnlo.tar.gz">abm11_5n_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_5n_as_nlo.tar.gz">abm11_5n_as_nlo</a></td><td>21</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42230</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_5n_as_nnlo.tar.gz">abm11_5n_as_nnlo</a></td><td>17</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42300</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_3_nnlo.tar.gz">abm12lhc_3_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42330</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_4_nnlo.tar.gz">abm12lhc_4_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42360</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_5_nnlo.tar.gz">abm12lhc_5_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>60600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/HERAPDF15NNLO_EIG.tar.gz">HERAPDF15NNLO_EIG</a></td><td>29</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>60630</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/HERAPDF15NNLO_VAR.tar.gz">HERAPDF15NNLO_VAR</a></td><td>11</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>60650</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/HERAPDF15NNLO_ALPHAS.tar.gz">HERAPDF15NNLO_ALPHAS</a></td><td>12</td><td>1</td><td></td></tr>
