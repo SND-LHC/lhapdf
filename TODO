@@ -13,23 +13,13 @@ UNVERSIONED
 
    On the website
 
-- **JR14 PDF integration**
-
-   Done: release along with v6.1.5
-
-- **MMHT PDF integration**
-
-   Test and release with 6.1.5 (no version requirement)
-
-- **ABM PDF approval**
-
-   Still no response. Remove after new year if no confirmation.
-
 - **HERA 1.0 and LHeC PDF migration and approval**
 
    Same procedure as for ATLAS and HERA 1.5. Prod Voica for an update.
 
 - **Pion PDF(s)**
+
+   GRVPI0, GRVPI1: need --resample. List in separate dox table.
 
 
 VERSION 6.1.6
