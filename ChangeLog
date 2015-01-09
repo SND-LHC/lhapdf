@@ -1,3 +1,10 @@
+2015-01-09  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Remove abs(...) twice in function PDFSet::randomValueFromHessian
+	to correct a mistake in Eq. (6.5) of arXiv:1205.4024v2.  The
+	correction is necessary to ensure that correlations are preserved
+	when converting a Hessian PDF set to a Monte Carlo PDF set.
+
 2014-12-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 6.1.5 release.

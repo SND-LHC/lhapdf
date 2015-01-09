@@ -205,17 +205,17 @@ namespace LHAPDF {
       // Loop over number of eigenvectors.
       for (size_t ieigen = 1; ieigen <= neigen; ieigen++) {
         double r = randoms[ieigen-1]; // Gaussian random number
-        frand += r*abs(values[ieigen]-values[0])*scale;
+        frand += r*(values[ieigen]-values[0])*scale;
       }
 
     } else if (errorType() == "hessian") {
 
-      // Use either Eq. (6.4) or Eq. (6.5) of arXiv:1205.4024v2.
+      // Use either Eq. (6.4) or corrected Eq. (6.5) of arXiv:1205.4024v2.
       // Loop over number of eigenvectors.
       for (size_t ieigen = 1; ieigen <= neigen; ieigen++) {
         double r = randoms[ieigen-1]; // Gaussian random number
         if (symmetrise) {
-          frand += 0.5*r*abs(values[2*ieigen-1]-values[2*ieigen]) * scale;
+          frand += 0.5*r*(values[2*ieigen-1]-values[2*ieigen]) * scale;
         } else { // not symmetrised
           if (r < 0.0) frand -= r*(values[2*ieigen]-values[0]) * scale; // negative direction
           else frand += r*(values[2*ieigen-1]-values[0]) * scale; // positive direction
