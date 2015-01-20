@@ -22,7 +22,7 @@ namespace LHAPDF {
     /// @name Creation and deletion
     //@{
 
-    /// @brief Constructor from a file path.
+    /// @brief Constructor from a file path
     ///
     /// We allow this to exist and be user-callable for testing and other
     /// special case uses, since if you are explicitly instantiating a GridPDF
@@ -35,21 +35,21 @@ namespace LHAPDF {
       _forcePos = -1;
     }
 
-    /// Constructor from a set name and member ID.
+    /// Constructor from a set name and member ID
     GridPDF(const std::string& setname, int member) {
       _loadInfo(setname, member); // Sets _mempath
       _loadData(_mempath);
       _forcePos = -1;
     }
 
-    /// Constructor from a set name and member ID.
+    /// Constructor from an LHAPDF ID
     GridPDF(int lhaid) {
       _loadInfo(lhaid); // Sets _mempath
       _loadData(_mempath);
       _forcePos = -1;
     }
 
-    /// Virtual destructor to allow inheritance.
+    /// Virtual destructor to allow inheritance
     virtual ~GridPDF() { }
 
     //@}
