@@ -36,10 +36,10 @@ namespace LHAPDF {
     }
 
     /// Constructor from a list of set names and member IDs
-    // CompositePDF(const std::vector<std::string, int>& setnames_members);
+    CompositePDF(const std::vector< std::pair<std::string, int> >& setnames_members);
 
     /// Constructor from a list of LHAPDF IDs
-    // CompositePDF(const std::vector<int>& lhaids);
+    CompositePDF(const std::vector<int>& lhaids);
 
     /// Virtual destructor to allow inheritance
     virtual ~CompositePDF() {
@@ -53,31 +53,31 @@ namespace LHAPDF {
     //@{
 
     /// Get the list of constituent PDFs (const version)
-    const vector<PDF*> constituentPDFs() const {
+    const std::vector<PDF*> constituentPDFs() const {
       return _pdfs;
     }
 
     /// Get the list of constituent PDFs (non-const version)
-    vector<PDF*> constituentPDFs() {
+    std::vector<PDF*> constituentPDFs() {
       return _pdfs;
     }
 
     /// Set the list of constituent PDFs
     template <typename PDFPTR>
-    void setConstituentPDFs(const vector<PDFPTR>& pdfs) {
+    void setConstituentPDFs(const std::vector<PDFPTR>& pdfs) {
       reset();
-      appendConstituentPDFs(pdfs);
+      addConstituentPDFs(pdfs);
     }
 
     /// Append a PDF to the list of constituents
-    void appendConstituentPDF(const PDF* pdf) {
+    void addConstituentPDF(PDF* pdf) {
       _pdfs.push_back(pdf);
     }
 
     /// Append several PDFs to the list of constituents
     template <typename PDFPTR>
-    void appendConstituentPDFs(const vector<PDFPDF>& pdfs) {
-      BOOST_FOREACH (PDF* p, pdfs) appendConstituentPDF(p);
+    void addConstituentPDFs(std::vector<PDFPTR>& pdfs) {
+      BOOST_FOREACH (PDF* p, pdfs) addConstituentPDF(p);
     }
 
     /// Clear the list of constituent PDFs, deleting the objects
@@ -95,7 +95,8 @@ namespace LHAPDF {
     double _xfxQ2(int id, double x, double q2) const {
       double rtn = 1;
       BOOST_FOREACH (const PDF* p, constituentPDFs())
-        rtn *= p->_xfxQ2(id, x, q2);
+        rtn *= p->xfxQ2(id, x, q2);
+      return rtn;
     }
 
     /// Collection of owned PDF pointers
