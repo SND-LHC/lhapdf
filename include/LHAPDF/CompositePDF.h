@@ -31,7 +31,7 @@ namespace LHAPDF {
     ///
     /// Pointers must be heap-allocated (new'd), and ownership will be taken by the new object.
     template <typename PDFPTR>
-    CompositePDF(const std::vector<PDFPTR>& pdfs) {
+    CompositePDF(std::vector<PDFPTR>& pdfs) {
       setConstituentPDFs(pdfs);
     }
 
@@ -64,7 +64,7 @@ namespace LHAPDF {
 
     /// Set the list of constituent PDFs
     template <typename PDFPTR>
-    void setConstituentPDFs(const std::vector<PDFPTR>& pdfs) {
+    void setConstituentPDFs(std::vector<PDFPTR>& pdfs) {
       reset();
       addConstituentPDFs(pdfs);
     }
@@ -84,6 +84,38 @@ namespace LHAPDF {
     void reset() {
       BOOST_FOREACH (PDF* p, _pdfs) delete p;
       _pdfs.clear();
+    }
+
+    //@}
+
+
+    /// @name Representative info for combination of constituent PDFs
+    //@{
+
+    const std::vector<int>& flavors() const {
+      if (_flavors.empty()) {
+        BOOST_FOREACH (PDF* p, _pdfs) {
+          BOOST_FOREACH (int pid, p->flavors()) {
+            if (!contains(_flavors, pid)) _flavors.push_back(pid);
+          }
+        }
+        sort(_flavors.begin(), _flavors.end());
+        std::cout << "Computed flavors: # = " << _flavors.size() << std::endl;
+      }
+      std::cout << "Pre-computed " << _flavors.size() << " flavors" << std::endl;
+      return _flavors;
+    }
+
+    bool inRangeQ2(double q2) const {
+      BOOST_FOREACH (PDF* p, _pdfs)
+        if (!p->inRangeQ2(q2)) return false;
+      return true;
+    }
+
+    bool inRangeX(double x) const {
+      BOOST_FOREACH (PDF* p, _pdfs)
+        if (!p->inRangeX(x)) return false;
+      return true;
     }
 
     //@}

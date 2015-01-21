@@ -460,7 +460,7 @@ namespace LHAPDF {
     /// classes.
     ///
     /// @todo Make virtual for AnalyticPDF? Or allow manual setting of the Info?
-    const std::vector<int>& flavors() const {
+    virtual const std::vector<int>& flavors() const {
       if (_flavors.empty()) {
         _flavors = info().get_entry_as< vector<int> >("Flavors");
         sort(_flavors.begin(), _flavors.end());
