@@ -142,172 +142,120 @@ namespace LHAPDF {
     double y = _alphas_mz; // starting value
 
     // If a vector of knots in q2 has been given, solve for those.
-    if ( !_q2s.empty() ) {
-
-      // If for some reason the highest q2 knot is below m_{Z},
-      // force a knot there anyway (since we know it, might as well
-      // use it)
-      if ( _q2s[_q2s.size()-1] < sqr(_mz) ) _q2s.push_back(sqr(_mz));
-
-      // Find the index of the knot right below m_{Z}
-      unsigned int index_of_mz_lower = 0;
-
-      while ( _q2s[index_of_mz_lower + 1] < sqr(_mz) ) {
-        if ( index_of_mz_lower == _q2s.size() -1 ) break;
-        index_of_mz_lower++;
+    if ( _q2s.empty() ) {
+      for (int q = 1; (q/4.) < _mz; ++q) {
+        _q2s.push_back(sqr(q/4.));
       }
-
-      vector<pair<int, double> > grid; // for storing in correct order
-
-      vector<double> alphas;
-      double low_lim = 0;
-      double last_val = -1;
-      bool threshold = false;
-
-      // We do this by starting from m_{Z}, going down to the lowest q2,
-      // and then jumping back up to m_{Z} to avoid calculating things twice
-      for ( int ind = index_of_mz_lower; ind >= 0; --ind) {
-        const double q2 = _q2s[ind];
-        // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
-        // allowed errors, and accuracy.
-        if ( ind != 0 && ind != 1 ) {
-          if ( q2 == _q2s[ind-1] ) {
-            last_val = q2;
-            threshold = true;
-            _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
-            grid.push_back(make_pair(ind, y));
-            y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind-2]));
-            // Define divergence after y > 2. -- we have no accuracy after that any way
-            if ( y > 2. ) { low_lim = q2; }
-            continue;
-          }
-        }
-        // If q2 is lower than a value that already diverged, it will also diverge
-        if ( q2 < low_lim ) {
-          alphas.push_back( std::numeric_limits<double>::max() );
-          continue;
-        // If last point was the same we don't need to recalculate
-        } else if ( q2 == last_val ) {
-          alphas.push_back(y);
-          continue;
-        // Else calculate
-        } else {
-          last_val = q2;
-          if ( threshold ) { _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5); threshold = false; }
-          else { _solve(q2, t, y, allowed_relative, h, accuracy); }
-          grid.push_back(make_pair(ind, y));
-          // Define divergence after y > 2. -- we have no accuracy after that any way
-          if ( y > 2. ) { low_lim = q2; }
-        }
+      for (int q = ceil(_mz); (2*q) < 1000; ++q) {
+        _q2s.push_back(sqr(2*q));
       }
-
-      t = sqr(_mz); // starting point
-      y = _alphas_mz; // starting value
-
-      for ( size_t ind = index_of_mz_lower + 1; ind < _q2s.size(); ++ind) {
-        double q2 = _q2s[ind];
-        // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
-        // allowed errors, and accuracy.
-        if ( ind != _q2s.size() - 1 && ind != _q2s.size() - 2 ) {
-          if ( q2 == _q2s[ind+1] ) {
-            last_val = q2;
-            _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
-            grid.push_back(make_pair(ind, y));
-            y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind+2]));
-            // Define divergence after y > 2. -- we have no accuracy after that any way
-            if ( y > 2. ) { low_lim = q2; }
-            continue;
-          }
-        }
-        // If q2 is lower than a value that already diverged, it will also diverge
-        if ( q2 < low_lim ) {
-          alphas.push_back( std::numeric_limits<double>::max() );
-          continue;
-        // If last point was the same we don't need to recalculate
-        } else if ( q2 == last_val ) {
-          alphas.push_back(y);
-          continue;
-        // Else calculate
-        } else {
-          last_val = q2;
-          _solve(q2, t, y, allowed_relative, h, accuracy);
-          grid.push_back(make_pair(ind, y));
-          // Define divergence after y > 2. -- we have no accuracy after that any way
-          if ( y > 2. ) { low_lim = q2; }
-        }
+      for (int q = 1000; (10*q) < 10000; ++q) {
+        _q2s.push_back(sqr(10*q));
       }
-
-      std::sort(grid.begin(), grid.end(),
-                boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
-
-      for ( size_t x = 0; x < grid.size(); ++x ) {
-         alphas.push_back(grid.at(x).second);
-      }
-
-      _ipol.setQ2Values(_q2s);
-      _ipol.setAlphaSValues(alphas);
-
-    } else {
-
-      // Start evolution in Q at MZ, and assemble a grid of anchor points.
-
-      // Density of interpolation grid (relative measure, real density depends on
-      // where in q2 we are)
-      double interp_accuracy = 0.1;
-
-      vector<double> q2s, alphas;
-      vector<pair<int, double> > grid; // for storing in correct order
-      int index = 0; // for sorting in the correct order
-
-      // To save time we solve from MZ down to Q=0.2 GeV, then go back to MZ and solve up to Q=14000 GeV
-      /// @todo The knots are not optimised at the moment
-      double knot = sqr(_mz);
-      while ( knot > sqr(0.2) ) {
-        _solve(knot, t, y, allowed_relative, h, accuracy);
-        q2s.push_back(t);
-//        alphas.push_back(y);
-        grid.push_back(make_pair(index, y));
-        index--;
-        if ( y > 2. ) break;
-        if (knot < sqr(2)) knot -= (1 * interp_accuracy * sqrt(t));
-        else knot -= (5 * interp_accuracy * sqrt(t));
-      }
-      accuracy = 0.1;
-      h = 100.;
-      t = sqr(_mz); // starting point
-      y = _alphas_mz; // starting value
-      knot = sqr(_mz);
-      index = 1;
-      while ( knot < sqr(14000) ) {
-        if (knot > sqr(1000)) knot += (1000 * interp_accuracy * sqrt(t));
-        else knot += (20 * interp_accuracy * sqrt(t));
-        _solve(knot, t, y, allowed_relative, h, accuracy);
-        q2s.push_back(t);
-//        alphas.push_back(y);
-        grid.push_back(make_pair(index, y));
-        index++;
-      }
-
-      // Sorting the values in the correct order
-      /// @todo AB: Probably this "magic" isn't needed? Not that it's wrong, but it is obscure -- at least add an explanatory comment!
-      /// KN: This just sorts the calculated alpha_s values into the correct order (since I interpolate first down from M_Z to 0.2, and then
-      /// go back to M_Z and go up). There's probably a cleaner way to do it, this is a modified StackExchange suggestion!
-      /// It sorts the vector<pair<int, double> > by ascending int values, it is required since the interpolator assumes the vectors to be ordered
-      std::sort(grid.begin(), grid.end(),
-                boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
-
-      for ( size_t x = 0; x < grid.size(); ++x ) {
-         alphas.push_back(grid.at(x).second);
-      }
-
-      std::sort(q2s.begin(), q2s.end());
-//      BOOST_FOREACH(double q2_, q2s) cout << sqrt(q2_) << endl;
-//      std::sort(alphas.begin(), alphas.end(), std::greater<double>());
-
-      // Set interpolation knots and values
-      _ipol.setQ2Values(q2s);
-      _ipol.setAlphaSValues(alphas);
     }
+
+    // If for some reason the highest q2 knot is below m_{Z},
+    // force a knot there anyway (since we know it, might as well
+    // use it)
+    if ( _q2s[_q2s.size()-1] < sqr(_mz) ) _q2s.push_back(sqr(_mz));
+
+    // Find the index of the knot right below m_{Z}
+    unsigned int index_of_mz_lower = 0;
+
+    while ( _q2s[index_of_mz_lower + 1] < sqr(_mz) ) {
+      if ( index_of_mz_lower == _q2s.size() -1 ) break;
+      index_of_mz_lower++;
+    }
+
+    vector<pair<int, double> > grid; // for storing in correct order
+
+    vector<double> alphas;
+    double low_lim = 0;
+    double last_val = -1;
+    bool threshold = false;
+
+    // We do this by starting from m_{Z}, going down to the lowest q2,
+    // and then jumping back up to m_{Z} to avoid calculating things twice
+    for ( int ind = index_of_mz_lower; ind >= 0; --ind) {
+      const double q2 = _q2s[ind];
+      // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
+      // allowed errors, and accuracy.
+      if ( ind != 0 && ind != 1 ) {
+        if ( q2 == _q2s[ind-1] ) {
+          last_val = q2;
+          threshold = true;
+          _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
+          grid.push_back(make_pair(ind, y));
+          y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind-2]));
+          // Define divergence after y > 2. -- we have no accuracy after that any way
+          if ( y > 2. ) { low_lim = q2; }
+          continue;
+        }
+      }
+      // If q2 is lower than a value that already diverged, it will also diverge
+      if ( q2 < low_lim ) {
+        alphas.push_back( std::numeric_limits<double>::max() );
+        continue;
+      // If last point was the same we don't need to recalculate
+      } else if ( q2 == last_val ) {
+        alphas.push_back(y);
+        continue;
+      // Else calculate
+      } else {
+        last_val = q2;
+        if ( threshold ) { _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5); threshold = false; }
+        else { _solve(q2, t, y, allowed_relative, h, accuracy); }
+        grid.push_back(make_pair(ind, y));
+        // Define divergence after y > 2. -- we have no accuracy after that any way
+        if ( y > 2. ) { low_lim = q2; }
+      }
+    }
+
+    t = sqr(_mz); // starting point
+    y = _alphas_mz; // starting value
+
+    for ( size_t ind = index_of_mz_lower + 1; ind < _q2s.size(); ++ind) {
+      double q2 = _q2s[ind];
+      // Deal with cases with two identical adjacent points (thresholds) by decreasing step size,
+      // allowed errors, and accuracy.
+      if ( ind != _q2s.size() - 1 && ind != _q2s.size() - 2 ) {
+        if ( q2 == _q2s[ind+1] ) {
+          last_val = q2;
+          _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
+          grid.push_back(make_pair(ind, y));
+          y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind+2]));
+          // Define divergence after y > 2. -- we have no accuracy after that any way
+          if ( y > 2. ) { low_lim = q2; }
+          continue;
+        }
+      }
+      // If q2 is lower than a value that already diverged, it will also diverge
+      if ( q2 < low_lim ) {
+        alphas.push_back( std::numeric_limits<double>::max() );
+        continue;
+      // If last point was the same we don't need to recalculate
+      } else if ( q2 == last_val ) {
+        alphas.push_back(y);
+        continue;
+      // Else calculate
+      } else {
+        last_val = q2;
+        _solve(q2, t, y, allowed_relative, h, accuracy);
+        grid.push_back(make_pair(ind, y));
+        // Define divergence after y > 2. -- we have no accuracy after that any way
+        if ( y > 2. ) { low_lim = q2; }
+      }
+    }
+
+    std::sort(grid.begin(), grid.end(),
+              boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+
+    for ( size_t x = 0; x < grid.size(); ++x ) {
+       alphas.push_back(grid.at(x).second);
+    }
+
+    _ipol.setQ2Values(_q2s);
+    _ipol.setAlphaSValues(alphas);
 
     _calculated = true;
   }
