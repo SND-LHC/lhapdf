@@ -51,10 +51,12 @@ int main() {
   // As above: order = 0 returns
   // constant value set by
   // as_ode.setAlphaSMZ(double value);
-  as_ode.setOrderQCD(3);
+  as_ode.setOrderQCD(4);
 
-  as_ode.setMZ(91.1876);
-  as_ode.setAlphaSMZ(0.113174);
+  as_ode.setMZ(91);
+  as_ode.setAlphaSMZ(0.118);
+  as_ode.setMassReference(4.1);
+  as_ode.setAlphaSReference(0.21);
   as_ode.setQuarkMass(1, 0.0017);
   as_ode.setQuarkMass(2, 0.0041);
   as_ode.setQuarkMass(3, 0.1);
@@ -72,7 +74,7 @@ int main() {
   //  as_ode.setQuarkThreshold(1, 0.08);
 
   // Uncomment to use fixed flavor scheme for ODE solver
-  as_ode.setFlavorScheme(AlphaS::FIXED, 5);
+  // as_ode.setFlavorScheme(AlphaS::FIXED, 4);
 
 
 
@@ -83,37 +85,37 @@ int main() {
   as_ipol.setAlphaSValues(alphas);
 
   // Can interpolate ODE with given knots in Q
-  // as_ode.setQValues(qs);
+//   as_ode.setQValues(qs);
 
 
   ///////////////////////////////
   // Test these solvers and the CT10nlo PDF's default behaviours:
 
 
-  PDF* pdf = mkPDF("CT10nlo", 0);
+  PDF* pdf = mkPDF("CT10", 0);
   const double inf = numeric_limits<double>::infinity();
   ofstream fa("alphas_ana.dat"), fo("alphas_ode.dat"), fi("alphas_ipol.dat"), fc("alphas_ct10nlo.dat");
   cout << endl;
-  for (double log10q = -0.5; log10q < 4.15; log10q += 0.05) {
+  for (double log10q = -0.5; log10q < 3; log10q += 0.05) {
     const double q = pow(10, log10q);
     const double as_ana_q = as_ana.alphasQ(q);
     cout << fixed;
     cout << "Q = " << setprecision(3) << q << " GeV" << endl;
-    cout << "Analytical solution:           " << setprecision(5) << setw(6)  << ( (as_ana_q > 2) ? inf : as_ana_q )
+    cout << "Analytical solution:           " << setprecision(3) << setw(6)  << ( (as_ana_q > 2) ? inf : as_ana_q )
          << "    num flavs = " << as_ana.numFlavorsQ(q) << endl;
     fa << q << " " << as_ana_q << endl;
     const double as_ode_q = as_ode.alphasQ(q);
-    cout << "ODE solution:                  " << setprecision(5) << setw(6)  << ( (as_ode_q > 2) ? inf : as_ode_q )
+    cout << "ODE solution:                  " << setprecision(3) << setw(6)  << ( (as_ode_q > 2) ? inf : as_ode_q )
          << "    num flavs = " << as_ode.numFlavorsQ(q) << endl;
     fo << q << " " << as_ode_q << endl;
     const double as_ipol_q = as_ipol.alphasQ(q);
-    cout << "Interpolated solution:         " << setprecision(5) << setw(6)  << ( (as_ipol_q > 2) ? inf : as_ipol_q ) << endl;
+    cout << "Interpolated solution:         " << setprecision(3) << setw(6)  << ( (as_ipol_q > 2) ? inf : as_ipol_q ) << endl;
     fi << q << " " << as_ipol_q << endl;
     const double as_ct10_q = pdf->alphasQ(q);
-    cout << "CT10 solution:                 " << setprecision(5) << setw(6) << as_ct10_q << endl;
+    cout << "CT10 solution:                 " << setprecision(3) << setw(6) << as_ct10_q << endl;
     fc << q << " " << as_ct10_q << endl;
     const double as_ct10_q_2 = pdf->alphaS().alphasQ(q);
-    cout << "CT10 AlphaS solution:          " << setprecision(5) << setw(6)  << as_ct10_q_2
+    cout << "CT10 AlphaS solution:          " << setprecision(3) << setw(6)  << as_ct10_q_2
          << "    agrees = " << boolalpha << (as_ct10_q == as_ct10_q_2) << endl;
     cout << endl;
   }

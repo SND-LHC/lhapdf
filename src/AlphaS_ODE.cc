@@ -27,7 +27,7 @@ namespace LHAPDF {
   }
 
   // Calculate decoupling for transition from num. flavour = ni -> nf
-  double AlphaS_ODE::_decouple(double y, unsigned int ni, unsigned int nf) const {
+  double AlphaS_ODE::_decouple(double y, double t, unsigned int ni, unsigned int nf) const {
     if ( ni == nf || _qcdorder == 0 ) return 1.;
     double as = y / M_PI;
     double as2 = 0, as3 = 0, as4 = 0;
@@ -138,22 +138,49 @@ namespace LHAPDF {
     double accuracy = 0.001;
 
     // Run in Q2 using RK4 algorithm until we are within our defined accuracy
-    double t = sqr(_mz); // starting point
-    double y = _alphas_mz; // starting value
+    double t;
+    double y;
 
-    // If a vector of knots in q2 has been given, solve for those.
-    if ( _q2s.empty() ) {
-      for (int q = 1; (q/4.) < _mz; ++q) {
-        _q2s.push_back(sqr(q/4.));
-      }
-      for (int q = ceil(_mz); (2*q) < 1000; ++q) {
-        _q2s.push_back(sqr(2*q));
-      }
-      for (int q = 1000; (10*q) < 10000; ++q) {
-        _q2s.push_back(sqr(10*q));
-      }
+    if (_customref) {
+      t = sqr(_mreference); // starting point
+      y = _alphas_reference; // starting value
+    } else {
+      t = sqr(_mz); // starting point
+      y = _alphas_mz; // starting value
     }
 
+    // If a vector of knots in q2 has been given, solve for those.
+    // This creates a default grid which should be overkill for most
+    // purposes
+    if ( _q2s.empty() ) {
+      for (int q = 1; (q/10.) < 1; ++q) {
+        _q2s.push_back(sqr(q/10.));
+      }
+      for (int q = 4; (q/4.) < _mz; ++q) {
+        _q2s.push_back(sqr(q/4.));
+      }
+      for (int q = ceil(_mz/2); (4*q) < 1000; ++q) {
+        _q2s.push_back(sqr(4*q));
+      }
+      for (int q = (1000/50); (50*q) < 2000; ++q) {
+        _q2s.push_back(sqr(50*q));
+      }
+
+      if ( _flavorthresholds.empty() ) {
+        for (int it = 4; it <= 6; ++it) {
+          std::map<int, double>::const_iterator element = _quarkmasses.find(it);
+          if ( element == _quarkmasses.end() ) continue;
+          _q2s.push_back(sqr(element->second)); _q2s.push_back(sqr(element->second));
+        }
+      } else {
+        for (int it = 4; it <= 6; ++it) {
+          std::map<int, double>::const_iterator element = _flavorthresholds.find(it);
+          if ( element == _flavorthresholds.end() ) continue;
+          _q2s.push_back(sqr(element->second)); _q2s.push_back(sqr(element->second));
+        }
+      }
+      sort(_q2s.begin(),_q2s.end());
+    }
     // If for some reason the highest q2 knot is below m_{Z},
     // force a knot there anyway (since we know it, might as well
     // use it)
@@ -168,8 +195,7 @@ namespace LHAPDF {
     }
 
     vector<pair<int, double> > grid; // for storing in correct order
-
-    vector<double> alphas;
+    grid.reserve(_q2s.size());
     double low_lim = 0;
     double last_val = -1;
     bool threshold = false;
@@ -186,7 +212,7 @@ namespace LHAPDF {
           threshold = true;
           _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
           grid.push_back(make_pair(ind, y));
-          y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind-2]));
+          y = y * _decouple(y, t, numFlavorsQ2(_q2s[ind+1]), numFlavorsQ2(_q2s[ind-2]));
           // Define divergence after y > 2. -- we have no accuracy after that any way
           if ( y > 2. ) { low_lim = q2; }
           continue;
@@ -194,11 +220,11 @@ namespace LHAPDF {
       }
       // If q2 is lower than a value that already diverged, it will also diverge
       if ( q2 < low_lim ) {
-        alphas.push_back( std::numeric_limits<double>::max() );
+        grid.push_back(make_pair(ind, std::numeric_limits<double>::max()));
         continue;
       // If last point was the same we don't need to recalculate
       } else if ( q2 == last_val ) {
-        alphas.push_back(y);
+        grid.push_back(make_pair(ind, y));
         continue;
       // Else calculate
       } else {
@@ -211,8 +237,13 @@ namespace LHAPDF {
       }
     }
 
-    t = sqr(_mz); // starting point
-    y = _alphas_mz; // starting value
+    if (_customref) {
+      t = sqr(_mreference); // starting point
+      y = _alphas_reference; // starting value
+    } else {
+      t = sqr(_mz); // starting point
+      y = _alphas_mz; // starting value
+    }
 
     for ( size_t ind = index_of_mz_lower + 1; ind < _q2s.size(); ++ind) {
       double q2 = _q2s[ind];
@@ -223,7 +254,7 @@ namespace LHAPDF {
           last_val = q2;
           _solve(q2, t, y, allowed_relative/5, h/5, accuracy/5);
           grid.push_back(make_pair(ind, y));
-          y = y * _decouple(y, numFlavorsQ2(q2), numFlavorsQ2(_q2s[ind+2]));
+          y = y * _decouple(y, t, numFlavorsQ2(_q2s[ind-1]), numFlavorsQ2(_q2s[ind+2]));
           // Define divergence after y > 2. -- we have no accuracy after that any way
           if ( y > 2. ) { low_lim = q2; }
           continue;
@@ -231,11 +262,11 @@ namespace LHAPDF {
       }
       // If q2 is lower than a value that already diverged, it will also diverge
       if ( q2 < low_lim ) {
-        alphas.push_back( std::numeric_limits<double>::max() );
+        grid.push_back(make_pair(ind, std::numeric_limits<double>::max()));
         continue;
       // If last point was the same we don't need to recalculate
       } else if ( q2 == last_val ) {
-        alphas.push_back(y);
+        grid.push_back(make_pair(ind, y));
         continue;
       // Else calculate
       } else {
@@ -250,7 +281,11 @@ namespace LHAPDF {
     std::sort(grid.begin(), grid.end(),
               boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
 
+    vector<double> alphas;
+    alphas.reserve(_q2s.size());
+
     for ( size_t x = 0; x < grid.size(); ++x ) {
+//        cout << sqrt(_q2s.at(x)) << "       " << grid.at(x).second << endl;
        alphas.push_back(grid.at(x).second);
     }
 
