@@ -69,10 +69,10 @@ namespace LHAPDF {
 
     /// Decode the standard string format for referring to a PDF
     /// @todo Extend to decode a product (or more general?) of PDFs
-    pair<string,int> decodePDFStr(const string& setname_nmem) {
+    pair<string,int> decodeSinglePDFStr(const string& setname_nmem) {
       int nmem = 0;
       const size_t slashpos = setname_nmem.find("/");
-      const string setname = setname_nmem.substr(0, slashpos);
+      const string setname = trim(setname_nmem.substr(0, slashpos));
       try {
         if (slashpos != string::npos) {
           const string smem = setname_nmem.substr(slashpos+1);
@@ -82,6 +82,40 @@ namespace LHAPDF {
         throw UserError("Could not parse PDF identity string " + setname_nmem);
       }
       return make_pair(setname, nmem);
+    }
+
+
+    vector<string> expandPDFStr(const string& pdfstr) {
+      // Split into multiplicative parts
+      vector<string> parts;
+      split(parts, pdfstr, "*");
+      BOOST_FOREACH (string& part, parts) trim(part);
+
+      // Expand each part into a single PDF spec and append it
+      string rtn;
+      BOOST_FOREACH (const string& part, parts) {
+        const pair<string,int> name_mem = decodeSinglePDFStr(part);
+        if (!rtn.empty()) rtn += " * ";
+        rtn += name_mem.first + "/" + to_str(name_mem.second);
+      }
+      return rtn;
+    }
+
+
+    vector<string> expandPDFsStr(const string& pdfsstr) {
+      // Split into multiplicative parts
+      vector<string> parts;
+      split(parts, pdfstr, "*");
+      BOOST_FOREACH (string& part, parts) trim(part);
+
+      // Expand each part into a single PDF spec and append it
+      string rtn;
+      BOOST_FOREACH (const string& part, parts) {
+        const pair<string,int> name_mem = decodeSinglePDFStr(part);
+        if (!rtn.empty()) rtn += " * ";
+        rtn += name_mem.first + "/" + to_str(name_mem.second);
+      }
+      return rtn;
     }
 
   }

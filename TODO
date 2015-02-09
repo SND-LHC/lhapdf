@@ -27,16 +27,14 @@ VERSION 6.1.6
 
 - **Python3 support**
 
+- **Fix string termination for Fortran in getdatapath_ (AB -> A Pukhov)**
+
+- **LHAPDF_DATA_PATH non-fallback with trailing ::**
+
 - **Provide a single-string-arg version of lookupPDF**
 
    Needs the signature of the function(s) for PDF string decoding to be final
    before exposing in the API; it's currently in an anon namespace in Factories.cc.
-
-- **Remove #pragma once -- not fully portable**
-
-- **.LHgrid etc. "tolerance" control -- TranslateLHA5Names flag?**
-
-- **LHAPDF_DATA_PATH non-fallback with trailing ::**
 
 - **Provide optional (AlphaS_)Threshold* keys, hooked into AlphaS factory**
 
@@ -44,6 +42,17 @@ VERSION 6.1.6
    versions, then fall back to (AlphaS_)M*. Do we also need to provide a
    getThreshold(i) function somewhere cf. LHAGlue? Check that the LHAGlue
    getthresholdm_ etc. are working.
+
+- **Remove #pragma once -- not fully portable**
+
+- **.LHgrid etc. "tolerance" control -- TranslateLHA5Names flag?**
+
+- **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
+
+
+
+VERSION 6.1.7
+-------------
 
 - **Improved high-Q extrapolation (??)**
 
@@ -64,7 +73,6 @@ VERSION 6.1.6
    specialisation beyond generic splines. Graeme will look at what's done in the
    CTEQ code (other than interpolating in x**0.3)
 
-- **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
 
 
 VERSION 6.2

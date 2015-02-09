@@ -100,9 +100,9 @@ namespace LHAPDF {
           }
         }
         sort(_flavors.begin(), _flavors.end());
-        std::cout << "Computed flavors: # = " << _flavors.size() << std::endl;
+        // std::cout << "Computed flavors: # = " << _flavors.size() << std::endl;
       }
-      std::cout << "Pre-computed " << _flavors.size() << " flavors" << std::endl;
+      // std::cout << "Pre-computed " << _flavors.size() << " flavors" << std::endl;
       return _flavors;
     }
 

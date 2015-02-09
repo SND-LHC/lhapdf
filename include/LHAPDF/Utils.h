@@ -33,14 +33,17 @@
 /// Namespace for all LHAPDF functions and classes
 namespace LHAPDF {
 
+
   // Allow implicit use of the std and boost namespaces within namespace LHAPDF
   using namespace std;
   using namespace boost;
+
 
   /// Smart pointer abstraction between C++98 and C++11
   #if __cplusplus <= 199711L
   #define unique_ptr auto_ptr
   #endif
+
 
   /// @name String handling utility functions
   //@{
