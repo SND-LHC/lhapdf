@@ -364,3 +364,7 @@
 291000 NNPDF30_nnlo_as_0117_nojet 1
 291200 NNPDF30_nnlo_as_0118_nojet 1
 291400 NNPDF30_nnlo_as_0119_nojet 1
+292000 NNPDF30_nlo_nf_4_pdfas 1
+292200 NNPDF30_nlo_nf_5_pdfas 1
+292400 NNPDF30_nnlo_nf_4_pdfas 2
+292600 NNPDF30_nnlo_nf_5_pdfas 2
