@@ -30,18 +30,31 @@ namespace LHAPDF {
   double AlphaS_ODE::_decouple(double y, double t, unsigned int ni, unsigned int nf) const {
     if ( ni == nf || _qcdorder == 0 ) return 1.;
     double as = y / M_PI;
-    double as2 = 0, as3 = 0, as4 = 0;
+    unsigned int heavyQuark = nf > ni ? nf : ni;
+    std::map<int, double>::const_iterator quark = _quarkmasses.find(heavyQuark);
+    if ( quark == _quarkmasses.end() ) throw AlphaSError("Quark masses are not set, required for using the ODE solver with a variable flavor scheme.");
+    const double qmass = quark->second;
+    double lnmm = log(t/sqr(qmass));
+    double as1 = 0, as2 = 0, as3 = 0, as4 = 0;
     if ( ni > nf ) {
-      as2 = 0.152778*as*as;
-      as3 = (0.972057 - 0.0846515*nf)*as*as*as;
-      as4 = (5.17035 - 1.00993*nf - 0.0219784*nf*nf)*as*as*as*as;
-    }
-    if ( nf > ni ) {
-      as2 = - 0.152778*as*as;
-      as3 = (- 0.972057 + 0.0846515*ni)*as*as*as;
-      as4 = (- 5.10032 + 1.00993*ni + 0.0219784*ni*ni)*as*as*as*as;
+      as1 = - 0.166666*lnmm*as;
+      as2 = (0.152778 - 0.458333*lnmm + 0.0277778*lnmm*lnmm)*as*as;
+      as3 = (0.972057 - 0.0846515*nf + (- 1.65799 + 0.116319*nf)*lnmm +
+        (0.0920139 - 0.0277778*nf)*lnmm*lnmm - 0.00462963*lnmm*lnmm*lnmm)*as*as*as;
+      as4 = (5.17035 - 1.00993*nf - 0.0219784*nf*nf + (- 8.42914 + 1.30983*nf + 0.0367852*nf*nf)*lnmm +
+        (0.629919 - 0.143036*nf + 0.00371335*nf*nf)*lnmm*lnmm + (-0.181617 - 0.0244985*nf + 0.00308642*nf*nf)*lnmm*lnmm*lnmm +
+        0.000771605*lnmm*lnmm*lnmm*lnmm)*as*as*as*as;
+    } else {
+      as1 = 0.166667*lnmm*as;
+      as2 = (- 0.152778 + 0.458333*lnmm + 0.0277778*lnmm*lnmm)*as*as;
+      as3 = (- 0.972057 + 0.0846515*ni + (1.53067 - 0.116319*ni)*lnmm +
+        (0.289931 + 0.0277778*ni)*lnmm*lnmm + 0.00462963*lnmm*lnmm*lnmm)*as*as*as;
+      as4 = (- 5.10032 + 1.00993*ni + 0.0219784*ni*ni + (7.03696 - 1.22518*ni - 0.0367852*ni*ni)*lnmm +
+        (1.59462 + 0.0267168*ni + 0.00371335*ni*ni)*lnmm*lnmm + (0.280575 + 0.0522762*ni - 0.00308642*ni*ni)*lnmm*lnmm*lnmm +
+        0.000771605*lnmm*lnmm*lnmm*lnmm)*as*as*as*as;
     }
     double decoupling = 1.;
+    decoupling += as1;
     if ( _qcdorder == 1 ) return decoupling;
     decoupling += as2;
     if ( _qcdorder == 2 ) return decoupling;
@@ -159,7 +172,7 @@ namespace LHAPDF {
       for (int q = 4; (q/4.) < _mz; ++q) {
         _q2s.push_back(sqr(q/4.));
       }
-      for (int q = ceil(_mz/2); (4*q) < 1000; ++q) {
+      for (int q = ceil(_mz/4); (4*q) < 1000; ++q) {
         _q2s.push_back(sqr(4*q));
       }
       for (int q = (1000/50); (50*q) < 2000; ++q) {

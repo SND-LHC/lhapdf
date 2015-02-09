@@ -150,17 +150,53 @@ namespace LHAPDF {
 
     // Configure the QCD params on this AlphaS
     if (info.has_key("AlphaS_OrderQCD")) as->setOrderQCD(info.get_entry_as<int>("AlphaS_OrderQCD"));
-    /// @todo Fall back to generic OrderQCD?
+    /// @todo Fall back to generic OrderQCD? (Default value is 4 at the moment --KN)
 
-    /// @todo Add AlphaS_Specific mass metadata, used by preference if available
-    if (info.has_key("MUp")) as->setQuarkMass(1, info.get_entry_as<double>("MUp"));
-    if (info.has_key("MDown")) as->setQuarkMass(2, info.get_entry_as<double>("MDown"));
-    if (info.has_key("MStrange")) as->setQuarkMass(3, info.get_entry_as<double>("MStrange"));
-    if (info.has_key("MCharm")) as->setQuarkMass(4, info.get_entry_as<double>("MCharm"));
-    if (info.has_key("MBottom")) as->setQuarkMass(5, info.get_entry_as<double>("MBottom"));
-    if (info.has_key("MTop")) as->setQuarkMass(6, info.get_entry_as<double>("MTop"));
+    /// Thresholds are where the flavor transition happens in the ODE/analytic solvers, AlphaS_MQ
+    /// should be given as \bar{MQ} (\bar{MQ}) if it is to be used for thresholds away from the mass.
+    /// Since you need the heavy quark mass to calculate the decoupling in the ODE solver
+    /// when threshold =/= mass, I've implemented this as AlphaS_Threshold* -> Threshold*, AlphaS_M* -> M*
 
-    /// @todo Get thresholds with fallback chain AlphaS_Threshold* -> Threshold* -> AlphaS_M* -> M*
+    if (info.has_key("AlphaS_ThresholdUp") && info.has_key("AlphaS_ThresholdDown") && info.has_key("AlphaS_ThresholdStrange")
+      && info.has_key("AlphaS_ThresholdCharm") && info.has_key("AlphaS_ThresholdBottom") && info.has_key("AlphaS_ThresholdTop")) {
+      as->setQuarkThreshold(1, info.get_entry_as<double>("AlphaS_ThresholdUp"));
+      as->setQuarkThreshold(2, info.get_entry_as<double>("AlphaS_ThresholdDown"));
+      as->setQuarkThreshold(3, info.get_entry_as<double>("AlphaS_ThresholdStrange"));
+      as->setQuarkThreshold(4, info.get_entry_as<double>("AlphaS_ThresholdCharm"));
+      as->setQuarkThreshold(5, info.get_entry_as<double>("AlphaS_ThresholdBottom"));
+      as->setQuarkThreshold(6, info.get_entry_as<double>("AlphaS_ThresholdTop"));
+    }
+    else if (info.has_key("ThresholdUp") && info.has_key("ThresholdDown") && info.has_key("ThresholdStrange")
+      && info.has_key("ThresholdCharm") && info.has_key("ThresholdBottom") && info.has_key("ThresholdTop")) {
+      as->setQuarkThreshold(1, info.get_entry_as<double>("ThresholdUp"));
+      as->setQuarkThreshold(2, info.get_entry_as<double>("ThresholdDown"));
+      as->setQuarkThreshold(3, info.get_entry_as<double>("ThresholdStrange"));
+      as->setQuarkThreshold(4, info.get_entry_as<double>("ThresholdCharm"));
+      as->setQuarkThreshold(5, info.get_entry_as<double>("ThresholdBottom"));
+      as->setQuarkThreshold(6, info.get_entry_as<double>("ThresholdTop"));
+    }
+
+    if (info.has_key("AlphaS_MUp") && info.has_key("AlphaS_MDown") && info.has_key("AlphaS_MStrange")
+      && info.has_key("AlphaS_MCharm") && info.has_key("AlphaS_MBottom") && info.has_key("AlphaS_MTop")) {
+      as->setQuarkMass(1, info.get_entry_as<double>("AlphaS_MUp"));
+      as->setQuarkMass(2, info.get_entry_as<double>("AlphaS_MDown"));
+      as->setQuarkMass(3, info.get_entry_as<double>("AlphaS_MStrange"));
+      as->setQuarkMass(4, info.get_entry_as<double>("AlphaS_MCharm"));
+      as->setQuarkMass(5, info.get_entry_as<double>("AlphaS_MBottom"));
+      as->setQuarkMass(6, info.get_entry_as<double>("AlphaS_MTop"));
+    }
+    // This falls back to lhapdf.conf so should in theory never throw the MetadataError
+    else if (info.has_key("MUp") && info.has_key("MDown") && info.has_key("MStrange")
+      && info.has_key("MCharm") && info.has_key("MBottom") && info.has_key("MTop")) {
+      as->setQuarkMass(1, info.get_entry_as<double>("MUp"));
+      as->setQuarkMass(2, info.get_entry_as<double>("MDown"));
+      as->setQuarkMass(3, info.get_entry_as<double>("MStrange"));
+      as->setQuarkMass(4, info.get_entry_as<double>("MCharm"));
+      as->setQuarkMass(5, info.get_entry_as<double>("MBottom"));
+      as->setQuarkMass(6, info.get_entry_as<double>("MTop"));
+    } else {
+      throw MetadataError("All quark masses required (either as AlphaS_MQ or MQ) for AlphaS.");
+    }
 
     const string fscheme = to_lower_copy(info.get_entry("AlphaS_FlavorScheme", info.get_entry("FlavorScheme", "variable"))); // default is VFNS
     const int nflavs = info.get_entry_as<int>("AlphaS_NumFlavors", info.get_entry_as<int>("NumFlavors", 5)); // default is 5 flavour evolution
@@ -171,10 +207,12 @@ namespace LHAPDF {
     // Required parameter settings for each calculation mode
     if (as->type() == "ode") {
       /// @todo Handle FFNS / VFNS
-      if (!info.has_key("AlphaS_MZ") || !info.has_key("MZ") )
-        throw MetadataError("Requested ODE AlphaS but the required parameters are not defined.");
-      as->setAlphaSMZ(info.get_entry_as<double>("AlphaS_MZ"));
-      as->setMZ(info.get_entry_as<double>("MZ"));
+      if ( (!info.has_key("AlphaS_MZ") || !info.has_key("MZ")) || (!info.has_key("AlphaS_MassReference") || !info.has_key("AlphaS_Reference")) )
+        throw MetadataError("Requested ODE AlphaS but there is no reference point given: define either AlphaS_MZ and MZ, or AlphaS_MassReference and AlphaS_Reference. The latter is given preference if both are defined.");
+      if (info.has_key("AlphaS_MZ")) as->setAlphaSMZ(info.get_entry_as<double>("AlphaS_MZ"));
+      if (info.has_key("MZ"))as->setMZ(info.get_entry_as<double>("MZ"));
+      if (info.has_key("AlphaS_Reference"))as->setAlphaSReference(info.get_entry_as<double>("AlphaS_Reference"));
+      if (info.has_key("AlphaS_MassReference"))as->setMassReference(info.get_entry_as<double>("AlphaS_MassReference"));
       if (info.has_key("AlphaS_Qs")) {
         AlphaS_ODE* as_o = dynamic_cast<AlphaS_ODE*>(as);
         if (info.has_key("AlphaS_Qs")) as_o->setQValues( info.get_entry_as< vector<double> >("AlphaS_Qs"));

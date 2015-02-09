@@ -55,8 +55,8 @@ int main() {
 
   as_ode.setMZ(91);
   as_ode.setAlphaSMZ(0.118);
-  as_ode.setMassReference(4.1);
-  as_ode.setAlphaSReference(0.21);
+//  as_ode.setMassReference(4.1);
+//  as_ode.setAlphaSReference(0.21);
   as_ode.setQuarkMass(1, 0.0017);
   as_ode.setQuarkMass(2, 0.0041);
   as_ode.setQuarkMass(3, 0.1);
