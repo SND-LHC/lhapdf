@@ -67,62 +67,110 @@ namespace LHAPDF {
 
   namespace { // Keep this in an unnamed namespace for now, until stable/final for API
 
-    /// Decode the standard string format for referring to a PDF
-    /// @todo Extend to decode a product (or more general?) of PDFs
-    pair<string,int> decodeSinglePDFStr(const string& setname_nmem) {
+
+    /// @brief Expand a string describing a chain of PDFs with wildcards into a list of definite chain strings
+    ///
+    /// Operation:
+    ///   SETA/1 * SETB/*     or     SETA/1 * SETB
+    ///   ->
+    ///   [SETA/1, SETB/*]
+    ///   ->
+    ///   [SETA/1 * SETB/0, SETA/1 * SETB/1, ...] (via PDFSet)
+    ///
+    /// @todo Handle more complex wildcards such as member ID ranges
+    ///
+    vector<string> expandPDFsStr(const string& pdfsstr) {
+      // Split into multiplicative parts
+      vector<string> parts;
+      iter_split(parts, pdfsstr, boost::algorithm::first_finder(" * "));
+      BOOST_FOREACH (string& part, parts) trim(part);
+
+      // Expand each part into a single PDF spec and append it
+      vector<string> rtn;
+      BOOST_FOREACH (string part, parts) {
+        // No member number corresponds to whole-set wildcard expansion in this context
+        if (!contains(part, "/")) part += "/*";
+
+        // Make a list of strings corresponding to the expansion of the current part
+        vector<string> expandedpart;
+        if (endswith(part, "/*")) {
+          const string setname = part.substr(0, part.find("/*"));
+          const PDFSet& set = getPDFSet(setname);
+          for (size_t i = 0; i < set.size(); ++i)
+            expandedpart.push_back(setname + "/" + to_str(i));
+        } else {
+          expandedpart.push_back(part);
+        }
+
+        // Append to or outer-product the return vector as appropriate
+        if (expandedpart.size() == 1) {
+          // If there were no wildcards to expand, no point in playing outer-product games
+          BOOST_FOREACH (string& basestr, rtn) {
+            const string newstr = (!basestr.empty() ? basestr + " * " : "") + expandedpart[0];
+          }
+        } else {
+          // There was a wildcard to expand, so we work harder...
+          vector<string> tmp;
+          tmp.reserve(expandedpart.size() * rtn.size());
+          BOOST_FOREACH (const string& basestr, rtn) {
+            BOOST_FOREACH (const string& pdfstr, expandedpart) {
+              const string newstr = (!basestr.empty() ? basestr + " * " : "") + pdfstr;
+              tmp.push_back(newstr);
+            }
+          }
+          rtn = tmp; //< Update rtn with the next level of Cartesian product from wildcard expansion
+        }
+      }
+      return rtn;
+    }
+
+
+    /// @brief Decode a single PDF member ID string into a setname,memid pair
+    ///
+    ///  SETA/1      SETA
+    ///   ->          ->
+    ///   <SETA,1>    <SETA,0>
+    pair<string,int> decodePDFStr(const string& pdfstr) {
       int nmem = 0;
-      const size_t slashpos = setname_nmem.find("/");
-      const string setname = trim(setname_nmem.substr(0, slashpos));
+      const size_t slashpos = pdfstr.find("/");
+      const string setname = trim_copy(pdfstr.substr(0, slashpos));
       try {
         if (slashpos != string::npos) {
-          const string smem = setname_nmem.substr(slashpos+1);
+          const string smem = pdfstr.substr(slashpos+1);
           nmem = lexical_cast<int>(smem);
         }
       } catch (...) {
-        throw UserError("Could not parse PDF identity string " + setname_nmem);
+        throw UserError("Could not parse PDF identity string " + pdfstr);
       }
       return make_pair(setname, nmem);
     }
 
 
-    vector<string> expandPDFStr(const string& pdfstr) {
+    /// @brief Decode a multiple PDF member ID string into a list of setname,memid pairs
+    ///
+    ///   SETA/1 * SETB/0
+    ///   ->
+    ///   [<SETA,1>, <SETB,0>]
+    vector< pair<string,int> > decodePDFsStr(const string& pdfsstr) {
       // Split into multiplicative parts
       vector<string> parts;
-      split(parts, pdfstr, "*");
-      BOOST_FOREACH (string& part, parts) trim(part);
+      iter_split(parts, pdfsstr, boost::algorithm::first_finder(" * "));
 
-      // Expand each part into a single PDF spec and append it
-      string rtn;
+      // Create the list of set/id pairs
+      vector< pair<string,int> > rtn;
       BOOST_FOREACH (const string& part, parts) {
-        const pair<string,int> name_mem = decodeSinglePDFStr(part);
-        if (!rtn.empty()) rtn += " * ";
-        rtn += name_mem.first + "/" + to_str(name_mem.second);
+        rtn.push_back(decodePDFStr(part));
       }
       return rtn;
     }
 
-
-    vector<string> expandPDFsStr(const string& pdfsstr) {
-      // Split into multiplicative parts
-      vector<string> parts;
-      split(parts, pdfstr, "*");
-      BOOST_FOREACH (string& part, parts) trim(part);
-
-      // Expand each part into a single PDF spec and append it
-      string rtn;
-      BOOST_FOREACH (const string& part, parts) {
-        const pair<string,int> name_mem = decodeSinglePDFStr(part);
-        if (!rtn.empty()) rtn += " * ";
-        rtn += name_mem.first + "/" + to_str(name_mem.second);
-      }
-      return rtn;
-    }
 
   }
 
 
+
   PDF* mkPDF(const string& setname_nmem) {
-    pair<string,int> idpair = decodePDFStr(setname_nmem);
+    const pair<string,int> idpair = decodePDFStr(setname_nmem);
     return mkPDF(idpair.first, idpair.second);
   }
 
