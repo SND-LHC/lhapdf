@@ -27,6 +27,8 @@ VERSION 6.1.6
 
 - **Python3 support**
 
+- **Built-in functions for summed PDFs over a list of PIDs?**
+
 - **Fix string termination for Fortran in getdatapath_ (AB -> A Pukhov)**
 
 - **LHAPDF_DATA_PATH non-fallback with trailing ::**
