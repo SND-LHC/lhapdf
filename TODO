@@ -27,7 +27,9 @@ VERSION 6.1.6
 
 - **Python3 support**
 
-- **Built-in functions for summed PDFs over a list of PIDs?**
+- **Add an lhapdf show command**
+
+   To print pdfsets.index + cat .info for already installed PDFs.
 
 - **Fix string termination for Fortran in getdatapath_ (AB -> A Pukhov)**
 
