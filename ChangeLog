@@ -1,3 +1,9 @@
+2015-04-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Updating AUTHORS notice to final EPJC paper reference, and
+	adding a final citation reminder message via the Config
+	destructor.
+
 2015-03-20  Andy Buckley  <andy.buckley@cern.ch>
 
 	* src/Factories.cc: Adding a set of expandPDFsStr(), decodePDFStr

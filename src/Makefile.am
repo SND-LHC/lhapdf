@@ -13,7 +13,7 @@ libLHAPDF_la_SOURCES = \
   ErrExtrapolator.cc NearestPointExtrapolator.cc \
   ContinuationExtrapolator.cc \
   AlphaS.cc AlphaS_Analytic.cc AlphaS_ODE.cc AlphaS_Ipol.cc \
-  Factories.cc
+  Config.cc Factories.cc
 
 libLHAPDFInfo_la_SOURCES = Info.cc
 libLHAPDFInfo_la_CPPFLAGS = -I$(srcdir)/yamlcpp -DYAMLCPP_API=3 -DYAML_NAMESPACE=LHAPDF_YAML $(AM_CPPFLAGS)
