@@ -19,7 +19,9 @@ UNVERSIONED
 
 - **Pion PDF(s)**
 
-   GRVPI0, GRVPI1: need --resample. List in separate dox table.
+   GRVPI0, GRVPI1: need --resample, correct PID, and alpha_s override.
+   List in separate dox table?
+
 
 
 VERSION 6.1.6
@@ -28,6 +30,8 @@ VERSION 6.1.6
 - **Ensure GCC 4.9 and 5.x compatibility**
 
 - **Python3 support**
+
+- **Disable/remove CompositePDF machinery from 6.1 branch**
 
 - **Add an lhapdf show command**
 
@@ -57,29 +61,6 @@ VERSION 6.1.6
 
 
 
-VERSION 6.1.7
--------------
-
-- **Improved high-Q extrapolation (??)**
-
-   Needed for FCC studies, etc.
-
-   At low-Q Graeme suggests extrapolation established from the anomalous
-   dimension of the function within the grid closest to that point.
-
-   What's done in the continuation extrapolator?
-
-- **Improved low/high-x interpolation/extrapolation (??)**
-
-   Gradient extrapolation in log space may be a good option at low-x.
-
-   Graeme, etc.: x -> 1 interpolation should be done carefully to ensure that
-   all PDFs -> 0 at x = 1.0, (usually) without going negative. There should
-   always be a point at x = 1 to root the interpolator. This probably deserves
-   specialisation beyond generic splines. Graeme will look at what's done in the
-   CTEQ code (other than interpolating in x**0.3)
-
-
 
 VERSION 6.2
 -----------
@@ -90,6 +71,11 @@ VERSION 6.2
    of PDFs e.g. mkPDF("foo/0 * bar"), mkPDF("foo * bar/0"), mkPDF("foo * bar")
    returns PDF <- CompositePDF
    More general than just nPDFs. Move extended ID string decoding to user-accessible functions.
+
+- **Introduce minimal abstract interface**
+
+   Since composite PDFs don't obviously have some current PDF features. Prefer to 
+   re-purpose PDF as the interface than to add a new PDFBase or similar?
 
 - **Expose LHAGLUE slots system for C++ use?**
 
@@ -113,6 +99,35 @@ VERSION 6.2
    report performance increases due to being able to interpolated one flavour at
    a time, so perhaps this use case is not valid in all generators and could be
    a more complexity than it is worth.
+
+
+
+VERSION 6.2.1
+-------------
+
+- **Improved high-Q extrapolation (??)**
+
+   Needed for FCC studies, etc.
+
+   At low-Q Graeme suggests extrapolation established from the anomalous
+   dimension of the function within the grid closest to that point.
+
+   What's done in the continuation extrapolator?
+
+- **Improved low/high-x interpolation/extrapolation (??)**
+
+   Gradient extrapolation in log space may be a good option at low-x.
+
+   Graeme, etc.: x -> 1 interpolation should be done carefully to ensure that
+   all PDFs -> 0 at x = 1.0, (usually) without going negative. There should
+   always be a point at x = 1 to root the interpolator. This probably deserves
+   specialisation beyond generic splines. Graeme will look at what's done in the
+   CTEQ code (other than interpolating in x**0.3)
+
+
+
+VERSION 6.3
+-----------
 
 - **Speed up interpolation (MR)**
 
@@ -150,9 +165,9 @@ VERSION 6.2
    and basing it on the PDFManager, with explicit commands for switching current PDF.
 
 
+
 AS AND WHEN
 -----------
-
 
 - **Handle zipped PDF .dat files (AB)**
 
