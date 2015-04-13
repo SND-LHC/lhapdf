@@ -27,6 +27,8 @@ UNVERSIONED
 VERSION 6.1.6
 -------------
 
+- **Use -O3 optimisation by default**
+
 - **Ensure GCC 4.9 and 5.x compatibility**
 
 - **Python3 support**
