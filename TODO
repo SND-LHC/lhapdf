@@ -25,6 +25,8 @@ UNVERSIONED
 VERSION 6.1.6
 -------------
 
+- **Ensure GCC 4.9 and 5.x compatibility**
+
 - **Python3 support**
 
 - **Add an lhapdf show command**
