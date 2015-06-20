@@ -2,6 +2,7 @@
 # -*- python -*-
 
 import lhapdf
+lhapdf.setVerbosity(0)
 lhamajversion = ".".join( lhapdf.version().split(".")[:2] )
 
 sets = {}
