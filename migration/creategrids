@@ -254,9 +254,13 @@ for lha5name in args:
         if opts.VERBOSE or len(qgrids) > 1:
             print "Number of Q subgrids = %d" % len(qgrids)
 
-        if opts.USE_SUBGRIDS:
-            # Store original Qs array so it can be used later for alpha_s sampling
-            alphas_qsorig = qs
+        if len(qgrids) > 1:
+            ## Offset subgrid boundaries at flavour thresholds for later alpha_s sampling
+            alphas_qs_offset = qs
+            for iq in xrange(len(alphas_qs_offset)-1):
+                if alphas_qs_offset[iq+1] - alphas_qs_offset[iq] < 1e-3:
+                    alphas_qs_offset[iq+1] += 1e-10
+                    alphas_qs_offset[iq] -= 1e-10
 
         ## Remove the Qs array, since using it now would be inconsistent
         del qs
@@ -270,9 +274,9 @@ for lha5name in args:
             print "Overriding original alpha_s grid with a new log Q sampling"
             alphas_qs = [qmin] + list(numpy.logspace(math.log10(qmin), math.log10(qmax), 100))[1:-1] + [qmax] # dense resampling in logQ between Qmin and Qmax
             print "Manual alpha_s Q grid: ", ", ".join("%0.2g" % q for q in alphas_qs)
-        if opts.USE_SUBGRIDS:
-            ## Add explicit sampling points at Z mass
-            alphas_qsorig = sorted( alphas_qsorig + [MZ] )
+        if len(qgrids) > 1:
+            ## Add explicit sampling point at Z mass
+            alphas_qs_offset = sorted( alphas_qs_offset + [MZ] )
             alphas_qs = sorted( alphas_qs + [MZ] )
         else:
             ## Add explicit sampling points at heavy quark and Z masses
@@ -329,7 +333,7 @@ for lha5name in args:
                 if alphas_qs is not None:
                     f.write("AlphaS_Type: ipol\n")
                     f.write("AlphaS_Qs: [%s]\n" % ", ".join("%2.6e" % q for q in alphas_qs))
-                    f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in (alphas_qsorig if opts.USE_SUBGRIDS and lhapdf.getOrderAlphaS(1) == 2 else alphas_qs)))
+                    f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in (alphas_qs_offset if len(qgrids) > 1 and lhapdf.getOrderAlphaS(1) == 2 else alphas_qs)))
                 else:
                     f.write("AlphaS_Type: analytic\n")
                 if not opts.NO_LAMBDA:
@@ -368,7 +372,7 @@ for lha5name in args:
             if alphas_qs is not None:
                 f.write("AlphaS_Type: ipol\n")
                 f.write("AlphaS_Qs: [%s]\n" % ", ".join("%2.6e" % q for q in alphas_qs))
-                f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in (alphas_qsorig if opts.USE_SUBGRIDS and lhapdf.getOrderAlphaS(1) == 2 else alphas_qs)))
+                f.write("AlphaS_Vals: [%s]\n" % ", ".join("%2.6e" % lhapdf.alphasPDF(1, q) for q in (alphas_qs_offset if len(qgrids) > 1 and lhapdf.getOrderAlphaS(1) == 2 else alphas_qs)))
             else:
                 f.write("AlphaS_Type: analytic\n")
             if not opts.NO_LAMBDA:
@@ -392,7 +396,10 @@ for lha5name in args:
                     #     xfs.append([0.0 for pid in lha5pids])
                     ## Offset the sampling (but not the reported Q) a little on the low Q edges of later subgrids
                     if igrid > 0 and iq == 0:
-                        q += 1e-3
+                        q += 1e-10
+                    ## Similarly for the high Q edges of subgrids other than the last
+                    if igrid < len(qgrids)-1 and iq == len(qs)-1:
+                        q -= 1e-10
 
                     #xf_vals = [lhapdf.xfx(x, q, pid) for pid in lha5pids]
                     xf_vals = []
