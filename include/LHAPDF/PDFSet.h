@@ -21,14 +21,17 @@ namespace LHAPDF {
 
 
   /// Structure for storage of uncertainty info calculated over a PDF error set
-  /// @todo Exact role of scale and default value?
   struct PDFUncertainty {
     /// Constructor
-    PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1)
-      : central(cent), errplus(eplus), errminus(eminus), errsymm(esymm), scale(scalefactor)
+    PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1,
+		   double eplus_pdf=0, double eminus_pdf=0, double esymm_pdf=0, double e_as=0)
+      : central(cent), errplus(eplus), errminus(eminus), errsymm(esymm), scale(scalefactor),
+	errplus_pdf(eplus_pdf), errminus_pdf(eminus_pdf), errsymm_pdf(esymm_pdf), err_as(e_as)
     {    }
     /// Variables for the central value, +ve, -ve & symmetrised errors, and a CL scalefactor
     double central, errplus, errminus, errsymm, scale;
+    /// Add extra variables for separate PDF and alphaS errors with combined PDF+alphaS sets
+    double errplus_pdf, errminus_pdf, errsymm_pdf, err_as;
   };
 
 
@@ -75,7 +78,7 @@ namespace LHAPDF {
       return get_entry_as<int>("DataVersion", -1);
     }
 
-    /// Get the type of PDF errors in this set (replica, symmhessian, hessian, none)
+    /// Get the type of PDF errors in this set (replica, symmhessian, hessian, custom, etc.)
     std::string errorType() const {
       return to_lower_copy(get_entry("ErrorType", "UNKNOWN"));
     }
@@ -224,6 +227,9 @@ namespace LHAPDF {
     /// @c alternative equal to true (default: false) will construct a confidence
     /// interval from the probability distribution of replicas, with the central
     /// value given by the median.
+    /// 
+    /// For a combined PDF+alphaS set, a breakdown of the separate PDF and alphaS uncertainties is available.
+    /// The alphaS uncertainties are computed from the last two members of the set.
     PDFUncertainty uncertainty(const std::vector<double>& values, double cl=100*boost::math::erf(1/sqrt(2)), bool alternative=false) const;
 
     /// Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.

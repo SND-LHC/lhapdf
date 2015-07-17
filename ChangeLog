@@ -1,3 +1,8 @@
+2015-07-17  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Added support for combined PDF+alphaS sets via new ErrorType
+	values, i.e. "replicas+as", "hessian+as" and "symmhessian+as".
+
 2015-04-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Updating AUTHORS notice to final EPJC paper reference, and

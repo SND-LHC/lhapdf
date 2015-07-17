@@ -610,10 +610,10 @@ extern "C" {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     const string errorType = ACTIVESETS[nset].activemember()->set().errorType();
-    if (errorType == "replicas") { // Monte Carlo PDF sets
+    if (LHAPDF::startswith(errorType, "replicas")) { // Monte Carlo PDF sets
       lmontecarlo = 1;
       lsymmetric = 1;
-    } else if (errorType == "symmhessian") { // symmetric eigenvector PDF sets
+    } else if (LHAPDF::startswith(errorType, "symmhessian")) { // symmetric eigenvector PDF sets
       lmontecarlo = 0;
       lsymmetric = 1;
     } else { // default: assume asymmetric Hessian eigenvector PDF sets
@@ -638,9 +638,9 @@ extern "C" {
     const vector<double> vecvalues(values, values + nmem + 1);
     LHAPDF::PDFUncertainty err = ACTIVESETS[nset].activemember()->set().uncertainty(vecvalues, -1);
     central = err.central;
-    errplus = err.errplus;
-    errminus = err.errminus;
-    errsymm = err.errsymm;
+    errplus = err.errplus_pdf;
+    errminus = err.errminus_pdf;
+    errsymm = err.errsymm_pdf;
     // Update current set focus
     CURRENTSET = nset;
   }
