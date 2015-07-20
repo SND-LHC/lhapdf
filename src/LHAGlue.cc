@@ -638,9 +638,10 @@ extern "C" {
     const vector<double> vecvalues(values, values + nmem + 1);
     LHAPDF::PDFUncertainty err = ACTIVESETS[nset].activemember()->set().uncertainty(vecvalues, -1);
     central = err.central;
-    errplus = err.errplus_pdf;
-    errminus = err.errminus_pdf;
-    errsymm = err.errsymm_pdf;
+    // If the ErrorType ends in "+as" return the combined PDF+alphaS errors.
+    errplus = err.errplus;
+    errminus = err.errminus;
+    errsymm = err.errsymm;
     // Update current set focus
     CURRENTSET = nset;
   }

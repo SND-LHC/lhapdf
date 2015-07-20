@@ -3,7 +3,7 @@
 // Use formulae for PDF uncertainties and correlations in:
 //   G. Watt, JHEP 1109 (2011) 069 [arXiv:1106.5788 [hep-ph]].
 // Also see Section 6 of LHAPDF6 paper [arXiv:1412.7420 [hep-ph]].
-// Extended in July 2015 for ErrorType values ending in "+as"
+// Extended in July 2015 for ErrorType values ending in "+as".
 
 #include "LHAPDF/LHAPDF.h"
 #include <boost/random.hpp>

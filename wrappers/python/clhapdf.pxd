@@ -101,6 +101,10 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         double errminus
         double errsymm
         double scale
+        double errplus_pdf
+        double errminus_pdf
+        double errsymm_pdf
+        double err_as
 
 cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
     cdef cppclass PDFInfo(Info.Info):

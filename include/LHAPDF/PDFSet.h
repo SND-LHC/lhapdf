@@ -78,7 +78,7 @@ namespace LHAPDF {
       return get_entry_as<int>("DataVersion", -1);
     }
 
-    /// Get the type of PDF errors in this set (replica, symmhessian, hessian, custom, etc.)
+    /// Get the type of PDF errors in this set (replicas, symmhessian, hessian, custom, etc.)
     std::string errorType() const {
       return to_lower_copy(get_entry("ErrorType", "UNKNOWN"));
     }
