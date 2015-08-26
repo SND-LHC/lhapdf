@@ -76,7 +76,7 @@ VERSION 6.2
 
 - **Introduce minimal abstract interface**
 
-   Since composite PDFs don't obviously have some current PDF features. Prefer to 
+   Since composite PDFs don't obviously have some current PDF features. Prefer to
    re-purpose PDF as the interface than to add a new PDFBase or similar?
 
 - **Expose LHAGLUE slots system for C++ use?**
@@ -210,9 +210,5 @@ AS AND WHEN
 - **Make GridPDFs not read their info or data blocks until an xf value is requested?!**
 
    Super-laziness! But is there a real gain other than ~1 sec initialization speed?
-
-- **Updated Octave wrapper**
-
-   To come from Phil Ilten if he's interested.
 
 */

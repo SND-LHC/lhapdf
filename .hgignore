@@ -42,3 +42,9 @@ Makefile\.in$
 \#.*\#$
 ^NEW$
 TEST
+doc/CODINGSTYLE.dox
+doc/CONFIGFLAGS.dox
+doc/DESIGN.dox
+doc/INSTALL.dox
+doc/MIGRATION.dox
+doc/TODO.dox

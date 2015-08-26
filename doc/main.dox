@@ -183,6 +183,7 @@ See the following pages:
 - @ref todo
 - @ref migration
 - @ref codingstyle
+- @ref design
 
 
 @todo Add some developer build guides, including the autotools, Cython, etc. gotchas.
