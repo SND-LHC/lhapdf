@@ -239,7 +239,7 @@ extern "C" {
     if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "cteq6l1";
     // Create the PDF set with index nset
     // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-    ACTIVESETS[nset] = PDFSetHandler(path); //< @todo Will be wrong if a structured path is given
+    ACTIVESETS[nset] = PDFSetHandler(path); ///< @todo Will be wrong if a structured path is given
     CURRENTSET = nset;
   }
   /// Load a PDF set (non-multiset version)

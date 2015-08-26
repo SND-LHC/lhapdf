@@ -422,10 +422,7 @@ namespace LHAPDF {
     /// @brief PDF member global LHAPDF ID number
     ///
     /// Obtained from the member ID and the set's LHAPDF ID index
-    int lhapdfID() const {
-      /// @todo Use set().lhapdfID() + memberID()
-      return lookupLHAPDFID(_setname(), memberID());
-    }
+    int lhapdfID() const;
 
     /// Description of this PDF member
     std::string description() const {

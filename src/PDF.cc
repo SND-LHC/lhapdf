@@ -26,4 +26,10 @@ namespace LHAPDF {
   }
 
 
+  int PDF::lhapdfID() const {
+    //return set().lhapdfID() + memberID()
+    return lookupLHAPDFID(_setname(), memberID());
+  }
+
+
 }
