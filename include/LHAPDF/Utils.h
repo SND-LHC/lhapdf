@@ -84,6 +84,11 @@ namespace LHAPDF {
     return s.find(sub) == s.length()-sub.length();
   }
 
+  /// How many times does a string @a s contain the character @a c?
+  inline size_t countchar(const std::string& s, const char c) {
+    return std::count(s.begin(), s.end(), c);
+  }
+
   //@}
 
 

@@ -42,10 +42,10 @@ namespace LHAPDF {
     if (values.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Input vector must contain values for all PDF members.");
 
-    // PDF members labelled 0 to nmem, excluding possible alphaS variations.
+    // PDF members labelled 0 to nmem, excluding possible parameter variations.
     size_t nmem = size()-1;
-    if (endswith(errorType(), "+as"))
-      nmem -= 2;
+    const size_t npar = countchar(errorType(), '+');
+    nmem -= 2*npar;
 
     if (nmem <= 0)
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. PDF set must contain more than just the central value.");
@@ -65,9 +65,9 @@ namespace LHAPDF {
 
       // Compute median and requested CL directly from probability distribution of replicas.
       // Sort "values" into increasing order, ignoring zeroth member (average over replicas).
-      // If the ErrorType ends in "+as" also ignore the last two members (alphaS variations).
+      // Also ignore possible parameter variations included at the end of the set.
       vector<double> sorted = values;
-      sort(sorted.begin()+1, (endswith(errorType(), "+as")) ? sorted.end()-2 : sorted.end());
+      sort(sorted.begin()+1, sorted.end()-2*npar);
       // Define central value to be median.
       if (nmem % 2) { // odd nmem => one middle value
 	rtn.central = sorted[nmem/2 + 1];
@@ -147,14 +147,19 @@ namespace LHAPDF {
     rtn.errplus_pdf = rtn.errplus;
     rtn.errminus_pdf = rtn.errminus;
     rtn.errsymm_pdf = rtn.errsymm;
-    if (endswith(errorType(), "+as")) {
+    if (npar > 0) {
 
-      // Calculate uncertainty from alphaS variation with same scaling as for PDF uncertainty.
-      rtn.err_as = rtn.scale * 0.5*abs(values[nmem+1]-values[nmem+2]);
-      // Add alphaS uncertainty in quadrature with PDF uncertainty.
-      rtn.errplus = sqrt( sqr(rtn.errplus_pdf) + sqr(rtn.err_as) );
-      rtn.errminus = sqrt( sqr(rtn.errminus_pdf) + sqr(rtn.err_as) );
-      rtn.errsymm = sqrt( sqr(rtn.errsymm_pdf) + sqr(rtn.err_as) );
+      // All individual parameter variation uncertainties are added in quadrature.
+      double err_par = 0;
+      for (size_t ipar = 1; ipar <= npar; ipar++) {
+	err_par += sqr(values[nmem+2*ipar-1]-values[nmem+2*ipar]);
+      }
+      // Calculate total uncertainty from parameter variation with same scaling as for PDF uncertainty.
+      rtn.err_par = rtn.scale * 0.5 * sqrt(err_par);
+      // Add parameter variation uncertainty in quadrature with PDF uncertainty.
+      rtn.errplus = sqrt( sqr(rtn.errplus_pdf) + sqr(rtn.err_par) );
+      rtn.errminus = sqrt( sqr(rtn.errminus_pdf) + sqr(rtn.err_par) );
+      rtn.errsymm = sqrt( sqr(rtn.errsymm_pdf) + sqr(rtn.err_par) );
 
     }
 
@@ -170,10 +175,10 @@ namespace LHAPDF {
     const PDFUncertainty errA = uncertainty(valuesA, -1);
     const PDFUncertainty errB = uncertainty(valuesB, -1);
     
-    // PDF members labelled 0 to nmem, excluding possible alphaS variations.
+    // PDF members labelled 0 to nmem, excluding possible parameter variations.
     size_t nmem = size()-1;
-    if (endswith(errorType(), "+as"))
-      nmem -= 2;
+    const size_t npar = countchar(errorType(), '+');
+    nmem -= 2*npar;
 
     double cor = 0.0;
     if (startswith(errorType(), "replicas") && nmem > 1) {
@@ -209,10 +214,10 @@ namespace LHAPDF {
     double frand = 0.0;
     double scale = uncertainty(values).scale;
 
-    // PDF members labelled 0 to nmem, excluding possible alphaS variations.
+    // PDF members labelled 0 to nmem, excluding possible parameter variations.
     size_t nmem = size()-1;
-    if (endswith(errorType(), "+as"))
-      nmem -= 2;
+    const size_t npar = countchar(errorType(), '+');
+    nmem -= 2*npar;
 
     // Allocate number of eigenvectors based on ErrorType.
     size_t neigen = 0;
@@ -254,6 +259,45 @@ namespace LHAPDF {
     }
 
     return frand;
+  }
+
+
+  void PDFSet::checkPdfType(const std::vector<string>& pdftypes) const {
+    if (pdftypes.size() != size())
+      throw UserError("Error in LHAPDF::PDFSet::checkPdfType. Input vector must contain values for all PDF members.");
+
+    // PDF members labelled 0 to nmem, excluding possible parameter variations.
+    size_t nmem = size()-1;
+    const size_t npar = countchar(errorType(), '+');
+    nmem -= 2*npar;
+
+    // Check that zeroth member has "PdfType: central".
+    if (pdftypes[0] != "central")
+      throw MetadataError("Member 0, \"PdfType: " + pdftypes[0] + "\" should be \"PdfType: central\".");
+
+    // Check that PDF members have "PdfType: replica" or "PdfType: error".
+    if (startswith(errorType(), "replicas")) {
+      for (size_t imem = 1; imem <= nmem; imem++) {
+    	if (pdftypes[imem] != "replica")
+    	  throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: replica\".");
+      }
+    } else if (startswith(errorType(), "symmhessian") || startswith(errorType(), "hessian")) {
+      for (size_t imem = 1; imem <= nmem; imem++) {
+    	if (pdftypes[imem] != "error")
+    	  throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: error\".");
+      }
+    } else {
+      throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::checkPdfType.");
+    }
+
+    // Check that possible parameter variations have "PdfType: central".
+    for (size_t imem = nmem+1; imem <= size()-1; imem++) {
+      if (pdftypes[imem] != "central")
+	throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: central\".");
+    }
+
+    //cout << "Success: PdfType of each member matches the ErrorType of the set." << endl;
+
   }
 
 

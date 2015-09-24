@@ -301,7 +301,18 @@ OPTIONAL (but should be present if there is an error set)
 (enum string): replicas, symmhessian, hessian, custom, none
 
 A set-level declaration of the type of error treatment provided by this set.
-An ending "+as" means that the last two members are alphaS variations.
+
+Additional members can be given at the end of a set to allow estimation of
+uncertainties due to parameter variation (for example, alphaS or heavy-quark masses).
+The number of parameters, npar, is determined by counting the number of "+" characters
+in the ErrorType, and the last 2*npar members of the set should correspond to parameter
+variations, i.e. the central PDF fits obtained when a given parameter is moved up or down
+from the nominal value.  For example, "ErrorType: replicas+as+mc+mb+mt" could be used for
+a set where the last eight members correspond to variation of AlphaS, MCharm, MBottom and
+MTop, respectively.  The parameter variation uncertainty is calculated by summing in
+quadrature half the difference between each of the two relevant members.  This is added
+in quadrature to the PDF uncertainty to obtain a combined PDF+parameter uncertainty.
+See the demonstration programs in "examples/testpdfunc.cc" and "examples/testpdfunc.py".
 
 
 ErrorConfLevel
@@ -408,9 +419,10 @@ OPTIONAL
 PdfType
 -------
 MANDATORY
-(enum string): central or 'error' or 'replica'
+(enum string): 'central' or 'error' or 'replica'
 
 The type of this PDF, i.e. is it a central (canonical) PDF or is it meant for
 use as either a Hessian error or a replica member of a statistical ensemble.
+Parameter variation members given at the end of a set should have type 'central'.
 
 */

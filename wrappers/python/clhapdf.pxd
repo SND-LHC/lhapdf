@@ -72,6 +72,7 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         #void uncertainty(PDFUncertainty&, vector[double]&, double, bool) except +
         double correlation(vector[double]&, vector[double]&) except +
         double randomValueFromHessian(vector[double]&, vector[double]&, bool) except +
+        void checkPdfType(vector[string]&) except +
 
 cdef extern from "../../include/LHAPDF/AlphaS.h" namespace "LHAPDF":
     cdef cppclass AlphaS:
@@ -104,7 +105,7 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         double errplus_pdf
         double errminus_pdf
         double errsymm_pdf
-        double err_as
+        double err_par
 
 cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
     cdef cppclass PDFInfo(Info.Info):

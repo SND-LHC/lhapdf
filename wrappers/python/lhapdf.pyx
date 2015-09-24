@@ -185,10 +185,10 @@ class PDFUncertainty:
     """\
     A simple struct containing components of a value with uncertainties calculated
     from a PDF set. Attributes are central, errplus, errminus, errsymm, and scale.
-    Extra attributes to return the separate PDF and alphaS errors for combined
-    PDF+alphaS sets are errplus_pdf, errminus_pdf, errsymm_pdf and err_as.
+    Extra attributes to return the separate PDF and parameter errors for combined
+    PDF+parameter sets are errplus_pdf, errminus_pdf, errsymm_pdf and err_par.
     """
-    def __init__(self, central=0.0, errplus=0.0, errminus=0.0, errsymm=0.0, scale=0.0, errplus_pdf=0.0, errminus_pdf=0.0, errsymm_pdf=0.0, err_as=0.0):
+    def __init__(self, central=0.0, errplus=0.0, errminus=0.0, errsymm=0.0, scale=0.0, errplus_pdf=0.0, errminus_pdf=0.0, errsymm_pdf=0.0, err_par=0.0):
         self.central  = central
         self.errplus  = errplus
         self.errminus = errminus
@@ -197,7 +197,7 @@ class PDFUncertainty:
         self.errplus_pdf  = errplus_pdf
         self.errminus_pdf = errminus_pdf
         self.errsymm_pdf  = errsymm_pdf
-        self.err_as       = err_as
+        self.err_par       = err_par
 
 
 cdef class PDFSet:
@@ -295,16 +295,19 @@ cdef class PDFSet:
         self._ptr._print()
 
     def uncertainty(self, vals, cl=68.268949, alternative=False):
-        """Return a PDFUncertainty object corresponding to central value and errors computed
+        """\
+	Return a PDFUncertainty object corresponding to central value and errors computed
         from the vals list. If unspecified (as a percentage), the confidence level cl defaults
         to 1-sigma. For replicas, by default (alternative=False) the central value is given by
         the mean and the uncertainty by the standard deviation (possibly rescaled to cl), but
         setting alternative=True will instead construct a confidence interval from the
         probability distribution of replicas, with the central value given by the median.
-        For a combined PDF+alphaS set, the alphaS uncertainties are computed from the last two
-        set members, and a breakdown of the separate PDF and alphaS uncertainties is available."""
+        For a combined PDF+parameter set, the parameter variation uncertainties are computed
+        from the last 2*npar set members, where npar is the number of parameters, and a
+        breakdown of the separate PDF and parameter variation uncertainties is available.
+	"""
         cdef c.PDFUncertainty unc = self._ptr.uncertainty(vals, cl, alternative)
-        return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale, unc.errplus_pdf, unc.errminus_pdf, unc.errsymm_pdf, unc.err_as)
+        return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale, unc.errplus_pdf, unc.errminus_pdf, unc.errsymm_pdf, unc.err_par)
 
     def correlation(self, valsA, valsB):
         """Return the PDF correlation between valsA and valsB using appropriate formulae for this set."""
@@ -313,6 +316,10 @@ cdef class PDFSet:
     def randomValueFromHessian(self, vals, randoms, symmetrise=True):
         """Return a random value from Hessian vals and Gaussian random numbers."""
         return self._ptr.randomValueFromHessian(vals, randoms, symmetrise)
+
+    def checkPdfType(self, pdftypes):
+        """Check that the PdfType of each member matches the ErrorType of the set."""
+        return self._ptr.checkPdfType(pdftypes)
 
 
 

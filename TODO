@@ -104,30 +104,6 @@ VERSION 6.2
 
 
 
-VERSION 6.2.1
--------------
-
-- **Improved high-Q extrapolation (??)**
-
-   Needed for FCC studies, etc.
-
-   At low-Q Graeme suggests extrapolation established from the anomalous
-   dimension of the function within the grid closest to that point.
-
-   What's done in the continuation extrapolator?
-
-- **Improved low/high-x interpolation/extrapolation (??)**
-
-   Gradient extrapolation in log space may be a good option at low-x.
-
-   Graeme, etc.: x -> 1 interpolation should be done carefully to ensure that
-   all PDFs -> 0 at x = 1.0, (usually) without going negative. There should
-   always be a point at x = 1 to root the interpolator. This probably deserves
-   specialisation beyond generic splines. Graeme will look at what's done in the
-   CTEQ code (other than interpolating in x**0.3)
-
-
-
 VERSION 6.3
 -----------
 

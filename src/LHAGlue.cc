@@ -638,7 +638,7 @@ extern "C" {
     const vector<double> vecvalues(values, values + nmem + 1);
     LHAPDF::PDFUncertainty err = ACTIVESETS[nset].activemember()->set().uncertainty(vecvalues, -1);
     central = err.central;
-    // If the ErrorType ends in "+as" return the combined PDF+alphaS errors.
+    // For a combined set, the PDF and parameter variation uncertainties will be added in quadrature.
     errplus = err.errplus;
     errminus = err.errminus;
     errsymm = err.errsymm;
