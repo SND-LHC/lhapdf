@@ -36,7 +36,8 @@ for imem in xrange(pset.size):
     #print imem, xgAll[imem], xuAll[imem], pdftypes[imem]
 
 ## Check that the PdfType of each member matches the ErrorType of the set.
-pset.checkPdfType(pdftypes)
+## NB. "Hidden" expert-only functionality -- API may change
+pset._checkPdfType(pdftypes)
 
 ## Calculate 1-sigma PDF uncertainty on gluon distribution.
 unc = pset.uncertainty(xgAll)

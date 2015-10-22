@@ -174,7 +174,7 @@ namespace LHAPDF {
 
     const PDFUncertainty errA = uncertainty(valuesA, -1);
     const PDFUncertainty errB = uncertainty(valuesB, -1);
-    
+
     // PDF members labelled 0 to nmem, excluding possible parameter variations.
     size_t nmem = size()-1;
     const size_t npar = countchar(errorType(), '+');
@@ -262,7 +262,7 @@ namespace LHAPDF {
   }
 
 
-  void PDFSet::checkPdfType(const std::vector<string>& pdftypes) const {
+  void PDFSet::_checkPdfType(const std::vector<string>& pdftypes) const {
     if (pdftypes.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::checkPdfType. Input vector must contain values for all PDF members.");
 
@@ -293,7 +293,7 @@ namespace LHAPDF {
     // Check that possible parameter variations have "PdfType: central".
     for (size_t imem = nmem+1; imem <= size()-1; imem++) {
       if (pdftypes[imem] != "central")
-	throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: central\".");
+        throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: central\".");
     }
 
     //cout << "Success: PdfType of each member matches the ErrorType of the set." << endl;

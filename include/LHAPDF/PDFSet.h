@@ -227,7 +227,7 @@ namespace LHAPDF {
     /// @c alternative equal to true (default: false) will construct a confidence
     /// interval from the probability distribution of replicas, with the central
     /// value given by the median.
-    /// 
+    ///
     /// For a combined set, a breakdown of the separate PDF and parameter variation uncertainties is available.
     /// The parameter variation uncertainties are computed from the last 2*n members of the set, with n the number of parameters.
     PDFUncertainty uncertainty(const std::vector<double>& values, double cl=100*boost::math::erf(1/sqrt(2)), bool alternative=false) const;
@@ -269,8 +269,12 @@ namespace LHAPDF {
     /// For a combined set, the parameter variations are not included in the generation of the random value.
     double randomValueFromHessian(const std::vector<double>& values, const std::vector<double>& randoms, bool symmetrise=true) const;
 
+
     /// Check that the PdfType of each member matches the ErrorType of the set.
-    void checkPdfType(const std::vector<string>& pdftypes) const;
+    /// @todo We need to make the signature clearer -- what is the arg? Why not
+    ///   automatically check the members? Why not a plural name? Why not on PDF?
+    ///   "Hiding" the name for now with the leading underscore.
+    void _checkPdfType(const std::vector<string>& pdftypes) const;
 
     //@}
 

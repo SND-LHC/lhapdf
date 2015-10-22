@@ -319,7 +319,11 @@ cdef class PDFSet:
 
     def checkPdfType(self, pdftypes):
         """Check that the PdfType of each member matches the ErrorType of the set."""
-        return self._ptr.checkPdfType(pdftypes)
+        try:
+            self._ptr._checkPdfType(pdftypes)
+        except:
+            return False
+        return True
 
 
 

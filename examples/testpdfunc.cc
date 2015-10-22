@@ -51,7 +51,8 @@ int main(int argc, char* argv[]) {
   cout << endl;
 
   // Check that the PdfType of each member matches the ErrorType of the set.
-  set.checkPdfType(pdftypes);
+  // NB. "Hidden" expert-only functionality -- API may change
+  set._checkPdfType(pdftypes);
 
   // Define formats for printing labels and numbers in output.
   string labformat = "%2s%10s%12s%12s%12s%12s\n";
