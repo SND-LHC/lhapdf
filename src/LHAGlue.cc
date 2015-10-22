@@ -151,7 +151,7 @@ extern "C" {
 
   // NEW FORTRAN INTERFACE FUNCTIONS
 
-  /// List of available sets
+  /// LHAPDF library version
   void lhapdf_getversion_(char* s, size_t len) {
     strncpy(s, LHAPDF_VERSION, len);
   }
