@@ -16,7 +16,8 @@ namespace LHAPDF {
   /// @name File searching and search path handling functions
   //@{
 
-  /// Get the ordered list of search paths, from $LHAPDF_DATA_PATH and the install location
+  /// @brief Get the ordered list of search paths, from $LHAPDF_DATA_PATH and the install location
+  /// @note The install prefix will be appended *unless* $LHAPDF_DATA_PATH ends with a double colon, i.e. '::'
   std::vector<std::string> paths();
 
   /// Set the search paths list as a colon-separated string

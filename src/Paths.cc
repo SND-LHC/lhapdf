@@ -18,9 +18,11 @@ namespace LHAPDF {
     if (pathsvar == 0) pathsvar = getenv("LHAPATH");
     // Split the paths variable as usual
     if (pathsvar != 0) split(rtn, pathsvar, is_any_of(":"), token_compress_on);
-    /// Always look in the install prefix, after other paths are exhausted
-    string datadir = LHAPDF_DATA_PREFIX;
-    rtn.push_back(datadir / "LHAPDF");
+    // Look in the install prefix after other paths are exhausted, if not blocked by a trailing ::
+    if (pathsvar == 0 || strlen(pathsvar) < 2 || string(pathsvar).substr(strlen(pathsvar)-2) != "::") {
+      const string datadir = LHAPDF_DATA_PREFIX;
+      rtn.push_back(datadir / "LHAPDF");
+    }
    return rtn;
   }
 

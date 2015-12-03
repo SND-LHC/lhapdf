@@ -1,5 +1,8 @@
 2015-12-03  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Don't append the install prefix to path searches if
+	$LHAPDF_DATA_PATH ends with a double-colon, ::.
+
 	* De-inline the availablePDFSets() function, and veto duplicate
 	set names.
 
