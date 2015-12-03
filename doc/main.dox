@@ -26,6 +26,9 @@ codes using the LHAPDF5 and PDFLIB legacy interfaces, so you can keep using your
 existing codes. But the new interface is much more powerful and pleasant to work
 with, so we think you'll want to switch once you've used it!
 
+LHAPDF6 is documented in more detail in http://arxiv.org/abs/1412.7420
+
+
 
 @section installsec Installation
 
