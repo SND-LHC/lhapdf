@@ -44,4 +44,33 @@ namespace LHAPDF {
   }
 
 
+  const std::vector<std::string>& availablePDFSets() {
+    // Cached path list
+    static vector<string> rtn;
+    // Return cached list if valid
+    if (!rtn.empty()) return rtn;
+    // Otherwise this is the first time: populate the list
+    BOOST_FOREACH (const string& p, paths()) {
+      if (!dir_exists(p)) continue;
+      DIR* dir;
+      struct dirent* ent;
+      if ((dir = opendir(p.c_str())) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+          const string d = ent->d_name;
+          const string infopath = p / d / d + ".info";
+          if (file_exists(infopath)) {
+            if (!contains(rtn, d)) {
+              // cout << "@" << d << "@" << endl;
+              rtn.push_back(d); //< add if a set with this name isn't already known
+            }
+          }
+        }
+        closedir(dir);
+      }
+      sort(rtn.begin(), rtn.end());
+    }
+    return rtn;
+  }
+
+
 }

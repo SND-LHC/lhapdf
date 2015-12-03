@@ -88,28 +88,7 @@ namespace LHAPDF {
   /// @note The result is cached when first called, to avoid repeated filesystem
   /// walking. It's assumed that new PDFs will not appear on the filesystem
   /// during a run: please let the authors know if that's not a good assumption!
-  inline const std::vector<std::string>& availablePDFSets() {
-    // Cached path list
-    static vector<string> rtn;
-    // Return cached list if valid
-    if (!rtn.empty()) return rtn;
-    // Otherwise this is the first time: populate the list
-    BOOST_FOREACH (const string& p, paths()) {
-      if (!dir_exists(p)) continue;
-      DIR* dir;
-      struct dirent* ent;
-      if ((dir = opendir(p.c_str())) != NULL) {
-        while ((ent = readdir(dir)) != NULL) {
-          const string d = ent->d_name;
-          const string infopath = p / d / d + ".info";
-          if (file_exists(infopath)) rtn.push_back(d);
-        }
-        closedir (dir);
-      }
-      sort(rtn.begin(), rtn.end());
-    }
-    return rtn;
-  }
+  const std::vector<std::string>& availablePDFSets();
 
 
 }

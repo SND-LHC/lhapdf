@@ -1,10 +1,15 @@
+2015-12-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* De-inline the availablePDFSets() function, and veto duplicate
+	set names.
+
 2015-09-23  Graeme Watt  <graeme.watt@durham.ac.uk>
 
 	* Determine number of parameter variation members by counting
 	number of "+" signs in ErrorType, e.g. "replicas+as+mc+mb+mt".
 
 	* Added a new checkPdfType() member function to PDFSet class.
-	
+
 2015-07-17  Graeme Watt  <graeme.watt@durham.ac.uk>
 
 	* Added support for combined PDF+alphaS sets via new ErrorType
