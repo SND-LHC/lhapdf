@@ -1,6 +1,10 @@
 2015-12-16  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Update Cython and Python interfaces to support Python3 syntax. Thanks to Vitaly Yermolchyk for the patches!
+	* Add missing getlam4 and getlam5 functions to Fortran
+	interface. Thanks to Dmitry Kalinkin for the patch.
+
+	* Update Cython and Python interfaces to support Python3
+	syntax. Thanks to Vitaly Yermolchyk for the patches!
 
 	* Update to even newer boost.m4
 

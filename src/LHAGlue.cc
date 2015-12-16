@@ -602,6 +602,35 @@ extern "C" {
 
 
 
+  void getlam4m_(const int& nset, const int& nmem, double& qcdl4) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    CURRENTSET = nset;
+    ACTIVESETS[nset].loadMember(nmem);
+    qcdl4 = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda4", -1.0);
+  }
+  void getlam4_(const int& nmem, double& qcdl4) {
+    int nset1 = 1;
+    getlam4m_(nset1, nmem, qcdl4);
+  }
+
+
+  void getlam5m_(const int& nset, const int& nmem, double& qcdl5) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    CURRENTSET = nset;
+    ACTIVESETS[nset].loadMember(nmem);
+    qcdl5 = ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda5", -1.0);
+  }
+  void getlam5_(const int& nmem, double& qcdl5) {
+    int nset1 = 1;
+    getlam5m_(nset1, nmem, qcdl5);
+  }
+
+
+
+
+
   /// Backwards compatibility functions for LHAPDF5 calculations of
   /// PDF uncertainties and PDF correlations (G. Watt, March 2014).
 
@@ -980,11 +1009,14 @@ double LHAPDF::getLam4(int nmem) {
 }
 
 double LHAPDF::getLam4(int nset, int nmem) {
-  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-  CURRENTSET = nset;
-  ACTIVESETS[nset].loadMember(nmem);
-  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda4", -1.0);
+  // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+  //   throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // CURRENTSET = nset;
+  // ACTIVESETS[nset].loadMember(nmem);
+  // return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda4", -1.0);
+  double qcdl4;
+  getlam4m_(nset, nmem, qcdl4);
+  return qcdl4;
 }
 
 
@@ -993,11 +1025,14 @@ double LHAPDF::getLam5(int nmem) {
 }
 
 double LHAPDF::getLam5(int nset, int nmem) {
-  if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-    throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-  CURRENTSET = nset;
-  ACTIVESETS[nset].loadMember(nmem);
-  return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda5", -1.0);
+  // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+  //   throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+  // CURRENTSET = nset;
+  // ACTIVESETS[nset].loadMember(nmem);
+  // return ACTIVESETS[nset].activemember()->info().get_entry_as<double>("AlphaS_Lambda5", -1.0);
+  double qcdl5;
+  getlam5m_(nset, nmem, qcdl5);
+  return qcdl5;
 }
 
 
