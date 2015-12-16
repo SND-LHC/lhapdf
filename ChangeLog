@@ -1,5 +1,8 @@
 2015-12-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fixes to the lhapdf script. Thanks again to Dmitry Kalinkin for
+	a patch.
+
 	* Add missing getlam4 and getlam5 functions to Fortran
 	interface. Thanks to Dmitry Kalinkin for the patch.
 

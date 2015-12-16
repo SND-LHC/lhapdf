@@ -280,7 +280,8 @@ def download_url(source, dest_dir, dryrun=False):
 
     # Decide whether to copy or download
     if source.startswith('/') or source.startswith('file://'): # POSIX
-        source = source.lstrip('file://')
+        if source.startswith('file://'):
+            source = source[len('file://'):]
         logging.debug('Downloading from %s' % source)
         logging.debug('Downloading to %s' % dest_filepath)
         try:
@@ -446,7 +447,7 @@ if __name__ == '__main__':
 
     def download_file(filename, dest_dir, dryrun=False): #, unvalidated=False):
         for source in options.SOURCES: #< NOTE: use of global "options" for convenience
-            if download_url(urlbase + filename, dest_dir, dryrun):
+            if download_url(source + filename, dest_dir, dryrun):
                 return True
         return False
 
