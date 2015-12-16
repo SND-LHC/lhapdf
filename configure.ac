@@ -117,14 +117,14 @@ AC_ARG_ENABLE([python],
 if test x$enable_python == xyes; then
   AC_PATH_PROG(PYTHON, python)
   if test x$PYTHON != x; then
-    PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
+    PYTHON_VERSION=`$PYTHON -c "import sys; print('.'.join(map(str, sys.version_info@<:@:2@:>@)))"`
     AC_SUBST(PYTHON_VERSION)
-    PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
+    PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True))"`
     AC_SUBST(PYTHON_PATH)
   fi
-  AM_CHECK_CYTHON([0.18], [:], [:])
+  AM_CHECK_CYTHON([0.19], [:], [:])
   if test x$CYTHON_FOUND = xyes; then
-    AC_MSG_NOTICE([Cython >= 0.18 found: Python extension source can be rebuilt (for developers)])
+    AC_MSG_NOTICE([Cython >= 0.19 found: Python extension source can be rebuilt (for developers)])
   fi
 fi
 AM_CONDITIONAL(WITH_PYTHON, [test x$PYTHON != x])

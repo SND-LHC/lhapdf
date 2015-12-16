@@ -300,7 +300,8 @@ def download_url(source, dest_dir, dryrun=False):
         try:
             u = urllib.urlopen(url)
             file_size = int(u.info().getheaders('Content-Length')[0])
-        except urllib.URLError, e:
+        except urllib.URLError:
+            e = sys.exc_info()[1]
             logging.error('Unable to download %s' % url)
             return False
 
@@ -328,8 +329,9 @@ def download_url(source, dest_dir, dryrun=False):
 
                     status  = chr(13) + '%s: ' % os.path.basename(url)
                     status += r'%s [%3.1f%%]' % (convertBytes(file_size_dl).rjust(10), file_size_dl * 100. / file_size)
-                    print status,
-            except urllib.URLError, e:
+                    sys.stdout.write(status+' ')
+            except urllib.URLError:
+                e = sys.exc_info()[1]
                 logging.error('Error during download: ', e.reason)
                 return False
             except KeyboardInterrupt:
@@ -337,7 +339,7 @@ def download_url(source, dest_dir, dryrun=False):
                 return False
         finally:
             dest_file.close()
-            print
+            print('')
 
     return True
 
@@ -495,9 +497,9 @@ if __name__ == '__main__':
 
         for pdf in sorted(displayed_pdfs):
             if suboptions.CODES:
-                print '%d  %s' % (master_list[pdf].id_code, pdf)
+                print('%d  %s' % (master_list[pdf].id_code, pdf))
             else:
-                print pdf
+                print(pdf)
         sys.exit(0)
 
 

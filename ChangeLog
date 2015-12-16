@@ -1,5 +1,7 @@
 2015-12-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Update Cython and Python interfaces to support Python3 syntax. Thanks to Vitaly Yermolchyk for the patches!
+
 	* Update to even newer boost.m4
 
 2015-12-03  Andy Buckley  <andy.buckley@cern.ch>

@@ -1,10 +1,20 @@
-#cython: embedsignature=True
+#cython: embedsignature=True, c_string_type=str, c_string_encoding=utf8
 
 cimport clhapdf as c
 from libcpp.string cimport string
 from libcpp.vector cimport vector
-from itertools import izip
+try:
+    from itertools import izip as zip
+except ImportError: # python 3.x version
+    pass
 
+def text_encode(text):
+    if isinstance(text, unicode):
+        return text.encode('utf8')
+    elif isinstance(text, bytes):
+        return text
+    else:
+        raise ValueError("requires text input")
 
 cdef class PDF:
     """\
@@ -82,7 +92,7 @@ cdef class PDF:
         # TODO: allow 2-arg version without PID which returns a dict for all flavours
         "Return the PDF xf(x,Q) value for the given parton ID, x, and Q."
         try:
-            return [self._ptr.xfxQ(pid, x, q) for x, q in izip(x, q)]
+            return [self._ptr.xfxQ(pid, x, q) for x, q in zip(x, q)]
         except TypeError:
             return self._ptr.xfxQ(pid, x, q)
 
@@ -90,7 +100,7 @@ cdef class PDF:
         # TODO: allow 2-arg version without PID which returns a dict for all flavours
         "Return the PDF xf(x,Q2) value for the given parton ID, x, and Q2."
         try:
-            return [self._ptr.xfxQ2(pid, x, q2) for x, q2 in izip(x, q2)]
+            return [self._ptr.xfxQ2(pid, x, q2) for x, q2 in zip(x, q2)]
         except TypeError:
             return self._ptr.xfxQ2(pid, x, q2)
 
@@ -161,11 +171,11 @@ cdef class Info:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self._ptr.has_key(key)
+        return self._ptr.has_key(text_encode(key))
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
-        return self._ptr.has_key_local(key)
+        return self._ptr.has_key_local(text_encode(key))
 
     # def get_entry(self, key):
     #     "Returns metadata entry for this key"
@@ -173,12 +183,12 @@ cdef class Info:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        rtn = self._ptr.get_entry(key, str(fallback))
+        rtn = self._ptr.get_entry(text_encode(key), text_encode(str(fallback)))
         return rtn if str(rtn) != str(fallback) else fallback
 
     def set_entry(self, key, value):
         "Set a metadata key"
-        self._ptr.set_entry(key, str(value))
+        self._ptr.set_entry(text_encode(key), text_encode(str(value)))
 
 
 class PDFUncertainty:
@@ -275,11 +285,11 @@ cdef class PDFSet:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self._ptr.has_key(key)
+        return self._ptr.has_key(text_encode(key))
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
-        return self._ptr.has_key_local(key)
+        return self._ptr.has_key_local(text_encode(key))
 
     # def get_entry(self, key):
     #     "Returns metadata entry for this key"
@@ -287,7 +297,7 @@ cdef class PDFSet:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        rtn = self._ptr.get_entry(key, str(fallback))
+        rtn = self._ptr.get_entry(text_encode(key), text_encode(str(fallback)))
         return rtn if str(rtn) != str(fallback) else fallback
 
     def _print(self):
@@ -342,11 +352,11 @@ cdef class PDFInfo:
 
     def has_key(self, key):
         "Return whether or not metadata for this key exists"
-        return self._ptr.has_key(key)
+        return self._ptr.has_key(text_encode(key))
 
     def has_key_local(self, key):
         "Returns whether or not metadata for this key exists at a local level (config/set/member)"
-        return self._ptr.has_key_local(key)
+        return self._ptr.has_key_local(text_encode(key))
 
     # def get_entry(self, key):
     #     "Returns metadata entry for this key"
@@ -354,7 +364,7 @@ cdef class PDFInfo:
 
     def get_entry(self, key, fallback=None):
         "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        rtn = self._ptr.get_entry(key, str(fallback))
+        rtn = self._ptr.get_entry(text_encode(key), text_encode(str(fallback)))
         return rtn if str(rtn) != str(fallback) else fallback
 
 
@@ -444,14 +454,14 @@ def getConfig():
 
 def getPDFSet(setname):
     """Factory function to get the specified PDF set."""
-    cdef c.PDFSet* ptr = &c.getPDFSet(setname)
+    cdef c.PDFSet* ptr = &c.getPDFSet(text_encode(setname))
     cdef PDFSet obj = PDFSet.__new__(PDFSet)
     obj.set_ptr(ptr)
     return obj
 
 def mkPDFs(setname):
     """Factory function to make all the PDF objects in the specified set."""
-    cdef vector[c.PDF*] ptrs = c.mkPDFs(setname)
+    cdef vector[c.PDF*] ptrs = c.mkPDFs(text_encode(setname))
     cdef PDF obj
     objs = []
     for ptr in ptrs:
@@ -461,10 +471,10 @@ def mkPDFs(setname):
     return objs
 
 
-cdef mkPDF_setmem(char* setname, int memid):
+cdef mkPDF_setmem(string setname, int memid):
     "Factory function to make a PDF object from the set name and member number."
     cdef PDF obj = PDF.__new__(PDF)
-    obj.set_ptr(c.mkPDF(string(setname), memid))
+    obj.set_ptr(c.mkPDF(setname, memid))
     return obj
 
 cdef mkPDF_lhaid(int lhaid):
@@ -473,23 +483,26 @@ cdef mkPDF_lhaid(int lhaid):
     obj.set_ptr(c.mkPDF(lhaid))
     return obj
 
-cdef mkPDF_setmemstr(char* setname_nmem):
+cdef mkPDF_setmemstr(string setname_nmem):
     "Factory function to make a PDF object from the set name and member number in SETNAME/NMEM string format."
     cdef PDF obj = PDF.__new__(PDF)
-    obj.set_ptr(c.mkPDF(string(setname_nmem)))
+    obj.set_ptr(c.mkPDF(setname_nmem))
     return obj
 
 def mkPDF(*args):
     """Factory function to make a PDF object from the set name and member number
     (2 args), the unique LHAPDF ID number for that member (1 int arg), or the
     SETNAME/NMEM string format."""
+    cdef string arg0_string
     if len(args) == 1:
         if type(args[0]) == int:
             return mkPDF_lhaid(args[0])
         if type(args[0]) == str:
-            return mkPDF_setmemstr(args[0])
+            arg0_string = text_encode(args[0])
+            return mkPDF_setmemstr(arg0_string)
     elif len(args) == 2 and type(args[0]) == str and type(args[1]) == int:
-        return mkPDF_setmem(args[0], args[1])
+        arg0_string = text_encode(args[0])
+        return mkPDF_setmem(arg0_string, args[1])
     else:
         raise Exception("Unknown call signature")
 
@@ -544,12 +557,12 @@ def paths():
 
 def setPaths(newpaths):
     "Set the list of current PDF data search paths."
-    c.setPaths(newpaths)
+    c.setPaths([text_encode(path) for path in newpaths])
 
 def pathsPrepend(newpath):
     "Prepend to the list of current PDF data search paths."
-    c.pathsPrepend(newpath)
+    c.pathsPrepend(text_encode(newpath))
 
 def pathsAppend(newpath):
     "Append to the list of current PDF data search paths."
-    c.pathsAppend(newpath)
+    c.pathsAppend(text_encode(newpath))
