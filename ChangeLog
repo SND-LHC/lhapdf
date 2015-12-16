@@ -1,3 +1,7 @@
+2015-12-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Update to even newer boost.m4
+
 2015-12-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Don't append the install prefix to path searches if
