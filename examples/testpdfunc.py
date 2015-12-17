@@ -24,7 +24,7 @@ print()
 
 npar = pset.errorType.count("+") # number of parameter variations (alphaS, etc.)
 if npar > 0:
-    print "Last %d members are parameter variations\n" % (2*npar)
+    print("Last %d members are parameter variations\n" % (2*npar))
 
 ## Fill vectors xgAll and xuAll using all PDF members.
 xgAll = [0.0 for i in range(pset.size)]
@@ -34,7 +34,7 @@ for imem in range(pset.size):
     xgAll[imem] = pdfs[imem].xfxQ(21, x, q)
     xuAll[imem] = pdfs[imem].xfxQ(2, x, q)
     pdftypes[imem] =  pdfs[imem].type
-    #print imem, xgAll[imem], xuAll[imem], pdftypes[imem]
+    #print(imem, xgAll[imem], xuAll[imem], pdftypes[imem])
 
 ## Check that the PdfType of each member matches the ErrorType of the set.
 ## NB. "Hidden" expert-only functionality -- API may change
