@@ -12,10 +12,12 @@ namespace LHAPDF {
 
   void PDF::print(std::ostream& os, int verbosity) const {
     stringstream ss;
-    if (verbosity > 0)
+    if (verbosity > 0) {
       ss << set().name() << " PDF set, member #" << memberID()
-         << ", version " << dataversion() << "; "
-         << "LHAPDF ID = " << lhapdfID();
+         << ", version " << dataversion();
+      if (lhapdfID() > 0)
+        ss << "; LHAPDF ID = " << lhapdfID();
+    }
     if (verbosity > 2 && set().description().size() > 0)
       ss << "\n" << set().description();
     if (verbosity > 1 && description().size() > 0)
@@ -28,7 +30,12 @@ namespace LHAPDF {
 
   int PDF::lhapdfID() const {
     //return set().lhapdfID() + memberID()
-    return lookupLHAPDFID(_setname(), memberID());
+    /// @todo Add failure tolerance if pdfsets.index not found
+    try {
+      return lookupLHAPDFID(_setname(), memberID());
+    } catch (const Exception&) {
+      return -1; //< failure
+    }
   }
 
 

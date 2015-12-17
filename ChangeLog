@@ -1,3 +1,10 @@
+2015-12-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add PDF::print() protection against being unable to read the PDF
+	set index file, so there isn't a crash for the trivial reason of
+	on-screen printout formatting when the data path is restricted
+	with trailing ::.
+
 2015-12-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fixes to the lhapdf script. Thanks again to Dmitry Kalinkin for
