@@ -327,7 +327,7 @@ cdef class PDFSet:
         """Return a random value from Hessian vals and Gaussian random numbers."""
         return self._ptr.randomValueFromHessian(vals, randoms, symmetrise)
 
-    def checkPdfType(self, pdftypes):
+    def _checkPdfType(self, pdftypes):
         """Check that the PdfType of each member matches the ErrorType of the set."""
         try:
             self._ptr._checkPdfType(pdftypes)
