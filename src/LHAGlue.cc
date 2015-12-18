@@ -165,8 +165,8 @@ extern "C" {
 
   /// LHAPDF library version
   void lhapdf_getversion_(char* s, size_t len) {
-    cstr_to_fstr(LHAPDF_VERSION, s, len);
     // strncpy(s, LHAPDF_VERSION, len);
+    cstr_to_fstr(LHAPDF_VERSION, s, len);
   }
 
   /// List of available PDF sets, returned as a space-separated string
@@ -176,7 +176,8 @@ extern "C" {
       if (!liststr.empty()) liststr += " ";
       liststr += setname;
     }
-    strncpy(s, liststr.c_str(), len);
+    // strncpy(s, liststr.c_str(), len);
+    cstr_to_fstr(liststr.c_str(), s, len);
   }
 
 
@@ -189,8 +190,8 @@ extern "C" {
 
   /// LHAPDF library version
   void getlhapdfversion_(char* s, size_t len) {
-    /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
-    strncpy(s, LHAPDF_VERSION, len);
+    // strncpy(s, LHAPDF_VERSION, len);
+    cstr_to_fstr(LHAPDF_VERSION, s, len);
   }
 
 
@@ -232,7 +233,8 @@ extern "C" {
       if (!pathstr.empty()) pathstr += ":";
       pathstr += path;
     }
-    strncpy(s, pathstr.c_str(), len);
+    // strncpy(s, pathstr.c_str(), len);
+    cstr_to_fstr(pathstr.c_str(), s, len);
   }
 
 

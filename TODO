@@ -34,8 +34,6 @@ VERSION 6.1.7
 
    To print pdfsets.index + cat .info for already installed PDFs.
 
-- **Fix string termination for Fortran in getdatapath_ (AB -> A Pukhov)**
-
 - **Provide a single-string-arg version of lookupPDF**
 
    Needs the signature of the function(s) for PDF string decoding to be final
