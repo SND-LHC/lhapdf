@@ -181,7 +181,7 @@ HepForge login account; replace `USER` with your actual HF user name.)
 
 See the following pages:
 
-- Code browser: https://lhapdf.hepforge.org/trac/browser
+- Code browser: https://lhapdf.hepforge.org/hg/lhapdf/file/
 - @ref todolist
 - @ref todo
 - @ref migration
