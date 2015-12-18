@@ -1,5 +1,7 @@
 2015-12-18  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 6.1.6 release!
+
 	* Add a cstr_to_fstr function to LHAGlue.cc, for improved C++ to
 	Fortran string conversion (handling length limits, padding rather
 	than zero-termination, etc.)
