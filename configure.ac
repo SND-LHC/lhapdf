@@ -39,7 +39,10 @@ AC_LANG(C++)
 AC_CONFIG_SRCDIR([src/GridPDF.cc])
 AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Version.h])
 
-## Checks for programs
+## Set default C++ optimisation level to -O3 and drop the -g debug flag
+if test -z $CXXFLAGS; then
+    CXXFLAGS='-O3'
+fi
 AC_PROG_CXX
 
 ## This block can go once we decide to have C++11 always on
@@ -63,17 +66,6 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
 
-
-dnl autotools default is -g -O2 : --enable-debug doesn't work (anymore)
-dnl ## Enable debugging symbols and assert checking
-dnl AC_ARG_ENABLE([debug],
-dnl   [AC_HELP_STRING(--enable-debug, [build with debugging symbols (default=no)])],
-dnl   [enable_debug=yes], [enable_debug=no])
-dnl if test x$enable_debug == xyes; then
-dnl   AM_CXXFLAGS="$AM_CXXFLAGS -g"
-dnl #else
-dnl #  AM_CPPFLAGS="$AM_CPPFLAGS -DNDEBUG"
-dnl fi
 
 ## Enable LHAGLUE compatibility fns for Fortran and the old C++ interface
 AC_ARG_ENABLE([lhaglue],

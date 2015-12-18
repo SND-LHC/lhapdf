@@ -22,12 +22,13 @@ UNVERSIONED
    GRVPI0, GRVPI1: need --resample, correct PID, and alpha_s override.
    List in separate dox table?
 
+- **nCTEQ15 PDFs**
+
+- **PDF4LHC15 low-Q updates and Nf=4**
 
 
 VERSION 6.1.6
 -------------
-
-- **Use -O3 optimisation by default**
 
 - **Ensure GCC 4.9 and 5.x compatibility**
 
