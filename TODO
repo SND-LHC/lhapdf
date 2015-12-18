@@ -17,11 +17,6 @@ UNVERSIONED
 
    Same procedure as for ATLAS and HERA 1.5. Prod Voica for an update.
 
-- **Pion PDF(s)**
-
-   GRVPI0, GRVPI1: need --resample, correct PID, and alpha_s override.
-   List in separate dox table?
-
 - **nCTEQ15 PDFs**
 
 - **PDF4LHC15 low-Q updates and Nf=4**
