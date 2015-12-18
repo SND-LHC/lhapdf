@@ -133,6 +133,18 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   /// The currently active set
   int CURRENTSET = 0;
 
+
+  /// Useful C-string -> Fortran-string converter
+  // Credit: https://stackoverflow.com/questions/10163485/passing-char-arrays-from-c-to-fortran
+  void cstr_to_fstr(const char* cstring, char* fstring, std::size_t fstring_len) {
+    std::size_t inlen = std::strlen(cstring);
+    std::size_t cpylen = std::min(inlen, fstring_len);
+    // TODO: truncation error or warning
+    //if (inlen > fstring_len) FOOOOO();
+    std::copy(cstring, cstring+cpylen, fstring);
+    std::fill(fstring+cpylen, fstring+fstring_len, ' ');
+  }
+
 }
 
 
@@ -153,7 +165,8 @@ extern "C" {
 
   /// LHAPDF library version
   void lhapdf_getversion_(char* s, size_t len) {
-    strncpy(s, LHAPDF_VERSION, len);
+    cstr_to_fstr(LHAPDF_VERSION, s, len);
+    // strncpy(s, LHAPDF_VERSION, len);
   }
 
   /// List of available PDF sets, returned as a space-separated string
@@ -188,6 +201,11 @@ extern "C" {
   /// Set LHAPDF parameters -- does nothing in LHAPDF6!
   void setlhaparm_(const char* par, int parlength) {
     /// @todo Can any Fortran LHAPDF params be usefully mapped?
+  }
+  /// Get LHAPDF parameters -- does nothing in LHAPDF6!
+  void getlhaparm_(int dummy, char* par, int parlength) {
+    /// @todo Can any Fortran LHAPDF params be usefully mapped?
+    cstr_to_fstr("", par, parlength);
   }
 
 

@@ -27,22 +27,14 @@ UNVERSIONED
 - **PDF4LHC15 low-Q updates and Nf=4**
 
 
-VERSION 6.1.6
+VERSION 6.1.7
 -------------
-
-- **Ensure GCC 4.9 and 5.x compatibility**
-
-- **Python3 support**
-
-- **Disable/remove CompositePDF machinery from 6.1 branch**
 
 - **Add an lhapdf show command**
 
    To print pdfsets.index + cat .info for already installed PDFs.
 
 - **Fix string termination for Fortran in getdatapath_ (AB -> A Pukhov)**
-
-- **LHAPDF_DATA_PATH non-fallback with trailing ::**
 
 - **Provide a single-string-arg version of lookupPDF**
 
