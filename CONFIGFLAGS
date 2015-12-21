@@ -342,13 +342,41 @@ OPTIONAL
 The member ID in this PDF set of the first member of an error set. Usually 1.
 
 
-MZ, MUp, MDown, MStrange, MCharm, MBottom, MTop
+MZ, MDown, MUp, MStrange, MCharm, MBottom, MTop
 -----------------------------------------------
 OPTIONAL
 (float)
 
 Masses of quarks and the Z0 boson in this PDF set's evolution. Default values
 are set in the global LHAPDF config.
+
+
+ThresholdDown, ThresholdUp, ThresholdStrange, ThresholdCharm, ThresholdBottom, ThresholdTop
+-------------------------------------------------------------------------------------------
+OPTIONAL
+(float)
+
+Flavour activation thresholds for the quarks in this PDF set's evolution.
+The masses (MDown, MUp, etc.) are used as default values if these are not set.
+
+
+AlphaS_MDown, AlphaS_MUp, AlphaS_MStrange, AlphaS_MCharm, AlphaS_MBottom, AlphaS_MTop
+-------------------------------------------------------------------------------------
+OPTIONAL
+(float)
+
+Masses of quarks used in alpha_s evolution for this PDF. The raw PDF MDown,
+MUp, etc. are used by default.
+
+
+AlphaS_ThresholdDown, AlphaS_ThresholdUp, AlphaS_ThresholdStrange, AlphaS_ThresholdCharm, AlphaS_ThresholdBottom, AlphaS_ThresholdTop
+-------------------------------------------------------------------------------------------------------------------------------------
+OPTIONAL
+(float)
+
+Flavour activation thresholds for the quarks in alpha_s evolution for this PDF.
+The raw PDF ThresholdDown, ThresholdUp, etc. are used by default, with fallback
+to AlphaS_Threshold* and AlphaS_M* values.
 
 
 MinLHAPDFVersion
