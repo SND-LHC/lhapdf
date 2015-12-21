@@ -43,7 +43,7 @@ namespace LHAPDF {
     const unsigned int aid = std::abs(id);
     if (aid == 0 || aid > 6) return -1;
     const static string QNAMES[] = {"Down", "Up", "Strange", "Charm", "Bottom", "Top"}; ///< @todo Centralise?
-    const size_t qid = std::abs(aid - 1);
+    const size_t qid = aid - 1;
     const string qname = QNAMES[qid];
     return info().get_entry_as<double>("M" + qname, -1);
   }
@@ -53,7 +53,7 @@ namespace LHAPDF {
     const unsigned int aid = std::abs(id);
     if (aid == 0 || aid > 6) return -1;
     const static string QNAMES[] = {"Down", "Up", "Strange", "Charm", "Bottom", "Top"}; ///< @todo Centralise?
-    const size_t qid = std::abs(aid - 1);
+    const size_t qid = aid - 1;
     const string qname = QNAMES[qid];
     return info().get_entry_as<double>("Threshold" + qname, quarkMass(id));
   }
