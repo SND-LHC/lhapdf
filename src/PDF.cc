@@ -39,4 +39,24 @@ namespace LHAPDF {
   }
 
 
+  double PDF::quarkMass(int id) const {
+    const unsigned int aid = std::abs(id);
+    if (aid == 0 || aid > 6) return -1;
+    const static string QNAMES[] = {"Down", "Up", "Strange", "Charm", "Bottom", "Top"}; ///< @todo Centralise?
+    const size_t qid = std::abs(aid - 1);
+    const string qname = QNAMES[qid];
+    return info().get_entry_as<double>("M" + qname, -1);
+  }
+
+
+  double PDF::quarkThreshold(int id) const {
+    const unsigned int aid = std::abs(id);
+    if (aid == 0 || aid > 6) return -1;
+    const static string QNAMES[] = {"Down", "Up", "Strange", "Charm", "Bottom", "Top"}; ///< @todo Centralise?
+    const size_t qid = std::abs(aid - 1);
+    const string qname = QNAMES[qid];
+    return info().get_entry_as<double>("Threshold" + qname, quarkMass(id));
+  }
+
+
 }

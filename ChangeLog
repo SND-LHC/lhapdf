@@ -2,6 +2,10 @@
 
 	* Version 6.1.6 release!
 
+	* Add canonical PDF.orderQCD property to Python PDF, to replace PDF.qcdOrder.
+
+	* Add PDF::quarkMass and PDF::quarkThreshold methods to C++ and Python.
+
 	* Fix quark integer ID mapping to Down/Up metadata keys in AlphaS
 	factory routine.
 

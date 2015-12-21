@@ -36,7 +36,9 @@ cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
         int lhapdfID() except +
         string description() except +
         string type() except +
-        int qcdOrder() except +
+        int orderQCD() except +
+        double quarkMass(int) except +
+        double quarkThreshold(int) except +
         void _print "print" () except + # TODO: add the second (verbosity) argument
         PDFSet& set() # TODO: add exception when bug in ref rtn fns is gone
         PDFInfo& info() # TODO: add exception when bug in ref rtn fns is gone

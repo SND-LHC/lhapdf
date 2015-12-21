@@ -49,9 +49,11 @@ cdef class PDF:
         return self._ptr.description()
 
     @property
-    def qcdOrder(self):
+    def orderQCD(self):
         "Max number of loops involved in this PDF's evolution."
-        return self._ptr.qcdOrder()
+        return self._ptr.orderQCD()
+    # Alias
+    qcdOrder = orderQCD
 
     @property
     def xMin(self):
@@ -133,6 +135,14 @@ cdef class PDF:
     def hasFlavor(self, pid):
         "Check if the specified parton ID is contained in this PDF."
         return self._ptr.hasFlavor(pid)
+
+    def quarkMass(self, int id):
+        "Get mass of quark with PID code id"
+        return self._ptr.quarkMass(id)
+
+    def quarkThreshold(self, int id):
+        "Get activation threshold of quark with PID code id"
+        return self._ptr.quarkThreshold(id)
 
     cdef _set(self):
         cdef PDFSet obj = PDFSet.__new__(PDFSet)
