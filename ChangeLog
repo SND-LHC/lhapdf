@@ -1,6 +1,11 @@
-2015-12-18  Andy Buckley  <andy.buckley@cern.ch>
+2015-12-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.1.6 release!
+
+	* Fix quark integer ID mapping to Down/Up metadata keys in AlphaS
+	factory routine.
+
+2015-12-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a cstr_to_fstr function to LHAGlue.cc, for improved C++ to
 	Fortran string conversion (handling length limits, padding rather

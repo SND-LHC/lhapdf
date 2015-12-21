@@ -239,39 +239,39 @@ namespace LHAPDF {
     /// Since you need the heavy quark mass to calculate the decoupling in the ODE solver
     /// when threshold =/= mass, I've implemented this as AlphaS_Threshold* -> Threshold*, AlphaS_M* -> M*
 
-    if (info.has_key("AlphaS_ThresholdUp") && info.has_key("AlphaS_ThresholdDown") && info.has_key("AlphaS_ThresholdStrange")
+    if (info.has_key("AlphaS_ThresholdDown") && info.has_key("AlphaS_ThresholdUp") && info.has_key("AlphaS_ThresholdStrange")
       && info.has_key("AlphaS_ThresholdCharm") && info.has_key("AlphaS_ThresholdBottom") && info.has_key("AlphaS_ThresholdTop")) {
-      as->setQuarkThreshold(1, info.get_entry_as<double>("AlphaS_ThresholdUp"));
-      as->setQuarkThreshold(2, info.get_entry_as<double>("AlphaS_ThresholdDown"));
+      as->setQuarkThreshold(1, info.get_entry_as<double>("AlphaS_ThresholdDown"));
+      as->setQuarkThreshold(2, info.get_entry_as<double>("AlphaS_ThresholdUp"));
       as->setQuarkThreshold(3, info.get_entry_as<double>("AlphaS_ThresholdStrange"));
       as->setQuarkThreshold(4, info.get_entry_as<double>("AlphaS_ThresholdCharm"));
       as->setQuarkThreshold(5, info.get_entry_as<double>("AlphaS_ThresholdBottom"));
       as->setQuarkThreshold(6, info.get_entry_as<double>("AlphaS_ThresholdTop"));
     }
-    else if (info.has_key("ThresholdUp") && info.has_key("ThresholdDown") && info.has_key("ThresholdStrange")
+    else if (info.has_key("ThresholdDown") && info.has_key("ThresholdUp") && info.has_key("ThresholdStrange")
       && info.has_key("ThresholdCharm") && info.has_key("ThresholdBottom") && info.has_key("ThresholdTop")) {
-      as->setQuarkThreshold(1, info.get_entry_as<double>("ThresholdUp"));
-      as->setQuarkThreshold(2, info.get_entry_as<double>("ThresholdDown"));
+      as->setQuarkThreshold(1, info.get_entry_as<double>("ThresholdDown"));
+      as->setQuarkThreshold(2, info.get_entry_as<double>("ThresholdUp"));
       as->setQuarkThreshold(3, info.get_entry_as<double>("ThresholdStrange"));
       as->setQuarkThreshold(4, info.get_entry_as<double>("ThresholdCharm"));
       as->setQuarkThreshold(5, info.get_entry_as<double>("ThresholdBottom"));
       as->setQuarkThreshold(6, info.get_entry_as<double>("ThresholdTop"));
     }
 
-    if (info.has_key("AlphaS_MUp") && info.has_key("AlphaS_MDown") && info.has_key("AlphaS_MStrange")
+    if (info.has_key("AlphaS_MDown") && info.has_key("AlphaS_MUp") && info.has_key("AlphaS_MStrange")
       && info.has_key("AlphaS_MCharm") && info.has_key("AlphaS_MBottom") && info.has_key("AlphaS_MTop")) {
-      as->setQuarkMass(1, info.get_entry_as<double>("AlphaS_MUp"));
-      as->setQuarkMass(2, info.get_entry_as<double>("AlphaS_MDown"));
+      as->setQuarkMass(1, info.get_entry_as<double>("AlphaS_MDown"));
+      as->setQuarkMass(2, info.get_entry_as<double>("AlphaS_MUp"));
       as->setQuarkMass(3, info.get_entry_as<double>("AlphaS_MStrange"));
       as->setQuarkMass(4, info.get_entry_as<double>("AlphaS_MCharm"));
       as->setQuarkMass(5, info.get_entry_as<double>("AlphaS_MBottom"));
       as->setQuarkMass(6, info.get_entry_as<double>("AlphaS_MTop"));
     }
     // This falls back to lhapdf.conf so should in theory never throw the MetadataError
-    else if (info.has_key("MUp") && info.has_key("MDown") && info.has_key("MStrange")
+    else if (info.has_key("MDown") && info.has_key("MUp") && info.has_key("MStrange")
       && info.has_key("MCharm") && info.has_key("MBottom") && info.has_key("MTop")) {
-      as->setQuarkMass(1, info.get_entry_as<double>("MUp"));
-      as->setQuarkMass(2, info.get_entry_as<double>("MDown"));
+      as->setQuarkMass(1, info.get_entry_as<double>("MDown"));
+      as->setQuarkMass(2, info.get_entry_as<double>("MUp"));
       as->setQuarkMass(3, info.get_entry_as<double>("MStrange"));
       as->setQuarkMass(4, info.get_entry_as<double>("MCharm"));
       as->setQuarkMass(5, info.get_entry_as<double>("MBottom"));
