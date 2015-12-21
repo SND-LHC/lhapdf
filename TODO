@@ -19,17 +19,12 @@ UNVERSIONED
 
 - **nCTEQ15 PDFs**
 
-- **PDF4LHC15 low-Q updates and Nf=4**
+- **PDF4LHC15 Nf=4**
 
 
 
 VERSION 6.1.7
 -------------
-
-- **Add an lhapdf show command**
-
-   To print pdfsets.index + cat .info for already installed PDFs.
-
 
 - **Provide a single-string-arg version of lookupPDF**
 
@@ -37,21 +32,25 @@ VERSION 6.1.7
    before exposing in the API; it's currently in an anon namespace in Factories.cc.
 
 
-- **Provide optional (AlphaS_)Threshold* keys, hooked into AlphaS factory**
-
-   KARL! Prefer AlphaS_* keys in AlphaS system, fall back to Threshold*
-   versions, then fall back to (AlphaS_)M*. Do we also need to provide a
-   getThreshold(i) function somewhere cf. LHAGlue? Check that the LHAGlue
-   getthresholdm_ etc. are working.
+- **Check LHAGlue getthresholdm_ etc.**
 
 
-- **Remove #pragma once -- not fully portable**
+- **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Berton et al)**
+
+
+- **Remove #pragma once -- it's not fully portable**
+
+
+- **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
 
 
 - **.LHgrid etc. old-name-tolerance control -- TranslateLHA5Names flag?**
 
 
-- **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
+- **Add an lhapdf show command**
+
+   To print pdfsets.index + cat .info for already installed PDFs.
+
 
 
 
