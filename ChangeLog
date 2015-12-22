@@ -1,3 +1,7 @@
+2015-12-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 6.1.6 release!
+
 2015-12-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add canonical PDF.orderQCD property to Python PDF, to replace PDF.qcdOrder.
