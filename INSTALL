@@ -9,6 +9,27 @@
 The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
 
 
+@section quickstart Quick start instruction
+
+If you have a C++ compiler and the Boost C++ library+headers installed in system
+paths, building LHAPDF should be straightforward:
+
+    wget http://www.hepforge.org/archive/lhapdf/LHAPDF-6.X.Y.tar.gz
+    tar xf LHAPDF-6.X.Y.tar.gz
+    cd LHAPDF-6.X.Y
+    ./configure --prefix=/path/for/installation
+    make
+    make install
+
+You will then need to install PDF data files, most easily using the "lhapdf"
+manager script but also possible by manual download. See the LHAPDF website for
+details.
+
+On systems where you want to use non-system compilers and libraries, the
+configure command will need to be a bit more complicated: see the following for
+more information.
+
+
 @section compilers Build tools
 
 LHAPDF6 just needs your system to have a copy of Make and a C++ compiler: there
