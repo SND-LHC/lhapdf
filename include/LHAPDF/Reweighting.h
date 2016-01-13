@@ -8,6 +8,7 @@
 #define LHAPDF_Reweighting_H
 
 #include "LHAPDF/PDF.h"
+#include "LHAPDF/PDFSet.h"
 
 namespace LHAPDF {
 
