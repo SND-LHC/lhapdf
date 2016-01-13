@@ -344,7 +344,7 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>80120</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/METAv10LHCH.tar.gz">METAv10LHCH</a></td><td>13</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>80200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/METAv10LHCHfull.tar.gz">METAv10LHCHfull</a></td><td>101</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>81000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NNLO08VF.tar.gz">JR14NNLO08VF</a></td><td>39</td><td>1</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>81050</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NNLO20VF.tar.gz">JR14NNLO20VF</a></td><td>39</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>81050</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NNLO20VF.tar.gz">JR14NNLO20VF</a></td><td>39</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>81100</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NNLO08FF.tar.gz">JR14NNLO08FF</a></td><td>39</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>81150</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NNLO20FF.tar.gz">JR14NNLO20FF</a></td><td>39</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>81200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NLO08VF.tar.gz">JR14NLO08VF</a></td><td>39</td><td>1</td><td></td></tr>
