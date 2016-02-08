@@ -204,7 +204,7 @@ def get_reference_list(filepath):
     database = []
     try:
         import csv
-        csv_file = open(filepath, 'rb')
+        csv_file = open(filepath, 'r')
         logging.debug('Reading %s' % filepath)
         reader = csv.reader(csv_file, delimiter=' ', skipinitialspace=True, strict=True)
         for row in reader:
@@ -246,7 +246,7 @@ def get_installed_list(path):
         metadata_filepath = os.path.join(path, subdir, subdir + os.extsep + 'info')
         if os.path.isfile(metadata_filepath):
             try:
-                metadata_file = open(metadata_filepath, 'rb')
+                metadata_file = open(metadata_filepath, 'r')
                 logging.debug('Reading %s' % metadata_filepath)
 
                 # Attempt to find PDF version from YAML file
