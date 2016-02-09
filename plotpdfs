@@ -4,6 +4,11 @@
 Usage: %prog <PDF1> [<PDF2> [...]]
 
 Plot PDF and alpha_s values for the named LHAPDF6 sets.
+
+TODO:
+ * Allow user specification of the various PDF/parton line colours and styles
+ * Allow user specification of the plot types to be shown
+ * Allow user specification of the discrete xs, Qs, and PIDs lists
 """
 
 import optparse, os, sys
@@ -56,10 +61,11 @@ pdfs = { pname : lhapdf.mkPDF(pname) for pname in args }
 
 
 ## Make PDF xf vs. x & Q plots for each parton flavour, and a single alpha_s vs. Q plot
-
-## alpha_s vs Q plot
 fig = plt.figure()
 ax = fig.add_subplot(111)
+
+## alpha_s vs Q plot
+plt.cla()
 for i, pname in enumerate(args):
     color = COLORS[i % len(COLORS)]
     as_vals = [pdfs[pname].alphasQ(q) for q in qs]
@@ -76,8 +82,7 @@ fig.savefig(fname)
 
 ## xf vs. x plots (per PID)
 for pid in pids:
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    plt.cla()
     ax.text(0.95, 0.5, "PID={:d}".format(pid), transform=ax.transAxes, ha="right", va="top")
     ax.set_xlabel("$x$")
     ax.set_ylabel("$xf(x,Q)$")
@@ -101,8 +106,7 @@ for pid in pids:
 
 ## xf vs. x plots (per Q)
 for j, q in enumerate(qs_few):
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    plt.cla()
     ax.text(0.95, 0.5, "$Q={}$".format(tex_float(q)), transform=ax.transAxes, ha="right", va="top")
     ax.set_xlabel("$x$")
     ax.set_ylabel("$xf(x,Q)$")
@@ -126,8 +130,7 @@ for j, q in enumerate(qs_few):
 
 ## xf vs. Q plots
 for pid in pids:
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    plt.cla()
     ax.text(0.05, 0.95, "PID={:d}".format(pid), transform=ax.transAxes, ha="left", va="top")
     ax.set_xlabel("$Q$")
     ax.set_ylabel("$xf(x,Q)$")
@@ -148,3 +151,5 @@ for pid in pids:
     if opts.VERBOSITY > 0:
         print "Writing plot file", fname
     fig.savefig(fname)
+
+plt.close(fig)
