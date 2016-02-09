@@ -1,5 +1,7 @@
 2016-02-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Improvements to plotpdfs script.
+
 	* Move scripts for installation into a bin directory.
 
 2016-02-08  Andy Buckley  <andy.buckley@cern.ch>
