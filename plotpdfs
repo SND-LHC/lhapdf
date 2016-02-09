@@ -17,6 +17,9 @@ op = optparse.OptionParser(usage=__doc__)
 op.add_option("--xmin", dest="XMIN", metavar="NUM", help="minimum x value [default: %default]", type=float, default=1e-10)
 op.add_option("--qmax", dest="QMAX", metavar="NUM", help="maximum Q value in GeV [default: %default]", type=float, default=1e4)
 op.add_option("-f", "--format", dest="FORMAT", metavar="F", help="plot file format, i.e. file extension pdf/png/... [default: %default]", default="pdf")
+op.add_option("--qs", dest="QS", metavar="Q1,Q2,...", help="discrete Q values to use on plots vs. x [default: %default]", default="10,100,1000,10000")
+op.add_option("--xs", dest="XS", metavar="X1,X2,...", help="discrete x values to use on plots vs. Q [default: %default]", default="1e-5,1e-3,1e-2,1e-1")
+op.add_option("--pids", dest="PIDS", metavar="ID1,ID2,...", help="PID values to use on PDF plots [default: %default]", default="0,1,2,3,4,5,-1,-2,-3,-4,-5")
 op.add_option("-q", "--quiet", dest="VERBOSITY", action="store_const", const=0, help="suppress non-essential messages", default=1)
 op.add_option("-v", "--verbose", dest="VERBOSITY", action="store_const", const=2, help="output debug messages", default=1)
 opts, args = op.parse_args()
@@ -51,9 +54,10 @@ from math import log10
 import numpy as np
 xs = np.logspace(log10(opts.XMIN), 0, 100)
 qs = np.logspace(0, log10(opts.QMAX), 100)
-xs_few = [1e-5, 1e-3, 1e-2, 1e-1]
-qs_few = [10, 100, 1000, 10000]
-pids = [0] + range(1,5+1) + [-i for i in range(1,5+1)]
+xs_few = [float(x) for x in opts.XS.split(",")] #[1e-5, 1e-3, 1e-2, 1e-1]
+qs_few = [float(q) for q in opts.QS.split(",")] #[10, 100, 1000, 10000]
+pids = [int(i) for i in opts.PIDS.split(",")]   #[0] + range(1,5+1) + [-i for i in range(1,5+1)]
+print xs_few, qs_few, pids
 
 ## Load PDFs for plotting, indexed by name
 import lhapdf
