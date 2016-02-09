@@ -47,7 +47,7 @@ xs = np.logspace(log10(opts.XMIN), 0, 100)
 qs = np.logspace(0, log10(opts.QMAX), 100)
 xs_few = [1e-5, 1e-3, 1e-2, 1e-1]
 qs_few = [10, 100, 1000, 10000]
-
+pids = [0] + range(1,5+1) + [-i for i in range(1,5+1)]
 
 ## Load PDFs for plotting, indexed by name
 import lhapdf
@@ -75,10 +75,10 @@ if opts.VERBOSITY > 0:
 fig.savefig(fname)
 
 ## xf vs. x plots (per PID)
-for pid in xrange(0, 5+1):
+for pid in pids:
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.text(0.05, 0.95, "PID={:d}".format(pid), transform=ax.transAxes, ha="left", va="top")
+    ax.text(0.95, 0.5, "PID={:d}".format(pid), transform=ax.transAxes, ha="right", va="top")
     ax.set_xlabel("$x$")
     ax.set_ylabel("$xf(x,Q)$")
     for i, pname in enumerate(args):
@@ -103,10 +103,10 @@ for pid in xrange(0, 5+1):
 for j, q in enumerate(qs_few):
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.text(0.05, 0.95, "$Q={}$".format(tex_float(q)), transform=ax.transAxes, ha="left", va="top")
+    ax.text(0.95, 0.5, "$Q={}$".format(tex_float(q)), transform=ax.transAxes, ha="right", va="top")
     ax.set_xlabel("$x$")
     ax.set_ylabel("$xf(x,Q)$")
-    for pid in xrange(0, 5+1):
+    for pid in pids:
         for i, pname in enumerate(args):
             color = COLORS[pid % len(COLORS)]
             style = STYLES[i % len(STYLES)]
@@ -125,7 +125,7 @@ for j, q in enumerate(qs_few):
         fig.savefig(fname)
 
 ## xf vs. Q plots
-for pid in xrange(-5, 5+1):
+for pid in pids:
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.text(0.05, 0.95, "PID={:d}".format(pid), transform=ax.transAxes, ha="left", va="top")
