@@ -20,10 +20,13 @@ op.add_option("-f", "--format", dest="FORMAT", metavar="F", help="plot file form
 op.add_option("--qs", dest="QS", metavar="Q1,Q2,...", help="discrete Q values to use on plots vs. x [default: %default]", default="10,100,1000,10000")
 op.add_option("--xs", dest="XS", metavar="X1,X2,...", help="discrete x values to use on plots vs. Q [default: %default]", default="1e-5,1e-3,1e-2,1e-1")
 op.add_option("--pids", dest="PIDS", metavar="ID1,ID2,...", help="PID values to use on PDF plots [default: %default]", default="0,1,2,3,4,5,-1,-2,-3,-4,-5")
+op.add_option("--plots", dest="PLOTS", metavar="PLOT1,PLOT2,...", help="plot types to show, default value lists all types [default: %default]",
+              default="alphas,xf_x/pid,xf_x/q,xf_q/pid,xf_q/x")
 op.add_option("-q", "--quiet", dest="VERBOSITY", action="store_const", const=0, help="suppress non-essential messages", default=1)
 op.add_option("-v", "--verbose", dest="VERBOSITY", action="store_const", const=2, help="output debug messages", default=1)
 opts, args = op.parse_args()
 
+opts.PLOTS = opts.PLOTS.upper().split(",")
 if not args:
     print __doc__
     sys.exit(1)
@@ -71,116 +74,121 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
 ## alpha_s vs Q plot
-plt.cla()
-for i, pname in enumerate(args):
-    color = COLORS[i % len(COLORS)]
-    as_vals = [pdfs[pname].alphasQ(q) for q in qs]
-    ax.plot(qs, as_vals, label=pname, color=color, ls="-")
-ax.set_xlabel("$Q$")
-ax.set_ylabel(r"$\alpha_s(Q)$")
-ax.set_ylim(bottom=0)
-ax.set_xscale("log")
-l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
-fname = "alpha_s.{}".format(opts.FORMAT)
-if opts.VERBOSITY > 0:
-    print "Writing plot file", fname
-fig.savefig(fname)
+if "ALPHAS" in opts.PLOTS:
+    plt.cla()
+    for i, pname in enumerate(args):
+        color = COLORS[i % len(COLORS)]
+        as_vals = [pdfs[pname].alphasQ(q) for q in qs]
+        ax.plot(qs, as_vals, label=pname, color=color, ls="-")
+    ax.set_xlabel("$Q$")
+    ax.set_ylabel(r"$\alpha_s(Q)$")
+    ax.set_ylim(bottom=0)
+    ax.set_xscale("log")
+    l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
+    fname = "alpha_s.{}".format(opts.FORMAT)
+    if opts.VERBOSITY > 0:
+        print "Writing plot file", fname
+    fig.savefig(fname)
 
 ## xf vs. x plots (per PID)
-for pid in pids:
-    plt.cla()
-    ax.text(0.95, 0.5, "PID={:d}".format(pid), transform=ax.transAxes, ha="right", va="top")
-    ax.set_xlabel("$x$")
-    ax.set_ylabel("$xf(x,Q)$")
-    for i, pname in enumerate(args):
-        for j, q in enumerate(qs_few):
-            color = COLORS[i % len(COLORS)]
-            style = STYLES[j % len(STYLES)]
-            xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
-            plt.plot(xs, xf_vals, label="{}, $Q={}$ ID={:d}".format(pname, tex_float(q), pid), color=color, ls=style, lw=1.0)
-            # if pid != 0:
-            #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-            #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-    ax.set_ylim(bottom=0)
-    ax.set_xscale("log")
-    ax.set_yscale("symlog")
-    l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
-    fname = "pdf_pid{:d}_x.{}".format(pid, opts.FORMAT)
-    if opts.VERBOSITY > 0:
-        print "Writing plot file", fname
-    fig.savefig(fname)
+if "XF_X/PID" in opts.PLOTS:
+    for pid in pids:
+        plt.cla()
+        ax.text(0.95, 0.5, "PID={:d}".format(pid), transform=ax.transAxes, ha="right", va="top")
+        ax.set_xlabel("$x$")
+        ax.set_ylabel("$xf(x,Q)$")
+        for i, pname in enumerate(args):
+            for j, q in enumerate(qs_few):
+                color = COLORS[i % len(COLORS)]
+                style = STYLES[j % len(STYLES)]
+                xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
+                plt.plot(xs, xf_vals, label="{}, $Q={}$ ID={:d}".format(pname, tex_float(q), pid), color=color, ls=style, lw=1.0)
+                # if pid != 0:
+                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
+                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
+        ax.set_ylim(bottom=0)
+        ax.set_xscale("log")
+        ax.set_yscale("symlog")
+        l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
+        fname = "pdf_pid{:d}_x.{}".format(pid, opts.FORMAT)
+        if opts.VERBOSITY > 0:
+            print "Writing plot file", fname
+        fig.savefig(fname)
 
 ## xf vs. x plots (per Q)
-for j, q in enumerate(qs_few):
-    plt.cla()
-    ax.text(0.95, 0.5, "$Q={}$".format(tex_float(q)), transform=ax.transAxes, ha="right", va="top")
-    ax.set_xlabel("$x$")
-    ax.set_ylabel("$xf(x,Q)$")
-    for pid in pids:
-        for i, pname in enumerate(args):
-            color = COLORS[pid % len(COLORS)]
-            style = STYLES[i % len(STYLES)]
-            xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
-            plt.plot(xs, xf_vals, label="{}, ID={:d}".format(pname, pid), color=color, ls=style, lw=1.0)
-            # if pid != 0:
-            #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-            #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-    ax.set_ylim(bottom=0)
-    ax.set_xscale("log")
-    ax.set_yscale("symlog")
-    l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
-    fname = "pdf_q{:d}_x.{}".format(int(q), opts.FORMAT)
-    if opts.VERBOSITY > 0:
-        print "Writing plot file", fname
-    fig.savefig(fname)
+if "XF_X/Q" in opts.PLOTS:
+    for j, q in enumerate(qs_few):
+        plt.cla()
+        ax.text(0.95, 0.5, "$Q={}$".format(tex_float(q)), transform=ax.transAxes, ha="right", va="top")
+        ax.set_xlabel("$x$")
+        ax.set_ylabel("$xf(x,Q)$")
+        for pid in pids:
+            for i, pname in enumerate(args):
+                color = COLORS[pid % len(COLORS)]
+                style = STYLES[i % len(STYLES)]
+                xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
+                plt.plot(xs, xf_vals, label="{}, ID={:d}".format(pname, pid), color=color, ls=style, lw=1.0)
+                # if pid != 0:
+                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
+                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
+        ax.set_ylim(bottom=0)
+        ax.set_xscale("log")
+        ax.set_yscale("symlog")
+        l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
+        fname = "pdf_q{:d}_x.{}".format(int(q), opts.FORMAT)
+        if opts.VERBOSITY > 0:
+            print "Writing plot file", fname
+        fig.savefig(fname)
 
 ## xf vs. Q plots (per PID)
-for pid in pids:
-    plt.cla()
-    ax.text(0.05, 0.7, "PID={:d}".format(pid), transform=ax.transAxes, ha="left", va="center")
-    ax.set_xlabel("$Q$")
-    ax.set_ylabel("$xf(x,Q)$")
-    for i, pname in enumerate(args):
-        for j, x in enumerate(xs_few):
-            color = COLORS[i % len(COLORS)]
-            style = STYLES[j % len(STYLES)]
-            xf_vals = [pdfs[pname].xfxQ(pid, x,q) for q in qs]
-            plt.plot(qs, xf_vals, label="{}, $x={}$ ID={:d}".format(pname, tex_float(x), pid), color=color, ls=style, lw=1.0)
-            # if pid != 0:
-            #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-            #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-    ax.set_ylim(bottom=0)
-    ax.set_xscale("log")
-    ax.set_yscale("symlog")
-    l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
-    fname = "pdf_pid{:d}_q.{}".format(pid, opts.FORMAT)
-    if opts.VERBOSITY > 0:
-        print "Writing plot file", fname
-    fig.savefig(fname)
+if "XF_Q/PID" in opts.PLOTS:
+    for pid in pids:
+        plt.cla()
+        ax.text(0.05, 0.7, "PID={:d}".format(pid), transform=ax.transAxes, ha="left", va="center")
+        ax.set_xlabel("$Q$")
+        ax.set_ylabel("$xf(x,Q)$")
+        for i, pname in enumerate(args):
+            for j, x in enumerate(xs_few):
+                color = COLORS[i % len(COLORS)]
+                style = STYLES[j % len(STYLES)]
+                xf_vals = [pdfs[pname].xfxQ(pid, x,q) for q in qs]
+                plt.plot(qs, xf_vals, label="{}, $x={}$ ID={:d}".format(pname, tex_float(x), pid), color=color, ls=style, lw=1.0)
+                # if pid != 0:
+                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
+                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
+        ax.set_ylim(bottom=0)
+        ax.set_xscale("log")
+        ax.set_yscale("symlog")
+        l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
+        fname = "pdf_pid{:d}_q.{}".format(pid, opts.FORMAT)
+        if opts.VERBOSITY > 0:
+            print "Writing plot file", fname
+        fig.savefig(fname)
 
 ## xf vs. Q plots (per x)
-for j, x in enumerate(xs_few):
-    plt.cla()
-    ax.text(0.95, 0.5, "$x={}$".format(tex_float(x)), transform=ax.transAxes, ha="right", va="bottom")
-    ax.set_xlabel("$Q$")
-    ax.set_ylabel("$xf(x,Q)$")
-    for pid in pids:
-        for i, pname in enumerate(args):
-            color = COLORS[pid % len(COLORS)]
-            style = STYLES[i % len(STYLES)]
-            xf_vals = [pdfs[pname].xfxQ(pid, x,q) for q in qs]
-            plt.plot(qs, xf_vals, label="{}, ID={:d}".format(pname, pid), color=color, ls=style, lw=1.0)
-            # if pid != 0:
-            #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-            #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-    ax.set_ylim(bottom=0)
-    ax.set_xscale("log")
-    ax.set_yscale("symlog")
-    l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
-    fname = "pdf_x{:0.2f}_q.{}".format(x, opts.FORMAT)
-    if opts.VERBOSITY > 0:
-        print "Writing plot file", fname
-    fig.savefig(fname)
+if "XF_Q/X" in opts.PLOTS:
+    for j, x in enumerate(xs_few):
+        plt.cla()
+        ax.text(0.95, 0.5, "$x={}$".format(tex_float(x)), transform=ax.transAxes, ha="right", va="bottom")
+        ax.set_xlabel("$Q$")
+        ax.set_ylabel("$xf(x,Q)$")
+        for pid in pids:
+            for i, pname in enumerate(args):
+                color = COLORS[pid % len(COLORS)]
+                style = STYLES[i % len(STYLES)]
+                xf_vals = [pdfs[pname].xfxQ(pid, x,q) for q in qs]
+                plt.plot(qs, xf_vals, label="{}, ID={:d}".format(pname, pid), color=color, ls=style, lw=1.0)
+                # if pid != 0:
+                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
+                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
+        ax.set_ylim(bottom=0)
+        ax.set_xscale("log")
+        ax.set_yscale("symlog")
+        l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
+        fname = "pdf_x{:0.2f}_q.{}".format(x, opts.FORMAT)
+        if opts.VERBOSITY > 0:
+            print "Writing plot file", fname
+        fig.savefig(fname)
 
 plt.close(fig)
 print

@@ -1,3 +1,8 @@
+2016-02-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add x-grouped xf vs Q plots to plotpdfs, and allow the user to
+	control which plot groups to make.
+
 2016-02-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improvements to plotpdfs script.
