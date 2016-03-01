@@ -70,9 +70,9 @@ namespace LHAPDF {
       sort(sorted.begin()+1, sorted.end()-2*npar);
       // Define central value to be median.
       if (nmem % 2) { // odd nmem => one middle value
-	rtn.central = sorted[nmem/2 + 1];
+        rtn.central = sorted[nmem/2 + 1];
       } else { // even nmem => average of two middle values
-	rtn.central = 0.5*(sorted[nmem/2] + sorted[nmem/2 + 1]);
+        rtn.central = 0.5*(sorted[nmem/2] + sorted[nmem/2 + 1]);
       }
       // Define uncertainties via quantiles with a CL given by reqCL.
       const int upper = round(0.5*(1+reqCL)*nmem); // round to nearest integer
@@ -90,8 +90,8 @@ namespace LHAPDF {
       // Calculate the average and standard deviation using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2.
       double av = 0.0, sd = 0.0;
       for (size_t imem = 1; imem <= nmem; imem++) {
-	av += values[imem];
-	sd += sqr(values[imem]);
+        av += values[imem];
+        sd += sqr(values[imem]);
       }
       av /= nmem; sd /= nmem;
       sd = nmem/(nmem-1.0)*(sd-sqr(av));
@@ -103,7 +103,7 @@ namespace LHAPDF {
 
       double errsymm = 0;
       for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
-	errsymm += sqr(values[ieigen]-values[0]);
+        errsymm += sqr(values[ieigen]-values[0]);
       errsymm = sqrt(errsymm);
       rtn.errplus = rtn.errminus = rtn.errsymm = errsymm;
 
@@ -113,9 +113,9 @@ namespace LHAPDF {
       // using Eqs. (2.1), (2.2) and (2.6) of arXiv:1106.5788v2.
       double errplus = 0, errminus = 0, errsymm = 0;
       for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++) {
-	errplus += sqr(max(max(values[2*ieigen-1]-values[0],values[2*ieigen]-values[0]), 0.0));
-	errminus += sqr(max(max(values[0]-values[2*ieigen-1],values[0]-values[2*ieigen]), 0.0));
-	errsymm += sqr(values[2*ieigen-1]-values[2*ieigen]);
+        errplus += sqr(max(max(values[2*ieigen-1]-values[0],values[2*ieigen]-values[0]), 0.0));
+        errminus += sqr(max(max(values[0]-values[2*ieigen-1],values[0]-values[2*ieigen]), 0.0));
+        errsymm += sqr(values[2*ieigen-1]-values[2*ieigen]);
       }
       rtn.errsymm = 0.5*sqrt(errsymm);
       rtn.errplus = sqrt(errplus);
@@ -137,9 +137,9 @@ namespace LHAPDF {
       const double scale = sqrt(qreqCL/qsetCL);
       rtn.scale = scale;
       if (!alternative) {
-	rtn.errplus *= scale;
-	rtn.errminus *= scale;
-	rtn.errsymm *= scale;
+        rtn.errplus *= scale;
+        rtn.errminus *= scale;
+        rtn.errsymm *= scale;
       }
 
     }
@@ -152,7 +152,7 @@ namespace LHAPDF {
       // All individual parameter variation uncertainties are added in quadrature.
       double err_par = 0;
       for (size_t ipar = 1; ipar <= npar; ipar++) {
-	err_par += sqr(values[nmem+2*ipar-1]-values[nmem+2*ipar]);
+        err_par += sqr(values[nmem+2*ipar-1]-values[nmem+2*ipar]);
       }
       // Calculate total uncertainty from parameter variation with same scaling as for PDF uncertainty.
       rtn.err_par = rtn.scale * 0.5 * sqrt(err_par);
@@ -278,13 +278,13 @@ namespace LHAPDF {
     // Check that PDF members have "PdfType: replica" or "PdfType: error".
     if (startswith(errorType(), "replicas")) {
       for (size_t imem = 1; imem <= nmem; imem++) {
-    	if (pdftypes[imem] != "replica")
-    	  throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: replica\".");
+        if (pdftypes[imem] != "replica")
+          throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: replica\".");
       }
     } else if (startswith(errorType(), "symmhessian") || startswith(errorType(), "hessian")) {
       for (size_t imem = 1; imem <= nmem; imem++) {
-    	if (pdftypes[imem] != "error")
-    	  throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: error\".");
+        if (pdftypes[imem] != "error")
+          throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: error\".");
       }
     } else {
       throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::checkPdfType.");
