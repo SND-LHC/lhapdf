@@ -106,9 +106,10 @@ if "XF_X/PID" in opts.PLOTS:
                 # if pid != 0:
                 #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-        ax.set_ylim(bottom=0)
         ax.set_xscale("log")
-        ax.set_yscale("symlog")
+        #ax.set_ylim(bottom=0)
+        ax.set_ylim(bottom=1e-2)
+        ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_pid{:d}_x.{}".format(pid, opts.FORMAT)
         if opts.VERBOSITY > 0:
@@ -131,9 +132,10 @@ if "XF_X/Q" in opts.PLOTS:
                 # if pid != 0:
                 #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-        ax.set_ylim(bottom=0)
         ax.set_xscale("log")
-        ax.set_yscale("symlog")
+        #ax.set_ylim(bottom=0)
+        ax.set_ylim(bottom=1e-2)
+        ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_q{:d}_x.{}".format(int(q), opts.FORMAT)
         if opts.VERBOSITY > 0:
@@ -156,9 +158,10 @@ if "XF_Q/PID" in opts.PLOTS:
                 # if pid != 0:
                 #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-        ax.set_ylim(bottom=0)
         ax.set_xscale("log")
-        ax.set_yscale("symlog")
+        #ax.set_ylim(bottom=0)
+        ax.set_ylim(bottom=1e-2)
+        ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_pid{:d}_q.{}".format(pid, opts.FORMAT)
         if opts.VERBOSITY > 0:
@@ -181,9 +184,10 @@ if "XF_Q/X" in opts.PLOTS:
                 # if pid != 0:
                 #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
-        ax.set_ylim(bottom=0)
         ax.set_xscale("log")
-        ax.set_yscale("symlog")
+        #ax.set_ylim(bottom=0)
+        ax.set_ylim(bottom=1e-2)
+        ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_x{:0.2f}_q.{}".format(x, opts.FORMAT)
         if opts.VERBOSITY > 0:
