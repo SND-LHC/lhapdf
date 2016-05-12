@@ -14,6 +14,7 @@ TODO:
 import optparse, os, sys
 
 op = optparse.OptionParser(usage=__doc__)
+op.add_option("--xfmin", dest="XFMIN", metavar="NUM", help="minimum xf value [default: %default]", type=float, default=1e-2)
 op.add_option("--xmin", dest="XMIN", metavar="NUM", help="minimum x value [default: %default]", type=float, default=1e-10)
 op.add_option("--qmax", dest="QMAX", metavar="NUM", help="maximum Q value in GeV [default: %default]", type=float, default=1e4)
 op.add_option("-f", "--format", dest="FORMAT", metavar="F", help="plot file format, i.e. file extension pdf/png/... [default: %default]", default="pdf")
@@ -108,7 +109,7 @@ if "XF_X/PID" in opts.PLOTS:
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
-        ax.set_ylim(bottom=1e-2)
+        ax.set_ylim(bottom=opts.XFMIN)
         ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_pid{:d}_x.{}".format(pid, opts.FORMAT)
@@ -134,7 +135,7 @@ if "XF_X/Q" in opts.PLOTS:
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
-        ax.set_ylim(bottom=1e-2)
+        ax.set_ylim(bottom=opts.XFMIN)
         ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_q{:d}_x.{}".format(int(q), opts.FORMAT)
@@ -154,13 +155,14 @@ if "XF_Q/PID" in opts.PLOTS:
                 color = COLORS[i % len(COLORS)]
                 style = STYLES[j % len(STYLES)]
                 xf_vals = [pdfs[pname].xfxQ(pid, x,q) for q in qs]
+                print pname, x, xf_vals
                 plt.plot(qs, xf_vals, label="{}, $x={}$ ID={:d}".format(pname, tex_float(x), pid), color=color, ls=style, lw=1.0)
                 # if pid != 0:
                 #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
-        ax.set_ylim(bottom=1e-2)
+        ax.set_ylim(bottom=opts.XFMIN)
         ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_pid{:d}_q.{}".format(pid, opts.FORMAT)
@@ -186,7 +188,7 @@ if "XF_Q/X" in opts.PLOTS:
                 #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
-        ax.set_ylim(bottom=1e-2)
+        ax.set_ylim(bottom=opts.XFMIN)
         ax.set_yscale("log")
         l = ax.legend(loc=0, ncol=2, frameon=False, fontsize="xx-small")
         fname = "pdf_x{:0.2f}_q.{}".format(x, opts.FORMAT)
