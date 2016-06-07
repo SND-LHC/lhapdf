@@ -121,8 +121,10 @@
 13206 CT14llo_NF3 1
 13207 CT14llo_NF4 1
 13208 CT14llo_NF6 1
-13300 CT14qed_proton 1
-13350 CT14qed_neutron 1
+13300 CT14qed_proton 2
+13350 CT14qed_neutron 2
+13400 CT14qed_inc_proton 1
+13450 CT14qed_inc_neutron 1
 20460 MRST2004qed -1
 20463 MRST2004qed_proton 3
 20465 MRST2004qed_neutron 3
