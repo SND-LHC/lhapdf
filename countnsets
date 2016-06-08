@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+INDEXFILE=pdfsets.index
+
+for r in $(hg log $INDEXFILE -T "{rev}\n" | sort -n); do
+    epoch=$(hg log --rev $r $INDEXFILE -T "{date}")
+    nsets=$(hg cat --rev $r $INDEXFILE | wc -l)
+    echo "$r $epoch $nsets"
+done

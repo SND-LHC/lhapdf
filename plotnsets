@@ -1,0 +1,33 @@
+#! /usr/bin/env python
+
+import optparse
+op = optparse.OptionParser()
+opts, args = op.parse_args()
+datfile = args[0] #"nsets.dat"
+
+import datetime
+revs, dates, nsets = [], [], []
+with open(datfile) as f:
+    for line in f:
+        items = line.split()
+        revs.append(items[0])
+        ts = float(items[1].replace("-3600", "").replace("-7200", ""))
+        dates.append(datetime.date.fromtimestamp(ts))
+        nsets.append(int(items[2]))
+
+import os.path
+import matplotlib
+import matplotlib.pyplot as plt
+# import matplotlib.dates as mdates
+# import matplotlib.cbook as cbook
+plt.plot(dates, nsets)
+stabledate = datetime.date.fromtimestamp(1375890958.00) #< 6.0.0 release at revision 413
+plt.axvline(stabledate, color="r", linestyle="--")
+plt.xlim(left=stabledate)
+plt.xlabel("Year")
+plt.ylabel("# PDF sets in LHAPDF6 library")
+# plt.locator_params(axis='x',nbins=5)
+plt.gca().xaxis.set_major_locator(matplotlib.dates.YearLocator())
+plt.gca().xaxis.set_minor_locator(matplotlib.dates.MonthLocator())
+plt.savefig(os.path.splitext(datfile)[0] + ".pdf")
+# plt.show()
