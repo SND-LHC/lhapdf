@@ -46,9 +46,11 @@ major PDF fitting group from LHAPDF5 to the new unified LHAPDF6 format. With a
 few exceptions for particularly significant older PDF sets, this means an
 effective age cutoff of ~2005 on the migrated sets.
 
-If you need older sets you are at first encouraged either to continue with
-LHAPDF5, or request a data migration if you really want to use LHAPDF6. You can
-do the migration yourself: see the @ref migration page.
+If you need older sets you are encouraged to convert the LHAPDF5 version to
+LHAPDF6's data format: see the @ref migration page for details of this
+procedure. We do not provide support for LHAPDF5, and a very strong case will
+be needed for further "official" set migrations beyond the many already available
+in LHAPDF6.
 
 The following link takes you to the PDF sets which are currently available and officially supported:
 
@@ -58,12 +60,22 @@ The PDF set data files can be downloaded from
 https://www.hepforge.org/archive/lhapdf/pdfsets/6.1/ and the latest versions are
 installed (as tarballs and expanded into directories) on CERN AFS at
 `/afs/cern.ch/sw/lcg/external/lhapdfsets/current/` and CERN CVMFS at
-`/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/`.
+`/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/`. Many users will find it easiest
+to just set their `LHAPDF_DATA_PATH` environment variable to point at one of these
+distributed filesystem areas and use the preinstalled latest sets there.
 
-Please contact the LHAPDF authors at lhapdf@projects.hepforge.org if you want to
-add new PDF sets to the standard collection. You are expected to create and
-validate these PDF data files yourself, and to fix and update them in the case of
-user-reported bugs in the public files.
+We also provide a script called `lhapdf` which can be used to query the catalogue
+of PDF sets and to install and update them from the command line. The user interface
+of this script is inspired by the Debian Linux `apt` package management system -- it
+accepts commands `list`, `update`, `install` and `upgrade`. Please run `lhapdf help`
+for full usage instructions.
+
+If you want to add new PDF sets to the standard collection, please contact the
+LHAPDF authors at lhapdf@projects.hepforge.org. You are expected to create and
+validate these PDF data files yourself, and to fix and update them in the case
+of user-reported bugs in the public files. We will allocate appropriate PDF ID
+codes, which will need to be added to your new sets' `.info` files, and manage
+the indexing and distribution of the new files. Thanks for your support!
 
 
 @section usage Usage
