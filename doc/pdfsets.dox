@@ -1,20 +1,19 @@
 /**
 @page pdfsets PDF sets
 
-<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 640 available, of which 641 are validated.</b>
+<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 643 available, of which 641 are validated.</b>
 
 See http://www.hepforge.org/archive/lhapdf/pdfsets/6.1 for data downloads.
 
-All sets behave very closely to their LHAPDF v5 equivalents, usually within
-1 part in 1000 across x,Q space, sometimes with larger very localised deviations at the
+All sets migrated from LHAPDF v5 behave very closely to the originals, usually within
+1 part in 1000 across x,Q space. Sometimes larger, but very localised, deviations are found at the
 edges of the x,Q grid or on flavour thresholds: these should not be physically
 important. See http://lhapdf.hepforge.org/validationpdfs/ for a full set of validation
 plots for each set's central member.
 
 In the table, green rows indicate sets which have been officially approved
 for LHAPDF6 by their authors. Red rows indicate those which have not yet been so
-approved. Unvalidated sets may still be used and have generally been seen to behave
-faithfully to their LHAPDF5 equivalents (see above), but please take care.
+approved. Unvalidated sets may still be used, but please take care.
 
   <table>
     <tr><th>%LHAPDF ID</th><th>Set name</th><th>Number of set members</th><th>Latest data version</th><th>Notes</th></tr>
@@ -97,6 +96,7 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>12000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CJ12min.tar.gz">CJ12min</a></td><td>39</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>12100</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CJ12mid.tar.gz">CJ12mid</a></td><td>39</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>12200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CJ12max.tar.gz">CJ12max</a></td><td>39</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>12300</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CJ15lo.tar.gz">CJ15lo</a></td><td>49</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>12400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CJ15nlo.tar.gz">CJ15nlo</a></td><td>49</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>13000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nnlo.tar.gz">CT14nnlo</a></td><td>57</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>13060</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nnlo_as_0111.tar.gz">CT14nnlo_as_0111</a></td><td>1</td><td>1</td><td></td></tr>
@@ -117,6 +117,8 @@ faithfully to their LHAPDF5 equivalents (see above), but please take care.
     <tr style="background-color: #efe;"><td>13091</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nnlo_NF4.tar.gz">CT14nnlo_NF4</a></td><td>1</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>13092</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nnlo_NF6.tar.gz">CT14nnlo_NF6</a></td><td>1</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>13100</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nlo.tar.gz">CT14nlo</a></td><td>57</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>13158</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nlo_as_0111.tar.gz">CT14nlo_as_0111</a></td><td>1</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>13159</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nlo_as_0112.tar.gz">CT14nlo_as_0112</a></td><td>1</td><td>2</td><td></td></tr>
     <tr style="background-color: #efe;"><td>13160</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nlo_as_0113.tar.gz">CT14nlo_as_0113</a></td><td>1</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>13161</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nlo_as_0114.tar.gz">CT14nlo_as_0114</a></td><td>1</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>13162</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/CT14nlo_as_0115.tar.gz">CT14nlo_as_0115</a></td><td>1</td><td>1</td><td></td></tr>
