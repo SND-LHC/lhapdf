@@ -5,6 +5,7 @@
 //
 #include "LHAPDF/AlphaS.h"
 #include "LHAPDF/Utils.h"
+// Can be removed when moving to C++11
 #include "boost/bind.hpp"
 
 namespace LHAPDF {
@@ -23,6 +24,9 @@ namespace LHAPDF {
     if ( _qcdorder == 3 ) return - d / t;
     const double b3 = beta[3];
     d += (b3*y*y*y*y*y);
+    if ( _qcdorder == 4 ) return - d / t;
+    const double b4 = beta[4];
+    d += (b4*y*y*y*y*y*y);
     return - d / t;
   }
 
@@ -292,7 +296,12 @@ namespace LHAPDF {
     }
 
     std::sort(grid.begin(), grid.end(),
-              boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+        boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+
+    // C++11 version
+//    std::sort(grid.begin(), grid.end(), [](const std::pair<int,double> &left, const std::pair<int,double> &right) {
+//        return left.first < right.first;
+//    });
 
     vector<double> alphas;
     alphas.reserve(_q2s.size());

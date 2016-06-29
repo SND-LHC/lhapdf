@@ -20,6 +20,8 @@
 #include <fstream>
 #include <limits>
 #include <cmath>
+// C++11
+// #include <functional>
 // Boost includes
 #include "boost/shared_ptr.hpp"
 #include "boost/lexical_cast.hpp"

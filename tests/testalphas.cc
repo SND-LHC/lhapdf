@@ -51,7 +51,7 @@ int main() {
   // As above: order = 0 returns
   // constant value set by
   // as_ode.setAlphaSMZ(double value);
-  as_ode.setOrderQCD(4);
+  as_ode.setOrderQCD(5);
 
   as_ode.setMZ(91);
   as_ode.setAlphaSMZ(0.118);
@@ -104,10 +104,12 @@ int main() {
     cout << "Analytical solution:           " << setprecision(3) << setw(6)  << ( (as_ana_q > 2) ? inf : as_ana_q )
          << "    num flavs = " << as_ana.numFlavorsQ(q) << endl;
     fa << q << " " << as_ana_q << endl;
+
     const double as_ode_q = as_ode.alphasQ(q);
     cout << "ODE solution:                  " << setprecision(3) << setw(6)  << ( (as_ode_q > 2) ? inf : as_ode_q )
          << "    num flavs = " << as_ode.numFlavorsQ(q) << endl;
     fo << q << " " << as_ode_q << endl;
+/*
     const double as_ipol_q = as_ipol.alphasQ(q);
     cout << "Interpolated solution:         " << setprecision(3) << setw(6)  << ( (as_ipol_q > 2) ? inf : as_ipol_q ) << endl;
     fi << q << " " << as_ipol_q << endl;
@@ -118,6 +120,7 @@ int main() {
     cout << "CT10 AlphaS solution:          " << setprecision(3) << setw(6)  << as_ct10_q_2
          << "    agrees = " << boolalpha << (as_ct10_q == as_ct10_q_2) << endl;
     cout << endl;
+*/
   }
   fa.close(); fo.close(); fi.close(); fc.close();
 
