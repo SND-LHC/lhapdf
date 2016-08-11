@@ -1,7 +1,7 @@
 /**
 @page pdfsets PDF sets
 
-<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 643 available, of which 641 are validated.</b>
+<b>Official LHAPDF&nbsp;6.1 PDF sets: currently 644 available, of which 642 are validated.</b>
 
 See http://www.hepforge.org/archive/lhapdf/pdfsets/6.1 for data downloads.
 
@@ -356,6 +356,7 @@ approved. Unvalidated sets may still be used, but please take care.
     <tr style="background-color: #efe;"><td>81150</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NNLO20FF.tar.gz">JR14NNLO20FF</a></td><td>39</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>81200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NLO08VF.tar.gz">JR14NLO08VF</a></td><td>39</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>81250</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/JR14NLO08FF.tar.gz">JR14NLO08FF</a></td><td>39</td><td>1</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>82000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/LUXqed_plus_PDF4LHC15_nnlo_100.tar.gz">LUXqed_plus_PDF4LHC15_nnlo_100</a></td><td>108</td><td>10001</td><td></td></tr>
     <tr style="background-color: #efe;"><td>90000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/PDF4LHC15_nlo_mc_pdfas.tar.gz">PDF4LHC15_nlo_mc_pdfas</a></td><td>103</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>90200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/PDF4LHC15_nlo_100_pdfas.tar.gz">PDF4LHC15_nlo_100_pdfas</a></td><td>103</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>90400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/PDF4LHC15_nlo_30_pdfas.tar.gz">PDF4LHC15_nlo_30_pdfas</a></td><td>33</td><td>2</td><td></td></tr>
@@ -546,13 +547,13 @@ approved. Unvalidated sets may still be used, but please take care.
     <tr style="background-color: #efe;"><td>244200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_FFN_NF5_as_0120_mc.tar.gz">NNPDF23_nlo_FFN_NF5_as_0120_mc</a></td><td>101</td><td>5</td><td></td></tr>
     <tr style="background-color: #efe;"><td>244400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0117_qed.tar.gz">NNPDF23_nlo_as_0117_qed</a></td><td>101</td><td>4</td><td></td></tr>
     <tr style="background-color: #efe;"><td>244600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0118_qed.tar.gz">NNPDF23_nlo_as_0118_qed</a></td><td>101</td><td>4</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>244800</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0119_qed.tar.gz">NNPDF23_nlo_as_0119_qed</a></td><td>101</td><td>4</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>244800</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0119_qed.tar.gz">NNPDF23_nlo_as_0119_qed</a></td><td>101</td><td>5</td><td></td></tr>
     <tr style="background-color: #efe;"><td>245000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0117_qed_neutron.tar.gz">NNPDF23_nlo_as_0117_qed_neutron</a></td><td>101</td><td>4</td><td></td></tr>
     <tr style="background-color: #efe;"><td>245200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0118_qed_neutron.tar.gz">NNPDF23_nlo_as_0118_qed_neutron</a></td><td>101</td><td>4</td><td></td></tr>
     <tr style="background-color: #efe;"><td>245400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nlo_as_0119_qed_neutron.tar.gz">NNPDF23_nlo_as_0119_qed_neutron</a></td><td>101</td><td>4</td><td></td></tr>
     <tr style="background-color: #efe;"><td>245600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0117_qed.tar.gz">NNPDF23_nnlo_as_0117_qed</a></td><td>101</td><td>4</td><td></td></tr>
     <tr style="background-color: #efe;"><td>245800</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0118_qed.tar.gz">NNPDF23_nnlo_as_0118_qed</a></td><td>101</td><td>4</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>246000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0119_qed.tar.gz">NNPDF23_nnlo_as_0119_qed</a></td><td>101</td><td>4</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>246000</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0119_qed.tar.gz">NNPDF23_nnlo_as_0119_qed</a></td><td>101</td><td>5</td><td></td></tr>
     <tr style="background-color: #efe;"><td>246200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0117_qed_neutron.tar.gz">NNPDF23_nnlo_as_0117_qed_neutron</a></td><td>101</td><td>4</td><td></td></tr>
     <tr style="background-color: #efe;"><td>246400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0118_qed_neutron.tar.gz">NNPDF23_nnlo_as_0118_qed_neutron</a></td><td>101</td><td>4</td><td></td></tr>
     <tr style="background-color: #efe;"><td>246600</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/NNPDF23_nnlo_as_0119_qed_neutron.tar.gz">NNPDF23_nnlo_as_0119_qed_neutron</a></td><td>101</td><td>4</td><td></td></tr>
