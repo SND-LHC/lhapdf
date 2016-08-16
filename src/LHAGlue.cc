@@ -37,11 +37,7 @@ lhapdfr lhapdfr_;
 namespace { //< Unnamed namespace to restrict visibility to this file
 
   /// @brief PDF object storage here is a smart pointer to ensure deletion of created PDFs
-  ///
-  /// NB. std::auto_ptr cannot be stored in STL containers, hence we use
-  /// boost::shared_ptr. std::unique_ptr is the nature replacement when C++11
-  /// is globally available.
-  typedef boost::shared_ptr<LHAPDF::PDF> PDFPtr;
+  typedef std::shared_ptr<LHAPDF::PDF> PDFPtr;
 
   /// @brief A struct for handling the active PDFs for the Fortran interface.
   ///

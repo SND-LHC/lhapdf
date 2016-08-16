@@ -27,8 +27,7 @@ namespace LHAPDF {
   protected: //< These constructors should only be called by subclasses
 
     /// Internal convenience typedef for the AlphaS object handle
-    // typedef AlphaS* AlphaSPtr;
-    typedef auto_ptr<AlphaS> AlphaSPtr;
+    typedef unique_ptr<AlphaS> AlphaSPtr;
 
     /// Force initialization of the only non-class member.
     PDF() : _forcePos(0) { }

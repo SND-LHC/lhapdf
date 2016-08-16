@@ -132,11 +132,11 @@ namespace LHAPDF {
     /// is now the responsibility of the caller, either manually for raw pointers
     /// or automatically if smart pointers are used.
     ///
-    /// @note Use an *appropriate* smart pointer, of course! This depends in detail on
-    /// how you will use the PDF objects (do you want shared or unique pointers?), but
-    /// they also need to be compatible with storage in STL containers. This is *not*
-    /// the case with std::auto_ptr (which for this reason is replaced with
-    /// std::unique_ptr in C++11).
+    /// @note Use an *appropriate* smart pointer, of course! This depends in
+    /// detail on how you will use the PDF objects (do you want shared or unique
+    /// pointers?), but they also need to be compatible with storage in STL
+    /// containers, e.g. std::unique_ptr or std::shared_ptr but *not* the
+    /// deprecated std::auto_ptr.
     //
     /// @todo Needs to be implemented in the header since the arg type is templated.
     template <typename PTR>
