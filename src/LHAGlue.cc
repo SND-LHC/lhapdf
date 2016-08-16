@@ -918,12 +918,12 @@ void LHAPDF::initPDFSet(int nset, const string& filename, int nmem) {
 }
 
 
-void LHAPDF::initPDFSet(const string& filename, SetType type ,int nmem) {
+void LHAPDF::initPDFSet(const string& filename, SetType type, int nmem) {
   // silently ignore type
   initPDFSet(1,filename, nmem);
 }
 
-void LHAPDF::initPDFSet(int nset, const string& filename, SetType type ,int nmem) {
+void LHAPDF::initPDFSet(int nset, const string& filename, SetType type, int nmem) {
   // silently ignore type
   initPDFSetByName(nset,filename);
   ACTIVESETS[nset].loadMember(nmem);
