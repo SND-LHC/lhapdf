@@ -166,6 +166,12 @@ namespace LHAPDF {
 
   /// @todo Add iszero() & equals(,) functions?
 
+  /// Quantiles of the standard normal probability distribution function
+  double normQuantile(double p);
+
+  /// Quantiles of the chi-squared probability distribution function
+  double chisquareQuantile(double p, double ndf);
+
   //@}
 
 

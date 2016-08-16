@@ -1,5 +1,9 @@
 2016-08-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add normal and chi-squared quantile functions, and incomplete
+	gamma functions, extracted and converted by Graeme Watt based on
+	ROOT and Cephes code.
+
 	* Require C++11, and starting to remove Boost.
 
 2016-02-16  Andy Buckley  <andy.buckley@cern.ch>
