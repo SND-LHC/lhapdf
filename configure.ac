@@ -45,21 +45,8 @@ if test -z $CXXFLAGS; then
 fi
 AC_PROG_CXX
 
-## This block can go once we decide to have C++11 always on
-## TODO: Is this necessary? Not just let the user set CXXFLAGS?
-AC_MSG_CHECKING([whether to include C++11 flag for testing])
-AC_ARG_ENABLE(stdcxx11, AC_HELP_STRING([--enable-stdcxx11],
-  [turn on C++11 flag (only for testing, do not use in production!)]), [], [enable_stdcxx11=no])
-if test "x$enable_stdcxx11" = "xyes"; then
-  AC_MSG_RESULT([yes])
-  dnl remove the wrapper if block and "optional" once we decide to have C++11 always on
-  AX_CXX_COMPILE_STDCXX_11([noext],[optional])
-  if test "x$HAVE_CXX11" != "x1"; then
-  AC_MSG_ERROR([compiler does not recognize requested c++11 option])
-  fi
-else
-  AC_MSG_RESULT([no])
-fi
+## Require C++11
+AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -150,8 +137,9 @@ fi
 
 ## Boost utility library
 BOOST_REQUIRE([1.41.0])
-BOOST_FOREACH
-BOOST_SMART_PTR
+dnl BOOST_FOREACH
+dnl BOOST_BUG_IN_FOREACH
+dnl BOOST_SMART_PTR
 BOOST_STRING_ALGO
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/range.hpp])
@@ -160,7 +148,6 @@ BOOST_FIND_HEADER([boost/random.hpp])
 BOOST_FIND_HEADER([boost/math/distributions/chi_squared.hpp])
 BOOST_FIND_HEADER([boost/math/special_functions/erf.hpp])
 
-BOOST_BUG_IN_FOREACH
 
 ## Export base compiler flags
 AC_SUBST(AM_CPPFLAGS)
