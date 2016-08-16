@@ -9,22 +9,37 @@ LHAPDF6 TODO list
 UNVERSIONED
 -----------
 
-- **Document the lhapdf command**
-
-   On the website
-
 - **HERA 1.0 and LHeC PDF migration and approval**
 
    Same procedure as for ATLAS and HERA 1.5. Prod Voica for an update.
 
-- **nCTEQ15 PDFs**
 
-- **PDF4LHC15 Nf=4**
-
-
-
-VERSION 6.1.7
+VERSION 6.2.0
 -------------
+
+- **Remove remaining Boost dependencies / move to C++11 (AB)**
+
+   Boost was being more trouble than it was worth, but maybe now that we're not
+   using the filesystem stuff it is ok. Full removal would require several changes:
+   - multiarray: replace with Martin's array/SSE code
+   - foreach: C++11 range-for
+   - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
+   - shared_ptr: C++11 unique/shared_ptr
+   - bind: C++11 / removal
+   - erf/chisq_quantile: C++11 and Boost/ROOT/Ceres translation
+
+
+
+- **Nicer Fortran interface**
+
+   Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
+   away from the the theory world. Suggest prefixing all functions with "lhapdf"
+   and basing it on the PDFManager, with explicit commands for switching current PDF.
+
+   Ideas: require nset and nmem args for *all* commands, i.e. no "current" set slot.
+
+   Requests: way to get LHAPDF ID from current set/PDF. Arbitrary PIDs.
+
 
 - **Provide a single-string-arg version of lookupPDF**
 
@@ -32,13 +47,49 @@ VERSION 6.1.7
    before exposing in the API; it's currently in an anon namespace in Factories.cc.
 
 
+- **Remove #pragma once -- it's not fully portable**
+
+
 - **Check LHAGlue getthresholdm_ etc.**
 
 
+VERSION 6.2.1
+-------------
+
+- **Optimize the grid PDF interpolator code**
+
+   Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
+   CPU: can reduce by factor of 13 in some use cases (only one call for a whole
+   flavour interpolation set at the same point). Below threshold? Sherpa already
+   report performance increases due to being able to interpolated one flavour at
+   a time, so perhaps this use case is not valid in all generators and could be
+   a more complexity than it is worth.
+
+
+- **Speed up interpolation (MR)**
+
+   Many studies already... and Martin has done the important work to de-Boostify
+   the interpolation grid data objects.
+
+   Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this
+   at version 6.0.0 and it was outperforming LHA5. Maybe it is slower for CT10
+   and ~same for CT10nlo. Juan reports that the NNPDF functions are faster.
+
+   Possible speed-ups: caching the last log(x) and log(Q2) values, caching grid
+   index lookup, caching interpolation weights, using a
+   native array implementation in place of Boost::multiarray, doing a faster
+   hybrid search in the grids, GCC builtins for SSE auto-vectorisation.
+
+   Martin has got some speed-up out of a native array implementation, and found
+   no benefit of changing the index search. Andy will look into caching.
+
+
+- **Add an lhapdf show command**
+
+   To print pdfsets.index + cat .info for already installed PDFs.
+
+
 - **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Berton et al)**
-
-
-- **Remove #pragma once -- it's not fully portable**
 
 
 - **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
@@ -47,15 +98,8 @@ VERSION 6.1.7
 - **.LHgrid etc. old-name-tolerance control -- TranslateLHA5Names flag?**
 
 
-- **Add an lhapdf show command**
 
-   To print pdfsets.index + cat .info for already installed PDFs.
-
-
-
-
-
-VERSION 6.2
+VERSION 6.3
 -----------
 
 - **Nuclear PDFs**
@@ -78,62 +122,6 @@ VERSION 6.2
    re-purpose PDF as the interface than to add a new PDFBase or similar?
 
 
-- **Optimize the grid PDF interpolator code**
-
-   Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
-   CPU: can reduce by factor of 13 in some use cases (only one call for a whole
-   flavour interpolation set at the same point). Below threshold? Sherpa already
-   report performance increases due to being able to interpolated one flavour at
-   a time, so perhaps this use case is not valid in all generators and could be
-   a more complexity than it is worth.
-
-
-- **Provide a nicer Fortran interface?**
-
-   Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
-   away from the the theory world. Suggest prefixing all functions with "lhapdf"
-   and basing it on the PDFManager, with explicit commands for switching current PDF.
-
-   Ideas: require nset and nmem args for *all* commands, i.e. no "current" set slot.
-
-   Requests: way to get LHAPDF ID from current set/PDF.
-
-
-
-VERSION 6.3
------------
-
-- **Speed up interpolation (MR)**
-
-   Many studies already... and Martin has done the important work to de-Boostify
-   the interpolation grid data objects.
-
-   Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this
-   at version 6.0.0 and it was outperforming LHA5. Maybe it is slower for CT10
-   and ~same for CT10nlo. Juan reports that the NNPDF functions are faster.
-
-   Possible speed-ups: caching the last log(x) and log(Q2) values, caching grid
-   index lookup, caching interpolation weights, using a
-   native array implementation in place of Boost::multiarray, doing a faster
-   hybrid search in the grids, GCC builtins for SSE auto-vectorisation.
-
-   Martin has got some speed-up out of a native array implementation, and found
-   no benefit of changing the index search. Andy will look into caching.
-
-
-- **Remove remaining Boost dependencies / move to C++11 (AB)**
-
-   Boost was being more trouble than it was worth, but maybe now that we're not
-   using the filesystem stuff it is ok. Full removal would require several changes:
-   - multiarray: replace with Martin's array/SSE code
-   - foreach: iterators or require C++11
-   - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
-   - shared_ptr: manual deletes or require C++11
-   - bind: C++11 or something less cool
-   Actually this would be rather good, but requires C++11 which is not an option
-   just yet.
-
-
 
 AS AND WHEN
 -----------
@@ -142,7 +130,7 @@ AS AND WHEN
 
    Prefer zipped single member data files rather than virtual filesystem access
    to the tarball. Can transparently read zipped files with LD_PRELOAD and
-   zlibc: is that enough? Add instructions for that to manual/website.
+   zlibc: is that enough? Or
 
 
 - **Speed up interpolation with GPUs**
@@ -171,7 +159,7 @@ AS AND WHEN
    the metadata be used?
 
 
-- **Using std::/boost::function to generically modify the interpolation measures in x, Q (AB)**
+- **Using std::function to generically modify the interpolation measures in x, Q (AB)**
 
 
 - **Separate the x and Q2 inter/extrapolation?**
