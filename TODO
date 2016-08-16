@@ -28,7 +28,7 @@ VERSION 6.2.0
    - bind: C++11 / removal
    - erf/chisq_quantile: C++11 and Boost/ROOT/Ceres translation
 
-
+   Check that unique_ptr and shared_ptr semantics (e.g. ptr-populating code) work as intended.
 
 - **Nicer Fortran interface**
 
