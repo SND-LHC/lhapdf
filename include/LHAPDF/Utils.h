@@ -39,12 +39,6 @@ namespace LHAPDF {
   using namespace boost;
 
 
-  /// Smart pointer abstraction between C++98 and C++11
-  #if __cplusplus <= 199711L
-  #define unique_ptr auto_ptr
-  #endif
-
-
   /// @name String handling utility functions
   //@{
 
