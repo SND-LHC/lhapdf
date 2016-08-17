@@ -21,7 +21,6 @@
 #include <limits>
 #include <cmath>
 // Boost includes
-#include "boost/shared_ptr.hpp"
 #include "boost/lexical_cast.hpp"
 #include "boost/foreach.hpp"
 #include "boost/algorithm/string.hpp"
