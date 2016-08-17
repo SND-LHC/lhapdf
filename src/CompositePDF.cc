@@ -14,7 +14,7 @@ namespace LHAPDF {
   typedef pair<string, int> SetNameMem;
 
   CompositePDF::CompositePDF(const vector<SetNameMem>& setnames_members) {
-    BOOST_FOREACH (const SetNameMem& setname_member, setnames_members) {
+    for (const SetNameMem& setname_member : setnames_members) {
       PDF* pdf = mkPDF(setname_member.first, setname_member.second);
       addConstituentPDF(pdf);
     }
@@ -22,7 +22,7 @@ namespace LHAPDF {
 
 
   CompositePDF::CompositePDF(const vector<int>& lhaids) {
-    BOOST_FOREACH (int lhapdfid, lhaids) {
+    for (int lhapdfid : lhaids) {
       PDF* pdf = mkPDF(lhapdfid);
       addConstituentPDF(pdf);
     }

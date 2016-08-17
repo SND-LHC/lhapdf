@@ -77,12 +77,12 @@ namespace LHAPDF {
     /// Append several PDFs to the list of constituents
     template <typename PDFPTR>
     void addConstituentPDFs(std::vector<PDFPTR>& pdfs) {
-      BOOST_FOREACH (PDF* p, pdfs) addConstituentPDF(p);
+      for (PDF* p : pdfs) addConstituentPDF(p);
     }
 
     /// Clear the list of constituent PDFs, deleting the objects
     void reset() {
-      BOOST_FOREACH (PDF* p, _pdfs) delete p;
+      for (PDF* p : _pdfs) delete p;
       _pdfs.clear();
     }
 
@@ -94,8 +94,8 @@ namespace LHAPDF {
 
     const std::vector<int>& flavors() const {
       if (_flavors.empty()) {
-        BOOST_FOREACH (PDF* p, _pdfs) {
-          BOOST_FOREACH (int pid, p->flavors()) {
+        for (PDF* p : _pdfs) {
+          for (int pid : p->flavors()) {
             if (!contains(_flavors, pid)) _flavors.push_back(pid);
           }
         }
@@ -107,13 +107,13 @@ namespace LHAPDF {
     }
 
     bool inRangeQ2(double q2) const {
-      BOOST_FOREACH (PDF* p, _pdfs)
+      for (PDF* p : _pdfs)
         if (!p->inRangeQ2(q2)) return false;
       return true;
     }
 
     bool inRangeX(double x) const {
-      BOOST_FOREACH (PDF* p, _pdfs)
+      for (PDF* p : _pdfs)
         if (!p->inRangeX(x)) return false;
       return true;
     }
@@ -126,7 +126,7 @@ namespace LHAPDF {
     /// Get PDF xf(x,Q2) value (via multiplicative PDF combination)
     double _xfxQ2(int id, double x, double q2) const {
       double rtn = 1;
-      BOOST_FOREACH (const PDF* p, constituentPDFs())
+      for (const PDF* p : constituentPDFs())
         rtn *= p->xfxQ2(id, x, q2);
       return rtn;
     }

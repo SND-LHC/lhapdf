@@ -223,7 +223,7 @@ namespace LHAPDF {
     /// Writes to the same internal arrays as setQ2Values, appropriately transformed.
     void setQValues(const std::vector<double>& qs) {
       std::vector<double> q2s;
-      BOOST_FOREACH (double q, qs) q2s.push_back(q*q);
+      for (double q : qs) q2s.push_back(q*q);
       setQ2Values(q2s);
     }
 
@@ -293,7 +293,7 @@ namespace LHAPDF {
     /// Set the array of Q values for interpolation, and also the caching flag
     void setQValues(const std::vector<double>& qs) {
       std::vector<double> q2s;
-      BOOST_FOREACH (double q, qs) q2s.push_back(q*q);
+      for (double q : qs) q2s.push_back(q*q);
       setQ2Values(q2s);
     }
 

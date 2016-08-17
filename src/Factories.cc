@@ -83,11 +83,11 @@ namespace LHAPDF {
     //   // Split into multiplicative parts
     //   vector<string> parts;
     //   iter_split(parts, pdfsstr, boost::algorithm::first_finder(" * "));
-    //   BOOST_FOREACH (string& part, parts) trim(part);
+    //   for (string& part : parts) trim(part);
 
     //   // Expand each part into a single PDF spec and append it
     //   vector<string> rtn;
-    //   BOOST_FOREACH (string part, parts) {
+    //   for (const string& part : parts) {
     //     // No member number corresponds to whole-set wildcard expansion in this context
     //     if (!contains(part, "/")) part += "/*";
 
@@ -105,15 +105,15 @@ namespace LHAPDF {
     //     // Append to or outer-product the return vector as appropriate
     //     if (expandedpart.size() == 1) {
     //       // If there were no wildcards to expand, no point in playing outer-product games
-    //       BOOST_FOREACH (string& basestr, rtn) {
+    //       for (const string& basestr : rtn) {
     //         const string newstr = (!basestr.empty() ? basestr + " * " : "") + expandedpart[0];
     //       }
     //     } else {
     //       // There was a wildcard to expand, so we work harder...
     //       vector<string> tmp;
     //       tmp.reserve(expandedpart.size() * rtn.size());
-    //       BOOST_FOREACH (const string& basestr, rtn) {
-    //         BOOST_FOREACH (const string& pdfstr, expandedpart) {
+    //       for (const string& basestr : rtn) {
+    //         for (const string& pdfstr : expandedpart) {
     //           const string newstr = (!basestr.empty() ? basestr + " * " : "") + pdfstr;
     //           tmp.push_back(newstr);
     //         }
@@ -158,7 +158,7 @@ namespace LHAPDF {
 
     //   // Create the list of set/id pairs
     //   vector< pair<string,int> > rtn;
-    //   BOOST_FOREACH (const string& part, parts) {
+    //   for (const string& part : parts) {
     //     rtn.push_back(decodePDFStr(part));
     //   }
     //   return rtn;

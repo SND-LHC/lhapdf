@@ -34,7 +34,7 @@ namespace LHAPDF {
 
   string findFile(const string& target) {
     if (target.empty()) return "";
-    BOOST_FOREACH (const string& base, paths()) {
+    for (const string& base : paths()) {
       const string p = startswith(target, "/") ? target : base / target;
       // if (verbosity() > 2) cout << "Trying file: " << p << endl;
       if (file_exists(p)) {
@@ -52,7 +52,7 @@ namespace LHAPDF {
     // Return cached list if valid
     if (!rtn.empty()) return rtn;
     // Otherwise this is the first time: populate the list
-    BOOST_FOREACH (const string& p, paths()) {
+    for (const string& p : paths()) {
       if (!dir_exists(p)) continue;
       DIR* dir;
       struct dirent* ent;

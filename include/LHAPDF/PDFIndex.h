@@ -68,7 +68,7 @@ namespace LHAPDF {
   inline int lookupLHAPDFID(const std::string& setname, int nmem) {
     // const map<int, string>& = getPDFIndex();
     typedef pair<int, string> MapPair;
-    BOOST_FOREACH (const MapPair& id_name, getPDFIndex()) {
+    for (const MapPair& id_name : getPDFIndex()) {
       if (id_name.second == setname) return id_name.first + nmem;
     }
     return -1; //< failure value

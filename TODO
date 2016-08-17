@@ -21,10 +21,9 @@ VERSION 6.2.0
 
    Boost was being more trouble than it was worth, but maybe now that we're not
    using the filesystem stuff it is ok. Full removal would require several changes:
+   - string algs: replace with basic C(++) string code
    - multiarray: replace with Martin's array/SSE code
-   - foreach: C++11 range-for
    - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
-   - shared_ptr: C++11 unique/shared_ptr
    - bind: C++11 / removal
    - erf/chisq_quantile: C++11 and Boost/ROOT/Ceres translation
 

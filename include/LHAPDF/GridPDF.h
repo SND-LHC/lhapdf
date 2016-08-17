@@ -225,7 +225,7 @@ namespace LHAPDF {
           const KnotArrayNF& subgrid = isub->second;
           const KnotArray1F& grid1 = subgrid.get_first();
           if (grid1.q2s().empty()) continue; //< @todo This shouldn't be possible, right? Throw instead, or ditch the check?
-          BOOST_FOREACH (double q2, grid1.q2s()) {
+          for (double q2 : grid1.q2s()) {
             if (_q2knots.empty() || q2 != _q2knots.back()) _q2knots.push_back(q2);
           }
         }

@@ -168,7 +168,7 @@ extern "C" {
   /// List of available PDF sets, returned as a space-separated string
   void lhapdf_getpdfsetlist_(char* s, size_t len) {
     string liststr;
-    BOOST_FOREACH(const string& setname, LHAPDF::availablePDFSets()) {
+    for (const string& setname : LHAPDF::availablePDFSets()) {
       if (!liststr.empty()) liststr += " ";
       liststr += setname;
     }
@@ -225,7 +225,7 @@ extern "C" {
   void getdatapath_(char* s, size_t len) {
     /// @todo Works? Need to check Fortran string return, string macro treatment, etc.
     string pathstr;
-    BOOST_FOREACH(const string& path, LHAPDF::paths()) {
+    for (const string& path : LHAPDF::paths()) {
       if (!pathstr.empty()) pathstr += ":";
       pathstr += path;
     }

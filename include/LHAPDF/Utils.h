@@ -22,9 +22,7 @@
 #include <cmath>
 // Boost includes
 #include "boost/lexical_cast.hpp"
-#include "boost/foreach.hpp"
 #include "boost/algorithm/string.hpp"
-#include "boost/range.hpp"
 // System includes
 #include "sys/stat.h"
 
@@ -51,7 +49,7 @@ namespace LHAPDF {
   template <typename T>
   inline std::string to_str(const std::vector<T>& vec) {
     vector<string> svec; svec.reserve(vec.size());
-    BOOST_FOREACH (const T& t, vec) svec.push_back( to_str(t) );
+    for (const T& t : vec) svec.push_back( to_str(t) );
     return join(svec, ",");
   }
 
