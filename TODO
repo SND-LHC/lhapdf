@@ -47,9 +47,6 @@ VERSION 6.2.0
    before exposing in the API; it's currently in an anon namespace in Factories.cc.
 
 
-- **Remove #pragma once -- it's not fully portable**
-
-
 - **Check LHAGlue getthresholdm_ etc.**
 
 
