@@ -261,7 +261,6 @@ namespace LHAPDF {
   // //@{
 
   // #include <type_traits>
-  // //#include "boost/type_traits.hpp"
 
   // template<typename T>
   // struct has_const_iterator {

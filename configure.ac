@@ -137,7 +137,7 @@ fi
 
 ## Boost utility library
 BOOST_REQUIRE([1.41.0])
-BOOST_FIND_HEADER([boost/random.hpp])
+BOOST_FIND_HEADER([boost/multi_array.hpp])
 
 
 ## Export base compiler flags

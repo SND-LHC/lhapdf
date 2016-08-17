@@ -281,12 +281,12 @@ namespace LHAPDF {
     if (startswith(errorType(), "replicas")) {
       for (size_t imem = 1; imem <= nmem; imem++) {
         if (pdftypes[imem] != "replica")
-          throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: replica\".");
+          throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: replica\".");
       }
     } else if (startswith(errorType(), "symmhessian") || startswith(errorType(), "hessian")) {
       for (size_t imem = 1; imem <= nmem; imem++) {
         if (pdftypes[imem] != "error")
-          throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: error\".");
+          throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: error\".");
       }
     } else {
       throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::checkPdfType.");
@@ -295,7 +295,7 @@ namespace LHAPDF {
     // Check that possible parameter variations have "PdfType: central".
     for (size_t imem = nmem+1; imem <= size()-1; imem++) {
       if (pdftypes[imem] != "central")
-        throw MetadataError("Member " + boost::lexical_cast<string>(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: central\".");
+        throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: central\".");
     }
 
     //cout << "Success: PdfType of each member matches the ErrorType of the set." << endl;
