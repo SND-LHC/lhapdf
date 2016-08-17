@@ -130,9 +130,11 @@ namespace LHAPDF {
 
       // Calculate the qth quantile of the chi-squared distribution with one degree of freedom.
       // Examples: quantile(dist, q) = {0.988946, 1, 2.70554, 3.84146, 4} for q = {0.68, 1-sigma, 0.90, 0.95, 2-sigma}.
-      boost::math::chi_squared dist(1);
-      double qsetCL = boost::math::quantile(dist, setCL);
-      double qreqCL = boost::math::quantile(dist, reqCL);
+      // boost::math::chi_squared dist(1);
+      // double qsetCL = boost::math::quantile(dist, setCL);
+      // double qreqCL = boost::math::quantile(dist, reqCL);
+      double qsetCL = chisquared_quantile(setCL, 1);
+      double qreqCL = chisquared_quantile(reqCL, 1);
       // Scale uncertainties from the original set CL to the requested CL.
       const double scale = sqrt(qreqCL/qsetCL);
       rtn.scale = scale;

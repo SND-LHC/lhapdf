@@ -141,11 +141,11 @@ namespace LHAPDF {
   /// @brief Compute quantiles for standard normal distribution N(0, 1) at probability p
   ///
   /// ALGORITHM AS241  APPL. STATIST. (1988) VOL. 37, NO. 3, 477-484.
-  double normQuantile(double p) {
+  double norm_quantile(double p) {
 
     /// @todo Return +-inf
     if (p <=0 || p >= 1) {
-      cerr << "normQuantile: probability outside (0, 1)" << endl;
+      cerr << "norm_quantile: probability outside (0, 1)" << endl;
       return 0;
     }
 
@@ -243,7 +243,7 @@ namespace LHAPDF {
   /// Parameters:
   ///   @arg p   - the probability value, at which the quantile is computed
   ///   @arg ndf - number of degrees of freedom
-  double chisquareQuantile(double p, double ndf) {
+  double chisquared_quantile(double p, double ndf) {
     static const double c[] = {0, 0.01, 0.222222, 0.32, 0.4, 1.24, 2.2,
                                4.67, 6.66, 6.73, 13.32, 60.0, 70.0,
                                84.0, 105.0, 120.0, 127.0, 140.0, 175.0,
@@ -268,7 +268,7 @@ namespace LHAPDF {
     if (ndf >= log(p)*(-c[5])){
       // Starting approximation for ndf less than or equal to 0.32
       if (ndf > c[3]) {
-        x = normQuantile(p);
+        x = norm_quantile(p);
         // Starting approximation using Wilson and Hilferty estimate
         p1 = c[2]/ndf;
         ch = ndf*pow((x*sqrt(p1) + 1 - p1), 3);

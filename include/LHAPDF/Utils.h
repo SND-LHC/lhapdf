@@ -45,7 +45,7 @@ namespace LHAPDF {
   /// Make a string representation of @a val
   template <typename T>
   inline std::string to_str(const T& val) {
-    return lexical_cast<string>(val);
+    return boost::lexical_cast<string>(val);
   }
 
   /// Make a string representation of a vector @a vec
@@ -167,10 +167,10 @@ namespace LHAPDF {
   /// @todo Add iszero() & equals(,) functions?
 
   /// Quantiles of the standard normal probability distribution function
-  double normQuantile(double p);
+  double norm_quantile(double p);
 
   /// Quantiles of the chi-squared probability distribution function
-  double chisquareQuantile(double p, double ndf);
+  double chisquared_quantile(double p, double ndf);
 
   //@}
 
