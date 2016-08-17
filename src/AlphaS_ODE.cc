@@ -292,8 +292,9 @@ namespace LHAPDF {
       }
     }
 
-    std::sort(grid.begin(), grid.end(),
-              boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+    std::sort(grid.begin(), grid.end(), [](const pair<int, double>& a, const pair<int, double>& b) { return a.first < b.first; });
+    // auto lambda args need C++14: std::sort(grid.begin(), grid.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
+    // original Boost version: boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
 
     vector<double> alphas;
     alphas.reserve(_q2s.size());

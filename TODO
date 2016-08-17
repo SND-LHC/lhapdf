@@ -21,8 +21,6 @@ VERSION 6.2.0
 
    Only remaining use is multiarray: replace with Martin's array/SSE code
 
-   Why is there still a boost::bind use in AlphaS_ODE?!
-
    Add --cxx flag to lhapdf-config: this will include the -std=c++11 or equivalent
 
    Check that unique_ptr and shared_ptr semantics (e.g. ptr-populating code) work as intended.
