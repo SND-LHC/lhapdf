@@ -9,6 +9,7 @@
 
 namespace LHAPDF {
 
+
   // Calculate first order derivative, dy/dt, as it appears in the differential equation
   double AlphaS_ODE::_derivative(double t, double y, const vector<double>& beta) const {
     if ( _qcdorder == 0 ) return 0;
@@ -298,7 +299,7 @@ namespace LHAPDF {
     alphas.reserve(_q2s.size());
 
     for ( size_t x = 0; x < grid.size(); ++x ) {
-//        cout << sqrt(_q2s.at(x)) << "       " << grid.at(x).second << endl;
+      // cout << sqrt(_q2s.at(x)) << "       " << grid.at(x).second << endl;
        alphas.push_back(grid.at(x).second);
     }
 
