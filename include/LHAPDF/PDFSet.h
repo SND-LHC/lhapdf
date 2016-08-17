@@ -11,7 +11,7 @@
 #include "LHAPDF/Factories.h"
 #include "LHAPDF/Version.h"
 #include "LHAPDF/Config.h"
-#include <boost/math/special_functions/erf.hpp>
+#include "LHAPDF/Utils.h"
 
 namespace LHAPDF {
 
@@ -85,7 +85,7 @@ namespace LHAPDF {
 
     /// @brief Get the confidence level of the Hessian eigenvectors, in percent.
     ///
-    /// If not defined, assume 1-sigma = erf(1/sqrt(2)) = 68.268949% by default,
+    /// If not defined, assume 1-sigma = erf(1/sqrt(2)) =~ 68.268949% by default,
     /// unless this is a replica set for which return -1.
     double errorConfLevel() const;
 
@@ -151,6 +151,7 @@ namespace LHAPDF {
       pdfs.reserve(size());
       if (v < 2) setVerbosity(0); //< Disable every-member printout unless verbosity level is high
       for (size_t i = 0; i < size(); ++i) {
+        /// @todo Need to use an std::move here, or write differently, for unique_ptr to work?
         pdfs.push_back( PTR(mkPDF(i)) );
       }
       setVerbosity(v);
@@ -217,23 +218,29 @@ namespace LHAPDF {
     /// given by the mean and is not necessarily "values[0]" for quantities with a non-linear
     /// dependence on PDFs, while the uncertainty is given by the standard deviation.
     ///
-    /// Optional argument @c cl is used to rescale uncertainties to a
-    /// particular confidence level; a negative number will rescale to the
+    /// Optional argument @c clpct is used to rescale uncertainties to a
+    /// particular confidence level (in percent); a negative number will rescale to the
     /// default CL for this set.
     ///
-    /// @note If @c cl is omitted, automatically rescale to 1-sigma uncertainties.
+    /// @note If @c cl is omitted, automatically rescale to normal 1-sigma ~ 68.268949% uncertainties.
     ///
     /// If the PDF set is given in the form of replicas, then optional argument
     /// @c alternative equal to true (default: false) will construct a confidence
     /// interval from the probability distribution of replicas, with the central
     /// value given by the median.
     ///
-    /// For a combined set, a breakdown of the separate PDF and parameter variation uncertainties is available.
-    /// The parameter variation uncertainties are computed from the last 2*n members of the set, with n the number of parameters.
-    PDFUncertainty uncertainty(const std::vector<double>& values, double cl=100*boost::math::erf(1/sqrt(2)), bool alternative=false) const;
+    /// For a combined set, a breakdown of the separate PDF and parameter
+    /// variation uncertainties is available.  The parameter variation
+    /// uncertainties are computed from the last 2*n members of the set, with n
+    /// the number of parameters.
+    PDFUncertainty uncertainty(const std::vector<double>& values,
+                               double cl=100*erf(1/sqrt(2)), bool alternative=false) const;
 
     /// Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
-    void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, double cl=100*boost::math::erf(1/sqrt(2)), bool alternative=false) const {
+    /// @todo For real efficiency, the chaining of these functions should be the other way around
+    void uncertainty(PDFUncertainty& rtn,
+                     const std::vector<double>& values,
+                     double cl=100*erf(1/sqrt(2)), bool alternative=false) const {
       rtn = uncertainty(values, cl, alternative);
     }
 
