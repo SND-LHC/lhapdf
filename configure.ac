@@ -43,10 +43,16 @@ AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Version.h])
 if test -z $CXXFLAGS; then
     CXXFLAGS='-O3'
 fi
-AC_PROG_CXX
 
 ## Require C++11
-AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
+AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
+
+## Substitute compiler flags for the lhapdf-config script
+LHAPDF_CXX="$CXX"
+AC_SUBST(LHAPDF_CXX)
+LHAPDF_CXXFLAGS="$CXXFLAGS"
+AC_SUBST(LHAPDF_CXXFLAGS)
 
 AC_PROG_CC
 AC_PROG_INSTALL

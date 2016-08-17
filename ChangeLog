@@ -1,3 +1,9 @@
+2016-08-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* All Boost usage removed except multi_array.
+
+	* Propagate C++11 compiler definition to Cython build and lhapdf-config; add --cxx flag to lhapdf-config.
+
 2016-08-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add normal and chi-squared quantile functions, and incomplete
