@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.1.6],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.2.0alpha1],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -137,16 +137,9 @@ fi
 
 ## Boost utility library
 BOOST_REQUIRE([1.41.0])
-dnl BOOST_FOREACH
-dnl BOOST_BUG_IN_FOREACH
-dnl BOOST_SMART_PTR
 BOOST_STRING_ALGO
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
-BOOST_FIND_HEADER([boost/range.hpp])
-BOOST_FIND_HEADER([boost/bind.hpp])
-BOOST_FIND_HEADER([boost/random.hpp])
-BOOST_FIND_HEADER([boost/math/distributions/chi_squared.hpp])
-BOOST_FIND_HEADER([boost/math/special_functions/erf.hpp])
+dnl BOOST_FIND_HEADER([boost/random.hpp])
 
 
 ## Export base compiler flags
