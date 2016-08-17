@@ -177,10 +177,8 @@ namespace LHAPDF {
 
   template <>
   inline std::vector<std::string> Info::get_entry_as(const std::string& key) const {
-    const string& s = get_entry(key);
-    vector<string> rtn;
-    split(rtn, s, is_any_of(","), token_compress_on);
-    return rtn;
+    static const string delim = ",";
+    return split(get_entry(key), delim);
   }
 
   template <>

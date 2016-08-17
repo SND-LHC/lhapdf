@@ -94,7 +94,7 @@ namespace LHAPDF {
       NumParser nparser; double ftoken; int itoken;
       while (getline(file, line)) {
         // Trim the current line to ensure that there is no effect of leading spaces, etc.
-        trim(line);
+        line = trim(line);
         prevline = line; // used to test the last line after the while loop fails
 
         // If the line is commented out, increment the line number but not the block line

@@ -80,7 +80,7 @@ namespace LHAPDF {
 
     /// Get the type of PDF errors in this set (replicas, symmhessian, hessian, custom, etc.)
     std::string errorType() const {
-      return to_lower_copy(get_entry("ErrorType", "UNKNOWN"));
+      return to_lower(get_entry("ErrorType", "UNKNOWN"));
     }
 
     /// @brief Get the confidence level of the Hessian eigenvectors, in percent.

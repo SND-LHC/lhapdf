@@ -137,9 +137,7 @@ fi
 
 ## Boost utility library
 BOOST_REQUIRE([1.41.0])
-BOOST_STRING_ALGO
-BOOST_FIND_HEADER([boost/lexical_cast.hpp])
-dnl BOOST_FIND_HEADER([boost/random.hpp])
+BOOST_FIND_HEADER([boost/random.hpp])
 
 
 ## Export base compiler flags

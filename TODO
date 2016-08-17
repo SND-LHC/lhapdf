@@ -19,23 +19,18 @@ VERSION 6.2.0
 
 - **Remove remaining Boost dependencies / move to C++11 (AB)**
 
-   Boost was being more trouble than it was worth, but maybe now that we're not
-   using the filesystem stuff it is ok. Full removal would require several changes:
-   - string algs: replace with basic C(++) string code
-   - multiarray: replace with Martin's array/SSE code
-   - lexical_cast: stringstream wrappers to_str, from_str (and C++11)
-   - bind: C++11 / removal
-   - erf/chisq_quantile: C++11 and Boost/ROOT/Ceres translation
+   Only remaining use is multiarray: replace with Martin's array/SSE code
 
    Check that unique_ptr and shared_ptr semantics (e.g. ptr-populating code) work as intended.
 
-- **Nicer Fortran interface**
+
+- **New Fortran API**
 
    Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
    away from the the theory world. Suggest prefixing all functions with "lhapdf"
    and basing it on the PDFManager, with explicit commands for switching current PDF.
 
-   Ideas: require nset and nmem args for *all* commands, i.e. no "current" set slot.
+   Ideas: uniform "lhapdf_" prefix, require nset and nmem args for *all* commands, i.e. no "current" set slot.
 
    Requests: way to get LHAPDF ID from current set/PDF. Arbitrary PIDs.
 

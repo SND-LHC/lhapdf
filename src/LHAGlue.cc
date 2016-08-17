@@ -11,6 +11,7 @@
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Version.h"
 #include "LHAPDF/LHAGlue.h"
+#include <cstring>
 
 using namespace std;
 
@@ -252,7 +253,7 @@ extern "C" {
     // Handle extensions
     string path = LHAPDF::file_extn(p).empty() ? p : LHAPDF::file_stem(p);
     /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
-    if (boost::algorithm::to_lower_copy(path) == "cteq6ll") path = "cteq6l1";
+    if (LHAPDF::to_lower(path) == "cteq6ll") path = "cteq6l1";
     // Create the PDF set with index nset
     // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     ACTIVESETS[nset] = PDFSetHandler(path); ///< @todo Will be wrong if a structured path is given
@@ -275,7 +276,7 @@ extern "C" {
     // Remove trailing whitespace
     name.erase( std::remove_if( name.begin(), name.end(), ::isspace ), name.end() );
     /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
-    if (boost::algorithm::to_lower_copy(name) == "cteq6ll") name = "cteq6l1";
+    if (LHAPDF::to_lower(name) == "cteq6ll") name = "cteq6l1";
     // Create the PDF set with index nset
     // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
     ACTIVESETS[nset] = PDFSetHandler(name);

@@ -83,7 +83,7 @@ namespace LHAPDF {
     //   // Split into multiplicative parts
     //   vector<string> parts;
     //   iter_split(parts, pdfsstr, boost::algorithm::first_finder(" * "));
-    //   for (string& part : parts) trim(part);
+    //   for (string& part : parts) part = trim(part);
 
     //   // Expand each part into a single PDF spec and append it
     //   vector<string> rtn;
@@ -133,7 +133,7 @@ namespace LHAPDF {
     pair<string,int> decodePDFStr(const string& pdfstr) {
       int nmem = 0;
       const size_t slashpos = pdfstr.find("/");
-      const string setname = trim_copy(pdfstr.substr(0, slashpos));
+      const string setname = trim(pdfstr.substr(0, slashpos));
       try {
         if (slashpos != string::npos) {
           const string smem = pdfstr.substr(slashpos+1);
@@ -193,7 +193,7 @@ namespace LHAPDF {
 
   Interpolator* mkInterpolator(const string& name) {
     // Convert name to lower case for comparisons
-    const string iname = to_lower_copy(name);
+    const string iname = to_lower(name);
     if (iname == "linear")
       return new BilinearInterpolator();
     else if (iname == "cubic")
@@ -209,7 +209,7 @@ namespace LHAPDF {
 
   Extrapolator* mkExtrapolator(const string& name) {
     // Convert name to lower case for comparisons
-    const string iname = to_lower_copy(name);
+    const string iname = to_lower(name);
     if (iname == "nearest")
       return new NearestPointExtrapolator();
     else if (iname == "error")
@@ -224,7 +224,7 @@ namespace LHAPDF {
   AlphaS* mkAlphaS(const Info& info) {
     AlphaS* as = 0;
 
-    const string itype = to_lower_copy(info.get_entry("AlphaS_Type"));
+    const string itype = to_lower(info.get_entry("AlphaS_Type"));
     if (itype == "analytic") as = new AlphaS_Analytic();
     else if (itype == "ode") as = new AlphaS_ODE();
     else if (itype == "ipol") as = new AlphaS_Ipol();
@@ -280,7 +280,7 @@ namespace LHAPDF {
       throw MetadataError("All quark masses required (either as AlphaS_MQ or MQ) for AlphaS.");
     }
 
-    const string fscheme = to_lower_copy(info.get_entry("AlphaS_FlavorScheme", info.get_entry("FlavorScheme", "variable"))); // default is VFNS
+    const string fscheme = to_lower(info.get_entry("AlphaS_FlavorScheme", info.get_entry("FlavorScheme", "variable"))); // default is VFNS
     const int nflavs = info.get_entry_as<int>("AlphaS_NumFlavors", info.get_entry_as<int>("NumFlavors", 5)); // default is 5 flavour evolution
     if (fscheme == "fixed") as->setFlavorScheme(AlphaS::FIXED, nflavs);
     else if (fscheme == "variable") as->setFlavorScheme(AlphaS::VARIABLE, nflavs);

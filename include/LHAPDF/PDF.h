@@ -435,7 +435,7 @@ namespace LHAPDF {
 
     /// Get the type of PDF member that this object represents (central, error)
     std::string type() const {
-      return to_lower_copy(info().get_entry("PdfType"));
+      return to_lower(info().get_entry("PdfType"));
     }
 
     //@}

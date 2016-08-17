@@ -8,7 +8,6 @@
 #define LHAPDF_Paths_H
 
 #include "LHAPDF/Utils.h"
-#include <dirent.h>
 
 namespace LHAPDF {
 

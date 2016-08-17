@@ -27,7 +27,7 @@ namespace LHAPDF {
         ifstream file(indexpath.c_str());
         string line;
         while (getline(file, line)) {
-          trim(line);
+          line = trim(line);
           if (line.empty() || line.find("#") == 0) continue;
           istringstream tokens(line);
           int id; string setname;

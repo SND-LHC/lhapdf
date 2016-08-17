@@ -6,24 +6,26 @@
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Info.h"
 #include "LHAPDF/Config.h"
+#include <dirent.h>
 
 namespace LHAPDF {
 
 
   std::vector<std::string> paths() {
-    vector<string> rtn;
     // Use LHAPDF_DATA_PATH for all path storage
     char* pathsvar = getenv("LHAPDF_DATA_PATH");
     // But fall back to looking in LHAPATH if the preferred var is not defined
     if (pathsvar == 0) pathsvar = getenv("LHAPATH");
+    const string spathsvar = (pathsvar != 0) ? pathsvar : "";
     // Split the paths variable as usual
-    if (pathsvar != 0) split(rtn, pathsvar, is_any_of(":"), token_compress_on);
+    vector<string> rtn = split(spathsvar, ":");
     // Look in the install prefix after other paths are exhausted, if not blocked by a trailing ::
-    if (pathsvar == 0 || strlen(pathsvar) < 2 || string(pathsvar).substr(strlen(pathsvar)-2) != "::") {
+    /// @todo Move some logic to starts_with and ends_with functions in Utils.h
+    if (rtn.empty() || spathsvar.length() < 2 || spathsvar.substr(spathsvar.length()-2) != "::") {
       const string datadir = LHAPDF_DATA_PREFIX;
       rtn.push_back(datadir / "LHAPDF");
     }
-   return rtn;
+    return rtn;
   }
 
 

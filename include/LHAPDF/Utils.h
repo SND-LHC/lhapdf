@@ -20,9 +20,6 @@
 #include <fstream>
 #include <limits>
 #include <cmath>
-// Boost includes
-#include "boost/lexical_cast.hpp"
-#include "boost/algorithm/string.hpp"
 // System includes
 #include "sys/stat.h"
 
@@ -31,26 +28,50 @@
 namespace LHAPDF {
 
 
-  // Allow implicit use of the std and boost namespaces within namespace LHAPDF
+  // Allow implicit use of the std namespace within namespace LHAPDF
   using namespace std;
-  using namespace boost;
 
 
   /// @name String handling utility functions
   //@{
 
+  /// Local alternative to Boost bad_lexical_cast
+  struct bad_lexical_cast : public std::runtime_error {
+    bad_lexical_cast(const std::string& what) : std::runtime_error(what) {}
+  };
+
+  /// @brief Convert between any types via stringstream
+  ///
+  /// Local alternative to Boost lexical_cast
+  template<typename T, typename U>
+  T lexical_cast(const U& in) {
+    try {
+      std::stringstream ss;
+      ss << in;
+      T out;
+      ss >> out;
+      return out;
+    } catch (const std::exception& e) {
+      throw bad_lexical_cast(e.what());
+    }
+  }
+
   /// Make a string representation of @a val
   template <typename T>
   inline std::string to_str(const T& val) {
-    return boost::lexical_cast<string>(val);
+    return lexical_cast<string>(val);
   }
 
   /// Make a string representation of a vector @a vec
   template <typename T>
   inline std::string to_str(const std::vector<T>& vec) {
-    vector<string> svec; svec.reserve(vec.size());
-    for (const T& t : vec) svec.push_back( to_str(t) );
-    return join(svec, ",");
+    string rtn = "[";
+    for (size_t i = 0; i < vec.size(); ++i) {
+      rtn += to_str(vec[i]);
+      if (i < vec.size()-1) rtn += ", ";
+    }
+    rtn += "]";
+    return rtn;
   }
 
   /// Format an integer @a val as a zero-padded string of length @a nchars
@@ -58,6 +79,31 @@ namespace LHAPDF {
     stringstream ss;
     ss << setfill('0') << setw(nchars) << val;
     return ss.str();
+  }
+
+  /// Concatenate strings with separator strings between each element
+  inline std::string join(const std::vector<std::string>& svec, const std::string& sep) {
+    string rtn;
+    for (size_t i = 0; i < svec.size(); ++i) {
+      rtn += svec[i];
+      if (i < svec.size()-1) rtn += ", ";
+    }
+    return rtn;
+  }
+
+  /// Split a string by a given separator
+  inline std::vector<std::string> split(const std::string& s, const std::string& sep) {
+    vector<string> rtn;
+    string tmp = s; // non-const working copy, to be incrementally truncated
+    while (true) {
+      const size_t delim_pos = tmp.find(sep);
+      if (delim_pos == string::npos) break;
+      const string s = tmp.substr(0, delim_pos);
+      if (!s.empty()) rtn.push_back(s); // Don't insert "empties"
+      tmp.replace(0, delim_pos+1, ""); // Remove already-processed part
+    }
+    if (!tmp.empty()) rtn.push_back(tmp); // Don't forget the trailing component!
+    return rtn;
   }
 
   /// Does a string @a s contain the @a sub substring?
@@ -78,6 +124,25 @@ namespace LHAPDF {
   /// How many times does a string @a s contain the character @a c?
   inline size_t countchar(const std::string& s, const char c) {
     return std::count(s.begin(), s.end(), c);
+  }
+
+  /// Strip leading and trailing spaces (not in-place)
+  inline std::string trim(const std::string& s) {
+    return s.substr(s.find_first_not_of(" "), s.find_last_not_of(" "));
+  }
+
+  /// Convert a string to lower-case (not in-place)
+  inline std::string to_lower(const std::string& s) {
+    string rtn = s;
+    transform(rtn.begin(), rtn.end(), rtn.begin(), (int(*)(int)) tolower);
+    return rtn;
+  }
+
+  /// Convert a string to upper-case (not in-place)
+  inline std::string to_upper(const std::string& s) {
+    string rtn = s;
+    transform(rtn.begin(), rtn.end(), rtn.begin(), (int(*)(int)) toupper);
+    return rtn;
   }
 
   //@}
@@ -106,10 +171,8 @@ namespace LHAPDF {
 
   /// Operator for joining strings @a a and @a b with filesystem separators
   inline std::string operator / (const std::string& a, const std::string& b) {
-    string rtn = a + "/" + b;
-    while (contains(rtn, "//"))
-      replace_first(rtn, "//", "/");
-    return rtn;
+    // Ensure that a doesn't end with a slash, and b doesn't start with one, to avoid "//"
+    return a.substr(0, a.rfind("/")) + "/" + b.substr(b.rfind("/")+1);
   }
 
   /// Get the basename (i.e. terminal file name) from a path @a p
