@@ -72,19 +72,6 @@ will need the Python development headers to be installed (e.g. via the
 `configure`, no Python extension module will be built.
 
 
-<!--
-@subsection cmake CMake (old versions only)
-
-@note In version 6.0.5, the CMake system (i.e. `cmake` command) must also be
-installed, in order to build an internal copy of the yaml-cpp parser library
-(http://code.google.com/p/yaml-cpp/) used to read the PDF metadata which is in
-YAML format (http://www.yaml.org). Before this you needed to install an external
-version of yaml-cpp. Both these requirements were removed in version 6.1.0,
-where a special version of yaml-cpp is built internally without needing CMake at
-all: you should upgrade to the v6.1 releases to make life easy!
--->
-
-
 @section lhapdf Building LHAPDF
 
 If you have downloaded a release tarball for LHAPDF 6.X.Y, unpack it with `tar

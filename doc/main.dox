@@ -103,11 +103,40 @@ Many code usage examples are collected here:
 
 - Code examples: @ref codeexamples
 
+
+@subsection buildagainst Building against LHAPDF
+
+Using LHAPDF through Python just requires that the LHAPDF library and module
+be installed, then you can use it: there are no compilation or linking complexities.
+For C++ and Fortran, however, you need to compile your code against LHAPDF,
+which introduces some extra technical hurdles.
+
 Building your own program that uses LHAPDF6 is aided by the `lhapdf-config`
 script which can among other things produce the compiler flags needed to use
-LHAPDF. Use it like this:
+LHAPDF. These include the `-I/path/to/include` flag to indicate the position
+of installed LHAPDF header files, and `-L/path/to/lib -lLHAPDF` flags for the
+library linker. The script is used in a compilation/linking command like this:
 
     g++ mycode.cc -o myexe `lhapdf-config --cflags --ldflags`
+
+If you are compiling a Fortran program against LHAPDF, the header files are
+not relevant, but the library details are. You will also need to explicitly
+link against the C++ standard library, which is done implicitly by C++ compilers:
+
+    gfortran mycode.f90 -o myexe `lhapdf-config --ldflags` -lstdc++
+
+
+@subsection runtimeld Runtime symbol resolution
+
+Finally, note that LHAPDF is primarily available as a "dynamic" shared library,
+i.e. a `.so` or `.dylib` (Mac) rather than a static `.a` library. The dynamic
+library needs to be found at runtime as well as at compile/link time.
+
+If your code compiled fine, but you get errors about "missing symbol" when you
+try to run your program, you probably need to add the LHAPDF lib directory path
+to your `LD_LIBRARY_PATH` environment variable (or `DYLD_LIBRARY_PATH` on Macs):
+
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/lib
 
 
 @subsection strip Trick to remove unwanted PDF members
