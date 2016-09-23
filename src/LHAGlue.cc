@@ -446,14 +446,14 @@ extern "C" {
 
   // Metadata functions
 
-  /// Get the number of error members in the set (with special treatment for single member sets)
+  /// Get the number of error members in the set
   void numberpdfm_(const int& nset, int& numpdf) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // Set equal to the number of members  for the requested set
     numpdf=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumMembers");
-    // Reproduce old LHAPDF v5 behaviour, i.e. subtract 1 if more than 1 member set
-    if (numpdf > 1) numpdf -= 1;
+    // Reproduce old LHAPDF v5 behaviour, i.e. subtract 1
+    numpdf -= 1;
     // Update current set focus
     CURRENTSET = nset;
   }
