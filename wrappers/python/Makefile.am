@@ -25,7 +25,7 @@ fix-out-of-source: $(FIXSOURCES)
 
 if WITH_PYTHON
 
-PYEXT_ENV = CC=$(CC) CXX=$(CXX)
+PYEXT_ENV = CC="$(CC)" CXX="$(CXX)"
 
 ## Always force setup.py, it's not good at guessing what needs to rebuild
 all-local: fix-out-of-source
