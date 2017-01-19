@@ -10,7 +10,7 @@ namespace LHAPDF {
 
 
   PDFSet::PDFSet(const string& setname) {
-    /// @todo Hmm, this relies on the standard search path system ... no specific-path API.
+    /// @todo Hmm, this relies on the standard search path system ... currently no way to provide a absolute path
     _setname = setname;
     const string setinfopath = findpdfsetinfopath(setname);
     if (!file_exists(setinfopath))

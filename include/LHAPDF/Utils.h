@@ -128,7 +128,10 @@ namespace LHAPDF {
 
   /// Strip leading and trailing spaces (not in-place)
   inline std::string trim(const std::string& s) {
-    return s.substr(s.find_first_not_of(" "), s.find_last_not_of(" "));
+    const size_t firstnonspacepos = s.find_first_not_of(" ");
+    const size_t lastnonspacepos = s.find_last_not_of(" ");
+    if (firstnonspacepos == std::string::npos) return "";
+    return s.substr(firstnonspacepos, lastnonspacepos-firstnonspacepos+1);
   }
 
   /// Convert a string to lower-case (not in-place)
@@ -172,7 +175,9 @@ namespace LHAPDF {
   /// Operator for joining strings @a a and @a b with filesystem separators
   inline std::string operator / (const std::string& a, const std::string& b) {
     // Ensure that a doesn't end with a slash, and b doesn't start with one, to avoid "//"
-    return a.substr(0, a.rfind("/")) + "/" + b.substr(b.rfind("/")+1);
+    const string anorm = (a.find("/") != std::string::npos) ? a.substr(0, a.find_last_not_of("/")+1) : a;
+    const string bnorm = (b.find("/") != std::string::npos) ? b.substr(b.find_first_not_of("/")) : b;
+    return anorm + "/" + bnorm;
   }
 
   /// Get the basename (i.e. terminal file name) from a path @a p

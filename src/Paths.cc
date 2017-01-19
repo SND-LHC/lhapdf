@@ -20,10 +20,9 @@ namespace LHAPDF {
     // Split the paths variable as usual
     vector<string> rtn = split(spathsvar, ":");
     // Look in the install prefix after other paths are exhausted, if not blocked by a trailing ::
-    /// @todo Move some logic to starts_with and ends_with functions in Utils.h
-    if (rtn.empty() || spathsvar.length() < 2 || spathsvar.substr(spathsvar.length()-2) != "::") {
-      const string datadir = LHAPDF_DATA_PREFIX;
-      rtn.push_back(datadir / "LHAPDF");
+    if (spathsvar.length() < 2 || spathsvar.substr(spathsvar.length()-2) != "::") {
+      const string datadir = string(LHAPDF_DATA_PREFIX) / "LHAPDF";
+      rtn.push_back(datadir );
     }
     return rtn;
   }
@@ -37,7 +36,7 @@ namespace LHAPDF {
   string findFile(const string& target) {
     if (target.empty()) return "";
     for (const string& base : paths()) {
-      const string p = startswith(target, "/") ? target : base / target;
+      const string p = (startswith(target, "/") || startswith(target, ".")) ? target : base / target;
       // if (verbosity() > 2) cout << "Trying file: " << p << endl;
       if (file_exists(p)) {
         // if (verbosity() > 1) cout << "Found file: " << p << endl;
