@@ -336,5 +336,16 @@ namespace LHAPDF {
     return mkAlphaS(*info);
   }
 
+  /// @todo Merge to mkAlphaS(0)?
+  AlphaS* mkBareAlphaS(const std::string& type) {
+    AlphaS* as = 0;
 
+    const string itype = to_lower(type);
+    if (itype == "analytic") as = new AlphaS_Analytic();
+    else if (itype == "ode") as = new AlphaS_ODE();
+    else if (itype == "ipol") as = new AlphaS_Ipol();
+    else throw FactoryError("Undeclared AlphaS requested: " + itype);
+
+    return as;
+  }
 }

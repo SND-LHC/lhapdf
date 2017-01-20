@@ -184,6 +184,15 @@ namespace LHAPDF {
   /// the caller is responsible for deletion of the created object.
   AlphaS* mkAlphaS(int lhaid);
 
+  /// @brief Make an AlphaS object of the requested type without a PDF reference
+  ///
+  /// No values are initialised and have to be configured by the caller.
+  ///
+  /// The caller is responsible for deletion of the created object.
+  ///
+  /// @todo Actually, should we just make this mkAlphaS(0)?
+  AlphaS* mkBareAlphaS(const std::string& type);
+
   //@}
 
 

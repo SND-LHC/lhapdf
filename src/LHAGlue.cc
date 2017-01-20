@@ -256,7 +256,8 @@ extern "C" {
     if (LHAPDF::to_lower(path) == "cteq6ll") path = "cteq6l1";
     // Create the PDF set with index nset
     // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-    ACTIVESETS[nset] = PDFSetHandler(path); ///< @todo Will be wrong if a structured path is given
+    if (path != ACTIVESETS[nset].setname)
+      ACTIVESETS[nset] = PDFSetHandler(path); ///< @todo Will be wrong if a structured path is given
     CURRENTSET = nset;
   }
   /// Load a PDF set (non-multiset version)
@@ -279,7 +280,8 @@ extern "C" {
     if (LHAPDF::to_lower(name) == "cteq6ll") name = "cteq6l1";
     // Create the PDF set with index nset
     // if (ACTIVESETS.find(nset) == ACTIVESETS.end())
-    ACTIVESETS[nset] = PDFSetHandler(name);
+    if (name != ACTIVESETS[nset].setname)
+      ACTIVESETS[nset] = PDFSetHandler(name);
     // Update current set focus
     CURRENTSET = nset;
   }
@@ -443,14 +445,14 @@ extern "C" {
 
   // Metadata functions
 
-  /// Get the number of error members in the set (with special treatment for single member sets)
+  /// Get the number of error members in the set
   void numberpdfm_(const int& nset, int& numpdf) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // Set equal to the number of members  for the requested set
     numpdf=  ACTIVESETS[nset].activemember()->info().get_entry_as<int>("NumMembers");
-    // Reproduce old LHAPDF v5 behaviour, i.e. subtract 1 if more than 1 member set
-    if (numpdf > 1) numpdf -= 1;
+    // Reproduce old LHAPDF v5 behaviour, i.e. subtract 1
+    numpdf -= 1;
     // Update current set focus
     CURRENTSET = nset;
   }
@@ -724,24 +726,30 @@ extern "C" {
   /// PDFLIB initialisation function
   void pdfset_(const char* par, const double* value, int parlength) {
 
+    string my_par(par), message;
+    int id;
     // Identify the calling program (yuck!)
-    string my_par(par);
     if (my_par.find("NPTYPE") != string::npos) {
-      cout << "==== LHAPDF6 USING PYTHIA-TYPE LHAGLUE INTERFACE ====" << endl;
+      message = "==== LHAPDF6 USING PYTHIA-TYPE LHAGLUE INTERFACE ====";
       // Take PDF ID from value[2]
-      ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
+      id = value[2]+1000*value[1];
     } else if (my_par.find("HWLHAPDF") != string::npos) {
-      cout << "==== LHAPDF6 USING HERWIG-TYPE LHAGLUE INTERFACE ====" << endl;
+      message = "==== LHAPDF6 USING HERWIG-TYPE LHAGLUE INTERFACE ====";
       // Take PDF ID from value[0]
-      ACTIVESETS[1] = PDFSetHandler(value[0]);
+      id = value[0];
     } else if (my_par.find("DEFAULT") != string::npos) {
-      cout << "==== LHAPDF6 USING DEFAULT-TYPE LHAGLUE INTERFACE ====" << endl;
+      message = "==== LHAPDF6 USING DEFAULT-TYPE LHAGLUE INTERFACE ====";
       // Take PDF ID from value[0]
-      ACTIVESETS[1] = PDFSetHandler(value[0]);
+      id = value[0];
     } else {
-      cout << "==== LHAPDF6 USING PDFLIB-TYPE LHAGLUE INTERFACE ====" << endl;
+      message = "==== LHAPDF6 USING PDFLIB-TYPE LHAGLUE INTERFACE ====";
       // Take PDF ID from value[2]
-      ACTIVESETS[1] = PDFSetHandler(value[2]+1000*value[1]);
+      id = value[2]+1000*value[1];
+    }
+    pair<string, int> set_id = LHAPDF::lookupPDF(id);
+    if (set_id.first != ACTIVESETS[1].setname || set_id.second != ACTIVESETS[1].currentmem) {
+      if (LHAPDF::verbosity() > 0) cout << message << endl;
+      ACTIVESETS[1] = PDFSetHandler(id);
     }
 
     CURRENTSET = 1;
@@ -928,7 +936,11 @@ void LHAPDF::initPDFSet(int nset, const string& filename, SetType type, int nmem
 }
 
 void LHAPDF::initPDFSet(int nset, int setid, int nmem) {
-  ACTIVESETS[nset] = PDFSetHandler(setid); //
+  pair<string, int> set_id = LHAPDF::lookupPDF(setid+nmem);
+  if (set_id.second != nmem)
+    throw LHAPDF::UserError("Inconsistent member numbers: " + LHAPDF::to_str(set_id.second) + " != " + LHAPDF::to_str(nmem));
+  if (set_id.first != ACTIVESETS[nset].setname || nmem != ACTIVESETS[nset].currentmem)
+      ACTIVESETS[nset] = PDFSetHandler(setid+nmem);
   CURRENTSET = nset;
 }
 
