@@ -261,8 +261,8 @@ approved. Unvalidated sets may still be used, but please take care.
     <tr style="background-color: #efe;"><td>42200</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_5n_as_nlo.tar.gz">abm11_5n_as_nlo</a></td><td>21</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>42230</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm11_5n_as_nnlo.tar.gz">abm11_5n_as_nnlo</a></td><td>17</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>42300</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_3_nnlo.tar.gz">abm12lhc_3_nnlo</a></td><td>29</td><td>2</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>42330</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_4_nnlo.tar.gz">abm12lhc_4_nnlo</a></td><td>29</td><td>2</td><td></td></tr>
-    <tr style="background-color: #efe;"><td>42360</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_5_nnlo.tar.gz">abm12lhc_5_nnlo</a></td><td>29</td><td>2</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42330</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_4_nnlo.tar.gz">abm12lhc_4_nnlo</a></td><td>29</td><td>3</td><td></td></tr>
+    <tr style="background-color: #efe;"><td>42360</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/abm12lhc_5_nnlo.tar.gz">abm12lhc_5_nnlo</a></td><td>29</td><td>3</td><td></td></tr>
     <tr style="background-color: #efe;"><td>42400</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/ABMP15_3_nnlo.tar.gz">ABMP15_3_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>42430</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/ABMP15_4_nnlo.tar.gz">ABMP15_4_nnlo</a></td><td>29</td><td>1</td><td></td></tr>
     <tr style="background-color: #efe;"><td>42460</td><td><a href="http://www.hepforge.org/archive/lhapdf/pdfsets/6.1/ABMP15_5_nnlo.tar.gz">ABMP15_5_nnlo</a></td><td>29</td><td>1</td><td></td></tr>

@@ -242,8 +242,8 @@
 42200 abm11_5n_as_nlo 1
 42230 abm11_5n_as_nnlo 1
 42300 abm12lhc_3_nnlo 2
-42330 abm12lhc_4_nnlo 2
-42360 abm12lhc_5_nnlo 2
+42330 abm12lhc_4_nnlo 3
+42360 abm12lhc_5_nnlo 3
 42400 ABMP15_3_nnlo 1
 42430 ABMP15_4_nnlo 1
 42460 ABMP15_5_nnlo 1
