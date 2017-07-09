@@ -17,14 +17,9 @@ UNVERSIONED
 VERSION 6.2.0
 -------------
 
-- **DGrell configure bugfix**
-
+- **DGrell C++11 configure bugfix**
 
 - **Check LHAGlue getthresholdm_ etc.**
-
-
-- **Remove CompositePDF**
-
 
 - **New Fortran API**
 
