@@ -130,7 +130,7 @@ namespace LHAPDF {
           } else {
             if (iblockline == 4) { // on the first line of the xf block, resize the arrays
               ipid_xfs.resize(pids.size());
-              const size_t subgridsize = xs.size() * q2s.size();
+              const size_t subgridsize = xs.size()*q2s.size();
               for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
                 ipid_xfs[ipid].reserve(subgridsize);
               }
@@ -168,7 +168,7 @@ namespace LHAPDF {
               // Create the 2D array with the x and Q2 knot positions
               arraynf[pid] = KnotArray1F(xs, q2s);
               // Populate the xf data array
-              arraynf[pid].xfs().assign(ipid_xfs[ipid].begin(), ipid_xfs[ipid].end());
+              arraynf[pid].setxfs(ipid_xfs[ipid]);
             }
           }
 

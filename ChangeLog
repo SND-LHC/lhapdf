@@ -1,3 +1,7 @@
+2017-07-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Finally removed Boost multi_array... and it was sooooo easy. Sorry for the delay! Validated.
+
 2016-08-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* All Boost usage removed except multi_array.
