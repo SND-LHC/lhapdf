@@ -265,7 +265,7 @@ for lha5name in args:
         ## Remove the Qs array, since using it now would be inconsistent
         del qs
 
-        ## Use the PDF grid's Q knot values for alpha_s interpolation, with subgrid edge doubling and mC, mB, mZ included 
+        ## Use the PDF grid's Q knot values for alpha_s interpolation, with subgrid edge doubling and mC, mB, mZ included
         if not opts.RESAMPLE_ALPHAS:
             alphas_qs = []
             for qs in qgrids:
@@ -386,6 +386,7 @@ for lha5name in args:
         for igrid, qs in enumerate(qgrids):
             # print qs
             xfs = []
+            ## IMPORTANT! The grid lines are ordered by a nested loop of Qs inside xs, i.e. each ix stride is |iQ|
             for ix, x in enumerate(xs):
                 for iq, q in enumerate(qs):
                     # if x != 1.0:
