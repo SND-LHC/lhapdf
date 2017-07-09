@@ -48,7 +48,7 @@ namespace LHAPDF {
   ///
   /// The set name and member ID are returned as an std::pair.
   /// If lookup fails, a pair ("", -1) is returned.
-  inline pair<std::string, int> lookupPDF(int lhaid) {
+  inline std::pair<std::string, int> lookupPDF(int lhaid) {
     map<int, string>::iterator it = getPDFIndex().upper_bound(lhaid);
     string rtnname = "";
     int rtnmem = -1;
@@ -58,6 +58,25 @@ namespace LHAPDF {
       rtnmem = lhaid - it->first; // the member ID is the offset from the lookup ID
     }
     return make_pair(rtnname, rtnmem);
+  }
+
+
+  /// @brief Decode a single PDF member ID string into a setname,memid pair
+  ///
+  /// @note A trivial <SET,MEM> decoding rather than a "rea; lookup", for convenience & uniformity.
+  inline std::pair<std::string,int> lookupPDF(const std::string& pdfstr) {
+    int nmem = 0;
+    const size_t slashpos = pdfstr.find("/");
+    const string setname = trim(pdfstr.substr(0, slashpos));
+    try {
+      if (slashpos != string::npos) {
+        const string smem = pdfstr.substr(slashpos+1);
+        nmem = lexical_cast<int>(smem);
+      }
+    } catch (...) {
+      throw UserError("Could not parse PDF identity string " + pdfstr);
+    }
+    return make_pair(setname, nmem);
   }
 
 
@@ -75,11 +94,11 @@ namespace LHAPDF {
   }
 
 
-  /// @todo Add this when the decodePDFStr function is finalised and can be moved out of Factories.cc
-  // inline int lookupLHAPDFID(const std::string& setname_nmem) {
-  //   std::pair<std::string,int> idpair = decodePDFStr(setname_nmem);
-  //   return lookupLHAPDFID(idpair.first, idpair.second);
-  // }
+  /// Look up the member's LHAPDF index from a setname/member string.
+  inline int lookupLHAPDFID(const std::string& setname_nmem) {
+    const pair<string,int> idpair = lookupPDF(setname_nmem);
+    return lookupLHAPDFID(idpair.first, idpair.second);
+  }
 
   //@}
 
