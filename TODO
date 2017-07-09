@@ -17,9 +17,7 @@ UNVERSIONED
 VERSION 6.2.0
 -------------
 
-- **DGrell C++11 configure bugfix**
-
-- **Check LHAGlue getthresholdm_ etc.**
+- **Add support for old extrapolation-freeze param setting**
 
 - **New Fortran API**
 
