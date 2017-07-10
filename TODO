@@ -23,9 +23,11 @@ VERSION 6.2.0
    away from the the theory world. Suggest prefixing all functions with "lhapdf"
    and basing it on the PDFManager, with explicit commands for switching current PDF.
 
-   Ideas: uniform "lhapdf_" prefix, require nset and nmem args for *all* commands, i.e. no "current" set slot.
+   Ideas: uniform "lhapdf_" prefix, require nset and nmem args for *all*
+   commands, i.e. no "current" set slot.
 
-   Requests: way to get LHAPDF ID from current set/PDF. Arbitrary PIDs. Extrapolation & alpha_s control.
+   Requests: way to get LHAPDF ID from current set/PDF. Arbitrary
+   PIDs. Extrapolation & alpha_s control.
 
 
 
