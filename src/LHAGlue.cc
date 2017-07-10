@@ -131,7 +131,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
   int CURRENTSET = 0;
 
 
-  /// Useful C-string -> Fortran-string converter
+  /// C-string -> Fortran-string converter
   // Credit: https://stackoverflow.com/questions/10163485/passing-char-arrays-from-c-to-fortran
   void cstr_to_fstr(const char* cstring, char* fstring, std::size_t fstring_len) {
     std::size_t inlen = std::strlen(cstring);
@@ -141,6 +141,18 @@ namespace { //< Unnamed namespace to restrict visibility to this file
     std::copy(cstring, cstring+cpylen, fstring);
     std::fill(fstring+cpylen, fstring+fstring_len, ' ');
   }
+
+
+  /// Fortran-string -> C++-string converter
+  string fstr_to_ccstr(const char* fstring, const std::size_t fstring_len) {
+    char* s = new char[fstring_len+1];
+    strncpy(s, fstring, fstring_len);
+    s[fstring_len] = '\0';
+    string rtn(s);
+    delete[] s;
+    return rtn;
+  }
+
 
 }
 
@@ -196,13 +208,26 @@ extern "C" {
   void lhaprint_(int& a) {  }
 
 
-  /// Set LHAPDF parameters -- does nothing in LHAPDF6!
+  /// Set LHAPDF parameters
+  ///
+  /// @note Only the verbosity parameters have any effect: PDF behaviour is not
+  /// controlled globally in LHAPDF6.
   void setlhaparm_(const char* par, int parlength) {
-    /// @todo Can any Fortran LHAPDF params be usefully mapped?
+    const string cpar = LHAPDF::to_upper(fstr_to_ccstr(par, parlength));
+    if (cpar == "NOSTAT" || cpar == "16") {
+      cerr << "WARNING: Fortran call to control LHAPDF statistics collection has no effect" << endl;
+    } else if (cpar == "LHAPDF" || cpar == "17") {
+      cerr << "WARNING: Fortran call to globally control alpha_s calculation has no effect" << endl;
+    } else if (cpar == "EXTRAPOLATE" || cpar == "18") {
+      cerr << "WARNING: Fortran call to globally control PDF extrapolation has no effect" << endl;
+    } else if (cpar == "SILENT" || cpar == "LOWKEY") {
+      LHAPDF::setVerbosity(0);
+    } else if (cpar == "19") {
+      LHAPDF::setVerbosity(1);
+    }
   }
   /// Get LHAPDF parameters -- does nothing in LHAPDF6!
   void getlhaparm_(int dummy, char* par, int parlength) {
-    /// @todo Can any Fortran LHAPDF params be usefully mapped?
     cstr_to_fstr("", par, parlength);
   }
 

@@ -17,8 +17,6 @@ UNVERSIONED
 VERSION 6.2.0
 -------------
 
-- **Add support for old extrapolation-freeze param setting**
-
 - **New Fortran API**
 
    Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
@@ -27,7 +25,7 @@ VERSION 6.2.0
 
    Ideas: uniform "lhapdf_" prefix, require nset and nmem args for *all* commands, i.e. no "current" set slot.
 
-   Requests: way to get LHAPDF ID from current set/PDF. Arbitrary PIDs.
+   Requests: way to get LHAPDF ID from current set/PDF. Arbitrary PIDs. Extrapolation & alpha_s control.
 
 
 
