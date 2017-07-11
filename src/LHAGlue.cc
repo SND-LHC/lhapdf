@@ -144,12 +144,21 @@ namespace { //< Unnamed namespace to restrict visibility to this file
 
 
   /// Fortran-string -> C++-string converter
-  string fstr_to_ccstr(const char* fstring, const std::size_t fstring_len) {
+  string fstr_to_ccstr(const char* fstring, const std::size_t fstring_len, bool spcpad=false) {
+    // Allocate space for an equivalent C-string (with an extra terminating null byte)
     char* s = new char[fstring_len+1];
+    // Copy all characters and add the terminating null byte
     strncpy(s, fstring, fstring_len);
     s[fstring_len] = '\0';
-    string rtn(s);
-    delete[] s;
+    // Replace all trailing spaces with null bytes unless explicitly stopped
+    if (!spcpad) {
+      for (size_t i = fstring_len-1; i >= 0; --i) {
+        if (s[i] != ' ') break;
+        s[i] = '\0';
+      }
+    }
+    string rtn(s); //< copy the result to a C++ string
+    delete[] s; //< clean up the dynamic array
     return rtn;
   }
 
