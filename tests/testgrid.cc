@@ -23,7 +23,8 @@ int main(int argc, char* argv[]) {
   const LHAPDF::PDF* basepdf = LHAPDF::mkPDF(setname);
   const LHAPDF::GridPDF& pdf = * dynamic_cast<const LHAPDF::GridPDF*>(basepdf);
 
-  for (const string& p : LHAPDF::paths()) cout << p << " : "; cout << endl;
+  for (const string& p : LHAPDF::paths()) cout << p << " : ";
+  cout << endl;
 
   safeprint(pdf, "Verbosity");
   safeprint(pdf, "PdfDesc");
@@ -31,7 +32,8 @@ int main(int argc, char* argv[]) {
   cout << "Flavors (str) = " << pdf.info().get_entry("Flavors") << endl;
   vector<int> pids = pdf.info().get_entry_as< vector<int> >("Flavors");
   cout << "Flavors (ints) = ";
-  for (int f : pids) cout << f << " "; cout << endl;
+  for (int f : pids) cout << f << " ";
+  cout << endl;
   cout << "Flavors (vec<int>) = " << LHAPDF::to_str(pids) << endl;
 
   cout << "x0, Q0 = " << pdf.subgrid(21, 100).xf(0, 0) << endl;
