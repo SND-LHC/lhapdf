@@ -14,22 +14,6 @@ UNVERSIONED
    Same procedure as for ATLAS and HERA 1.5. Prod Voica for an update.
 
 
-VERSION 6.2.0
--------------
-
-- **New Fortran API**
-
-   Surely something nicer than the LHAPDF5 API can be made? Fortran isn't going
-   away from the the theory world. Suggest prefixing all functions with "lhapdf"
-   and basing it on the PDFManager, with explicit commands for switching current PDF.
-
-   Ideas: uniform "lhapdf_" prefix, require nset and nmem args for *all*
-   commands, i.e. no "current" set slot.
-
-   Requests: way to get LHAPDF ID from current set/PDF. Arbitrary
-   PIDs. Extrapolation & alpha_s control.
-
-
 
 VERSION 6.2.1
 -------------
@@ -37,37 +21,21 @@ VERSION 6.2.1
 - **Optimize the grid PDF interpolator code**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
-   CPU: can reduce by factor of 13 in some use cases (only one call for a whole
-   flavour interpolation set at the same point). Below threshold? Sherpa already
-   report performance increases due to being able to interpolated one flavour at
-   a time, so perhaps this use case is not valid in all generators and could be
-   a more complexity than it is worth.
+   CPU. Caching grid index lookup, caching interpolation weights, encorage
+   vectorization.
 
 
-- **Speed up interpolation (MR)**
+- **New Fortran API completeness**
 
-   Many studies already... and Martin has done the important work to de-Boostify
-   the interpolation grid data objects.
-
-   Report of 6.0.4 slowness relative to LHAPDF5 (on CT10). Weird, we tested this
-   at version 6.0.0 and it was outperforming LHA5. Maybe it is slower for CT10
-   and ~same for CT10nlo. Juan reports that the NNPDF functions are faster.
-
-   Possible speed-ups: caching the last log(x) and log(Q2) values, caching grid
-   index lookup, caching interpolation weights, using a
-   native array implementation in place of Boost::multiarray, doing a faster
-   hybrid search in the grids, GCC builtins for SSE auto-vectorisation.
-
-   Martin has got some speed-up out of a native array implementation, and found
-   no benefit of changing the index search. Andy will look into caching.
+   Extrapolation, interpolation, and alpha_s control, and metadata & uncertainty functions in Fortran.
 
 
-- **Add an lhapdf show command**
+- **Add an 'lhapdf show' command**
 
    To print pdfsets.index + cat .info for already installed PDFs.
 
 
-- **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Berton et al)**
+- **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Bertone et al)**
 
 
 - **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
