@@ -351,20 +351,19 @@ extern "C" {
   }
 
   /// Get the alpha_s(Q2) value for set nset
-  /// @todo Return value rather than return arg? Can we do that elsewhere, too, e.g. single-value PDF xf functions?
-  double lhapdf_alphasq2_(const int& nset, const int& nmem, const double& q2) {
+  void lhapdf_alphasq2_(const int& nset, const int& nmem, const double& q2, double& alphas) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
-    return ACTIVESETS[nset].member(nmem)->alphasQ2(q2);
+    alphas = ACTIVESETS[nset].member(nmem)->alphasQ2(q2);
     // Update current set focus
     CURRENTSET = nset;
   }
 
   /// Get the alpha_s(Q) value for set nset
   /// @todo Return value rather than return arg? Can we do that elsewhere, too, e.g. single-value PDF xf functions?
-  double lhapdf_alphasq_(const int& nset, const int& nmem, const double& q) {
+  void lhapdf_alphasq_(const int& nset, const int& nmem, const double& q, double& alphas) {
     const double q2 = q*q;
-    lhapdf_alphasq2_(nset, nmem, q2);
+    lhapdf_alphasq2_(nset, nmem, q2, alphas);
   }
 
 
