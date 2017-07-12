@@ -3,7 +3,7 @@ SUBDIRS = yamlcpp
 lib_LTLIBRARIES = libLHAPDF.la
 noinst_LTLIBRARIES = libLHAPDFInfo.la libLHAPDFPaths.la
 
-AM_CPPFLAGS += -I$(top_srcdir)/include -I$(prefix)/include $(BOOST_CPPFLAGS)
+AM_CPPFLAGS += -I$(top_srcdir)/include -I$(prefix)/include
 AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib -avoid-version
 
 libLHAPDF_la_SOURCES = \
@@ -22,7 +22,7 @@ libLHAPDFInfo_la_LIBADD = $(builddir)/yamlcpp/liblhapdf-yaml-cpp.la
 libLHAPDFPaths_la_SOURCES = Paths.cc
 libLHAPDFPaths_la_CPPFLAGS = $(AM_CPPFLAGS) -DLHAPDF_INSTALL_PREFIX=\"$(prefix)\" -DLHAPDF_DATA_PREFIX=\"$(datadir)\"
 
-libLHAPDF_la_LIBADD = $(BOOST_LIBS) libLHAPDFInfo.la libLHAPDFPaths.la
+libLHAPDF_la_LIBADD = libLHAPDFInfo.la libLHAPDFPaths.la
 
 if ENABLE_LHAGLUE
   noinst_LTLIBRARIES += libLHAPDFGlue.la

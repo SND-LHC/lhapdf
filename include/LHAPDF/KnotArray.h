@@ -8,7 +8,6 @@
 #define LHAPDF_KnotArray_H
 
 #include "LHAPDF/Exceptions.h"
-#include "boost/multi_array.hpp"
 
 namespace LHAPDF {
 
@@ -246,20 +245,11 @@ namespace LHAPDF {
     /// @name Q2 stuff
     //@{
 
-    // /// Q2 knot setter
-    // void setq2s(const std::vector<double>& q2s) { _q2s = q2s; _xfs.resize(boost::extents[_xs.size()][_q2s.size()]); }
-
     /// Q2 knot vector accessor
     const std::vector<double>& q2s() const { return _q2s; }
 
-    // /// Get the Q2 value at a particular indexed Q2 knot
-    // const double& q2(size_t iq2) const { return _q2s[iq2]; }
-
     /// log(Q2) knot vector accessor
     const std::vector<double>& logq2s() const { return _logq2s; }
-
-    // /// Get the log(Q2) value at a particular indexed Q2 knot
-    // const double& logq2(size_t iq2) const { return _logq2s[iq2]; }
 
     /// Get the index of the closest Q2 knot row <= q2
     ///
@@ -301,9 +291,6 @@ namespace LHAPDF {
     // std::vector<double>& alphas() { return _as; }
     // /// alpha_s value setter
     // void setalphas(const valarray& xfs) { _as = as; }
-
-    // /// Get the alpha_s value at a particular indexed Q2 knot
-    // const double& alpha(size_t iq2) const { return _as[iq2]; }
 
     //@}
 

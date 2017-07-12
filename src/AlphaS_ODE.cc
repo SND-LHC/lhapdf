@@ -5,7 +5,6 @@
 //
 #include "LHAPDF/AlphaS.h"
 #include "LHAPDF/Utils.h"
-//#include "boost/bind.hpp"
 
 namespace LHAPDF {
 
@@ -295,8 +294,7 @@ namespace LHAPDF {
     }
 
     std::sort(grid.begin(), grid.end(), [](const pair<int, double>& a, const pair<int, double>& b) { return a.first < b.first; });
-    // auto lambda args need C++14: std::sort(grid.begin(), grid.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
-    // original Boost version: boost::bind(&std::pair<int, double>::first, _1) < boost::bind(&std::pair<int, double>::first, _2));
+    /// @todo auto lambda args need C++14: std::sort(grid.begin(), grid.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
 
     vector<double> alphas;
     alphas.reserve(_q2s.size());

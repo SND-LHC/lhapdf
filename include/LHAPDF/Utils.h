@@ -35,14 +35,12 @@ namespace LHAPDF {
   /// @name String handling utility functions
   //@{
 
-  /// Local alternative to Boost bad_lexical_cast
+  /// When lexical_cast goes bad
   struct bad_lexical_cast : public std::runtime_error {
     bad_lexical_cast(const std::string& what) : std::runtime_error(what) {}
   };
 
   /// @brief Convert between any types via stringstream
-  ///
-  /// Local alternative to Boost lexical_cast
   template<typename T, typename U>
   T lexical_cast(const U& in) {
     try {
