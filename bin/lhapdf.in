@@ -14,7 +14,7 @@ try:
 except ImportError:
     __version__ = '@PACKAGE_VERSION@'
     configured_datadir = '@datadir@/@PACKAGE_TARNAME@'\
-                         .replace('${datarootdir}', '@datarootdir@'
+                         .replace('${datarootdir}', '@datarootdir@')\
                          .replace('${prefix}', '@prefix@')
 major_version = '.'.join(__version__.split('.')[:2])
 #print major_version, configured_datadir
