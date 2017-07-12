@@ -48,3 +48,6 @@ doc/DESIGN.dox
 doc/INSTALL.dox
 doc/MIGRATION.dox
 doc/TODO.dox
+bin/lhapdf
+bin/lhapdf-config
+

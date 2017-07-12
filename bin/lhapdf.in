@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 ## @configure_input@
-## datarootdir = @datarootdir@
 
 import os, sys
 import optparse, textwrap, logging
@@ -14,9 +13,11 @@ try:
     configured_datadir = lhapdf.paths()[0]
 except ImportError:
     __version__ = '@PACKAGE_VERSION@'
-    configured_datadir = '@datadir@/@PACKAGE_TARNAME@'.replace('${prefix}', '@prefix@')
+    configured_datadir = '@datadir@/@PACKAGE_TARNAME@'\
+                         .replace('${datarootdir}', '@datarootdir@'
+                         .replace('${prefix}', '@prefix@')
 major_version = '.'.join(__version__.split('.')[:2])
-print major_version, configured_datadir
+#print major_version, configured_datadir
 
 
 ## Base paths etc. for set and index file downloading
