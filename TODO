@@ -6,15 +6,6 @@ LHAPDF6 TODO list
 =================
 
 
-UNVERSIONED
------------
-
-- **HERA 1.0 and LHeC PDF migration and approval**
-
-   Same procedure as for ATLAS and HERA 1.5. Prod Voica for an update.
-
-
-
 VERSION 6.2.1
 -------------
 
@@ -24,6 +15,17 @@ VERSION 6.2.1
    CPU. Caching grid index lookup, caching interpolation weights, encorage
    vectorization.
 
+- **Hide C++11 features from headers**
+
+   For ease of compatibility.
+
+- **Eager fetching of AlphaS, Interpolator, Extrapolator**
+
+   Laziness can be counter-intuitive.
+
+- **Use a proper YAML parse in lhapdf**
+
+   Cf. problems with LUX .info file
 
 - **New Fortran API completeness**
 
@@ -42,30 +44,6 @@ VERSION 6.2.1
 
 
 - **.LHgrid etc. old-name-tolerance control -- TranslateLHA5Names flag?**
-
-
-
-VERSION 6.3
------------
-
-- **Nuclear PDFs**
-
-   There's definitely a need for interfaces both to individual nuclear modification
-   functions (like PDFs themselves, a function of x,Q2) for application on top
-   of nucleon PDFs, and for all-inclusive nuclear PDFs. Individual "sets" for
-   each nucleus (A) as well as error sets: need to decide on groupings as well
-   as the API. Quite active, cf. "Lisbon Accord".
-
-   In contact with Hannu. Extend string access syntax to include multiplication
-   of PDFs e.g. mkPDF("foo/0 * bar"), mkPDF("foo * bar/0"), mkPDF("foo * bar")
-   returns PDF <- CompositePDF
-   More general than just nPDFs. Move extended ID string decoding to user-accessible functions.
-
-
-- **Introduce minimal abstract C++ interface**
-
-   Since composite PDFs don't obviously have some current PDF features. Prefer to
-   re-purpose PDF as the interface than to add a new PDFBase or similar?
 
 
 
