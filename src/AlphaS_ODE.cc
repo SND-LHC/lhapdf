@@ -8,6 +8,14 @@
 
 namespace LHAPDF {
 
+
+  void AlphaS_ODE::setQValues(const std::vector<double>& qs) {
+    vector<double> q2s;
+    for (double q : qs) q2s.push_back(q*q);
+    setQ2Values(q2s);
+  }
+
+
   // Calculate first order derivative, dy/dt, as it appears in the differential equation
   double AlphaS_ODE::_derivative(double t, double y, const vector<double>& beta) const {
     if ( _qcdorder == 0 ) return 0;

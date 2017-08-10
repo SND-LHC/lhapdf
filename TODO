@@ -15,10 +15,6 @@ VERSION 6.2.1
    CPU. Caching grid index lookup, caching interpolation weights, encorage
    vectorization.
 
-- **Hide C++11 features from headers**
-
-   For ease of compatibility.
-
 - **Eager fetching of AlphaS, Interpolator, Extrapolator**
 
    Laziness can be counter-intuitive.

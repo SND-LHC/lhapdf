@@ -121,8 +121,8 @@ namespace LHAPDF {
     mkPDFs(setname, rawptrs);
     pdfs.clear();
     pdfs.reserve(rawptrs.size());
-    for (const PDF* p : rawptrs)
-      pdfs.push_back(PTR(p));
+    // for (const PDF* p : rawptrs) pdfs.push_back(PTR(p)); //< Reinstate when C++11 is guaranteed, without flags
+    for (size_t i = 0; i < rawptrs.size(); ++i) pdfs.push_back(PTR(rawptrs[i]));
   }
 
   //@}

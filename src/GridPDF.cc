@@ -18,6 +18,84 @@ using namespace std;
 namespace LHAPDF {
 
 
+
+  void GridPDF::setInterpolator(Interpolator* ipol) {
+    _interpolator.reset(ipol);
+    _interpolator->bind(this);
+  }
+
+
+  void GridPDF::setInterpolator(const std::string& ipolname) {
+    setInterpolator(mkInterpolator(ipolname));
+  }
+
+
+  const Interpolator& GridPDF::interpolator() const {
+    if (_interpolator.get() == 0) { // Load the default interpolator lazily
+      // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
+      const string ipolname = info().get_entry("Interpolator");
+      Interpolator* ipol = mkInterpolator(ipolname);
+      _interpolator.reset(ipol);
+      _interpolator->bind(this);
+    }
+    return *_interpolator;
+  }
+
+
+
+  void GridPDF::setExtrapolator(Extrapolator* xpol) {
+    _extrapolator.reset(xpol);
+    _extrapolator->bind(this);
+  }
+
+
+  void GridPDF::setExtrapolator(const std::string& xpolname) {
+    setExtrapolator(mkExtrapolator(xpolname));
+  }
+
+
+  const Extrapolator& GridPDF::extrapolator() const {
+    if (_extrapolator.get() == 0) { // Load the default extrapolator lazily
+      // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
+      const string xpolname = info().get_entry("Extrapolator");
+      Extrapolator* xpol = mkExtrapolator(xpolname);
+      _extrapolator.reset(xpol);
+      _extrapolator->bind(this);
+    }
+    return *_extrapolator;
+  }
+
+
+  const KnotArrayNF& GridPDF::subgrid(double q2) const {
+    assert(q2 >= 0);
+    assert(!q2Knots().empty());
+    map<double, KnotArrayNF>::const_iterator it = _knotarrays.upper_bound(q2);
+    if (it == _knotarrays.begin())
+      throw GridError("Requested Q2 " + to_str(q2) + " is lower than any available Q2 subgrid (lowest Q2 = " + to_str(q2Knots().front()) + ")");
+    if (it == _knotarrays.end() && q2 > q2Knots().back())
+      throw GridError("Requested Q2 " + to_str(q2) + " is higher than any available Q2 subgrid (highest Q2 = " + to_str(q2Knots().back()) + ")");
+    --it; // upper_bound (and lower_bound) returns the entry *above* q2: we need to decrement by one element
+    // std::cout << "Using subgrid #" << std::distance(_knotarrays.begin(), it) << std::endl;
+    return it->second;
+  }
+
+
+  const vector<double>& GridPDF::q2Knots() const {
+    if (_q2knots.empty()) {
+      // Get the list of Q2 knots by combining all subgrids
+      for (const pair<double, KnotArrayNF>& q2_ka : _knotarrays) {
+        const KnotArrayNF& subgrid = q2_ka.second;
+        const KnotArray1F& grid1 = subgrid.get_first();
+        if (grid1.q2s().empty()) continue; //< @todo This shouldn't be possible, right? Throw instead, or ditch the check?
+        for (double q2 : grid1.q2s()) {
+          if (_q2knots.empty() || q2 != _q2knots.back()) _q2knots.push_back(q2);
+        }
+      }
+    }
+    return _q2knots;
+  }
+
+
   double GridPDF::_xfxQ2(int id, double x, double q2) const {
     /// Decide whether to use interpolation or extrapolation... the sanity checks
     /// are done in the public PDF::xfxQ2 function.
@@ -185,7 +263,7 @@ namespace LHAPDF {
       if (prevline != "---")
         throw ReadError("Grid file " + mempath + " is not properly terminated: .dat files MUST end with a --- separator line");
 
-    // Error handling
+      // Error handling
     } catch (Exception& e) {
       throw;
     } catch (std::exception& e) {

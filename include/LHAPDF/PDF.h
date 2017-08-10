@@ -103,31 +103,7 @@ namespace LHAPDF {
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
     /// @return The value of xf(x,q2)
-    double xfxQ2(int id, double x, double q2) const {
-      // Physical x range check
-      if (!inPhysicalRangeX(x)) {
-        throw RangeError("Unphysical x given: " + to_str(x));
-      }
-      // Physical Q2 range check
-      if (!inPhysicalRangeQ2(q2)) {
-        throw RangeError("Unphysical Q2 given: " + to_str(q2));
-      }
-      // Treat PID = 0 as always equivalent to a gluon: query as PID = 21
-      const int id2 = (id != 0) ? id : 21; //< @note Treat 0 as an alias for 21
-      // Undefined PIDs
-      if (!hasFlavor(id2)) return 0.0;
-      // Call the delegated method in the concrete PDF object to calculate the in-range value
-      double xfx = _xfxQ2(id2, x, q2);
-      // Apply positivity forcing at the enabled level
-      switch (forcePositive()) {
-      case 0: break;
-      case 1: if (xfx < 0) xfx = 0; break;
-      case 2: if (xfx < 1e-10) xfx = 1e-10; break;
-      default: throw LogicError("ForcePositive value not in expected range!");
-      }
-      // Return
-      return xfx;
-    }
+    double xfxQ2(int id, double x, double q2) const;
 
 
     /// @brief Get the PDF xf(x) value at (x,q) for the given PID.
@@ -153,10 +129,7 @@ namespace LHAPDF {
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
     /// @param rtn Map of PDF xf(x,q2) values, to be filled
-    void xfxQ2(double x, double q2, std::map<int, double>& rtn) const {
-      rtn.clear();
-      for (int id : flavors()) rtn[id] = xfxQ2(id, x, q2);
-    }
+    void xfxQ2(double x, double q2, std::map<int, double>& rtn) const;
 
 
     /// @brief Get the PDF xf(x) value at (x,q) for all supported PIDs.
@@ -184,15 +157,7 @@ namespace LHAPDF {
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
     /// @param rtn Vector of PDF xf(x,q2) values, to be filled
-    void xfxQ2(double x, double q2, std::vector<double>& rtn) const {
-      rtn.clear();
-      rtn.resize(13);
-      for (int i = 0; i < 13; ++i) {
-        const int id = i-6; // PID = 0 is automatically treated as PID = 21
-        rtn[i] = xfxQ2(id, x, q2);
-      }
-    }
-
+    void xfxQ2(double x, double q2, std::vector<double>& rtn) const;
 
     /// @brief Get the PDF xf(x) value at (x,q) for "standard" PIDs.
     ///
@@ -219,11 +184,7 @@ namespace LHAPDF {
     /// @param x Momentum fraction
     /// @param q2 Squared energy (renormalization) scale
     /// @return A map of PDF xf(x,q2) values
-    std::map<int, double> xfxQ2(double x, double q2) const {
-      std::map<int, double> rtn;
-      xfxQ2(x, q2, rtn);
-      return rtn;
-    }
+    std::map<int, double> xfxQ2(double x, double q2) const;
 
     /// @brief Get the PDF xf(x) value at (x,q) for all supported PIDs.
     ///

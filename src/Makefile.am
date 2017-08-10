@@ -10,10 +10,9 @@ libLHAPDF_la_SOURCES = \
   PDF.cc PDFSet.cc GridPDF.cc PDFInfo.cc \
   Interpolator.cc BilinearInterpolator.cc BicubicInterpolator.cc \
   LogBilinearInterpolator.cc LogBicubicInterpolator.cc \
-  ErrExtrapolator.cc NearestPointExtrapolator.cc \
-  ContinuationExtrapolator.cc \
+  ErrExtrapolator.cc NearestPointExtrapolator.cc  ContinuationExtrapolator.cc \
   AlphaS.cc AlphaS_Analytic.cc AlphaS_ODE.cc AlphaS_Ipol.cc \
-  Config.cc Factories.cc Utils.cc
+  Config.cc Factories.cc PDFIndex.cc Utils.cc
 
 libLHAPDFInfo_la_SOURCES = Info.cc
 libLHAPDFInfo_la_CPPFLAGS = -I$(srcdir)/yamlcpp -DYAMLCPP_API=3 -DYAML_NAMESPACE=LHAPDF_YAML $(AM_CPPFLAGS)

@@ -1,3 +1,7 @@
+2017-08-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Eliminate C++11 features from headers, and moving some oversized inlines into .cc files.
+
 2017-07-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.2.0 release.

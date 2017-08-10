@@ -9,13 +9,10 @@
 namespace LHAPDF {
 
 
-  void AlphaS_Ipol::setQ2Values(const std::vector<double>& q2s) {
-    _q2s = q2s;
-  }
-
-
-  void AlphaS_Ipol::setAlphaSValues(const std::vector<double>& as) {
-    _as = as;
+  void AlphaS_Ipol::setQValues(const std::vector<double>& qs) {
+    vector<double> q2s;
+    for (double q : qs) q2s.push_back(q*q);
+    setQ2Values(q2s);
   }
 
 
