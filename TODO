@@ -9,19 +9,30 @@ LHAPDF6 TODO list
 VERSION 6.2.1
 -------------
 
+- **Eager fetching of AlphaS, Interpolator, Extrapolator**
+
+   Laziness can be counter-intuitive.
+
+
+- **Use a proper YAML parser in lhapdf**
+
+   Cf. problems with LUX .info file. Or just restrict match to start of line?
+
+
+
+VERSION 6.2.2
+-------------
+
 - **Optimize the grid PDF interpolator code**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
    CPU. Caching grid index lookup, caching interpolation weights, encorage
    vectorization.
 
-- **Eager fetching of AlphaS, Interpolator, Extrapolator**
 
-   Laziness can be counter-intuitive.
 
-- **Use a proper YAML parse in lhapdf**
-
-   Cf. problems with LUX .info file
+VERSION 6.2.3
+-------------
 
 - **New Fortran API completeness**
 
