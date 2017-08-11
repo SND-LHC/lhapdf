@@ -1,0 +1,18 @@
+#! /usr/bin/env python
+
+import argparse
+ap = argparse.ArgumentParser()
+ap.add_argument("IFILES", metavar="PATH", nargs="+", help="info files to process")
+ap.add_argument("-v", "--verbose", dest="VERBOSE", action="store_true", help="print on successful parses, too")
+args = ap.parse_args()
+
+import yaml
+for ifile in args.IFILES:
+    try:
+        with open(ifile) as f:
+            doc = yaml.load(f)
+            if args.VERBOSE:
+                dv = doc.get("DataVersion")
+                print "Successfully parsed '%s': data version = %s" % (ifile, dv)
+    except Exception, e:
+        print "Error parsing '%s': %s" % (ifile, e)
