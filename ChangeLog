@@ -1,3 +1,9 @@
+2017-08-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Make alphaS, interpolator, and extrapolator setting eager rather than lazy.
+
+	* Remove unique_ptr from the public PDF.h header for now, for C++98 API compatibility.
+
 2017-08-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Eliminate C++11 features from headers, and moving some oversized inlines into .cc files.

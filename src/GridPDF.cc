@@ -18,26 +18,23 @@ using namespace std;
 namespace LHAPDF {
 
 
-
   void GridPDF::setInterpolator(Interpolator* ipol) {
     _interpolator.reset(ipol);
     _interpolator->bind(this);
   }
 
-
   void GridPDF::setInterpolator(const std::string& ipolname) {
     setInterpolator(mkInterpolator(ipolname));
   }
 
+  void GridPDF::_loadInterpolator() {
+    const string ipolname = info().get_entry("Interpolator");
+    /// @todo What if there is no Interpolator key?
+    setInterpolator(ipolname);
+  }
 
   const Interpolator& GridPDF::interpolator() const {
-    if (_interpolator.get() == 0) { // Load the default interpolator lazily
-      // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
-      const string ipolname = info().get_entry("Interpolator");
-      Interpolator* ipol = mkInterpolator(ipolname);
-      _interpolator.reset(ipol);
-      _interpolator->bind(this);
-    }
+    if (!hasInterpolator()) throw Exception("No Interpolator pointer set");
     return *_interpolator;
   }
 
@@ -48,20 +45,18 @@ namespace LHAPDF {
     _extrapolator->bind(this);
   }
 
-
   void GridPDF::setExtrapolator(const std::string& xpolname) {
     setExtrapolator(mkExtrapolator(xpolname));
   }
 
+  void GridPDF::_loadExtrapolator() {
+    const string xpolname = info().get_entry("Extrapolator");
+    /// @todo What if there is no Extrapolator key?
+    setExtrapolator(xpolname);
+  }
 
   const Extrapolator& GridPDF::extrapolator() const {
-    if (_extrapolator.get() == 0) { // Load the default extrapolator lazily
-      // NB. The following is equiv to set-by-name but is explicitly implemented here for const correctness
-      const string xpolname = info().get_entry("Extrapolator");
-      Extrapolator* xpol = mkExtrapolator(xpolname);
-      _extrapolator.reset(xpol);
-      _extrapolator->bind(this);
-    }
+    if (!hasExtrapolator()) throw Exception("No Extrapolator pointer set");
     return *_extrapolator;
   }
 

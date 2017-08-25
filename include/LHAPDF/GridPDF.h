@@ -38,6 +38,7 @@ namespace LHAPDF {
     /// public production code!
     GridPDF(const std::string& path) {
       _loadInfo(path); // Sets _mempath
+      _loadPlugins();
       _loadData(_mempath);
       _forcePos = -1;
     }
@@ -45,6 +46,7 @@ namespace LHAPDF {
     /// Constructor from a set name and member ID
     GridPDF(const std::string& setname, int member) {
       _loadInfo(setname, member); // Sets _mempath
+      _loadPlugins();
       _loadData(_mempath);
       _forcePos = -1;
     }
@@ -52,6 +54,7 @@ namespace LHAPDF {
     /// Constructor from an LHAPDF ID
     GridPDF(int lhaid) {
       _loadInfo(lhaid); // Sets _mempath
+      _loadPlugins();
       _loadData(_mempath);
       _forcePos = -1;
     }
@@ -63,6 +66,19 @@ namespace LHAPDF {
 
 
   protected:
+
+    /// Load the interpolator, based on current metadata
+    void _loadInterpolator();
+
+    /// Load the PDF grid data block, based on current metadata
+    void _loadExtrapolator();
+
+    /// Load the alphaS, interpolator, and extrapolator based on current metadata
+    void _loadPlugins() {
+      _loadAlphaS();
+      _loadInterpolator();
+      _loadExtrapolator();
+    }
 
     /// Load the PDF grid data block (not the metadata) from the given PDF member file
     void _loadData(const std::string& mempath);
@@ -98,13 +114,10 @@ namespace LHAPDF {
     void setInterpolator(const std::string& ipolname);
 
     /// Find whether an extrapolator has been set on this PDF
-    bool hasInterpolator() const {
-      return _interpolator.get() != 0;
-    }
+    bool hasInterpolator() const { return bool(_interpolator); }
 
     /// Get the current interpolator
     const Interpolator& interpolator() const;
-
 
 
     /// @brief Set the extrapolator by pointer
@@ -132,9 +145,7 @@ namespace LHAPDF {
     void setExtrapolator(const std::string& xpolname);
 
     /// Find whether an extrapolator has been set on this PDF
-    bool hasExtrapolator() const {
-      return _extrapolator.get() != 0;
-    }
+    bool hasExtrapolator() const { return bool(_extrapolator); }
 
     /// Get the current extrapolator
     const Extrapolator& extrapolator() const;
