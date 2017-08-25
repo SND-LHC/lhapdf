@@ -27,7 +27,9 @@ namespace LHAPDF {
   protected: //< These constructors should only be called by subclasses
 
     /// Internal convenience typedef for the AlphaS object handle
-    typedef unique_ptr<AlphaS> AlphaSPtr;
+    /// @todo Reinstate this unique_ptr when C++98 header compatibility is no longer an issue
+    // typedef unique_ptr<AlphaS> AlphaSPtr;
+    typedef AlphaS* AlphaSPtr;
 
     /// Force initialization of the only non-class member.
     PDF() : _forcePos(0) { }
@@ -36,7 +38,10 @@ namespace LHAPDF {
   public:
 
     /// Virtual destructor, to allow unfettered inheritance
-    virtual ~PDF() { }
+    virtual ~PDF() {
+      /// @todo Remove this delete when C++98 is gone, and unique_ptr can be reinstated
+      delete _alphas;
+    }
 
     //@}
 
@@ -466,12 +471,12 @@ namespace LHAPDF {
     /// and ownership passes to this GridPDF: delete will be called on this ptr
     /// when this PDF goes out of scope or another setAlphaS call is made.
     void setAlphaS(AlphaS* alphas) {
-      _alphas.reset(alphas);
+      // _alphas.reset(alphas);
     }
 
     /// @brief Check if an AlphaS calculator is set
     bool hasAlphaS() const {
-      return _alphas.get() != 0;
+      return _alphas;
     }
 
     /// @brief Retrieve the AlphaS object for this PDF
@@ -497,8 +502,7 @@ namespace LHAPDF {
     /// Calculated numerically, analytically, or interpolated according to
     /// metadata, using the AlphaS classes.
     double alphasQ2(double q2) const {
-      if (!hasAlphaS())
-        _alphas.reset( mkAlphaS(info()) );
+      if (!hasAlphaS()) throw Exception("No AlphaS pointer has been set");
       return _alphas->alphasQ2(q2);
     }
 
@@ -506,6 +510,12 @@ namespace LHAPDF {
 
 
   protected:
+
+    void _loadAlphaS() {
+      // _alphas.reset( mkAlphaS(info()) );
+      if (hasAlphaS()) delete _alphas;
+      _alphas = mkAlphaS(info());
+    }
 
     /// Get the set name from the member data file path (for internal use only)
     std::string _setname() const {
