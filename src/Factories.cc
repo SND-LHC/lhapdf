@@ -105,15 +105,18 @@ namespace LHAPDF {
 
   Extrapolator* mkExtrapolator(const string& name) {
     // Convert name to lower case for comparisons
-    const string iname = to_lower(name);
-    if (iname == "nearest")
+    cerr << "EXTRAPOLATOR!!! " << name << endl;
+    const string xname = to_lower(name);
+    if (xname == "nearest")
       return new NearestPointExtrapolator();
-    else if (iname == "error")
+    else if (xname == "error")
       return new ErrExtrapolator();
-    else if (iname == "continuation")
+    else if (xname == "continuation")
       return new ContinuationExtrapolator();
-    else
+    else {
+      cerr << "BAD EXTRAPOLATOR!!! " << xname << endl;
       throw FactoryError("Undeclared extrapolator requested: " + name);
+    }
   }
 
 
