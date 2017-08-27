@@ -1,3 +1,7 @@
+2017-08-27  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Extend Python xfxQ and xfxQ2 functions to allow multiple PID values and 2-arg versions which return all PIDs.
+
 2017-08-25  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Make alphaS, interpolator, and extrapolator setting eager rather than lazy.
