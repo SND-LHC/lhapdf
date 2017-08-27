@@ -52,30 +52,7 @@ namespace LHAPDF {
     /// @name Helper methods for info loading / path setting, used by derived types
     //@{
 
-    void _loadInfo(const std::string& mempath) {
-      if (mempath.empty())
-        throw UserError("Tried to initialize a PDF with a null data file path... oops");
-      _mempath = mempath;
-      _info = PDFInfo(mempath);
-      //_info = PDFInfo(_setname(), memberID());
-      /// Check that this is a sufficient version LHAPDF for this PDF
-      if (_info.has_key("MinLHAPDFVersion")) {
-        if (_info.get_entry_as<int>("MinLHAPDFVersion") > LHAPDF_VERSION_CODE) {
-          throw VersionError("Current LHAPDF version " + to_str(LHAPDF_VERSION_CODE)
-                             + " less than required " + _info.get_entry("MinLHAPDFVersion"));
-        }
-      }
-      /// Print out a banner if sufficient verbosity is enabled
-      const int v = verbosity();
-      if (v > 0) {
-        std::cout << "LHAPDF " << version() << " loading " << mempath << std::endl;
-        print(std::cout, v);
-      }
-      /// Print out a warning message if this PDF data is unvalidated
-      if (_info.get_entry_as<int>("DataVersion", -1) <= 0) {
-        std::cerr << "WARNING: This PDF is preliminary, unvalidated, and not for production use!" << std::endl;
-      }
-    }
+    void _loadInfo(const std::string& mempath);
 
     void _loadInfo(const std::string& setname, int member) {
       const string searchpath = findpdfmempath(setname, member);

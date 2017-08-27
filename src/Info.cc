@@ -34,9 +34,22 @@ namespace LHAPDF {
       for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
         string key, val;
         it.first() >> key;
-        YAML::Emitter em;
-        em << it.second();
-        val = em.c_str();
+        /// @todo This is much neater, but we need to remove the surrounding square brackets... and spaces?
+        // YAML::Emitter em;
+        // em << it.second();
+        // val = em.c_str();
+        try {
+          // Assume the value is a scalar type -- it'll throw an exception if not
+          it.second() >> val;
+        } catch (const YAML::InvalidScalar& ex) {
+          // It's a list: process the entries individually into a comma-separated string
+          string subval;
+          for (size_t i = 0; i < it.second().size(); ++i) {
+            it.second()[i] >> subval;
+            val += subval + ((i < it.second().size()-1) ? "," : "");
+          }
+        }
+        //cout << key << ": " << val << endl;
         _metadict[key] = val;
       }
 
@@ -50,12 +63,24 @@ namespace LHAPDF {
       YAML::Node doc = YAML::Load(docstr);
       for (YAML::const_iterator it = doc.begin(); it != doc.end(); ++it) {
         const string key = it->first.as<string>();
-        YAML::Emitter em;
-        em << it->second();
-        const string val = em.c_str();
-        _metadict[key] = val;
+        /// @todo This is much neater, but we need to remove the surrounding square brackets... and spaces?
+        // YAML::Emitter em;
+        // em << it->second();
+        // const string val = em.c_str();
+        // _metadict[key] = val;
+        const YAML::Node& val = it->second;
+        if (val.IsScalar()) {
+          // Scalar value
+          _metadict[key] = val.as<string>();
+        } else {
+          // Process the sequence entries into a comma-separated string
+          /// @todo Surely there's a better way... use *any* storage in the metadict?
+          string seqstr = "";
+          for (size_t i = 0; i < val.size(); ++i)
+            seqstr += val[i].as<string>() + ((i < val.size()-1) ? "," : "");
+          _metadict[key] = seqstr;
+        }
       }
-
       #endif
     } catch (const YAML::ParserException& ex) {
       throw ReadError("YAML parse error in " + filepath + " :" + ex.what());
