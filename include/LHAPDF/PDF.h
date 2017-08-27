@@ -32,7 +32,7 @@ namespace LHAPDF {
     typedef AlphaS* AlphaSPtr;
 
     /// Force initialization of the only non-class member.
-    PDF() : _forcePos(0) { }
+    PDF() : _alphas(0), _forcePos(0) { }
 
 
   public:
