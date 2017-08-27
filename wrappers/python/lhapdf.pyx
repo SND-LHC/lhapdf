@@ -104,6 +104,7 @@ cdef class PDF:
           If all are scalars, a scalar is returned; if pid is a sequence, a list is
           returned; if x and q are sequences of the same length, they will be zipped
           and a (maybe nested) list of the return values as for scalar x/q will be returned.
+          If pid is None, behave like the 2-arg version.
         2-args: (x, q)
           As for 3 args, but always returning results for all PIDs, as a dict. The return
           will be many such dicts in a zipped list if x/q are sequences.
@@ -112,6 +113,8 @@ cdef class PDF:
         # TODO: Reduce duplication between Q and Q2 variants?
         if len(args) == 3:
             pid, x, q = args
+            if pid is None:
+                return self.xfxQ(x, q)
             try:
                 try:
                     return [[self._ptr.xfxQ(eachpid, eachx, eachq) for eachpid in pid] for eachx, eachq in zip(x, q)]
@@ -139,6 +142,7 @@ cdef class PDF:
           If all are scalars, a scalar is returned; if pid is a sequence, a list is
           returned; if x and q2 are sequences of the same length, they will be zipped
           and a (maybe nested) list of the return values as for scalar x/q2 will be returned.
+          If pid is None, behave like the 2-arg version.
         2-args: (x, q2)
           As for 3 args, but always returning results for all PIDs, as a dict. The return
           will be many such dicts in a zipped list if x/q2 are sequences.
@@ -147,6 +151,8 @@ cdef class PDF:
         # TODO: Reduce duplication between Q and Q2 variants?
         if len(args) == 3:
             pid, x, q2 = args
+            if pid is None:
+                return self.xfxQ2(x, q2)
             try:
                 try:
                     return [[self._ptr.xfxQ2(eachpid, eachx, eachq2) for eachpid in pid] for eachx, eachq2 in zip(x, q2)]
