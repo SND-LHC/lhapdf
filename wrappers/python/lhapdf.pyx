@@ -111,6 +111,7 @@ cdef class PDF:
         """
         # TODO: Is this the most efficient way?
         # TODO: Reduce duplication between Q and Q2 variants?
+        # If only we'd used PID as the final arg rather than the first, then we could have made it optional/default None...
         if len(args) == 3:
             pid, x, q = args
             if pid is None:
@@ -149,6 +150,7 @@ cdef class PDF:
         """
         # TODO: Is this the most efficient way?
         # TODO: Reduce duplication between Q and Q2 variants?
+        # If only we'd used PID as the final arg rather than the first, then we could have made it optional/default None...
         if len(args) == 3:
             pid, x, q2 = args
             if pid is None:
