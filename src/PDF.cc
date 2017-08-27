@@ -36,6 +36,16 @@ namespace LHAPDF {
   }
 
 
+  bool PDF::hasFlavor(int id) const {
+    const int id2 = (id != 0) ? id : 21; //< @note Treat 0 as an alias for 21
+    const vector<int>& ids = flavors();
+    /// @note std::lower_bound is meant to leverage that we have a sorted list. No speed-up over find noted, though
+    // return std::find(ids.begin(), ids.end(), id2) != ids.end();
+    const auto it = std::lower_bound(ids.begin(), ids.end(), id2);
+    return it != ids.end() && *it == id2;
+  }
+
+
   double PDF::xfxQ2(int id, double x, double q2) const {
     // Physical x range check
     if (!inPhysicalRangeX(x)) {

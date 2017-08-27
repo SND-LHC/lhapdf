@@ -32,6 +32,7 @@ namespace LHAPDF {
     typedef AlphaS* AlphaSPtr;
 
     /// Force initialization of the only non-class member.
+    /// @todo Remove _alphas initialisation when it can be a smart ptr again
     PDF() : _alphas(0), _forcePos(0) { }
 
 
@@ -408,11 +409,7 @@ namespace LHAPDF {
     }
 
     /// Checks whether @a id is a valid parton for this PDF.
-    bool hasFlavor(int id) const {
-      const int id2 = (id != 0) ? id : 21; //< @note Treat 0 as an alias for 21
-      const vector<int>& ids = flavors();
-      return find(ids.begin(), ids.end(), id2) != ids.end();
-    }
+    bool hasFlavor(int id) const;
 
     /// @brief Order of QCD at which this PDF has been constructed
     ///
