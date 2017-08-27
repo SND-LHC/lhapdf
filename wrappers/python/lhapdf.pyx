@@ -96,21 +96,75 @@ cdef class PDF:
         "Return alpha_s at q2"
         return self._ptr.alphasQ2(q2)
 
-    def xfxQ(self, pid, x, q):
-        # TODO: allow 2-arg version without PID which returns a dict for all flavours
-        "Return the PDF xf(x,Q) value for the given parton ID, x, and Q."
-        try:
-            return [self._ptr.xfxQ(pid, x, q) for x, q in zip(x, q)]
-        except TypeError:
-            return self._ptr.xfxQ(pid, x, q)
+    def xfxQ(self, *args):
+        """Return the PDF xf(x,Q2) value for the given parton ID, x, and Q values.
 
-    def xfxQ2(self, pid, x, q2):
-        # TODO: allow 2-arg version without PID which returns a dict for all flavours
-        "Return the PDF xf(x,Q2) value for the given parton ID, x, and Q2."
-        try:
-            return [self._ptr.xfxQ2(pid, x, q2) for x, q2 in zip(x, q2)]
-        except TypeError:
-            return self._ptr.xfxQ2(pid, x, q2)
+        Two forms of arguments are allowed:
+        3-args: (pid, x, q)
+          If all are scalars, a scalar is returned; if pid is a sequence, a list is
+          returned; if x and q are sequences of the same length, they will be zipped
+          and a (maybe nested) list of the return values as for scalar x/q will be returned.
+        2-args: (x, q)
+          As for 3 args, but always returning results for all PIDs, as a dict. The return
+          will be many such dicts in a zipped list if x/q are sequences.
+        """
+        # TODO: Is this the most efficient way?
+        # TODO: Reduce duplication between Q and Q2 variants?
+        if len(args) == 3:
+            pid, x, q = args
+            try:
+                try:
+                    return [[self._ptr.xfxQ(eachpid, eachx, eachq) for eachpid in pid] for eachx, eachq in zip(x, q)]
+                except TypeError:
+                    return [self._ptr.xfxQ(pid, eachx, eachq) for eachx, eachq in zip(x, q)]
+            except TypeError:
+                try:
+                    return [self._ptr.xfxQ(eachpid, x, q) for eachpid in pid]
+                except TypeError:
+                    return self._ptr.xfxQ(pid, x, q)
+        elif len(args) == 2:
+            x, q = args
+            try:
+                return [{pid : self._ptr.xfxQ(pid, eachx, eachq) for pid in self.flavors()} for eachx, eachq in zip(x, q)]
+            except TypeError:
+                return {pid : self._ptr.xfxQ(pid, x, q) for pid in self.flavors()}
+        else:
+            raise Exception("Wrong number of arguments given to xfxQ: 2 or 3 required, %d provided" % len(args))
+
+    def xfxQ2(self, *args):
+        """Return the PDF xf(x,Q2) value for the given parton ID, x, and Q2 values.
+
+        Two forms of arguments are allowed:
+        3-args: (pid, x, q2)
+          If all are scalars, a scalar is returned; if pid is a sequence, a list is
+          returned; if x and q2 are sequences of the same length, they will be zipped
+          and a (maybe nested) list of the return values as for scalar x/q2 will be returned.
+        2-args: (x, q2)
+          As for 3 args, but always returning results for all PIDs, as a dict. The return
+          will be many such dicts in a zipped list if x/q2 are sequences.
+        """
+        # TODO: Is this the most efficient way?
+        # TODO: Reduce duplication between Q and Q2 variants?
+        if len(args) == 3:
+            pid, x, q2 = args
+            try:
+                try:
+                    return [[self._ptr.xfxQ2(eachpid, eachx, eachq2) for eachpid in pid] for eachx, eachq2 in zip(x, q2)]
+                except TypeError:
+                    return [self._ptr.xfxQ2(pid, eachx, eachq2) for eachx, eachq2 in zip(x, q2)]
+            except TypeError:
+                try:
+                    return [self._ptr.xfxQ2(eachpid, x, q2) for eachpid in pid]
+                except TypeError:
+                    return self._ptr.xfxQ2(pid, x, q2)
+        elif len(args) == 2:
+            x, q2 = args
+            try:
+                return [{pid : self._ptr.xfxQ2(pid, eachx, eachq2) for pid in self.flavors()} for eachx, eachq2 in zip(x, q2)]
+            except TypeError:
+                return {pid : self._ptr.xfxQ2(pid, x, q2) for pid in self.flavors()}
+        else:
+            raise Exception("Wrong number of arguments given to xfxQ2: 2 or 3 required, %d provided" % len(args))
 
     def inRangeQ(self, q):
         "Check if the specified Q value is in the unextrapolated range of this PDF."
