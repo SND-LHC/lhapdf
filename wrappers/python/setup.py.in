@@ -23,16 +23,16 @@ setup(name = "LHAPDF",
       ext_modules = [ext])
 
 
-## Also install a lightweight YAML parser
-setup(
-    name='poyo',
-    version='0.4.1',
-    author='Raphael Pierzina',
-    author_email='raphael@hackebrot.de',
-    license='MIT',
-    url='https://github.com/hackebrot/poyo',
-    description='A lightweight YAML Parser for Python',
-    packages=['poyo'],
-    package_dir={'poyo': 'poyo'},
-    keywords=['YAML', 'parser'],
-)
+# ## Also install a lightweight YAML parser
+# setup(
+#     name='poyo',
+#     version='0.4.1',
+#     author='Raphael Pierzina',
+#     author_email='raphael@hackebrot.de',
+#     license='MIT',
+#     url='https://github.com/hackebrot/poyo',
+#     description='A lightweight YAML Parser for Python',
+#     packages=['poyo'],
+#     package_dir={'poyo': 'poyo'},
+#     keywords=['YAML', 'parser'],
+# )
