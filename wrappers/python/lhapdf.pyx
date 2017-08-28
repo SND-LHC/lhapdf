@@ -9,10 +9,9 @@ try:
 except ImportError: # python 3.x version
     pass
 
-# for some reason this is needed to be declared again
-# in order for everything to work...
+# For some reason this has to be declared again in order for everything to work...
 ctypedef enum FlavorScheme:
-  FIXED, VARIABLE
+    FIXED, VARIABLE
 
 def text_encode(text):
     if isinstance(text, unicode):
@@ -20,7 +19,9 @@ def text_encode(text):
     elif isinstance(text, bytes):
         return text
     else:
-        raise ValueError("requires text input")
+        raise ValueError("Requires text input")
+
+
 
 cdef class PDF:
     """\
@@ -455,10 +456,10 @@ cdef class AlphaS:
          del self._ptr
          #pass
 
+     @property
      def type(self):
          "Get the method of alpha_s calculation as a string"
          return self._ptr.type()
-
 
      def alphasQ(self, double q):
          "Get alpha_s value at scale q"

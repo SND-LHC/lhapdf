@@ -1,6 +1,11 @@
+2017-08-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Use lhapdf Python module in lhapdf script, to avoid YAML-parsing problems.
+
 2017-08-27  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Extend Python xfxQ and xfxQ2 functions to allow multiple PID values and 2-arg versions which return all PIDs.
+	* Extend Python xfxQ and xfxQ2 functions to allow multiple PID
+	values and 2-arg versions which return all PIDs.
 
 2017-08-25  Andy Buckley  <andy.buckley@cern.ch>
 
