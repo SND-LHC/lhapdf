@@ -6,33 +6,14 @@ LHAPDF6 TODO list
 =================
 
 
-VERSION 6.2.1
--------------
-
-- **Eager fetching of AlphaS, Interpolator, Extrapolator**
-
-   Laziness can be counter-intuitive.
-
-
-- **Use a proper YAML parser in lhapdf**
-
-   Cf. problems with LUX .info file. Or just restrict match to start of line?
-
-
-
 VERSION 6.2.2
 -------------
 
-- **Optimize the grid PDF interpolator code**
+- **CPU-optimize the grid PDF interpolator code**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
    CPU. Caching grid index lookup, caching interpolation weights, encorage
    vectorization.
-
-
-
-VERSION 6.2.3
--------------
 
 - **New Fortran API completeness**
 
@@ -47,21 +28,21 @@ VERSION 6.2.3
 - **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Bertone et al)**
 
 
-- **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
-
-
-- **.LHgrid etc. old-name-tolerance control -- TranslateLHA5Names flag?**
-
-
 
 AS AND WHEN
 -----------
 
-- **Handle zipped PDF .dat files (AB)**
+- **Handle zipped data files (AB)**
 
    Prefer zipped single member data files rather than virtual filesystem access
-   to the tarball. Can transparently read zipped files with LD_PRELOAD and
-   zlibc: is that enough? Or
+   to the tarball? Can transparently read zipped files with LD_PRELOAD and
+   zlibc: is that enough? Or embed a zip-stream and link against zlib?
+
+
+- **Make it possible to find all metadata keys -- both locally and cascaded (AB)**
+
+
+- **.LHgrid etc. old-name-tolerance control -- TranslateLHA5Names flag?**
 
 
 - **Speed up interpolation with GPUs**
