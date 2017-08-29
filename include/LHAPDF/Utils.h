@@ -9,6 +9,7 @@
 
 // STL includes
 #include <cassert>
+#include <stdexcept>
 #include <vector>
 #include <map>
 #include <string>
