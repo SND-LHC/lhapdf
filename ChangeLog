@@ -1,3 +1,7 @@
+2017-08-31  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix ccstr_to_fstr function, and hence several problems in the LHAGlue Fortran interface.
+
 2017-08-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Use lhapdf Python module in lhapdf script, to avoid YAML-parsing problems.

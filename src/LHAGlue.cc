@@ -187,7 +187,7 @@ namespace {
   /// C++-string -> Fortran-string converter
   void ccstr_to_fstr(const string& ccstring, char* fstring, std::size_t fstring_len) {
     const char* cstring = ccstring.c_str();
-    ccstr_to_fstr(cstring, fstring, fstring_len);
+    cstr_to_fstr(cstring, fstring, fstring_len);
   }
 
 
