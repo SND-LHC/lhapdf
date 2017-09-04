@@ -200,7 +200,7 @@ namespace {
     s[fstring_len] = '\0';
     // Replace all trailing spaces with null bytes unless explicitly stopped
     if (!spcpad) {
-      for (size_t i = fstring_len-1; i >= 0; --i) {
+      for (int i = fstring_len-1; i >= 0; --i) {
         if (s[i] != ' ') break;
         s[i] = '\0';
       }
