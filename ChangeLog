@@ -1,3 +1,11 @@
+2017-09-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 6.2.1!
+
+2017-09-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix signed/unsigned comparison in Fortran interface.
+
 2017-08-31  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix ccstr_to_fstr function, and hence several problems in the LHAGlue Fortran interface.
