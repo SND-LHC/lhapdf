@@ -26,7 +26,7 @@ etc.
 If everything is ok, it will be silent.
 
 4. Test each set for basic operation:
-  export LHAPDF_DATA_PATH=$PWD/TESTPDFS::
+  export LHAPDF_DATA_PATH=$PWD/TESTPDFS:$PWD::
   for i in `find TESTPDFS -mindepth 1 -type d -exec basename {} \;`; do ./testpdfs $i; done
 
 5. Ok, everything seems to be basically working. So we move the new set tarballs
