@@ -32,6 +32,13 @@ VERSION 6.2.2
 AS AND WHEN
 -----------
 
+- **Add C++ SFINAE helpers for no-inheritance PDF interface definition**
+
+   We don't want LHAPDF to become a code dependency just to define what a "PDF object"
+   behaves like. Could using SFINAE template specialisation be a more hands-off route
+   than inheritance? These would probably just be examples, so  in doc rather than code?
+
+
 - **Handle zipped data files (AB)**
 
    Prefer zipped single member data files rather than virtual filesystem access
