@@ -64,11 +64,13 @@ installed (as tarballs and expanded into directories) on CERN AFS at
 to just set their `LHAPDF_DATA_PATH` environment variable to point at one of these
 distributed filesystem areas and use the preinstalled latest sets there.
 
-We also provide a script called `lhapdf` which can be used to query the catalogue
-of PDF sets and to install and update them from the command line. The user interface
-of this script is inspired by the Debian Linux `apt` package management system -- it
-accepts commands `list`, `update`, `install` and `upgrade`. Please run `lhapdf help`
-for full usage instructions.
+We also provide a script called `lhapdf` which can be used to query the
+catalogue of PDF sets and to install and update them from the command line. The
+user interface of this script is inspired by the Debian Linux `apt` package
+management system -- it accepts commands `list`, `update`, `install` and
+`upgrade`. Please run `lhapdf help` for full usage instructions. Please note
+that this script currently requires the LHAPDF library to have been built and
+installed with Python support.
 
 If you want to add new PDF sets to the standard collection, please contact the
 LHAPDF authors at lhapdf@projects.hepforge.org. You are expected to create and
