@@ -32,8 +32,6 @@ LHAPDF6 is documented in more detail in http://arxiv.org/abs/1412.7420
 
 @section installsec Installation
 
-The latest version of LHAPDF is **6.1.6**, released on Dec 22, 2015.
-
 The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
 
 Full installation and troubleshooting details are given at @ref install .
