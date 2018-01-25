@@ -27,16 +27,7 @@ namespace LHAPDF {
     ///
     /// @note The LHAPDF system is responsible for deletion of the returned
     /// object. Do NOT delete it yourself!
-    static Config& get() {
-      static Config _cfg; //< Could we use the Info(path) constructor for automatic init-once behaviour?
-      // Test for emptiness and only initialise *once*:
-      if (_cfg._metadict.empty()) {
-        std::string confpath = findFile("lhapdf.conf");
-        if (!confpath.empty()) _cfg.load(confpath);
-      }
-      return _cfg;
-    }
-
+    static Config& get();
     //@}
 
 

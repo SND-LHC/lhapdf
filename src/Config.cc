@@ -10,6 +10,17 @@ using namespace std;
 namespace LHAPDF {
 
 
+  Config& Config::get() {
+    static Config _cfg; //< Could we use the Info(path) constructor for automatic init-once behaviour?
+    // Test for emptiness and only initialise *once*:
+    if (_cfg._metadict.empty()) {
+      std::string confpath = findFile("lhapdf.conf");
+      if (!confpath.empty()) _cfg.load(confpath);
+    }
+    return _cfg;
+  }
+
+
   Config::~Config() {
     // Emit citation information at the end of the job, via the Config destructor
     // std::cout << "CONFIG DESTRUCTION" << std::endl;
@@ -18,7 +29,6 @@ namespace LHAPDF {
       cout << "  Eur.Phys.J. C75 (2015) 3, 132  (http://arxiv.org/abs/1412.7420)" << endl;
     }
   }
-
 
 
 }

@@ -1,3 +1,8 @@
+2018-01-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Move Config::get() static function from header to .cc, sincle
+	singleton needs to only 'live' in one compilation unit.
+
 2017-09-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.2.1!
