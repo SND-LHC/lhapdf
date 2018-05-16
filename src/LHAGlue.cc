@@ -267,13 +267,23 @@ extern "C" {
 
   void lhapdf_initpdfset_byname_(const int& nset, const char* name, int namelength) {
     const string cname = fstr_to_ccstr(name, namelength);
-    ACTIVESETS[nset] = PDFSetHandler(cname);
+    const std::pair<std::string, int> set_mem = LHAPDF::lookupPDF(cname);
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end() || ACTIVESETS[nset].setname != set_mem.first) {
+      ACTIVESETS[nset] = PDFSetHandler(set_mem.first);
+    }
     CURRENTSET = nset;
+    ACTIVESETS[nset].loadMember(set_mem.second);
   }
 
   void lhapdf_initpdfset_byid_(const int& nset, const int& lhaid) {
-    ACTIVESETS[nset] = PDFSetHandler(lhaid);
+    const std::pair<std::string, int> set_mem = LHAPDF::lookupPDF(lhaid);
+    // ACTIVESETS[nset] = PDFSetHandler(lhaid);
+    // CURRENTSET = nset;
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end() || ACTIVESETS[nset].setname != set_mem.first) {
+      ACTIVESETS[nset] = PDFSetHandler(set_mem.first);
+    }
     CURRENTSET = nset;
+    ACTIVESETS[nset].loadMember(set_mem.second);
   }
 
   void lhapdf_delpdfset_(const int& nset) {
@@ -317,11 +327,11 @@ extern "C" {
   }
 
 
-  void lhapdf_xfxq2_stdpartons_(const int& nset, const int& nmem, const int& pid, const double& x, const double& q2, double* xfs) {
+  void lhapdf_xfxq2_stdpartons_(const int& nset, const int& nmem, const double& x, const double& q2, double* xfs) {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // Evaluate for the 13 LHAPDF5 standard partons (-6..6)
-    for (size_t i = 0; i < 13; ++i) {
+    for (int i = 0; i < 13; ++i) {
       try {
         xfs[i] = ACTIVESETS[nset].member(nmem)->xfxQ2(i-6, x, q2);
       } catch (const exception& e) {
@@ -332,9 +342,9 @@ extern "C" {
     CURRENTSET = nset;
   }
 
-  void lhapdf_xfxq_stdpartons_(const int& nset, const int& nmem, const int& pid, const double& x, const double& q, double* xfs) {
+  void lhapdf_xfxq_stdpartons_(const int& nset, const int& nmem, const double& x, const double& q, double* xfs) {
     const double q2 = q*q;
-    lhapdf_xfxq2_stdpartons_(nset, nmem, pid, x, q2, xfs);
+    lhapdf_xfxq2_stdpartons_(nset, nmem, x, q2, xfs);
   }
 
 
@@ -364,6 +374,24 @@ extern "C" {
   void lhapdf_alphasq_(const int& nset, const int& nmem, const double& q, double& alphas) {
     const double q2 = q*q;
     lhapdf_alphasq2_(nset, nmem, q2, alphas);
+  }
+
+  /// Get the 4-flavour LambdaQCD value for set nset and member nmem
+  void lhapdf_lambda4_(const int& nset, const int& nmem, double& lambda) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    CURRENTSET = nset;
+    ACTIVESETS[nset].loadMember(nmem);
+    lambda = ACTIVESETS[nset].activeMember()->info().get_entry_as<double>("AlphaS_Lambda4", -1.0);
+  }
+
+  /// Get the 5-flavour LambdaQCD value for set nset and member nmem
+  void lhapdf_lambda5_(const int& nset, const int& nmem, double& lambda) {
+    if (ACTIVESETS.find(nset) == ACTIVESETS.end())
+      throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
+    CURRENTSET = nset;
+    ACTIVESETS[nset].loadMember(nmem);
+    lambda = ACTIVESETS[nset].activeMember()->info().get_entry_as<double>("AlphaS_Lambda5", -1.0);
   }
 
 
@@ -735,7 +763,7 @@ extern "C" {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // Evaluate for the 13 LHAPDF5 standard partons (-6..6)
-    for (size_t i = 0; i < 13; ++i) {
+    for (int i = 0; i < 13; ++i) {
       try {
         fxq[i] = ACTIVESETS[nset].activeMember()->xfxQ(i-6, x, q);
       } catch (const exception& e) {

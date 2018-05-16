@@ -1,6 +1,14 @@
+2018-05-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add llhapdf_lambda4/5 functions in the Fortran interface.
+
+	* Fix size_t bounds errors in Fortran interface loops over 13 standard partons.
+
+	* Remove unwanted pid argument from the Fortran xfx*_stdpartons functions.
+
 2018-01-25  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Move Config::get() static function from header to .cc, sincle
+	* Move Config::get() static function from header to .cc, since a
 	singleton needs to only 'live' in one compilation unit.
 
 2017-09-05  Andy Buckley  <andy.buckley@cern.ch>
