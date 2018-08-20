@@ -57,7 +57,7 @@ namespace LHAPDF {
     }
 
     /// Number of x knots
-    const size_t xsize() const { return _xs.size(); }
+    size_t xsize() const { return _xs.size(); }
 
     /// x knot accessor
     const std::vector<double>& xs() const { return _xs; }
@@ -94,7 +94,7 @@ namespace LHAPDF {
     }
 
     /// Number of Q2 knots
-    const size_t q2size() const { return _q2s.size(); }
+    size_t q2size() const { return _q2s.size(); }
 
     /// Q2 knot accessor
     const std::vector<double>& q2s() const { return _q2s; }
@@ -123,7 +123,7 @@ namespace LHAPDF {
     //@{
 
     /// Number of x knots
-    const size_t size() const { return xsize()*q2size(); }
+    size_t size() const { return xsize()*q2size(); }
 
     /// xf value accessor (const)
     const std::vector<double>& xfs() const { return _xfs; }
