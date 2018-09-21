@@ -2,6 +2,12 @@
 
 @page migration Instructions for building and running migration scripts/programs
 
+All migration tools are primarily intended for developer/expert-user usage,
+and are accordingly not polished for user friendliness. We do not provide user
+support for these tools. To use them, you will need a checkout of the LHAPDF6
+development code, as well as a non-overlapping installation of LHAPDF5; these
+scripts are not provided in the LHAPDF6 releease tarballs.
+
 
 Set migration
 -------------
