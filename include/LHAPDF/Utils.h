@@ -85,7 +85,7 @@ namespace LHAPDF {
     string rtn;
     for (size_t i = 0; i < svec.size(); ++i) {
       rtn += svec[i];
-      if (i < svec.size()-1) rtn += ", ";
+      if (i < svec.size()-1) rtn += sep;
     }
     return rtn;
   }
