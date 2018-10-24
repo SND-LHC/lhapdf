@@ -1,3 +1,8 @@
+2018-10-24  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Update lhapdf download script for new HepForge base URL and
+	don't require the presence of Content-Length in HTTP header.
+
 2018-10-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Utils.h: Fix separator bug in join() function. Thanks to Dmitry Kalinkin.
