@@ -112,9 +112,14 @@ namespace LHAPDF {
       // f(q2Min)*(q2/q2Min) for q2 << q2Min, i.e. PDFs vanish as q2 --> 0.
       xpdf = fq2Min * pow( q2/q2Min, anom*q2/q2Min + 1.0 - q2/q2Min );
 
-    }
+    } else if (x > xMax) {
 
-    else throw LogicError("We shouldn't be able to get here!");
+      ostringstream oss;
+      oss << "Error in LHAPDF::ContinuationExtrapolator, x > xMax (last x knot): ";
+      oss << scientific << x << " > " << xMax;
+      throw RangeError(oss.str());
+
+    } else throw LogicError("We shouldn't be able to get here!");
   
     return xpdf;
 

@@ -1,3 +1,7 @@
+2018-11-01  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Explicitly catch x > xMax error in ContinuationExtrapolator.
+
 2018-10-24  Graeme Watt  <graeme.watt@durham.ac.uk>
 
 	* Update lhapdf download script for new HepForge base URL and
