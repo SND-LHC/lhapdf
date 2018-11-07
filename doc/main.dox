@@ -55,7 +55,7 @@ The following link takes you to the PDF sets which are currently available and o
 - @ref pdfsets
 
 The PDF set data files can be downloaded from
-https://www.hepforge.org/archive/lhapdf/pdfsets/6.1/ and the latest versions are
+https://www.hepforge.org/archive/lhapdf/pdfsets/ and the latest versions are
 installed (as tarballs and expanded into directories) on CERN AFS at
 `/afs/cern.ch/sw/lcg/external/lhapdfsets/current/` and CERN CVMFS at
 `/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/`. Many users will find it easiest
@@ -216,13 +216,12 @@ assistance: there are often good explanations and solutions online.
 @section dev For developers
 
 To check out LHAPDF6 from Mercurial, use this command for read-only: `hg clone
-https://lhapdf.hepforge.org/hg/lhapdf`, and this for read-write: `hg clone
-ssh://USER@login.hepforge.org//hepforge/hg/lhapdf/public/lhapdf` (requires a
-HepForge login account; replace `USER` with your actual HF user name.)
+https://phab.hepforge.org/source/lhapdfhg/`, and this for read-write: `hg clone
+ssh://vcs@phab.hepforge.org/source/lhapdfhg` (requires a HepForge login account.)
 
 See the following pages:
 
-- Code browser: https://lhapdf.hepforge.org/hg/lhapdf/file/
+- Code browser: https://lhapdf.hepforge.org/files.html
 - @ref todolist
 - @ref todo
 - @ref migration
