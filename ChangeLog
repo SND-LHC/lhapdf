@@ -1,3 +1,7 @@
+2018-12-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add legend PDF name aliasing to plotpdfs
+
 2018-11-01  Graeme Watt  <graeme.watt@durham.ac.uk>
 
 	* Explicitly catch x > xMax error in ContinuationExtrapolator.

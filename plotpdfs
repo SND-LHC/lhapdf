@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
 """\
-Usage: %prog <PDF1> [<PDF2> [...]]
+Usage: %(prog)s <PDF1> [<PDF2> [...]]
 
-Plot PDF and alpha_s values for the named LHAPDF6 sets.
+Plot PDF and alphaS values for the named LHAPDF6 sets.
 
 TODO:
  * Allow user specification of the various PDF/parton line colours and styles
@@ -23,8 +23,8 @@ ap.add_argument("-f", "--format", dest="FORMAT", metavar="F", help="plot file fo
 ap.add_argument("--qs", dest="QS", metavar="Q1,Q2,...", help="discrete Q values to use on plots vs. x [default: %(default)s]", default="1,10,100,1000,10000")
 ap.add_argument("--xs", dest="XS", metavar="X1,X2,...", help="discrete x values to use on plots vs. Q [default: %(default)s]", default="1e-5,1e-3,1e-2,1e-1")
 ap.add_argument("--pids", dest="PIDS", metavar="ID1,ID2,...", help="PID values to use on PDF plots [default: %(default)s]", default="0,1,2,3,4,5,-1,-2,-3,-4,-5")
-ap.add_argument("--plots", dest="PLOTS", metavar="PLOT1,PLOT2,...", help="plot types to show, default value lists all types [default: %(default)s]",
-                default="alphas,xf_x/pid,xf_x/q,xf_q/pid,xf_q/x")
+ap.add_argument("--plots", dest="PLOTS", metavar="PLOT1,PLOT2,...", help="plot types to show, default value lists all types [default: %(default)s]", default="alphas,xf_x/pid,xf_x/q,xf_q/pid,xf_q/x")
+ap.add_argument("--aliases", dest="PALIASES", metavar="PATT/REPL,PATT/REPL,...", help="pattern/replacement pairss for PDF names in the plot legend")
 ap.add_argument("-q", "--quiet", dest="VERBOSITY", action="store_const", const=0, help="suppress non-essential messages", default=1)
 ap.add_argument("-v", "--verbose", dest="VERBOSITY", action="store_const", const=2, help="output debug messages", default=1)
 args = ap.parse_args()
@@ -43,6 +43,20 @@ STYLES = ["-", "--", "-.", (0, (5,2,1,2,1,2)), ":"]
 COLORS = ["red", "blue", "darkgreen", "orange", "purple", "magenta", "gray", "cyan"]
 PARTONS = {-5:r"$\bar{b}$",-4:r"$\bar{c}$",-3:r"$\bar{s}$",-2:r"$\bar{u}$",-1:r"$\bar{d}$",
            1:r"$d$",2:r"$u$",3:r"$s$",4:r"$c$",5:r"$b$",0:r"$g$"}
+
+
+## Construct name aliases
+PALIASES = {}
+for pname_palias in args.PALIASES.split(","):
+    parts = pname_palias.split("/")
+    if len(parts) == 1:
+        parts.append("")
+    PALIASES[parts[0]] = parts[1]
+def palias(pname):
+    parts = pname.split("/")
+    #print(parts[0], "->", PALIASES.get(parts[0]))
+    parts[0] = PALIASES.get(parts[0], parts[0])
+    return "/".join(parts)
 
 def tex_str(a):
     return a.replace("_", r"\_").replace("#", r"\#")
@@ -73,7 +87,6 @@ lhapdf.setVerbosity(args.VERBOSITY)
 pdfs = { pname : lhapdf.mkPDF(pname) for pname in args.PNAMES }
 print()
 
-
 ## Make PDF xf vs. x & Q plots for each parton flavour, and a single alpha_s vs. Q plot
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -84,7 +97,7 @@ if "ALPHAS" in args.PLOTS:
     for i, pname in enumerate(args.PNAMES):
         color = COLORS[i % len(COLORS)]
         as_vals = [pdfs[pname].alphasQ(q) for q in qs]
-        ax.plot(qs, as_vals, label=tex_str(pname), color=color, ls="-")
+        ax.plot(qs, as_vals, label=tex_str(palias(pname)), color=color, ls="-")
     ax.set_xlabel("$Q$")
     ax.set_ylabel(r"$\alpha_s(Q)$")
     ax.set_ylim(bottom=0)
@@ -107,13 +120,8 @@ if "XF_X/PID" in args.PLOTS:
                 color = COLORS[i % len(COLORS)]
                 style = STYLES[j % len(STYLES)]
                 xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
-                # title = "{}, $Q={}$ ID={:d}".format(tex_str(pname), tex_float(q), pid)
-                title = "{}, $Q={}$".format(tex_str(pname), tex_float(q))
-                # print(title)
+                title = "{}, $Q={}$".format(tex_str(palias(pname)), tex_float(q))
                 plt.plot(xs, xf_vals, label=title, color=color, ls=style, lw=1.0)
-                # if pid != 0:
-                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
         ax.set_ylim(bottom=args.XFMIN)
@@ -136,11 +144,8 @@ if "XF_X/Q" in args.PLOTS:
                 color = COLORS[pid % len(COLORS)]
                 style = STYLES[i % len(STYLES)]
                 xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
-                title = "{}, ID={:d}".format(tex_str(pname), pid)
+                title = "{}, ID={:d}".format(tex_str(palias(pname)), pid)
                 plt.plot(xs, xf_vals, label=title, color=color, ls=style, lw=1.0)
-                # if pid != 0:
-                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
         ax.set_ylim(bottom=args.XFMIN)
@@ -163,13 +168,8 @@ if "XF_Q/PID" in args.PLOTS:
                 color = COLORS[i % len(COLORS)]
                 style = STYLES[j % len(STYLES)]
                 xf_vals = [pdfs[pname].xfxQ(pid, x,q) for q in qs]
-                #print(pname, x, xf_vals)
-                #title = "{}, $x={}$ ID={:d}".format(tex_str(pname), tex_float(x), pid)
-                title = "{}, $x={}$".format(tex_str(pname), tex_float(x))
+                title = "{}, $x={}$".format(tex_str(palias(pname)), tex_float(x))
                 plt.plot(qs, xf_vals, label=title, color=color, ls=style, lw=1.0)
-                # if pid != 0:
-                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
         ax.set_ylim(bottom=args.XFMIN)
@@ -192,11 +192,8 @@ if "XF_Q/X" in args.PLOTS:
                 color = COLORS[pid % len(COLORS)]
                 style = STYLES[i % len(STYLES)]
                 xf_vals = [pdfs[pname].xfxQ(pid, x,q) for q in qs]
-                title = "{}, ID={:d}".format(tex_str(pname), pid)
+                title = "{}, ID={:d}".format(tex_str(palias(pname)), pid)
                 plt.plot(qs, xf_vals, label=title, color=color, ls=style, lw=1.0)
-                # if pid != 0:
-                #     xf_vals = [pdfs[pname].xfxQ(-pid, x,q) for x in xs]
-                #     plt.plot(xs, xf_vals, label="{}, $Q={}$, ID={:d}".format(pname, tex_float(q), -pid), color=color, ls=style, lw=0.5)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
         ax.set_ylim(bottom=args.XFMIN)
