@@ -56,11 +56,10 @@ The following link takes you to the PDF sets which are currently available and o
 
 The PDF set data files can be downloaded from
 https://www.hepforge.org/archive/lhapdf/pdfsets/ and the latest versions are
-installed (as tarballs and expanded into directories) on CERN AFS at
-`/afs/cern.ch/sw/lcg/external/lhapdfsets/current/` and CERN CVMFS at
+installed (as tarballs and expanded into directories) on CERN CVMFS at
 `/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/`. Many users will find it easiest
-to just set their `LHAPDF_DATA_PATH` environment variable to point at one of these
-distributed filesystem areas and use the preinstalled latest sets there.
+to just set their `LHAPDF_DATA_PATH` environment variable to point at this
+distributed filesystem area and use the preinstalled latest sets there.
 
 We also provide a script called `lhapdf` which can be used to query the
 catalogue of PDF sets and to install and update them from the command line. The
