@@ -21,8 +21,8 @@ major_version = '.'.join(__version__.split('.')[:2])
 
 
 ## Base paths etc. for set and index file downloading
-urlbase = 'https://lhapdf.hepforge.org/downloads?f=pdfsets/%s/' % major_version
 cvmfsbase='/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/'
+urlbase = 'http://lhapdfsets.web.cern.ch/lhapdfsets/current/'
 index_filename = 'pdfsets.index'
 
 
@@ -411,7 +411,7 @@ if __name__ == '__main__':
         dest='LISTDIR', help='PDF list directory [default: %default]')
     parser.add_option('--pdfdir', default=configured_datadir,
         dest='PDFDIR', help='PDF sets directory [default: %default]')
-    parser.add_option('--source', default=[cvmfsbase, urlbase], action="append", #< prepend action doesn't exist :-( See below for workaround
+    parser.add_option('--source', default=[cvmfsbase, urlbase], action="append",
         dest='SOURCES', help='Prepend a path or URL to be used as a source of data files [default: %default]')
 
 
@@ -424,7 +424,7 @@ if __name__ == '__main__':
         if suboptions.INSTALLED and suboptions.OUTDATED:
             subcommand.parser.error("Options '--installed' and '--outdated' are mutually exclusive")
 
-    # Re-order the sources list since optparse doesn't have a "prepend" action
+    # Re-order the sources list since optparse doesn't have a "prepend" action!
     options.SOURCES = options.SOURCES[3:] + options.SOURCES[:3]
 
     def download_file(filename, dest_dir, dryrun=False): #, unvalidated=False):
