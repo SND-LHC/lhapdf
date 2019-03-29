@@ -21,8 +21,9 @@ namespace LHAPDF {
     vector<string> rtn = split(spathsvar, ":");
     // Look in the install prefix after other paths are exhausted, if not blocked by a trailing ::
     if (spathsvar.length() < 2 || spathsvar.substr(spathsvar.length()-2) != "::") {
-      const string datadir = string(LHAPDF_DATA_PREFIX) / "LHAPDF";
-      rtn.push_back(datadir );
+      volatile auto default_prefix = LHAPDF_DATA_PREFIX;
+      const string datadir = string(default_prefix) / "LHAPDF";
+      rtn.push_back(datadir);
     }
     return rtn;
   }
