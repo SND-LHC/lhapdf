@@ -24,7 +24,7 @@ ap.add_argument("--qs", dest="QS", metavar="Q1,Q2,...", help="discrete Q values 
 ap.add_argument("--xs", dest="XS", metavar="X1,X2,...", help="discrete x values to use on plots vs. Q [default: %(default)s]", default="1e-5,1e-3,1e-2,1e-1")
 ap.add_argument("--pids", dest="PIDS", metavar="ID1,ID2,...", help="PID values to use on PDF plots [default: %(default)s]", default="0,1,2,3,4,5,-1,-2,-3,-4,-5")
 ap.add_argument("--plots", dest="PLOTS", metavar="PLOT1,PLOT2,...", help="plot types to show, default value lists all types [default: %(default)s]", default="alphas,xf_x/pid,xf_x/q,xf_q/pid,xf_q/x")
-ap.add_argument("--aliases", dest="PALIASES", metavar="PATT/REPL,PATT/REPL,...", help="pattern/replacement pairss for PDF names in the plot legend")
+ap.add_argument("--aliases", dest="PALIASES", metavar="PATT/REPL,PATT/REPL,...", help="pattern/replacement pairss for PDF names in the plot legend", default=None)
 ap.add_argument("-q", "--quiet", dest="VERBOSITY", action="store_const", const=0, help="suppress non-essential messages", default=1)
 ap.add_argument("-v", "--verbose", dest="VERBOSITY", action="store_const", const=2, help="output debug messages", default=1)
 args = ap.parse_args()
@@ -47,11 +47,12 @@ PARTONS = {-5:r"$\bar{b}$",-4:r"$\bar{c}$",-3:r"$\bar{s}$",-2:r"$\bar{u}$",-1:r"
 
 ## Construct name aliases
 PALIASES = {}
-for pname_palias in args.PALIASES.split(","):
-    parts = pname_palias.split("/")
-    if len(parts) == 1:
-        parts.append("")
-    PALIASES[parts[0]] = parts[1]
+if args.PALIASES:
+    for pname_palias in args.PALIASES.split(","):
+        parts = pname_palias.split("/")
+        if len(parts) == 1:
+            parts.append("")
+        PALIASES[parts[0]] = parts[1]
 def palias(pname):
     parts = pname.split("/")
     #print(parts[0], "->", PALIASES.get(parts[0]))
