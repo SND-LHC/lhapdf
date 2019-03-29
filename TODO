@@ -9,20 +9,28 @@ LHAPDF6 TODO list
 VERSION 6.2.2
 -------------
 
+- **Convert 'lhapdf' to Python3 compatibility**
+
+
+- **Add an 'lhapdf show' command**
+
+   To print pdfsets.index + cat .info for already installed PDFs.
+
+
+
+VERSION 6.3.0
+-------------
+
 - **CPU-optimize the grid PDF interpolator code**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
    CPU. Caching grid index lookup, caching interpolation weights, encorage
    vectorization.
 
+
 - **New Fortran API completeness**
 
    Extrapolation, interpolation, and alpha_s control, and metadata & uncertainty functions in Fortran.
-
-
-- **Add an 'lhapdf show' command**
-
-   To print pdfsets.index + cat .info for already installed PDFs.
 
 
 - **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Bertone et al)**
@@ -31,6 +39,18 @@ VERSION 6.2.2
 
 AS AND WHEN
 -----------
+
+- **Restructure for greater use of vectorisation, GPUs, MPI, etc.?**
+
+   Requires very clear specification of use-cases from e.g. DISTRESS profiling,
+   NLO Sherpa HPC experience, etc.
+
+
+- **Resolved photon PDFs and TMDs (requires higher-dimensional interpolation)**
+
+
+- **Chebyshev polynomial interpolation**
+
 
 - **Add C++ SFINAE helpers for no-inheritance PDF interface definition**
 
