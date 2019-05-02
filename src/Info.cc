@@ -5,6 +5,7 @@
 //
 #include "LHAPDF/Info.h"
 #include "LHAPDF/PDFIndex.h"
+#include "LHAPDF/FileIO.h"
 
 #include "yaml-cpp/yaml.h"
 #ifdef YAML_NAMESPACE
@@ -24,12 +25,12 @@ namespace LHAPDF {
     // Read the YAML part of the file into the metadata map
     try {
       // Do the parsing "manually" up to the first doc delimiter
-      std::ifstream file(filepath.c_str());
+      IFile file(filepath.c_str());
 
       #if YAMLCPP_API == 3
 
       YAML::Node doc;
-      YAML::Parser parser(file);
+      YAML::Parser parser(*file);
       parser.GetNextDocument(doc);
       for (YAML::Iterator it = doc.begin(); it != doc.end(); ++it) {
         string key, val;

@@ -10,7 +10,6 @@
 #include "LHAPDF/Utils.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
-#include <fstream>
 
 namespace LHAPDF {
 

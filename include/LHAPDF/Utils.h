@@ -18,11 +18,8 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <fstream>
 #include <limits>
 #include <cmath>
-// System includes
-#include "sys/stat.h"
 
 
 /// Namespace for all LHAPDF functions and classes
@@ -154,22 +151,13 @@ namespace LHAPDF {
   //@{
 
   /// Check if a path @a p (either file or dir) exists
-  inline bool path_exists(const std::string& p) {
-    struct stat st;
-    return (stat(p.c_str(), &st) == 0);
-  }
+  bool path_exists(const std::string& p,int mode=0);
 
   /// Check if a file @a p exists
-  inline bool file_exists(const std::string& p) {
-    struct stat st;
-    return (stat(p.c_str(), &st) == 0 && S_ISREG(st.st_mode));
-  }
+  bool file_exists(const std::string& p,int mode=0);
 
   /// Check if a dir @a p exists
-  inline bool dir_exists(const std::string& p) {
-    struct stat st;
-    return (stat(p.c_str(), &st) == 0 && S_ISDIR(st.st_mode));
-  }
+  bool dir_exists(const std::string& p,int mode=0);
 
   /// Operator for joining strings @a a and @a b with filesystem separators
   inline std::string operator / (const std::string& a, const std::string& b) {
@@ -303,6 +291,7 @@ namespace LHAPDF {
   // { };
 
   //@}
+
 
 }
 #endif

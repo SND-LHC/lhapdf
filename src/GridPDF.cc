@@ -6,8 +6,8 @@
 #include "LHAPDF/GridPDF.h"
 #include "LHAPDF/Interpolator.h"
 #include "LHAPDF/Factories.h"
+#include "LHAPDF/FileIO.h"
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <string>
 #include <stdexcept>
@@ -163,9 +163,9 @@ namespace LHAPDF {
     vector< vector<double> > ipid_xfs;
 
     try {
-      ifstream file(mempath.c_str());
+      IFile file(mempath.c_str());
       NumParser nparser; double ftoken; int itoken;
-      while (getline(file, line)) {
+      while (getline(*file, line)) {
         // Trim the current line to ensure that there is no effect of leading spaces, etc.
         line = trim(line);
         prevline = line; // used to test the last line after the while loop fails

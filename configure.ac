@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.2.1],[lhapdf@projects.hepforge.org],[LHAPDF])
+AC_INIT([LHAPDF],[6.2.2],[lhapdf@projects.hepforge.org],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -39,13 +39,31 @@ AC_LANG(C++)
 AC_CONFIG_SRCDIR([src/GridPDF.cc])
 AC_CONFIG_HEADERS([config/config.h include/LHAPDF/Version.h])
 
+
 ## Set default C++ optimisation level to -O3 and drop the -g debug flag
 if test -z $CXXFLAGS; then
     CXXFLAGS='-O3'
 fi
 
+## MPI support wanted?
+AC_ARG_ENABLE([mpi],
+  AC_HELP_STRING([--enable-mpi], [enable MPI-safe file reading]),
+  [enable_mpi=yes], [])
+
+## Test for C++ compiler, possibly with MPI support
+AX_PROG_CXX_MPI([test x$enable_mpi = xyes], [have_mpi=yes], [have_mpi=no])
+if test x$enable_mpi = xyes; then
+  if test x$have_mpi = xyes; then
+    AC_DEFINE([HAVE_MPI], "1", [using MPI])
+    using_mpi=yes
+  else
+    AC_MSG_FAILURE([MPI compiler not found.])
+    using_mpi=no
+  fi
+fi
+AM_CONDITIONAL(USING_MPI, [test x$using_mpi = xyes])
+
 ## Require C++11
-AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
 
 ## Substitute compiler flags for the lhapdf-config script
@@ -54,6 +72,8 @@ AC_SUBST(LHAPDF_CXX)
 LHAPDF_CXXFLAGS="$CXXFLAGS"
 AC_SUBST(LHAPDF_CXXFLAGS)
 
+
+## More standard build tool checks
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -153,7 +173,7 @@ AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/yamlcpp/Makefile])
 AC_CONFIG_FILES([include/Makefile include/LHAPDF/Makefile])
 AC_CONFIG_FILES([bin/Makefile])
-AC_CONFIG_FILES([bin/lhapdf bin/lhapdf-config])
+AC_CONFIG_FILES([bin/lhapdf-config])
 AC_CONFIG_FILES([examples/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([doc/Makefile doc/Doxyfile])
@@ -171,7 +191,7 @@ echo "IMPORTANT INFORMATION ABOUT PDF SETS"
 echo
 echo "LHAPDF no longer bundles PDF set data in the package tarball."
 echo "The sets are instead all stored online at"
-echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/${PACKAGE_MAJOR_VERSION}/"
+echo "  http://lhapdfsets.web.cern.ch/lhapdfsets/current/"
 echo "and you should install those that you wish to use into"
 echo "  $pkgdatadir"
 echo

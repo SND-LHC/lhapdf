@@ -6,6 +6,7 @@
 #include "LHAPDF/PDFIndex.h"
 #include "LHAPDF/Paths.h"
 #include "LHAPDF/Exceptions.h"
+#include "LHAPDF/FileIO.h"
 
 namespace LHAPDF {
 
@@ -16,9 +17,9 @@ namespace LHAPDF {
       string indexpath = findFile("pdfsets.index");
       if (indexpath.empty()) throw ReadError("Could not find a pdfsets.index file");
       try {
-        ifstream file(indexpath.c_str());
+        IFile file(indexpath.c_str());
         string line;
-        while (getline(file, line)) {
+        while (getline(*file, line)) {
           line = trim(line);
           if (line.empty() || line.find("#") == 0) continue;
           istringstream tokens(line);

@@ -4,6 +4,10 @@ AM_CPPFLAGS += -I$(top_srcdir)/include $(BOOST_CPPFLAGS)
 AM_LDFLAGS += -L$(top_builddir)/src
 LIBS = -lLHAPDF
 
+if USING_MPI
+  AM_CPPFLAGS += -DHAVE_MPI=1
+endif
+
 testalphas_SOURCES = testalphas.cc
 testgrid_SOURCES = testgrid.cc
 testindex_SOURCES = testindex.cc

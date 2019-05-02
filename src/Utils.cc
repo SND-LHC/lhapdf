@@ -5,7 +5,53 @@
 //
 #include "LHAPDF/Utils.h"
 
+#include <sys/stat.h>
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
+
 namespace LHAPDF {
+
+
+  /// Check if a path @a p (either file or dir) exists
+  bool path_exists(const std::string& p,int mode)
+  {
+    return file_exists(p,mode) || dir_exists(p,mode);
+  }
+
+  /// Check if a file @a p exists
+  bool file_exists(const std::string& file,int mode)
+  {
+    int exists(false);
+    #ifdef HAVE_MPI
+    if (mode==1 || MPI::COMM_WORLD.Get_rank()==0) {
+      struct stat fst;
+      if (stat(file.c_str(), &fst) != -1) exists = (fst.st_mode & S_IFMT) == S_IFREG;
+    }
+    if (mode!=1) MPI::COMM_WORLD.Bcast(&exists,1,MPI_INT,0);
+    #else
+    struct stat fst;
+    if (stat(file.c_str(), &fst) != -1) exists = (fst.st_mode & S_IFMT) == S_IFREG;
+    #endif
+    return exists;
+  }
+
+  /// Check if a dir @a p exists
+  bool dir_exists(const std::string& dir,int mode)
+  {
+    int exists(false);
+    #ifdef HAVE_MPI
+    if (mode==1 || MPI::COMM_WORLD.Get_rank()==0) {
+      struct stat fst;
+      if (stat(dir.c_str(), &fst) != -1) exists = (fst.st_mode & S_IFMT) == S_IFDIR;
+    }
+    if (mode!=1) MPI::COMM_WORLD.Bcast(&exists,1,MPI_INT,0);
+    #else
+    struct stat fst;
+    if (stat(dir.c_str(), &fst) != -1) exists = (fst.st_mode & S_IFMT) == S_IFDIR;
+    #endif
+    return exists;
+  }
 
   namespace {
 
