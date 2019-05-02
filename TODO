@@ -6,18 +6,6 @@ LHAPDF6 TODO list
 =================
 
 
-VERSION 6.2.2
--------------
-
-- **Convert 'lhapdf' to Python3 compatibility**
-
-
-- **Add an 'lhapdf show' command**
-
-   To print pdfsets.index + cat .info for already installed PDFs.
-
-
-
 VERSION 6.3.0
 -------------
 

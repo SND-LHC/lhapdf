@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
+import os, sys, logging
+
 ## Base paths etc. for set and index file downloading
 CVMFSBASE = "/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/"
 URLBASE = "http://lhapdfsets.web.cern.ch/lhapdfsets/current/"
 INDEX_FILENAME = "pdfsets.index"
 
-import os, sys, logging
 
 class SetInfo(object):
     """Stores PDF metadata: name, version, ID code."""
@@ -252,7 +254,7 @@ The main sub-commands that can be used are:
 
         ## Check for a command
         if not hasattr(self, self.mainargs.COMMAND):
-            print "Unrecognized command"
+            print("Unrecognized command")
             ap.print_help()
             exit(2)
 
@@ -263,7 +265,9 @@ The main sub-commands that can be used are:
     def _scanpdfs(self):
         ## List and install commands require us to build lists of reference and installed PDFs
         self.master_list, self.installed = {}, {}
-        for pdf in get_reference_list(os.path.join(self.mainargs.LISTDIR, INDEX_FILENAME)):
+        indexpath = os.path.join(self.mainargs.LISTDIR, INDEX_FILENAME)
+        logging.debug("Index file =", indexpath)
+        for pdf in get_reference_list(indexpath):
             self.master_list[pdf.name] = pdf
         for pdf in get_installed_list(self.mainargs.PDFDIR):
             self.installed[pdf.name] = pdf
@@ -280,7 +284,7 @@ The main sub-commands that can be used are:
     def list(self):
         """List all standard PDF sets, or search using a Unix-style pattern.
         (by default lists all sets available for download; use --installed or --outdated to explore those installed on the current system)"""
-        ap = argparse.ArgumentParser(description=__doc__, usage="%(prog)s list [options] pattern...")
+        ap = argparse.ArgumentParser(description=__doc__, usage="%(prog)s list [options] [pattern...]")
         ap.add_argument("PATTERNS", nargs="*", help="patterns to match PDF sets against")
         ap.add_argument("--installed", dest="INSTALLED", action="store_true", help="list installed PDF sets")
         ap.add_argument("--outdated", dest="OUTDATED", action="store_true", help="list installed, but outdated, PDF sets")
@@ -310,6 +314,36 @@ The main sub-commands that can be used are:
 
     def ls(self):
         self.list()
+
+
+    def show(self):
+        "Show details for installed PDF sets matching Unix-style patterns."
+        ap = argparse.ArgumentParser(description=__doc__, usage="%(prog)s show [options] pattern...")
+        ap.add_argument("PATTERNS", nargs="+", help="patterns to match PDF sets against")
+        subargs = ap.parse_args(sys.argv[2:])
+
+        ## Scan the current PDF collection
+        self._scanpdfs()
+
+        ## Filter PDFs on optional patterns and status
+        pdfs = globfilt(self.installed.keys(), subargs.PATTERNS)
+
+        ## Display
+        strs = []
+        for pdf in sorted(pdfs):
+            import lhapdf
+            ps = lhapdf.getPDFSet(pdf)
+            out = ""
+            out += ps.name + "\n" + "="*len(pdf) + "\n"
+            out += "LHAPDF ID: {:d}\n".format(ps.lhapdfID)
+            out += "Version: {:d}\n".format(ps.dataversion)
+            out += ps.description + "\n"
+            out += "Number of members: {:d}\n".format(ps.size)
+            out += "Error type: {:s}\n".format(ps.errorType)
+            strs.append(out)
+
+        print("\n\n".join(strs))
+        sys.exit(0)
 
 
     def update(self):

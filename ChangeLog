@@ -1,5 +1,7 @@
 2019-05-02  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add a 'show' option to the lhapdf script.
+
 	* Adapt MPI file-reading patch from Stefan Hoeche. Enable with --enable-mpi to configure.
 
 	* Rewrite the lhapdf data-manager script to use argparse, for compatibility with Python 3.
