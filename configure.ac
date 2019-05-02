@@ -153,7 +153,7 @@ AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/yamlcpp/Makefile])
 AC_CONFIG_FILES([include/Makefile include/LHAPDF/Makefile])
 AC_CONFIG_FILES([bin/Makefile])
-AC_CONFIG_FILES([bin/lhapdf bin/lhapdf-config])
+AC_CONFIG_FILES([bin/lhapdf-config])
 AC_CONFIG_FILES([examples/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([doc/Makefile doc/Doxyfile])
@@ -171,7 +171,7 @@ echo "IMPORTANT INFORMATION ABOUT PDF SETS"
 echo
 echo "LHAPDF no longer bundles PDF set data in the package tarball."
 echo "The sets are instead all stored online at"
-echo "  http://www.hepforge.org/archive/lhapdf/pdfsets/${PACKAGE_MAJOR_VERSION}/"
+echo "  http://lhapdfsets.web.cern.ch/lhapdfsets/current/"
 echo "and you should install those that you wish to use into"
 echo "  $pkgdatadir"
 echo

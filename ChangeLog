@@ -1,3 +1,7 @@
+2019-05-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Rewrite the lhapdf data-manager script to use argparse, for compatibility with Python 3.
+
 2019-03-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Apply compiler optimisation bypass "volatile" hack to default
