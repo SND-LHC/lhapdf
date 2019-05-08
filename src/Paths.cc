@@ -19,13 +19,13 @@ namespace LHAPDF {
     // Use LHAPDF_DATA_PATH for all path storage
     char* pathsvar = getenv("LHAPDF_DATA_PATH");
     // But fall back to looking in LHAPATH if the preferred var is not defined
-    if (pathsvar == 0) pathsvar = getenv("LHAPATH");
+    if (pathsvar == nullptr) pathsvar = getenv("LHAPATH");
     const string spathsvar = (pathsvar != 0) ? pathsvar : "";
     // Split the paths variable as usual
     vector<string> rtn = split(spathsvar, ":");
     // Look in the install prefix after other paths are exhausted, if not blocked by a trailing ::
     if (spathsvar.length() < 2 || spathsvar.substr(spathsvar.length()-2) != "::") {
-      volatile auto default_prefix = LHAPDF_DATA_PREFIX;
+      volatile auto default_prefix = LHAPDF_DATA_PREFIX; //< needed to avoid overoptimisation bug
       const string datadir = string(default_prefix) / "LHAPDF";
       rtn.push_back(datadir);
     }
@@ -58,9 +58,9 @@ namespace LHAPDF {
     // Return cached list if valid
     if (!rtn.empty()) return rtn;
     // Otherwise this is the first time: populate the list
-#ifdef HAVE_MPI
+    #ifdef HAVE_MPI
     if (MPI::COMM_WORLD.Get_rank()==0)
-#endif
+    #endif
     for (const string& p : paths()) {
       if (!dir_exists(p,1)) continue;
       DIR* dir;
@@ -80,7 +80,7 @@ namespace LHAPDF {
       }
       sort(rtn.begin(), rtn.end());
     }
-#ifdef HAVE_MPI
+    #ifdef HAVE_MPI
     if (MPI::COMM_WORLD.Get_rank()==0) {
       std::string allrtn;
       for (size_t i=0;i<rtn.size();++i) allrtn+="*"+rtn[i];
@@ -100,7 +100,7 @@ namespace LHAPDF {
       	bpos=epos;
       }
     }
-#endif
+    #endif
     return rtn;
   }
 

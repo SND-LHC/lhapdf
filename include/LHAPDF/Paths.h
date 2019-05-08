@@ -31,7 +31,7 @@ namespace LHAPDF {
   inline void pathsPrepend(const std::string& p) {
     vector<string> ps = paths();
     ps.insert(ps.begin(), p);
-    ps.pop_back(); //< Discard the auto-added fallback path to the installed data prefix
+    //ps.pop_back(); //< Discard the auto-added fallback path to the installed data prefix
     setPaths(ps);
   }
 
@@ -39,7 +39,7 @@ namespace LHAPDF {
   /// Append to the search paths list
   inline void pathsAppend(const std::string& p) {
     vector<string> ps = paths();
-    ps.pop_back(); //< Discard the auto-added fallback path to the installed data prefix
+    //ps.pop_back(); //< Discard the auto-added fallback path to the installed data prefix
     ps.push_back(p);
     setPaths(ps);
   }
