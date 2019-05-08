@@ -3,7 +3,7 @@
 
 <b>Official LHAPDF&nbsp;6.2 PDF sets: currently 846 available, of which 844 are validated.</b>
 
-See http://www.hepforge.org/archive/lhapdf/pdfsets/6.2 for data downloads.
+See http://lhapdfsets.web.cern.ch/lhapdfsets/current/ for data downloads.
 
 All sets migrated from LHAPDF v5 behave very closely to the originals, usually within
 1 part in 1000 across x,Q space. Sometimes larger, but very localised, deviations are found at the
