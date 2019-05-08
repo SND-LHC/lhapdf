@@ -6,14 +6,15 @@
 
 @section downloads Source file downloads
 
-The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
+The source files can be downloaded from https://lhapdf.hepforge.org/downloads/
 
 
 @section quickstart Quick start instructions
 
 If you have a C++11 compiler, building LHAPDF >= 6.2 should be straightforward:
 
-    wget http://www.hepforge.org/archive/lhapdf/LHAPDF-6.X.Y.tar.gz
+    wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.X.Y.tar.gz -O LHAPDF-6.X.Y.tar.gz
+    # ^ or use a web browser to download, which will get the filename correct
     tar xf LHAPDF-6.X.Y.tar.gz
     cd LHAPDF-6.X.Y
     ./configure --prefix=/path/for/installation
@@ -122,7 +123,7 @@ use other compiler and Python versions, build flags, etc. if you wish.
     mkdir local
 
     ## Build LHAPDF
-    wget http://www.hepforge.org/archive/lhapdf/LHAPDF-6.X.Y.tar.gz -O- | tar xz
+    wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.X.Y.tar.gz -O- | tar xz
     cd LHAPDF-6.X.Y
     ./configure --prefix=$PWD/../local
     make -j2 && make install
@@ -164,8 +165,7 @@ not building the very useful Python interface to LHAPDF.
 The Mac OS X "Homebrew" system (http://brew.sh/) comes recommended by several
 LHAPDF developers. Many HEP packages are already available for Homebrew via the
 homebrew-hep project: http://davidchall.github.io/homebrew-hep/ . Success has
-also been reported with the MacPorts system (http://www.macports.org/): please
-see HepForge's information about MacPorts at https://www.hepforge.org/docs/macosx .
+also been reported with the MacPorts system (http://www.macports.org/).
 With both these approaches, you should set your environment to *only* use
 compilers and Python from the Brew/Ports area and to ignore the system packages:
 a hybrid approach will only cause unnecessary pain.

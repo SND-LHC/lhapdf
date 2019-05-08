@@ -196,10 +196,11 @@ echo "and you should install those that you wish to use into"
 echo "  $pkgdatadir"
 echo
 echo "The downloadable PDF sets are packaged as tarballs, which"
-echo "must be expanded to be used. Here is an example of how to"
-echo "retrieve and install a PDF set from the command line:"
-echo
-echo " wget http://www.hepforge.org/archive/lhapdf/pdfsets/${PACKAGE_MAJOR_VERSION}/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
+echo "must be expanded to be used. The simplest way to do this is with"
+echo "the 'lhapdf' script, e.g. to install the CT10nlo PDF set:"
+echo "  lhapdf install CT10nlo"
+echo "The same effect can be achieved manually with, e.g.:"
+echo "  wget http://lhapdfsets.web.cern.ch/lhapdfsets/current/CT10nlo.tar.gz -O- | tar xz -C $pkgdatadir"
 echo
 echo "****************************************************************"
 echo

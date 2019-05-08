@@ -24,7 +24,7 @@ s += "@page pdfsets PDF sets\n\n"
 
 s += """<b>Official LHAPDF&nbsp;{lhaversion} PDF sets: currently {nsets} available, of which {nvalid} are validated.</b>
 
-See http://www.hepforge.org/archive/lhapdf/pdfsets/{lhaversion} for data downloads.\n\n"""\
+See http://lhapdfsets.web.cern.ch/lhapdfsets/current/ for data downloads.\n\n"""\
      .format(nsets=len(sets), nvalid=nvalid, lhaversion=lhamajversion)
 
 s += """All sets migrated from LHAPDF v5 behave very closely to the originals, usually within
