@@ -377,7 +377,7 @@ The main sub-commands that can be used are:
                 logging.warning("PDF already installed: %s (use --upgrade to force install)" % pdf)
                 continue
 
-            if master_list[pdf].version == -1:
+            if self.master_list[pdf].version == -1:
                 logging.warn("PDF %s is unvalidated. You need to download this manually" % pdf)
 
             tar_filename = pdf + ".tar.gz"
@@ -400,7 +400,7 @@ The main sub-commands that can be used are:
         self._scanpdfs()
 
         ## Get the PDFs in need of an update
-        outdated_pdfs = [pdf for pdf in master_list.keys() if master_list[pdf].outdated]
+        outdated_pdfs = [pdf for pdf in self.master_list.keys() if self.master_list[pdf].outdated]
 
         ## Filter PDFs on optional patterns
         upgrade_pdfs = globfilt(outdated_pdfs, subargs.PATTERNS)
