@@ -217,10 +217,11 @@ class CommandHandler(object):
 A program for managing LHAPDF parton distribution function data files.
 
 The main sub-commands that can be used are:
-  - list|ls: list available PDF sets, optionally categorised by status
-  - update:  download and install a new PDF set index file
+  - list|ls:     list available PDF sets, optionally filtered and/or categorised by status
+  - show:        show metadata details of specified PDF sets
+  - update:      download and install a new PDF set index file
   - install|get: download and install new PDF set data files
-  - upgrade: download and install newer replacement PDF set data files where available
+  - upgrade:     download and install newer replacement PDF set data files where available
 """
 
     def __init__(self):
