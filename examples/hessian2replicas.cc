@@ -4,6 +4,7 @@
 
 #include "LHAPDF/LHAPDF.h"
 #include <random>
+#include <fstream>
 using namespace std;
 
 // Function to convert Hessian "set" to replica set with name "randsetname"
