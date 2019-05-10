@@ -5,7 +5,7 @@
 ## Modified in September 2015 for more general ErrorType values:
 ## number of parameter variations determined by counting "+" symbols.
 
-from __future__ import print_function
+from __future__ import print_function, division
 import lhapdf
 
 x = 0.1
@@ -70,7 +70,9 @@ print("Correlation = %.4g\n" % corr)
 if pset.errorType.startswith("hessian") or pset.errorType.startswith("symmhessian"):
     ## If npar > 0 exclude the last 2*npar members (parameter variations).
     npdfmem = nmem - 2*npar
-    neigen = npdfmem/2 if pset.errorType.startswith("hessian") else npdfmem
+    #print(npdfmem, nmem, npar)
+    neigen = npdfmem//2 if pset.errorType.startswith("hessian") else npdfmem
+    #print(neigen)
     ## Random numbers are just set to zero here for testing purposes.
     randoms = [0.0 for ir in range(neigen)]
     xgrand = pset.randomValueFromHessian(xgAll, randoms)
