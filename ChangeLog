@@ -1,3 +1,7 @@
+2019-05-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 6.2.2!
+
 2019-05-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Don't pop the final path entry off in the pathsPrepend and
