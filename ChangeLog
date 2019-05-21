@@ -1,3 +1,7 @@
+2019-05-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a couple of extra trim() calls to path strings given to the Fortran API.
+
 2019-05-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Apply lhapdf script improvement from Ivan Razumov / Genser.

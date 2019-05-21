@@ -632,7 +632,7 @@ extern "C" {
     char s2[1024];
     s2[len] = '\0';
     strncpy(s2, s, len);
-    LHAPDF::pathsPrepend(s2);
+    LHAPDF::pathsPrepend(LHAPDF::trim(s2));
   }
 
   /// Get PDF data path (colon-separated if there is more than one element)
@@ -662,7 +662,7 @@ extern "C" {
     const string pap = LHAPDF::dirname(fullp);
     const string p = LHAPDF::basename(fullp);
     // Prepend path to search area
-    LHAPDF::pathsPrepend(pap);
+    LHAPDF::pathsPrepend(LHAPDF::trim(pap));
     // Handle extensions
     string path = LHAPDF::file_extn(p).empty() ? p : LHAPDF::file_stem(p);
     /// @note We correct the misnamed CTEQ6L1/CTEQ6ll set name as a backward compatibility special case.
