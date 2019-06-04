@@ -1,3 +1,8 @@
+2019-06-04  Graeme Watt  <graeme.watt@durham.ac.uk>
+
+	* Modify lhapdf script to support Content-Length in HTTP header not
+	given as a list so that file size is calculated correctly for CERN EOS.
+
 2019-05-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a couple of extra trim() calls to path strings given to the Fortran API.

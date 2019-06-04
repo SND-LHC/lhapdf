@@ -108,7 +108,11 @@ def download_url(source, dest_dir, dryrun=False):
             import urllib2 as urllib
         try:
             u = urllib.urlopen(url)
-            file_size = int(u.info().get("Content-Length", [0])[0])
+            content_length = u.info().get("Content-Length", 0)
+            if isinstance(content_length, list):
+                file_size = int(content_length[0]) if content_length else 0
+            else:
+                file_size = int(content_length)
         except urllib.URLError:
             e = sys.exc_info()[1]
             logging.error("Unable to download %s" % url)
