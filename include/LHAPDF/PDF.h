@@ -446,6 +446,8 @@ namespace LHAPDF {
     /// when this PDF goes out of scope or another setAlphaS call is made.
     void setAlphaS(AlphaS* alphas) {
       // _alphas.reset(alphas);
+      if (hasAlphaS()) delete _alphas;
+      _alphas = alphas;
     }
 
     /// @brief Check if an AlphaS calculator is set

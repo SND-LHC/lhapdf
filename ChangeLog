@@ -1,3 +1,7 @@
+2019-07-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Actually delete the previous AlphaS object when calling PDF::setAlphaS().
+
 2019-06-04  Graeme Watt  <graeme.watt@durham.ac.uk>
 
 	* Modify lhapdf script to support Content-Length in HTTP header not
