@@ -9,31 +9,34 @@ The following examples should help you to get to grips with using LHAPDF from C+
 
 @include tests/testperf.cc
 
-@section ex2 Using and testing PDFs in Python
+@section ex2 Using PDFs in Fortran
+@include examples/fexample1.f90
+
+@section ex3 Using and testing PDFs in Python
 @include examples/pythonexample.py
 
-@section ex3 Handling LHAPDF v5/v6 compatibility in C++
+@section ex4 Handling LHAPDF v5/v6 compatibility in C++
 @include examples/compatibility.cc
 
-@section ex4 Using and testing PDF grids in C++
+@section ex5 Using and testing PDF grids in C++
 @include tests/testgrid.cc
 
-@section ex5 Testing the Info system in C++
+@section ex6 Testing the Info system in C++
 @include tests/testinfo.cc
 
-@section ex6 Testing the LHAPDF ID indexing system in C++
+@section ex7 Testing the LHAPDF ID indexing system in C++
 @include tests/testindex.cc
 
-@section ex7 Testing the path searching system in C++
+@section ex8 Testing the path searching system in C++
 @include tests/testpaths.cc
 
-@section ex8 Testing the AlphaS classes in C++
+@section ex9 Testing the AlphaS classes in C++
 @include tests/testalphas.cc
 
-@section ex9 Making a new PDF subclass in C++
+@section ex10 Making a new PDF subclass in C++
 @include examples/analytic.cc
 
-@section ex10 Calculating PDF uncertainties in C++
+@section ex11 Calculating PDF uncertainties in C++
 @include examples/testpdfunc.cc
 
 */
