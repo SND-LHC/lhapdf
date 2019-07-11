@@ -227,6 +227,12 @@
 25830 MMHT2014nnlo_mbrange_nf3 2
 25840 MMHT2014nnlo_mbrange_nf4 2
 25850 MMHT2014nnlo_mbrange_nf5 2
+26000 MMHT2015qed_nlo 1
+26100 MMHT2015qed_nlo_elastic 1
+26200 MMHT2015qed_nlo_inelastic 1
+26300 MMHT2015qed_nnlo 1
+26400 MMHT2015qed_nnlo_elastic 1
+26500 MMHT2015qed_nnlo_inelastic 1
 33000 GKG18_DPDF_FitA_LO 1
 33020 GKG18_DPDF_FitB_LO 1
 33040 GKG18_DPDF_FitA_NLO 1
