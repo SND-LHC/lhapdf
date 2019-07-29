@@ -10,7 +10,7 @@
 #include "yaml-cpp/dll.h"
 #include <memory>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 class node;
 class node_ref;

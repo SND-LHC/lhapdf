@@ -21,7 +21,7 @@
     #define YAML_CPP_NOEXCEPT noexcept
 #endif
 
-namespace YAML {
+namespace LHAPDF_YAML {
 // error messages
 namespace ErrorMsg {
 const char* const YAML_DIRECTIVE_ARGS =

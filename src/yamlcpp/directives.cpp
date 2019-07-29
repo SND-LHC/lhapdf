@@ -1,6 +1,6 @@
 #include "directives.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 Directives::Directives() {
   // version
   version.isDefault = true;

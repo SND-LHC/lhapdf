@@ -41,7 +41,7 @@ bool IsFlexibleCase(const std::string& str) {
 }
 }
 
-namespace YAML {
+namespace LHAPDF_YAML {
 bool convert<bool>::decode(const Node& node, bool& rhs) {
   if (!node.IsScalar())
     return false;

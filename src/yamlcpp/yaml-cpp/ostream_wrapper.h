@@ -12,7 +12,7 @@
 
 #include "yaml-cpp/dll.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class YAML_CPP_API ostream_wrapper {
  public:
   ostream_wrapper();

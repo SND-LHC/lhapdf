@@ -5,7 +5,7 @@
 #include "tag.h"
 #include "token.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 Tag::Tag(const Token& token) : type(static_cast<TYPE>(token.data)) {
   switch (type) {
     case VERBATIM:

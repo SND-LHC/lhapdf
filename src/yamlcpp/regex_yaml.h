@@ -12,7 +12,7 @@
 
 #include "yaml-cpp/dll.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Stream;
 
 enum REGEX_OP {

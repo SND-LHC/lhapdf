@@ -9,7 +9,7 @@
 
 #include "yaml-cpp/dll.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 // this is basically boost::noncopyable
 class YAML_CPP_API noncopyable {
  protected:

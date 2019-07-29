@@ -7,7 +7,7 @@
 #include "stream.h"
 #include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
 
-namespace YAML {
+namespace LHAPDF_YAML {
 // ScanScalar
 // . This is where the scalar magic happens.
 //

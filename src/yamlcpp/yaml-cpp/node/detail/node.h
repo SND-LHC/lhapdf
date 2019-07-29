@@ -14,7 +14,7 @@
 #include "yaml-cpp/node/detail/node_ref.h"
 #include <set>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 class node {
  public:

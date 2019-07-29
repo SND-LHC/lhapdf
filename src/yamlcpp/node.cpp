@@ -2,7 +2,7 @@
 #include "nodebuilder.h"
 #include "nodeevents.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 Node Clone(const Node& node) {
   NodeEvents events(node);
   NodeBuilder builder;

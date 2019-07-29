@@ -14,11 +14,11 @@
 
 #include "yaml-cpp/noncopyable.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 
 // TODO: This class is no longer needed
 template <typename T>
-class ptr_vector : private YAML::noncopyable {
+class ptr_vector : private LHAPDF_YAML::noncopyable {
  public:
   ptr_vector() {}
 

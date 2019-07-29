@@ -1,7 +1,7 @@
 #include "scanner.h"
 #include "token.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Mark;
 
 Scanner::SimpleKey::SimpleKey(const Mark& mark_, std::size_t flowLevel_)

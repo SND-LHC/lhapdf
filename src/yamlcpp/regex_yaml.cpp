@@ -1,6 +1,6 @@
 #include "regex_yaml.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 // constructors
 RegEx::RegEx() : m_op(REGEX_EMPTY) {}
 

@@ -4,7 +4,7 @@
 #include <cstring>
 #include <iostream>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 ostream_wrapper::ostream_wrapper()
     : m_buffer(1, '\0'),
       m_pStream(0),

@@ -3,7 +3,7 @@
 #include "emitterstate.h"
 #include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
 
-namespace YAML {
+namespace LHAPDF_YAML {
 EmitterState::EmitterState()
     : m_isGood(true),
       m_curIndent(0),

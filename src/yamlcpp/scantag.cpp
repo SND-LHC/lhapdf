@@ -5,7 +5,7 @@
 #include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
 #include "yaml-cpp/mark.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 const std::string ScanVerbatimTag(Stream& INPUT) {
   std::string tag;
 

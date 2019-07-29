@@ -6,7 +6,7 @@
 #include "token.h"
 #include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
 
-namespace YAML {
+namespace LHAPDF_YAML {
 Scanner::Scanner(std::istream& in)
     : INPUT(in),
       m_startedStream(false),
@@ -383,4 +383,4 @@ void Scanner::ThrowParserException(const std::string& msg) const {
   }
   throw ParserException(mark, msg);
 }
-}  // namespace YAML
+}  // namespace LHAPDF_YAML

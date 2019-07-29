@@ -8,7 +8,7 @@
 #include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
 #include "yaml-cpp/parser.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class EventHandler;
 
 Parser::Parser() {}

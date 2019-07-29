@@ -11,7 +11,7 @@
 #include "yaml-cpp/ostream_wrapper.h"
 #include "yaml-cpp/null.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace Utils {
 namespace {
 enum { REPLACEMENT_CHARACTER = 0xFFFD };

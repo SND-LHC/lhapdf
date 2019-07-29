@@ -10,7 +10,7 @@
 #include "yaml-cpp/noncopyable.h"
 #include <cstddef>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class StreamCharSource {
  public:
   StreamCharSource(const Stream& stream) : m_offset(0), m_stream(stream) {}

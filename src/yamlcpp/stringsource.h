@@ -9,7 +9,7 @@
 
 #include <cstddef>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class StringCharSource {
  public:
   StringCharSource(const char* str, std::size_t size)

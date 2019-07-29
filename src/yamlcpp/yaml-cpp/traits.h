@@ -7,7 +7,7 @@
 #pragma once
 #endif
 
-namespace YAML {
+namespace LHAPDF_YAML {
 template <typename>
 struct is_numeric {
   enum { value = false };

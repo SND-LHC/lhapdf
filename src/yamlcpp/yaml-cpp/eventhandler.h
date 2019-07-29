@@ -12,7 +12,7 @@
 #include "yaml-cpp/anchor.h"
 #include "yaml-cpp/emitterstyle.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Mark;
 
 class EventHandler {

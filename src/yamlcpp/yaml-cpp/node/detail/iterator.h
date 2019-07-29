@@ -14,7 +14,7 @@
 #include <cstddef>
 #include <iterator>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 struct iterator_value;
 

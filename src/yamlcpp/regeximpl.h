@@ -11,7 +11,7 @@
 #include "stringsource.h"
 #include "streamcharsource.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 // query matches
 inline bool RegEx::Matches(char ch) const {
   std::string str;

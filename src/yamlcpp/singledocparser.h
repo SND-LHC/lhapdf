@@ -14,7 +14,7 @@
 #include "yaml-cpp/anchor.h"
 #include "yaml-cpp/noncopyable.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class CollectionStack;
 class EventHandler;
 class Node;

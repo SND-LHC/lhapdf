@@ -12,7 +12,7 @@
 
 #include "yaml-cpp/dll.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Emitter;
 class Node;
 
@@ -27,6 +27,6 @@ YAML_CPP_API std::ostream& operator<<(std::ostream& out, const Node& node);
 
 /** Converts the node to a YAML string. */
 YAML_CPP_API std::string Dump(const Node& node);
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
 #endif  // NODE_EMIT_H_62B23520_7C8E_11DE_8A39_0800200C9A66

@@ -7,7 +7,7 @@
 #pragma once
 #endif
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct EmitterStyle {
   enum value { Default, Block, Flow };
 };

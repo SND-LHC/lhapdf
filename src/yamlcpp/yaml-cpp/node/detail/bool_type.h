@@ -7,7 +7,7 @@
 #pragma once
 #endif
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 struct unspecified_bool {
   struct NOT_ALLOWED;
@@ -18,9 +18,9 @@ typedef void (*unspecified_bool_type)(unspecified_bool::NOT_ALLOWED*);
 }
 
 #define YAML_CPP_OPERATOR_BOOL()                                            \
-  operator YAML::detail::unspecified_bool_type() const {                    \
+  operator LHAPDF_YAML::detail::unspecified_bool_type() const {                    \
     return this->operator!() ? 0                                            \
-                             : &YAML::detail::unspecified_bool::true_value; \
+                             : &LHAPDF_YAML::detail::unspecified_bool::true_value; \
   }
 
 #endif  // NODE_DETAIL_BOOL_TYPE_H_62B23520_7C8E_11DE_8A39_0800200C9A66

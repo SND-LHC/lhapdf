@@ -10,7 +10,7 @@
 #include <stack>
 #include <cassert>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct CollectionType {
   enum value { NoCollection, BlockMap, BlockSeq, FlowMap, FlowSeq, CompactMap };
 };

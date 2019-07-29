@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 struct iterator_value : public Node, std::pair<Node, Node> {
   iterator_value() {}

@@ -2,7 +2,7 @@
 
 #include "yaml-cpp/parser.h"  // IWYU pragma: keep
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class GraphBuilderInterface;
 
 void* BuildGraphOfNextDocument(Parser& parser,

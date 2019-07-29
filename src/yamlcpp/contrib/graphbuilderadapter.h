@@ -17,12 +17,12 @@
 #include "yaml-cpp/emitterstyle.h"
 #include "yaml-cpp/eventhandler.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class GraphBuilderInterface;
 struct Mark;
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class GraphBuilderAdapter : public EventHandler {
  public:
   GraphBuilderAdapter(GraphBuilderInterface& builder)

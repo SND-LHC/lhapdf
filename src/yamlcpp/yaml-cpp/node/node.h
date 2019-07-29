@@ -17,15 +17,15 @@
 #include "yaml-cpp/node/ptr.h"
 #include "yaml-cpp/node/type.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 class node;
 class node_data;
 struct iterator_value;
 }  // namespace detail
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class YAML_CPP_API Node {
  public:
   friend class NodeBuilder;
@@ -38,8 +38,8 @@ class YAML_CPP_API Node {
   template <typename T, typename S>
   friend struct as_if;
 
-  typedef YAML::iterator iterator;
-  typedef YAML::const_iterator const_iterator;
+  typedef LHAPDF_YAML::iterator iterator;
+  typedef LHAPDF_YAML::const_iterator const_iterator;
 
   Node();
   explicit Node(NodeType::value type);
@@ -49,7 +49,7 @@ class YAML_CPP_API Node {
   Node(const Node& rhs);
   ~Node();
 
-  YAML::Mark Mark() const;
+  LHAPDF_YAML::Mark Mark() const;
   NodeType::value Type() const;
   bool IsDefined() const;
   bool IsNull() const { return Type() == NodeType::Null; }

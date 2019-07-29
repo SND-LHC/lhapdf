@@ -11,7 +11,7 @@
 
 #include "../anchor.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 /**
  * An object that stores and retrieves values correlating to {@link anchor_t}
  * values.

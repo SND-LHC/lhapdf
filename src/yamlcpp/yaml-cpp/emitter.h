@@ -20,12 +20,12 @@
 #include "yaml-cpp/null.h"
 #include "yaml-cpp/ostream_wrapper.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Binary;
 struct _Null;
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class EmitterState;
 
 class YAML_CPP_API Emitter : private noncopyable {

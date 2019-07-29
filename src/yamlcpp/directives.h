@@ -10,7 +10,7 @@
 #include <string>
 #include <map>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Version {
   bool isDefault;
   int major, minor;

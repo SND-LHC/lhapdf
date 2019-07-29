@@ -14,7 +14,7 @@
 #include "yaml-cpp/exceptions.h"
 #include <string>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 inline Node::Node() : m_isValid(true), m_pNode(NULL) {}
 
 inline Node::Node(NodeType::value type)
@@ -202,7 +202,7 @@ inline Node& Node::operator=(const T& rhs) {
   return *this;
 }
 
-inline void Node::reset(const YAML::Node& rhs) {
+inline void Node::reset(const LHAPDF_YAML::Node& rhs) {
   if (!m_isValid || !rhs.m_isValid)
     throw InvalidNode();
   m_pMemory = rhs.m_pMemory;

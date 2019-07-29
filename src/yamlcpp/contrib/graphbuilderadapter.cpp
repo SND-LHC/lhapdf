@@ -1,7 +1,7 @@
 #include "graphbuilderadapter.h"
 #include "yaml-cpp/contrib/graphbuilder.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Mark;
 
 int GraphBuilderAdapter::ContainerFrame::sequenceMarker;

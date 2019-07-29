@@ -12,7 +12,7 @@
 
 #include "yaml-cpp/ostream_wrapper.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Indentation {
   Indentation(std::size_t n_) : n(n_) {}
   std::size_t n;

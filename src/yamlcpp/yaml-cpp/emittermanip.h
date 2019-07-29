@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 enum EMITTER_MANIP {
   // general manipulators
   Auto,

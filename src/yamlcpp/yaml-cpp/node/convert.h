@@ -21,14 +21,14 @@
 #include "yaml-cpp/node/type.h"
 #include "yaml-cpp/null.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Binary;
 struct _Null;
 template <typename T>
 struct convert;
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace conversion {
 inline bool IsInfinity(const std::string& input) {
   return input == ".inf" || input == ".Inf" || input == ".INF" ||

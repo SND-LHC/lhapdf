@@ -7,7 +7,7 @@
 #include "yaml-cpp/node/node.h"
 #include "yaml-cpp/node/type.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Mark;
 
 NodeBuilder::NodeBuilder()

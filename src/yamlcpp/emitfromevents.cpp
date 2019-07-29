@@ -6,19 +6,19 @@
 #include "yaml-cpp/emittermanip.h"
 #include "yaml-cpp/null.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Mark;
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
 namespace {
-std::string ToString(YAML::anchor_t anchor) {
+std::string ToString(LHAPDF_YAML::anchor_t anchor) {
   std::stringstream stream;
   stream << anchor;
   return stream.str();
 }
 }
 
-namespace YAML {
+namespace LHAPDF_YAML {
 EmitFromEvents::EmitFromEvents(Emitter& emitter) : m_emitter(emitter) {}
 
 void EmitFromEvents::OnDocumentStart(const Mark&) {}

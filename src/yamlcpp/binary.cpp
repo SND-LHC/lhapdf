@@ -1,6 +1,6 @@
 #include "yaml-cpp/binary.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 static const char encoding[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

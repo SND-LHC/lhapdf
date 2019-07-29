@@ -16,7 +16,7 @@
 #include <set>
 #include <string>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Stream : private noncopyable {
  public:
   friend class StreamCharSource;

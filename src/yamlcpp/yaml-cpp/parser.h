@@ -13,7 +13,7 @@
 #include "yaml-cpp/dll.h"
 #include "yaml-cpp/noncopyable.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class EventHandler;
 class Node;
 class Scanner;

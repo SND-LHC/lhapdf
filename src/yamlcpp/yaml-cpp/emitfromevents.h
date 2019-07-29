@@ -13,11 +13,11 @@
 #include "yaml-cpp/emitterstyle.h"
 #include "yaml-cpp/eventhandler.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct Mark;
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Emitter;
 
 class EmitFromEvents : public EventHandler {

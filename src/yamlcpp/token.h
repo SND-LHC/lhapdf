@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 const std::string TokenNames[] = {
     "DIRECTIVE", "DOC_START", "DOC_END", "BLOCK_SEQ_START", "BLOCK_MAP_START",
     "BLOCK_SEQ_END", "BLOCK_MAP_END", "BLOCK_ENTRY", "FLOW_SEQ_START",

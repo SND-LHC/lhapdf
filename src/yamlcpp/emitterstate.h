@@ -17,7 +17,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct FmtScope {
   enum value { Local, Global };
 };

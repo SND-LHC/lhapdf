@@ -7,7 +7,7 @@
 #pragma once
 #endif
 
-namespace YAML {
+namespace LHAPDF_YAML {
 struct NodeType {
   enum value { Undefined, Null, Scalar, Sequence, Map };
 };

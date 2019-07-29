@@ -10,7 +10,7 @@
 #include "yaml-cpp/node/ptr.h"
 #include "yaml-cpp/node/type.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 
 std::string node_data::empty_scalar;

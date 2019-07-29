@@ -12,7 +12,7 @@
 
 #include "yaml-cpp/dll.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 YAML_CPP_API std::string EncodeBase64(const unsigned char *data,
                                       std::size_t size);
 YAML_CPP_API std::vector<unsigned char> DecodeBase64(const std::string &input);

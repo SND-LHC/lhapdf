@@ -20,7 +20,7 @@
 #include "token.h"
 #include "yaml-cpp/mark.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Node;
 class RegEx;
 

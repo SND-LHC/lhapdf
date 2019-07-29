@@ -11,7 +11,7 @@
 #include <vector>
 #include "yaml-cpp/noncopyable.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class SettingChangeBase;
 
 template <typename T>

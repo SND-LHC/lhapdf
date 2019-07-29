@@ -13,11 +13,11 @@
 #include "yaml-cpp/emittermanip.h"
 #include "yaml-cpp/ostream_wrapper.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class ostream_wrapper;
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Binary;
 
 struct StringFormat {

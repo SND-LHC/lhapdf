@@ -7,7 +7,7 @@
 #include "yaml-cpp/emittermanip.h"
 #include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Binary;
 struct _Null;
 
@@ -684,7 +684,7 @@ Emitter& Emitter::Write(const std::string& str) {
                                  m_pState->CurGroupFlowType(), escapeNonAscii);
 
   if (strFormat == StringFormat::Literal)
-    m_pState->SetMapKeyFormat(YAML::LongKey, FmtScope::Local);
+    m_pState->SetMapKeyFormat(LHAPDF_YAML::LongKey, FmtScope::Local);
 
   PrepareNode(EmitterNodeType::Scalar);
 

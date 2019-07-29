@@ -19,13 +19,13 @@
 #include "yaml-cpp/node/ptr.h"
 #include "yaml-cpp/node/type.h"
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 class node;
 }  // namespace detail
-}  // namespace YAML
+}  // namespace LHAPDF_YAML
 
-namespace YAML {
+namespace LHAPDF_YAML {
 namespace detail {
 class YAML_CPP_API node_data {
  public:

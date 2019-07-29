@@ -10,7 +10,7 @@
 #include "yaml-cpp/dll.h"
 #include <string>
 
-namespace YAML {
+namespace LHAPDF_YAML {
 class Node;
 
 struct YAML_CPP_API _Null {};
