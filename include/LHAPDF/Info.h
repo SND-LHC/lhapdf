@@ -177,7 +177,12 @@ namespace LHAPDF {
   template <>
   inline std::vector<std::string> Info::get_entry_as(const std::string& key) const {
     static const string delim = ",";
-    return split(get_entry(key), delim);
+    string strval = trim(get_entry(key));
+    // cout << "@@ " << strval << endl;
+    if (startswith(strval, "[")) strval = strval.substr(1, strval.size()-1);
+    if (endswith(strval, "]")) strval = strval.substr(0, strval.size()-1);
+    // cout << "## " << strval << endl;
+    return split(strval, delim);
   }
 
   template <>
@@ -185,8 +190,7 @@ namespace LHAPDF {
     const vector<string> strs = get_entry_as< vector<string> >(key);
     vector<int> rtn;
     rtn.reserve(strs.size());
-    // for (const string& s : strs) rtn.push_back( lexical_cast<int>(s) ); //< @todo Restore when C++11 guaranteed
-    for (size_t i = 0; i < strs.size(); ++i) rtn.push_back( lexical_cast<int>(strs[i]) );
+    for (const string& s : strs) rtn.push_back( lexical_cast<int>(s) );
     assert(rtn.size() == strs.size());
     return rtn;
   }
@@ -196,8 +200,7 @@ namespace LHAPDF {
     const vector<string> strs = get_entry_as< vector<string> >(key);
     vector<double> rtn;
     rtn.reserve(strs.size());
-    //for (const string& s : strs) rtn.push_back( lexical_cast<double>(s) ); //< @todo Restore when C++11 guaranteed
-    for (size_t i = 0; i < strs.size(); ++i) rtn.push_back( lexical_cast<double>(strs[i]) );
+    for (const string& s : strs) rtn.push_back( lexical_cast<double>(s) );
     assert(rtn.size() == strs.size());
     return rtn;
   }

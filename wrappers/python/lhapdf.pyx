@@ -261,9 +261,27 @@ cdef class Info:
     #     return self._ptr.get_entry(key)
 
     def get_entry(self, key, fallback=None):
-        "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        rtn = self._ptr.get_entry(text_encode(key), text_encode(str(fallback)))
-        return rtn if str(rtn) != str(fallback) else fallback
+        """\
+        Returns metadata entry for this key if it exists, otherwise returns a fallback value.
+
+        The string will be automatically converted to Python native types as far as possible
+        -- more complex types are possible if the yaml module is installed.
+        """
+        rtn = fallback
+        try:
+            rtn = self._ptr.get_entry(text_encode(key), text_encode(str(fallback)))
+            try:
+                import ast
+                rtn = ast.literal_eval(rtn)
+            except:
+                try:
+                    import yaml
+                    rtn = yaml.load(rtn)
+                except:
+                    pass
+        except:
+            pass
+        return rtn
 
     def set_entry(self, key, value):
         "Set a metadata key"
@@ -412,35 +430,36 @@ cdef class PDFSet:
 
 
 
-cdef class PDFInfo:
+cdef class PDFInfo(Info):
     """\
     A class handling the metadata that defines a given PDF.
     """
+    pass
 
-    cdef c.PDFInfo* _ptr
-    cdef set_ptr(self, c.PDFInfo* ptr):
-        self._ptr = ptr
+    # cdef c.PDFInfo* _ptr
+    # cdef set_ptr(self, c.PDFInfo* ptr):
+    #     self._ptr = ptr
 
-    # def metadata(self):
-    #     "Return the metadata in the .info file"
-    #     return self._ptr.metadata()
+    # # def metadata(self):
+    # #     "Return the metadata in the .info file"
+    # #     return self._ptr.metadata()
 
-    def has_key(self, key):
-        "Return whether or not metadata for this key exists"
-        return self._ptr.has_key(text_encode(key))
+    # def has_key(self, key):
+    #     "Return whether or not metadata for this key exists"
+    #     return self._ptr.has_key(text_encode(key))
 
-    def has_key_local(self, key):
-        "Returns whether or not metadata for this key exists at a local level (config/set/member)"
-        return self._ptr.has_key_local(text_encode(key))
+    # def has_key_local(self, key):
+    #     "Returns whether or not metadata for this key exists at a local level (config/set/member)"
+    #     return self._ptr.has_key_local(text_encode(key))
 
-    # def get_entry(self, key):
-    #     "Returns metadata entry for this key"
-    #     return self._ptr.get_entry(key)
+    # # def get_entry(self, key):
+    # #     "Returns metadata entry for this key"
+    # #     return self._ptr.get_entry(key)
 
-    def get_entry(self, key, fallback=None):
-        "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
-        rtn = self._ptr.get_entry(text_encode(key), text_encode(str(fallback)))
-        return rtn if str(rtn) != str(fallback) else fallback
+    # def get_entry(self, key, fallback=None):
+    #     "Returns metadata entry for this key if it exists, otherwise returns a fallback value"
+    #     rtn = self._ptr.get_entry(text_encode(key), text_encode(str(fallback)))
+    #     return rtn if str(rtn) != str(fallback) else fallback
 
 
 

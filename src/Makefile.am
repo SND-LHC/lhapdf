@@ -18,7 +18,7 @@ libLHAPDF_la_SOURCES = \
   Config.cc Factories.cc PDFIndex.cc Utils.cc FileIO.cc
 
 libLHAPDFInfo_la_SOURCES = Info.cc
-libLHAPDFInfo_la_CPPFLAGS = -I$(srcdir)/yamlcpp -DYAMLCPP_API=3 -DYAML_NAMESPACE=LHAPDF_YAML $(AM_CPPFLAGS)
+libLHAPDFInfo_la_CPPFLAGS = -I$(srcdir)/yamlcpp -DYAML_NAMESPACE=LHAPDF_YAML $(AM_CPPFLAGS)
 libLHAPDFInfo_la_LIBADD = $(builddir)/yamlcpp/liblhapdf-yaml-cpp.la
 
 libLHAPDFPaths_la_SOURCES = Paths.cc
