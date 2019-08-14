@@ -268,8 +268,13 @@ The main sub-commands that can be used are:
 
 
     def _scanpdfs(self):
-        ## List and install commands require us to build lists of reference and installed PDFs
         self.master_list, self.installed = {}, {}
+
+        ## Return empty lists if relevant search directories are not known
+        if self.mainargs.LISTDIR is None or self.mainargs.PDFDIR is None:
+            return
+
+        ## List and install commands require us to build lists of reference and installed PDFs
         indexpath = os.path.join(self.mainargs.LISTDIR, INDEX_FILENAME)
         logging.debug("Index file =", indexpath)
         for pdf in get_reference_list(indexpath):
@@ -356,7 +361,10 @@ The main sub-commands that can be used are:
         "Update the list of available PDF sets."
         ap = argparse.ArgumentParser(description=__doc__, usage="%(prog)s update")
         updateargs = ap.parse_args(otherargs)
-        download_file(self.mainargs.SOURCES, INDEX_FILENAME, self.mainargs.LISTDIR)
+        if self.mainargs.LISTDIR is not None:
+            download_file(self.mainargs.SOURCES, INDEX_FILENAME, self.mainargs.LISTDIR)
+        else:
+            print("PDF index file location not known: can't update")
         sys.exit(0)
 
 
@@ -368,6 +376,9 @@ The main sub-commands that can be used are:
         ap.add_argument("--upgrade", dest="UPGRADE", action="store_true", help="Force reinstall (used to upgrade)")
         ap.add_argument("--keep", dest="KEEP_TARBALLS", action="store_true", help="Keep the downloaded tarballs")
         subargs = ap.parse_args(otherargs)
+
+        if self.mainargs.PDFDIR is None:
+            print("PDF data file location not known: can't upgrade or install")
 
         ## Scan the current PDF collection
         self._scanpdfs()
@@ -401,6 +412,9 @@ The main sub-commands that can be used are:
         ap.add_argument("--dryrun", dest="DRYRUN", action="store_true", help="Do not download sets")
         ap.add_argument("--keep", dest="KEEP_TARBALLS", action="store_true", help="Keep the downloaded tarballs")
         subargs = ap.parse_args(otherargs)
+
+        if self.mainargs.PDFDIR is None:
+            print("PDF data file location not known: can't upgrade or install")
 
         ## Scan the current PDF collection
         self._scanpdfs()

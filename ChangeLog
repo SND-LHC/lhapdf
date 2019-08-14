@@ -1,3 +1,8 @@
+2019-08-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix lhapdf script handling of unknown index file and data
+	directory paths. Thanks to Mateusz Ploskon.
+
 2019-07-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Use ast abstract syntax tree standard module rather than yaml to
