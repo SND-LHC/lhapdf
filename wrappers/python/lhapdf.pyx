@@ -291,9 +291,15 @@ cdef class Info:
 class PDFUncertainty:
     """\
     A simple struct containing components of a value with uncertainties calculated
-    from a PDF set. Attributes are central, errplus, errminus, errsymm, and scale.
+    from a PDF set.
+
+    Attributes are central, errplus, errminus, errsymm, and scale.
     Extra attributes to return the separate PDF and parameter errors for combined
     PDF+parameter sets are errplus_pdf, errminus_pdf, errsymm_pdf and err_par.
+
+    Convenience attributes are provided for returning the maximum and minimum
+    values in the error range (as opposed to the size of deviations from the central
+    value) and for returning pairs of down/up errors and min/max values.
     """
     def __init__(self, central=0.0, errplus=0.0, errminus=0.0, errsymm=0.0, scale=0.0, errplus_pdf=0.0, errminus_pdf=0.0, errsymm_pdf=0.0, err_par=0.0):
         self.central  = central
@@ -305,6 +311,38 @@ class PDFUncertainty:
         self.errminus_pdf = errminus_pdf
         self.errsymm_pdf  = errsymm_pdf
         self.err_par       = err_par
+
+    @property
+    def errs(self):
+        return [self.errminus, self.errplus]
+
+    @property
+    def errs_pdf(self):
+        return [self.errminus_pdf, self.errplus_pdf]
+
+    @property
+    def errmin(self):
+        return self.central - self.errminus
+
+    @property
+    def errmax(self):
+        return self.central + self.errplus
+
+    @property
+    def errrange(self):
+        return [self.errmin, self.errmax]
+
+    @property
+    def errmin_pdf(self):
+        return self.central - self.errminus_pdf
+
+    @property
+    def errmax_pdf(self):
+        return self.central + self.errplus_pdf
+
+    @property
+    def errrange_pdf(self):
+        return [self.errmin_pdf, self.errmax_pdf]
 
 
 cdef class PDFSet:

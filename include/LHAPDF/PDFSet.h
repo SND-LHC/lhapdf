@@ -26,7 +26,7 @@ namespace LHAPDF {
     PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1,
 		   double eplus_pdf=0, double eminus_pdf=0, double esymm_pdf=0, double e_par=0)
       : central(cent), errplus(eplus), errminus(eminus), errsymm(esymm), scale(scalefactor),
-	errplus_pdf(eplus_pdf), errminus_pdf(eminus_pdf), errsymm_pdf(esymm_pdf), err_par(e_par)
+        errplus_pdf(eplus_pdf), errminus_pdf(eminus_pdf), errsymm_pdf(esymm_pdf), err_par(e_par)
     {    }
     /// Variables for the central value, +ve, -ve & symmetrised errors, and a CL scalefactor
     double central, errplus, errminus, errsymm, scale;
