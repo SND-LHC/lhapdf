@@ -39,24 +39,13 @@ Full installation and troubleshooting details are given at @ref install .
 
 @section sets Official PDF sets
 
-In the move to LHAPDF6 we have migrated the most recent PDF set families of each
-major PDF fitting group from LHAPDF5 to the new unified LHAPDF6 format. With a
-few exceptions for particularly significant older PDF sets, this means an
-effective age cutoff of ~2005 on the migrated sets.
-
-If you need older sets you are encouraged to convert the LHAPDF5 version to
-LHAPDF6's data format: see the @ref migration page for details of this
-procedure. We do not provide support for LHAPDF5, and a very strong case will
-be needed for further "official" set migrations beyond the many already available
-in LHAPDF6.
-
 The following link takes you to the PDF sets which are currently available and officially supported:
 
 - @ref pdfsets
 
 The PDF set data files can be downloaded from
-https://www.hepforge.org/archive/lhapdf/pdfsets/ and the latest versions are
-installed (as tarballs and expanded into directories) on CERN CVMFS at
+http://lhapdfsets.web.cern.ch/lhapdfsets/current/
+which is also available via CERN CVMFS at
 `/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/`. Many users will find it easiest
 to just set their `LHAPDF_DATA_PATH` environment variable to point at this
 distributed filesystem area and use the preinstalled latest sets there.
@@ -68,6 +57,17 @@ management system -- it accepts commands `list`, `update`, `install` and
 `upgrade`. Please run `lhapdf help` for full usage instructions. Please note
 that this script currently requires the LHAPDF library to have been built and
 installed with Python support.
+
+The most recent PDF set families of each major PDF fitting group from LHAPDF5
+were migrated to the unified LHAPDF6 format. With a few exceptions for
+particularly significant older PDF sets, this means an effective age cutoff of
+~2005 on the migrated sets.
+
+If you need older sets you are encouraged to convert the LHAPDF5 version to
+LHAPDF6's data format: see the @ref migration page for details of this
+procedure. We do not provide support for LHAPDF5, and a very strong case will
+be needed for further "official" set migrations beyond the many already available
+in LHAPDF6.
 
 If you want to add new PDF sets to the standard collection, please contact the
 LHAPDF authors at lhapdf@projects.hepforge.org. You are expected to create and
