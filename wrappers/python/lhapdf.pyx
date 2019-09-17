@@ -276,7 +276,7 @@ cdef class Info:
             except:
                 try:
                     import yaml
-                    rtn = yaml.load(rtn)
+                    rtn = yaml.full_load(rtn)
                 except:
                     pass
         except:
