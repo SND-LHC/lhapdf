@@ -42,7 +42,7 @@ s += "    <tr><th>%LHAPDF ID</th><th>Set name</th><th>Number of set members</th>
 
 for lhaid, ps in sorted(sets.items()):
     color = "#fee" if ps.dataversion < 0 else "#efe"
-    baseurl = "http://www.hepforge.org/archive/lhapdf/pdfsets/" + str(lhamajversion)
+    baseurl = "http://lhapdfsets.web.cern.ch/lhapdfsets/current/" + str(lhamajversion)
     if ps.dataversion < 0:
         baseurl += "/unvalidated"
     url = baseurl + ("/%s.tar.gz" % ps.name)
