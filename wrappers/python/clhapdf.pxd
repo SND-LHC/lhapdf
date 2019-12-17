@@ -13,6 +13,7 @@ cdef extern from "../../include/LHAPDF/Paths.h" namespace "LHAPDF":
     cdef void pathsPrepend(string)
     cdef void pathsAppend(string)
     cdef vector[string] availablePDFSets()
+    cdef string findFile(string)
 
 cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
     cdef cppclass PDF:

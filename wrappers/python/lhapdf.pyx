@@ -755,3 +755,8 @@ def pathsPrepend(newpath):
 def pathsAppend(newpath):
     "Append to the list of current PDF data search paths."
     c.pathsAppend(text_encode(newpath))
+
+def findFile(filename):
+    "Return the path to the found filename via the LHAPDF search mechanism, or None."
+    cdef string path = c.findFile(filename)
+    return path if not path.empty() else None
