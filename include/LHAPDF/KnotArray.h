@@ -19,9 +19,6 @@ namespace LHAPDF {
   class KnotArray1F {
   public:
 
-    /// @name Construction etc.
-    //@{
-
     /// Default constructor just for std::map insertability
     KnotArray1F() {}
 
@@ -42,11 +39,9 @@ namespace LHAPDF {
       _synclogs();
     }
 
-    //@}
-
 
     /// @name x stuff
-    //@{
+    ///@{
 
     /// x knot setter
     /// @note Also zeros the xfs array, which is invalidated by resetting the x knots
@@ -79,11 +74,11 @@ namespace LHAPDF {
       return i;
     }
 
-    //@}
+    ///@}
 
 
     /// @name Q2 stuff
-    //@{
+    ///@{
 
     /// Q2 knot setter
     /// @note Also zeros the xfs array, which is invalidated by resetting the Q2 knots
@@ -116,11 +111,11 @@ namespace LHAPDF {
       return i;
     }
 
-    //@}
+    ///@}
 
 
     /// @name PDF values at (x, Q2) points
-    //@{
+    ///@{
 
     /// Number of x knots
     size_t size() const { return xsize()*q2size(); }
@@ -135,7 +130,7 @@ namespace LHAPDF {
     /// Get the xf value at a particular indexed x,Q2 knot
     const double& xf(size_t ix, size_t iq2) const { return _xfs[ix*q2size() + iq2]; }
 
-    //@}
+    ///@}
 
 
   private:
@@ -227,7 +222,7 @@ namespace LHAPDF {
   public:
 
     /// @name Construction etc.
-    //@{
+    ///@{
 
     /// Default constructor just for std::map insertability
     AlphaSArray() {}
@@ -239,11 +234,11 @@ namespace LHAPDF {
       _synclogs();
     }
 
-    //@}
+    ///@}
 
 
     /// @name Q2 stuff
-    //@{
+    ///@{
 
     /// Q2 knot vector accessor
     const std::vector<double>& q2s() const { return _q2s; }
@@ -279,11 +274,11 @@ namespace LHAPDF {
       return i;
     }
 
-    //@}
+    ///@}
 
 
     /// @name alpha_s values at Q2 points
-    //@{
+    ///@{
 
     /// alpha_s value accessor (const)
     const std::vector<double>& alphas() const { return _as; }
@@ -292,11 +287,11 @@ namespace LHAPDF {
     // /// alpha_s value setter
     // void setalphas(const valarray& xfs) { _as = as; }
 
-    //@}
+    ///@}
 
 
     /// @name alpha_s derivatives vs (log)Q2, useful for interpolation
-    //@{
+    ///@{
 
     /// Forward derivative w.r.t. logQ2
     double ddlogq_forward(size_t i) const {
@@ -313,7 +308,7 @@ namespace LHAPDF {
       return 0.5 * (ddlogq_forward(i) + ddlogq_backward(i));
     }
 
-    //@}
+    ///@}
 
 
   private:

@@ -12,8 +12,8 @@
 namespace LHAPDF {
 
 
-  /// @name Functions for PDF lookup by LHAPDF ID index file
-  //@{
+  /// @defgroup index PDF lookup in the LHAPDF ID index
+  ///@{
 
   /// Get the singleton LHAPDF set ID -> PDF index map
   std::map<int, std::string>& getPDFIndex();
@@ -41,7 +41,7 @@ namespace LHAPDF {
     return lookupLHAPDFID(idpair.first, idpair.second);
   }
 
-  //@}
+  ///@}
 
 
 }

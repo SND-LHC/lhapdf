@@ -30,15 +30,19 @@ namespace LHAPDF {
   using namespace std;
 
 
+  /// @defgroup utils Internal utility functions
+  ///@{
+
   /// @name String handling utility functions
-  //@{
+  ///@{
 
   /// When lexical_cast goes bad
   struct bad_lexical_cast : public std::runtime_error {
+    /// Constructor
     bad_lexical_cast(const std::string& what) : std::runtime_error(what) {}
   };
 
-  /// @brief Convert between any types via stringstream
+  /// @brief Convert between types via stringstream
   template<typename T, typename U>
   T lexical_cast(const U& in) {
     try {
@@ -144,11 +148,11 @@ namespace LHAPDF {
     return rtn;
   }
 
-  //@}
+  ///@}
 
 
-  /// @name Generic path functions in the LHAPDF namespace
-  //@{
+  /// @name Filesystem utils
+  ///@{
 
   /// Check if a path @a p (either file or dir) exists
   bool path_exists(const std::string& p,int mode=0);
@@ -193,11 +197,11 @@ namespace LHAPDF {
 
   /// @todo Add an abspath(p) function
 
-  //@}
+  ///@}
 
 
-  /// @name Math functions in the LHAPDF namespace
-  //@{
+  /// @name Math functions
+  ///@{
 
   /// Convenience function for squaring (of any type)
   template <typename N>
@@ -224,11 +228,11 @@ namespace LHAPDF {
   /// Quantiles of the chi-squared probability distribution function
   double chisquared_quantile(double p, double ndf);
 
-  //@}
+  ///@}
 
 
-  /// @name Container handling helpers
-  //@{
+  /// @name Container utils
+  ///@{
 
   /// Does the vector<T> @a container contain @a item?
   template <typename T>
@@ -290,7 +294,7 @@ namespace LHAPDF {
   //                            has_begin_end<T>::beg_value && has_begin_end<T>::end_value>
   // { };
 
-  //@}
+  ///@}
 
 
 }

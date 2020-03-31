@@ -39,9 +39,6 @@ namespace LHAPDF {
   class PDFSet : public Info {
   public:
 
-    /// @name Creation and deletion
-    //@{
-
     /// Default constructor (for container compatibility)
     /// @todo Remove?
     PDFSet() { }
@@ -50,11 +47,9 @@ namespace LHAPDF {
     /// @todo Remove?
     PDFSet(const std::string& setname);
 
-    //@}
-
 
     /// @name PDF set metadata specialisations
-    //@{
+    ///@{
 
     /// @brief PDF set name
     ///
@@ -97,7 +92,7 @@ namespace LHAPDF {
       return get_entry_as<unsigned int>("NumMembers");
     }
 
-    //@}
+    ///@}
 
 
     /// Summary printout
@@ -105,7 +100,7 @@ namespace LHAPDF {
 
 
     /// @name Creating PDF members
-    //@{
+    ///@{
 
     /// Make the nth PDF member in this set, returned by pointer
     ///
@@ -177,14 +172,14 @@ namespace LHAPDF {
       return rtn;
     }
 
-    //@}
+    ///@}
 
 
     /// @todo Add AlphaS getter for set-level alphaS?
 
 
     /// @name Generic metadata cascading mechanism
-    //@{
+    ///@{
 
     /// Can this Info object return a value for the given key? (it may be defined non-locally)
     bool has_key(const std::string& key) const {
@@ -202,11 +197,11 @@ namespace LHAPDF {
       return Info::get_entry(key, fallback);
     }
 
-    //@}
+    ///@}
 
 
     /// @name PDF set uncertainty functions
-    //@{
+    ///@{
 
     /// @brief Calculate central value and error from vector @c values with appropriate formulae for this set
     ///
@@ -283,7 +278,7 @@ namespace LHAPDF {
     ///   "Hiding" the name for now with the leading underscore.
     void _checkPdfType(const std::vector<string>& pdftypes) const;
 
-    //@}
+    ///@}
 
 
   private:

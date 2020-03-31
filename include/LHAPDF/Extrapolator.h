@@ -25,7 +25,7 @@ namespace LHAPDF {
 
 
     /// @name Binding to a PDF object
-    //@{
+    ///@{
 
     /// Bind to a GridPDF
     void bind(const GridPDF* pdf) { _pdf = pdf; }
@@ -39,11 +39,11 @@ namespace LHAPDF {
     /// Get the associated GridPDF
     const GridPDF& pdf() const { return *_pdf; }
 
-    //@}
+    ///@}
 
 
     /// @name Extrapolation methods
-    //@{
+    ///@{
 
     /// Extrapolate a single-point in (x,Q)
     ///
@@ -66,7 +66,7 @@ namespace LHAPDF {
 
     /// @todo Make an all-PID version of extrapolateQ and Q2?
 
-    //@}
+    ///@}
 
 
   private:

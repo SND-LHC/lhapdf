@@ -26,7 +26,7 @@ namespace LHAPDF {
 
 
     /// @name Binding to a PDF object
-    //@{
+    ///@{
 
     /// Bind to a GridPDF
     void bind(const GridPDF* pdf) { _pdf = pdf; }
@@ -40,11 +40,11 @@ namespace LHAPDF {
     /// Get the associated GridPDF
     const GridPDF& pdf() const { return *_pdf; }
 
-    //@}
+    ///@}
 
 
     /// @name Interpolation methods
-    //@{
+    ///@{
 
     /// Interpolate a single-point in (x,Q)
     double interpolateXQ(int id, double x, double q) const {
@@ -56,6 +56,8 @@ namespace LHAPDF {
 
 
     /// @todo Make an all-PID version of interpolateQ and Q2?
+
+    ///@}
 
 
   protected:
@@ -70,8 +72,6 @@ namespace LHAPDF {
 
     /// @todo Implement this NF version, with a cached KnotArrayNF?
     // virtual double _interpolateXQ2(const KnotArrayNF& subgrid, int id, double x, size_t ix, double q2, size_t iq2) const;
-
-    //@}
 
 
   private:

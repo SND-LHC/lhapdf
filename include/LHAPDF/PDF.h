@@ -44,14 +44,12 @@ namespace LHAPDF {
       delete _alphas;
     }
 
-    //@}
-
 
   protected:
 
 
     /// @name Helper methods for info loading / path setting, used by derived types
-    //@{
+    ///@{
 
     void _loadInfo(const std::string& mempath);
 
@@ -69,13 +67,13 @@ namespace LHAPDF {
       _loadInfo(setname_memid.first, setname_memid.second);
     }
 
-    //@}
+    ///@}
 
 
   public:
 
     /// @name PDF values
-    //@{
+    ///@{
 
     /// @brief Get the PDF xf(x) value at (x,q2) for the given PID.
     ///
@@ -202,13 +200,13 @@ namespace LHAPDF {
     /// @return the value of xf(x,q2)
     virtual double _xfxQ2(int id, double x, double q2) const = 0;
 
-    //@}
+    ///@}
 
 
   public:
 
     /// @name Ranges of validity
-    //@{
+    ///@{
 
     /// Minimum valid x value for this PDF.
     virtual double xMin() {
@@ -327,11 +325,11 @@ namespace LHAPDF {
       return inRangeX(x) && inRangeQ2(q2);
     }
 
-    //@}
+    ///@}
 
 
     /// @name Generic member-level metadata (including cascaded metadata from set & config level)
-    //@{
+    ///@{
 
     /// Get the info class that actually stores and handles the metadata
     PDFInfo& info() { return _info; }
@@ -346,11 +344,11 @@ namespace LHAPDF {
       return getPDFSet(_setname());
     }
 
-    //@}
+    ///@}
 
 
     /// @name Member-level metadata
-    //@{
+    ///@{
 
     /// @brief PDF member local ID number
     ///
@@ -382,7 +380,7 @@ namespace LHAPDF {
       return to_lower(info().get_entry("PdfType"));
     }
 
-    //@}
+    ///@}
 
 
     /// Summary printout
@@ -390,7 +388,7 @@ namespace LHAPDF {
 
 
     /// @name Parton content and QCD parameters
-    //@{
+    ///@{
 
     /// @brief List of flavours defined by this PDF set.
     ///
@@ -433,11 +431,11 @@ namespace LHAPDF {
     /// Returns -1 for an undefined PID.
     double quarkThreshold(int id) const;
 
-    //@}
+    ///@}
 
 
     /// @name QCD running coupling calculation
-    //@{
+    ///@{
 
     /// @brief Set the AlphaS calculator by pointer
     ///
@@ -482,7 +480,7 @@ namespace LHAPDF {
       return _alphas->alphasQ2(q2);
     }
 
-    //@}
+    ///@}
 
 
   protected:

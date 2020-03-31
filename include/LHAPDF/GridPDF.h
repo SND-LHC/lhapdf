@@ -19,9 +19,6 @@ namespace LHAPDF {
   class GridPDF : public PDF {
   public:
 
-    /// @name Creation and deletion
-    //@{
-
     /// Default constructor, making an empty PDF to be populated by hand.
     GridPDF() {
       _mempath = "";
@@ -62,8 +59,6 @@ namespace LHAPDF {
     /// Virtual destructor to allow inheritance
     virtual ~GridPDF() { }
 
-    //@}
-
 
   protected:
 
@@ -87,7 +82,7 @@ namespace LHAPDF {
   public:
 
     /// @name Interpolators and extrapolators
-    //@{
+    ///@{
 
     /// @brief Set the interpolator by pointer
     ///
@@ -150,7 +145,7 @@ namespace LHAPDF {
     /// Get the current extrapolator
     const Extrapolator& extrapolator() const;
 
-    //@}
+    ///@}
 
 
   protected:
@@ -162,7 +157,7 @@ namespace LHAPDF {
   public:
 
     /// @name Info about the grid, and access to the raw data points
-    //@{
+    ///@{
 
     /// Directly access the knot arrays in non-const mode, for programmatic filling
     std::map<double, KnotArrayNF>& knotarrays() {
@@ -209,7 +204,7 @@ namespace LHAPDF {
       return true;
     }
 
-    //@}
+    ///@}
 
 
   private:

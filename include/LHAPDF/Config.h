@@ -17,7 +17,7 @@ namespace LHAPDF {
   public:
 
     /// @name Fetching/creation
-    //@{
+    ///@{
 
     /// Get the global configuration object
     ///
@@ -28,7 +28,7 @@ namespace LHAPDF {
     /// @note The LHAPDF system is responsible for deletion of the returned
     /// object. Do NOT delete it yourself!
     static Config& get();
-    //@}
+    ///@}
 
 
     /// Config destructor, used for end-of-run banner printing
@@ -42,13 +42,11 @@ namespace LHAPDF {
       // std::cout << "CONFIG CONSTRUCTION" << std::endl;
     }
 
-    //@}
-
   };
 
 
-  /// @name Convenient verbosity control
-  //@{
+  /// @defgroup verb Verbosity control
+  ///@{
 
   /// Convenient way to get the current verbosity level
   ///
@@ -64,7 +62,7 @@ namespace LHAPDF {
     Config::get().set_entry("Verbosity", v);
   }
 
-  //@}
+  ///@}
 
 
 }

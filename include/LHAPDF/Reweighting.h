@@ -13,6 +13,9 @@
 namespace LHAPDF {
 
 
+  /// @name reweight PDF reweighting
+  ///@{
+
   namespace {
     inline bool _checkAlphasQ2(double Q2, const PDF& pdfa, const PDF& pdfb, double aschk) {
       if (aschk < 0) return true;
@@ -29,8 +32,8 @@ namespace LHAPDF {
   }
 
 
-  /// @name Single beam reweighting functions
-  //@{
+  /// @name Single-beam reweighting functions
+  ///@{
 
   /// Get the PDF reweighting factor for a beam with id,x,Q parameters, from basepdf to newpdf
   /// @note For NLO calculations, in general different PDF values enter for each counterterm: be careful.
@@ -61,11 +64,11 @@ namespace LHAPDF {
     return weightxQ(id, x, Q, *basepdf, *newpdf, aschk);
   }
 
-  //@}
+  ///@}
 
 
   /// @name Two-beam reweighting functions
-  //@{
+  ///@{
 
   /// Get the PDF reweighting factor for two beams, one with id1,x1 and the other with id2,x2, from basepdf to newpdf
   /// @note For NLO calculations, in general different PDF values enter for each counterterm: be careful.
@@ -96,8 +99,9 @@ namespace LHAPDF {
     return weightxxQ(id1, id2, x1, x2, Q, *basepdf, *newpdf, aschk);
   }
 
-  //@}
+  ///@}
 
+  ///@}
 
 }
 #endif

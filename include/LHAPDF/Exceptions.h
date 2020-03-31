@@ -13,7 +13,7 @@
 namespace LHAPDF {
 
 
-  /// @name Exception classes for error handling
+  /// @defgroup exceptions Exception classes for error handling
   //@{
 
   /// @brief Generic unspecialised LHAPDF runtime error.
@@ -106,7 +106,7 @@ namespace LHAPDF {
   };
 
 
-  /// Problem exists between keyboard and chair.
+  /// Problem exists between keyboard and chair
   class UserError : public Exception {
   public:
     /// Constructor with error description string
@@ -121,7 +121,7 @@ namespace LHAPDF {
     NotImplementedError(const std::string& what) : Exception(what) {}
   };
 
-  //@}
+  ///@}
 
 
 }

@@ -53,9 +53,13 @@ namespace LHAPDF {
     return exists;
   }
 
+
+
   namespace {
 
-    /// @todo Tidy up
+    /// gamma functions from Cephes library -- http://www.netlib.org/cephes
+    /// Copyright 1985, 1987, 2000 by Stephen L. Moshier
+
     static const double kMACHEP = 1.11022302462515654042363166809e-16;
     static const double kMAXLOG = 709.782712893383973096206318587;
     static const double kBig = 4.503599627370496e15;
@@ -64,10 +68,6 @@ namespace LHAPDF {
     double igamc(double a, double x);
     double igam(double a, double x);
 
-    /// @name gamma functions from Cephes library -- http://www.netlib.org/cephes
-    ///
-    /// Copyright 1985, 1987, 2000 by Stephen L. Moshier
-    //@{
 
     /// @brief Incomplete gamma function (complement integral)
     ///
@@ -180,10 +180,7 @@ namespace LHAPDF {
       return( ans * ax/a );
     }
 
-    //@}
-
   }
-
 
 
   /// @brief Compute quantiles for standard normal distribution N(0, 1) at probability p

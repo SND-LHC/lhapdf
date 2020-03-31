@@ -29,9 +29,6 @@ namespace LHAPDF {
   class Info {
   public:
 
-    /// @name Creation and deletion
-    //@{
-
     /// Default constructor
     Info() { }
 
@@ -43,11 +40,9 @@ namespace LHAPDF {
     /// Virtual destructor to allow inheritance
     virtual ~Info() { }
 
-    //@}
-
 
     /// @name Loading info from YAML files
-    //@{
+    ///@{
 
     /// Populate this info object from the specified YAML file path.
     ///
@@ -55,11 +50,11 @@ namespace LHAPDF {
     /// YAML source files. Values for existing keys will be overwritten.
     void load(const std::string& filepath);
 
-    //@}
+    ///@}
 
 
     /// @name General metadata accessors
-    //@{
+    ///@{
 
     // /// Get all metadata as a map
     // const std::map<std::string, std::string>& metadata() const {
@@ -147,7 +142,7 @@ namespace LHAPDF {
       _metadict[key] = to_str(val);
     }
 
-    //@}
+    ///@}
 
 
   protected:
@@ -158,8 +153,9 @@ namespace LHAPDF {
   };
 
 
+
   /// @name Info metadata function template specialisations
-  //@{
+  ///@{
 
   template <>
   inline bool Info::get_entry_as(const std::string& key) const {
@@ -205,7 +201,7 @@ namespace LHAPDF {
     return rtn;
   }
 
-  //@}
+  ///@}
 
 
 }
