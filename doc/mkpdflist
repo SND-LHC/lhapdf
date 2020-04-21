@@ -44,7 +44,7 @@ for lhaid, ps in sorted(sets.items()):
     color = "#fee" if ps.dataversion < 0 else "#efe"
     baseurl = "http://lhapdfsets.web.cern.ch/lhapdfsets/current" # + "/" + str(lhamajversion)
     if ps.dataversion < 0:
-        baseurl += "/unvalidated"
+        baseurl += "/@UNVALIDATED"
     url = baseurl + ("/%s.tar.gz" % ps.name)
     s += '    <tr style="background-color: {col};"><td>{id}</td><td><a href="{url}">{name}</a></td><td>{size}</td><td>{version}</td><td>{note}</td></tr>\n'.\
          format(col=color, id=lhaid, url=url, name=ps.name, size=ps.size, version=ps.dataversion, note=ps.get_entry("Note", ""))

@@ -7,6 +7,9 @@ table {
     max-width: 75em;
 }
 
+/* tr:nth-child(even) { background: #CCC; } */
+/* tr:nth-child(odd) { background: #FFF; } */
+
 p, li, .todo, dl {
     max-width: 65em;
 }
