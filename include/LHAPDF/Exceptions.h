@@ -14,7 +14,7 @@ namespace LHAPDF {
 
 
   /// @defgroup exceptions Exception classes for error handling
-  //@{
+  ///@{
 
   /// @brief Generic unspecialised LHAPDF runtime error.
   ///

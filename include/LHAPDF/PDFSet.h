@@ -20,7 +20,14 @@ namespace LHAPDF {
   class PDF;
 
 
-  /// Structure for storage of uncertainty info calculated over a PDF error set
+  /// @defgroup uncertainties Calculating PDF uncertainties
+  ///
+  /// See the PDFSet class and its PDFSet::uncertainty functions for usage.
+  ///@{
+
+  /// @brief Structure for storage of uncertainty info calculated over a PDF error set
+  ///
+  /// Used by the PDFSet::uncertainty functions.
   struct PDFUncertainty {
     /// Constructor
     PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1,
@@ -33,6 +40,8 @@ namespace LHAPDF {
     /// Add extra variables for separate PDF and parameter variation errors with combined sets
     double errplus_pdf, errminus_pdf, errsymm_pdf, err_par;
   };
+
+  ///@}
 
 
   /// Class for PDF set metadata and manipulation
@@ -201,9 +210,13 @@ namespace LHAPDF {
 
 
     /// @name PDF set uncertainty functions
+    ///
+    /// See the @ref uncertainties group for more details
     ///@{
 
     /// @brief Calculate central value and error from vector @c values with appropriate formulae for this set
+    ///
+    /// @warning The @c values vector corresponds to the members of this PDF set and must be ordered accordingly.
     ///
     /// In the Hessian approach, the central value is the best-fit
     /// "values[0]" and the uncertainty is given by either the symmetric or
@@ -228,11 +241,18 @@ namespace LHAPDF {
     /// variation uncertainties is available.  The parameter variation
     /// uncertainties are computed from the last 2*n members of the set, with n
     /// the number of parameters.
+    ///
+    /// See the @ref uncertainties group for more details
     PDFUncertainty uncertainty(const std::vector<double>& values,
                                double cl=100*erf(1/sqrt(2)), bool alternative=false) const;
 
-    /// Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
+    /// @brief Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
+    ///
+    /// @warning The @c values vector corresponds to the members of this PDF set and must be ordered accordingly.
+    ///
     /// @todo For real efficiency, the chaining of these functions should be the other way around
+    ///
+    /// See the @ref uncertainties group for more details
     void uncertainty(PDFUncertainty& rtn,
                      const std::vector<double>& values,
                      double cl=100*erf(1/sqrt(2)), bool alternative=false) const {
@@ -245,6 +265,8 @@ namespace LHAPDF {
     /// quantities A and B are {anticorrelated,uncorrelated,correlated}, respectively.
     ///
     /// For a combined set, the parameter variations are not included in the calculation of the correlation.
+    ///
+    /// See the @ref uncertainties group for more details
     double correlation(const std::vector<double>& valuesA, const std::vector<double>& valuesB) const;
 
     /// @brief Generate a random value from Hessian @c values and Gaussian random numbers.
@@ -269,6 +291,8 @@ namespace LHAPDF {
     /// Use of this routine with a non-Hessian PDF set will throw a UserError.
     ///
     /// For a combined set, the parameter variations are not included in the generation of the random value.
+    ///
+    /// See the @ref uncertainties group for more details
     double randomValueFromHessian(const std::vector<double>& values, const std::vector<double>& randoms, bool symmetrise=true) const;
 
 
