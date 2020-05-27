@@ -64,14 +64,11 @@ namespace LHAPDF {
   /// @todo Improve isSet locking: only false once, but tested and re-set every time -- use a better singleton instantiation scheme
   static struct XQ2Cache {
 
-    /// @todo Eliminate
-    bool isSet = false;
-
-    // Defining params from last call
-    double x;
-    size_t ix;
-    double q2;
-    size_t iq2;
+    // Defining params from last call (initialised to unphysical settings, so first call will set the cache)
+    double x = -1;
+    size_t ix = 0;
+    double q2 = -1;
+    size_t iq2 = 0;
 
     // Cached params
     double logx;
@@ -105,9 +102,7 @@ namespace LHAPDF {
 
     /// @todo Mutex for thread safety?? Thread-specific caches?
     /// @todo Fuzzy testing?
-    /// @todo Eliminate isSet
-    if (!_interpolateXQ2_cache.isSet ||
-        _interpolateXQ2_cache.x != x || _interpolateXQ2_cache.q2 != q2 ||
+    if (_interpolateXQ2_cache.x != x || _interpolateXQ2_cache.q2 != q2 ||
         _interpolateXQ2_cache.ix != ix || _interpolateXQ2_cache.iq2 != iq2) {
       _interpolateXQ2_cache.logx = log(x);
       _interpolateXQ2_cache.logq2 = log(q2);
@@ -117,8 +112,6 @@ namespace LHAPDF {
       _interpolateXQ2_cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
       _interpolateXQ2_cache.dlogq_2 = (iq2+1 != iq2max  ) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
       _interpolateXQ2_cache.tlogq = (_interpolateXQ2_cache.logq2 - subgrid.logq2s()[iq2]) / _interpolateXQ2_cache.dlogq_1;
-      /// @todo Eliminate isSet
-      _interpolateXQ2_cache.isSet = true;
     }
     const double logx = _interpolateXQ2_cache.logx;
     const double logq2 = _interpolateXQ2_cache.logq2;
