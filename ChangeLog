@@ -1,3 +1,10 @@
+2020-05-27  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Apply the simplest kind of caching to the LogBicubicInterpolator
+	-- will cache contiguous calls of the same (x,Q) for each flavour
+	independently, but no caching across flavours. Credit to Dmitri
+	Konstantinov and Grigorii Latyshev for the patch.
+
 2019-12-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a Python mapping of the findFile() function.

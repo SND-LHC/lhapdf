@@ -57,6 +57,25 @@ namespace LHAPDF {
   }
 
 
+  /// Caching
+  static struct {
+    bool isSet = false;
+    // params to check
+    double x;
+    size_t ix;
+    double q2;
+    size_t iq2;
+    // resulting params
+    double logx;
+    double logq2;
+    double dlogx_1;
+    double tlogx;
+    double dlogq_0;
+    double dlogq_1;
+    double dlogq_2;
+    double tlogq;
+  } _interpolateXQ2_cache;
+
 
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
     // Raise an error if there are too few knots even for a linear fall-back
@@ -75,8 +94,27 @@ namespace LHAPDF {
     if (iq2+1 > iq2max) // also true if iq2 is off the end
       throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
 
-    const double logx = log(x);
-    const double logq2 = log(q2);
+    if (
+       !_interpolateXQ2_cache.isSet ||
+        _interpolateXQ2_cache.x != x ||
+        _interpolateXQ2_cache.q2 != q2 ||
+        _interpolateXQ2_cache.ix != ix ||
+        _interpolateXQ2_cache.iq2 != iq2
+        )
+    {
+      // set
+      _interpolateXQ2_cache.logx = log(x);
+      _interpolateXQ2_cache.logq2 = log(q2);
+      _interpolateXQ2_cache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
+      _interpolateXQ2_cache.tlogx = (_interpolateXQ2_cache.logx - subgrid.logxs()[ix]) / _interpolateXQ2_cache.dlogx_1;
+      _interpolateXQ2_cache.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
+      _interpolateXQ2_cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
+      _interpolateXQ2_cache.dlogq_2 = (iq2+1 != iq2max  ) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
+      _interpolateXQ2_cache.tlogq = (_interpolateXQ2_cache.logq2 - subgrid.logq2s()[iq2]) / _interpolateXQ2_cache.dlogq_1;
+      _interpolateXQ2_cache.isSet = true;
+    }
+    const double logx = _interpolateXQ2_cache.logx;
+    const double logq2 = _interpolateXQ2_cache.logq2;
 
     // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
     if (nq2knots < 4) {
@@ -92,12 +130,12 @@ namespace LHAPDF {
 
     // Pre-calculate parameters
     /// @todo Cache these between calls, re-using if x == x_prev and Q2 == Q2_prev
-    const double dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
-    const double tlogx = (logx - subgrid.logxs()[ix]) / dlogx_1;
-    const double dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
-    const double dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
-    const double dlogq_2 = (iq2+1 != iq2max) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
-    const double tlogq = (logq2 - subgrid.logq2s()[iq2]) / dlogq_1;
+    const double dlogx_1 = _interpolateXQ2_cache.dlogx_1;
+    const double tlogx = _interpolateXQ2_cache.tlogx;
+    const double dlogq_0 = _interpolateXQ2_cache.dlogq_0; //< Don't evaluate (or use) if iq2-1 < 0
+    const double dlogq_1 = _interpolateXQ2_cache.dlogq_1;
+    const double dlogq_2 = _interpolateXQ2_cache.dlogq_2; //< Don't evaluate (or use) if iq2+2 > iq2max
+    const double tlogq = _interpolateXQ2_cache.tlogq;
 
     /// @todo Statically pre-compute the whole nx * nq gradiant array? I.e. _dxf_dlogx for all points in all subgrids. Memory ~doubling :-/ Could cache them as they are used...
 
