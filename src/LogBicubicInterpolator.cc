@@ -57,15 +57,23 @@ namespace LHAPDF {
   }
 
 
-  /// Caching
-  static struct {
+  /// @brief Caching of interpolation weights
+  ///
+  /// @todo Flavour-specific XQ caching?
+  /// @todo Make thread-safe: mutex or thread-specific singletons?
+  /// @todo Improve isSet locking: only false once, but tested and re-set every time -- use a better singleton instantiation scheme
+  static struct XQ2Cache {
+
+    /// @todo Eliminate
     bool isSet = false;
-    // params to check
+
+    // Defining params from last call
     double x;
     size_t ix;
     double q2;
     size_t iq2;
-    // resulting params
+
+    // Cached params
     double logx;
     double logq2;
     double dlogx_1;
@@ -74,6 +82,7 @@ namespace LHAPDF {
     double dlogq_1;
     double dlogq_2;
     double tlogq;
+
   } _interpolateXQ2_cache;
 
 
@@ -94,15 +103,12 @@ namespace LHAPDF {
     if (iq2+1 > iq2max) // also true if iq2 is off the end
       throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
 
-    if (
-       !_interpolateXQ2_cache.isSet ||
-        _interpolateXQ2_cache.x != x ||
-        _interpolateXQ2_cache.q2 != q2 ||
-        _interpolateXQ2_cache.ix != ix ||
-        _interpolateXQ2_cache.iq2 != iq2
-        )
-    {
-      // set
+    /// @todo Mutex for thread safety?? Thread-specific caches?
+    /// @todo Fuzzy testing?
+    /// @todo Eliminate isSet
+    if (!_interpolateXQ2_cache.isSet ||
+        _interpolateXQ2_cache.x != x || _interpolateXQ2_cache.q2 != q2 ||
+        _interpolateXQ2_cache.ix != ix || _interpolateXQ2_cache.iq2 != iq2) {
       _interpolateXQ2_cache.logx = log(x);
       _interpolateXQ2_cache.logq2 = log(q2);
       _interpolateXQ2_cache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
@@ -111,6 +117,7 @@ namespace LHAPDF {
       _interpolateXQ2_cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
       _interpolateXQ2_cache.dlogq_2 = (iq2+1 != iq2max  ) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
       _interpolateXQ2_cache.tlogq = (_interpolateXQ2_cache.logq2 - subgrid.logq2s()[iq2]) / _interpolateXQ2_cache.dlogq_1;
+      /// @todo Eliminate isSet
       _interpolateXQ2_cache.isSet = true;
     }
     const double logx = _interpolateXQ2_cache.logx;

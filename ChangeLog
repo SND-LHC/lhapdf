@@ -1,9 +1,9 @@
 2020-05-27  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Apply the simplest kind of caching to the LogBicubicInterpolator
-	-- will cache contiguous calls of the same (x,Q) for each flavour
-	independently, but no caching across flavours. Credit to Dmitri
-	Konstantinov and Grigorii Latyshev for the patch.
+	* Add simple caching to the LogBicubicInterpolator -- will cache
+	contiguous calls of the same (x,Q). Credit to Dmitri Konstantinov
+	and Grigorii Latyshev for the patch. Needs thread-safety
+	work. Significant CPU savings in many contexts.
 
 2019-12-17  Andy Buckley  <andy.buckley@cern.ch>
 
