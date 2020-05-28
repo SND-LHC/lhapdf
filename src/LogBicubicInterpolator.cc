@@ -37,9 +37,10 @@ namespace LHAPDF {
 
 
     /// Calculate adjacent d(xf)/dx at all grid locations for fixed iq2
+    ///
+    /// @todo Store pre-cached dlogxs, dlogq2s on subgrids, to replace these denominators? Any real speed gain for the extra memory?
     double _dxf_dlogx(const KnotArray1F& subgrid, size_t ix, size_t iq2) {
       const size_t nxknots = subgrid.xs().size();
-      /// @todo Store pre-cached dlogxs, dlogq2s on subgrids, to replace these denominators? Any real speed gain for the extra memory?
       if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
         /// @note We evaluate the most likely condition first to help compiler branch prediction
         const double lddx = (subgrid.xf(ix, iq2) - subgrid.xf(ix-1, iq2)) / (subgrid.logxs()[ix] - subgrid.logxs()[ix-1]);
@@ -57,7 +58,7 @@ namespace LHAPDF {
   }
 
 
-  /// @brief Caching of interpolation weights
+  /// @brief Caching of interpolation params
   ///
   /// @todo Flavour-specific XQ caching?
   /// @todo Make thread-safe: mutex or thread-specific singletons?
@@ -100,14 +101,16 @@ namespace LHAPDF {
     if (iq2+1 > iq2max) // also true if iq2 is off the end
       throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
 
-    /// @todo Mutex for thread safety?? Thread-specific caches?
+    // Update the cache: separately for x and Q since they can be varied very differently
+    /// @todo Mutex for thread safety?? Thread-specific caches? More than one cache?
     /// @todo Fuzzy testing?
-    if (_interpolateXQ2_cache.x != x || _interpolateXQ2_cache.q2 != q2 ||
-        _interpolateXQ2_cache.ix != ix || _interpolateXQ2_cache.iq2 != iq2) {
+    if (_interpolateXQ2_cache.x != x || _interpolateXQ2_cache.ix != ix) {
       _interpolateXQ2_cache.logx = log(x);
-      _interpolateXQ2_cache.logq2 = log(q2);
       _interpolateXQ2_cache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
       _interpolateXQ2_cache.tlogx = (_interpolateXQ2_cache.logx - subgrid.logxs()[ix]) / _interpolateXQ2_cache.dlogx_1;
+    }
+    if (_interpolateXQ2_cache.q2 != q2 || _interpolateXQ2_cache.iq2 != iq2) {
+      _interpolateXQ2_cache.logq2 = log(q2);
       _interpolateXQ2_cache.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
       _interpolateXQ2_cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
       _interpolateXQ2_cache.dlogq_2 = (iq2+1 != iq2max  ) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max

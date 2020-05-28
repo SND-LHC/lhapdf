@@ -1,3 +1,9 @@
+2020-05-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Separate caching of x and Q2 variables in the
+	LogBicubicInterpolator: evidence suggests that these may be
+	updated at very different rates.
+
 2020-05-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add simple caching to the LogBicubicInterpolator -- will cache
