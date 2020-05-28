@@ -1,5 +1,8 @@
 2020-05-28  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Convert caching struct acquisition to use a Meyers Singleton
+	pattern, which guarantees thread-locality.
+
 	* Separate caching of x and Q2 variables in the
 	LogBicubicInterpolator: evidence suggests that these may be
 	updated at very different rates.
