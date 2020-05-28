@@ -104,18 +104,20 @@ namespace LHAPDF {
     // Update the cache: separately for x and Q since they can be varied very differently
     /// @todo Mutex for thread safety?? Thread-specific caches? More than one cache?
     /// @todo Fuzzy testing?
-    if (_interpolateXQ2_cache.x != x || _interpolateXQ2_cache.ix != ix) {
-      _interpolateXQ2_cache.logx = log(x);
-      _interpolateXQ2_cache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
-      _interpolateXQ2_cache.tlogx = (_interpolateXQ2_cache.logx - subgrid.logxs()[ix]) / _interpolateXQ2_cache.dlogx_1;
-    }
-    if (_interpolateXQ2_cache.q2 != q2 || _interpolateXQ2_cache.iq2 != iq2) {
-      _interpolateXQ2_cache.logq2 = log(q2);
+    /// @todo Safety against simultaneous, interleaved use of multiple PDFs?!? Test of 'this'? But would like to re-use across PDF variations with compatible grids...
+    bool xixok = true;
+    if (_interpolateXQ2_cache.x != x) { _interpolateXQ2_cache.logx = log(x); xixok = false; }
+    if (_interpolateXQ2_cache.ix != ix) { _interpolateXQ2_cache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix]; xixok = false; }
+    if (!xixok) _interpolateXQ2_cache.tlogx = (_interpolateXQ2_cache.logx - subgrid.logxs()[ix]) / _interpolateXQ2_cache.dlogx_1;
+    bool qiqok = true;
+    if (_interpolateXQ2_cache.q2 != q2) { _interpolateXQ2_cache.logq2 = log(q2); qiqok = false; }
+    if (_interpolateXQ2_cache.iq2 != iq2) {
       _interpolateXQ2_cache.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
       _interpolateXQ2_cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
-      _interpolateXQ2_cache.dlogq_2 = (iq2+1 != iq2max  ) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
-      _interpolateXQ2_cache.tlogq = (_interpolateXQ2_cache.logq2 - subgrid.logq2s()[iq2]) / _interpolateXQ2_cache.dlogq_1;
+      _interpolateXQ2_cache.dlogq_2 = (iq2+1 != iq2max) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
+      qiqok = false;
     }
+    if (!qiqok) _interpolateXQ2_cache.tlogq = (_interpolateXQ2_cache.logq2 - subgrid.logq2s()[iq2]) / _interpolateXQ2_cache.dlogq_1;
     const double logx = _interpolateXQ2_cache.logx;
     const double logq2 = _interpolateXQ2_cache.logq2;
 
