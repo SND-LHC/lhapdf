@@ -51,6 +51,8 @@
 
 2019-05-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Bugfix release 6.2.3!
+
 	* Add a couple of extra trim() calls to path strings given to the Fortran API.
 
 2019-05-11  Andy Buckley  <andy.buckley@cern.ch>
