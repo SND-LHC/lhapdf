@@ -21,19 +21,15 @@ namespace LHAPDF {
     /// Implementation of (x,Q2) interpolation
     double _interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const;
 
-    /// @brief Get the current caching struct for interpolation params
-    ///
-    /// @note Meyers Singleton is automatically thread-local since block scope:
-    /// https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
-    struct XQ2Cache;
-    static XQ2Cache& _getCache() { static XQ2Cache instance; return instance; }
-
     /// @brief Caching struct definition
     ///
     /// @todo Flavour-specific XQ caching?
     /// @todo Multi-value caching?
     /// @todo Cache more ipol-weight variables?
     struct XQ2Cache {
+      // Subgrid hashes
+      size_t xhash = 0;
+      size_t q2hash = 0;
       // Defining params from last call (initialised to unphysical values, so first use will set the cache)
       double x = -1;
       size_t ix = 0;
@@ -49,6 +45,12 @@ namespace LHAPDF {
       double dlogq_2;
       double tlogq;
     };
+
+    /// @brief Get and update the current caching struct for interpolation params
+    ///
+    /// @note Implemented as a thread-safe Meyers Singleton.
+    /// @note Cache is handled separately for x and Q since they can vary very differently.
+    static XQ2Cache& _getCache(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2);
 
   };
 

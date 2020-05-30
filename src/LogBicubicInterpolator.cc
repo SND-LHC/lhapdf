@@ -58,10 +58,56 @@ namespace LHAPDF {
   }
 
 
+  // Static method for cache acquisition
+  LogBicubicInterpolator::XQ2Cache& LogBicubicInterpolator::_getCache(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) {
+    /// Meyers Singleton is automatically thread-local since block scope:
+    /// https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
+    static XQ2Cache instance;
+
+    /// @todo Multi-cache as maps on the grid hashes!
+    /// @todo Fuzzy testing on x and Q2?
+
+    // Update the x cache
+    const size_t xhash = subgrid.xhash();
+    const bool xok = false; //instance.x == x;
+    const bool ixok = false; //instance.ix != ix || instance.xhash != xhash;
+    if (!xok) {
+      instance.logx = log(x);
+    }
+    if (!ixok) {
+      instance.xhash = xhash;
+      instance.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
+    }
+    if (!xok || !ixok) {
+      instance.tlogx = (instance.logx - subgrid.logxs()[ix]) / instance.dlogx_1;
+    }
+
+    // Update the Q2 cache
+    const size_t q2hash = subgrid.q2hash();
+    const bool q2ok = false; //instance.q2 == q2;
+    const bool iq2ok = false; //instance.iq2 != iq2 || instance.q2hash != q2hash;
+    if (!q2ok) {
+      instance.logq2 = log(q2);
+    }
+    if (!iq2ok) {
+      instance.q2hash = q2hash;
+      instance.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
+      instance.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
+      instance.dlogq_2 = (iq2+2 != subgrid.xsize()) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
+      // instance.dlogq_2 = (iq2+1 != iq2max) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
+    }
+    if (!q2ok || !iq2ok) {
+      instance.tlogq = (instance.logq2 - subgrid.logq2s()[iq2]) / instance.dlogq_1;
+    }
+
+    return instance;
+  }
+
+
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
     // Raise an error if there are too few knots even for a linear fall-back
-    const size_t nxknots = subgrid.logxs().size();
-    const size_t nq2knots = subgrid.logq2s().size();
+    const size_t nxknots = subgrid.xsize();
+    const size_t nq2knots = subgrid.q2size();
     if (nxknots < 4)
       throw GridError("PDF subgrids are required to have at least 4 x-knots for use with LogBicubicInterpolator");
     if (nq2knots < 2)
@@ -75,26 +121,10 @@ namespace LHAPDF {
     if (iq2+1 > iq2max) // also true if iq2 is off the end
       throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
 
-    // Update the cache: separately for x and Q since they can be varied very differently
-    /// @todo Fuzzy testing?
-    /// @todo Safety against simultaneous, interleaved use of multiple PDFs?!?
-    ///       Test of 'this'? But would like to re-use across PDF variations with compatible grids...
-    ///       How about the GridPDF/KnotArray1F contains hashes of its knot positions, precomputed at init time, and we compare those for cache validation?
-    bool xixok = true;
-    if (_getCache().x != x) { _getCache().logx = log(x); xixok = false; }
-    if (_getCache().ix != ix) { _getCache().dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix]; xixok = false; }
-    if (!xixok) _getCache().tlogx = (_getCache().logx - subgrid.logxs()[ix]) / _getCache().dlogx_1;
-    bool qiqok = true;
-    if (_getCache().q2 != q2) { _getCache().logq2 = log(q2); qiqok = false; }
-    if (_getCache().iq2 != iq2) {
-      _getCache().dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
-      _getCache().dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
-      _getCache().dlogq_2 = (iq2+1 != iq2max) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
-      qiqok = false;
-    }
-    if (!qiqok) _getCache().tlogq = (_getCache().logq2 - subgrid.logq2s()[iq2]) / _getCache().dlogq_1;
-    const double logx = _getCache().logx;
-    const double logq2 = _getCache().logq2;
+    // Check, update, and get the cache
+    const XQ2Cache& cache = _getCache(subgrid, x, ix, q2, iq2);
+    const double logx = cache.logx;
+    const double logq2 = cache.logq2;
 
     // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
     if (nq2knots < 4) {
@@ -109,13 +139,13 @@ namespace LHAPDF {
     // else proceed with cubic interpolation:
 
     // Pre-calculate parameters
-    /// @todo Cache these between calls, re-using if x == x_prev and Q2 == Q2_prev
-    const double dlogx_1 = _getCache().dlogx_1;
-    const double tlogx = _getCache().tlogx;
-    const double dlogq_0 = _getCache().dlogq_0; //< Don't evaluate (or use) if iq2-1 < 0
-    const double dlogq_1 = _getCache().dlogq_1;
-    const double dlogq_2 = _getCache().dlogq_2; //< Don't evaluate (or use) if iq2+2 > iq2max
-    const double tlogq = _getCache().tlogq;
+    /// @todo Remove this redundant step: it's now just making aliases for the cache variables
+    const double& dlogx_1 = cache.dlogx_1;
+    const double& tlogx = cache.tlogx;
+    const double& dlogq_0 = cache.dlogq_0; //< Don't evaluate (or use) if iq2-1 < 0
+    const double& dlogq_1 = cache.dlogq_1;
+    const double& dlogq_2 = cache.dlogq_2; //< Don't evaluate (or use) if iq2+2 > iq2max
+    const double& tlogq = cache.tlogq;
 
     /// @todo Statically pre-compute the whole nx * nq gradiant array? I.e. _dxf_dlogx for all points in all subgrids. Memory ~doubling :-/ Could cache them as they are used...
 

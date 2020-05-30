@@ -66,6 +66,7 @@ namespace LHAPDF {
 
     /// Hash comparator
     bool samexs(const KnotArray1F& other) const { return _xgridhash == other._xgridhash; }
+    bool xhash() const { return _xgridhash; }
 
     /// @brief Get the index of the closest x knot row <= x
     ///
@@ -108,6 +109,7 @@ namespace LHAPDF {
 
     /// Hash comparator for Q2 knots
     bool sameq2s(const KnotArray1F& other) const { return _q2gridhash == other._q2gridhash; }
+    bool q2hash() const { return _q2gridhash; }
 
     /// Get the index of the closest Q2 knot row <= q2
     ///
