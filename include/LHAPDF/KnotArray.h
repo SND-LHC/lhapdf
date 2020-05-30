@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of LHAPDF
-// Copyright (C) 2012-2019 The LHAPDF collaboration (see AUTHORS for details)
+// Copyright (C) 2012-2020 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
 #ifndef LHAPDF_KnotArray_H
@@ -28,6 +28,7 @@ namespace LHAPDF {
     {
       assert(_xfs.size() == size());
       _synclogs();
+      _synchashes();
     }
 
     /// Constructor of a zero-valued array from x and Q2 knot values
@@ -37,6 +38,7 @@ namespace LHAPDF {
     {
       assert(_xfs.size() == size());
       _synclogs();
+      _synchashes();
     }
 
 
@@ -44,10 +46,12 @@ namespace LHAPDF {
     ///@{
 
     /// x knot setter
+    ///
     /// @note Also zeros the xfs array, which is invalidated by resetting the x knots
     void setxs(const std::vector<double>& xs) {
       _xs = xs;
       _synclogs();
+      _synchashes();
       _xfs = std::vector<double>(size(), 0.0);
     }
 
@@ -59,6 +63,9 @@ namespace LHAPDF {
 
     /// log(x) knot accessor
     const std::vector<double>& logxs() const { return _logxs; }
+
+    /// Hash comparator
+    bool samexs(const KnotArray1F& other) const { return _xgridhash == other._xgridhash; }
 
     /// @brief Get the index of the closest x knot row <= x
     ///
@@ -81,10 +88,12 @@ namespace LHAPDF {
     ///@{
 
     /// Q2 knot setter
+    ///
     /// @note Also zeros the xfs array, which is invalidated by resetting the Q2 knots
     void setq2s(const std::vector<double>& q2s) {
       _q2s = q2s;
       _synclogs();
+      _synchashes();
       _xfs = std::vector<double>(size(), 0.0);
     }
 
@@ -96,6 +105,9 @@ namespace LHAPDF {
 
     /// log(Q2) knot accessor
     const std::vector<double>& logq2s() const { return _logq2s; }
+
+    /// Hash comparator for Q2 knots
+    bool sameq2s(const KnotArray1F& other) const { return _q2gridhash == other._q2gridhash; }
 
     /// Get the index of the closest Q2 knot row <= q2
     ///
@@ -143,16 +155,37 @@ namespace LHAPDF {
       for (size_t i = 0; i < _q2s.size(); ++i) _logq2s[i] = log(_q2s[i]);
     }
 
+    /// Synchronise x and Q2 array hashes
+    void _synchashes() {
+      _xgridhash = _mkhash(_xs);
+      _q2gridhash = _mkhash(_q2s);
+    }
+
+    /// Utility function for making a hash code from a vector<double>
+    size_t _mkhash(const vector<double>& xx) {
+      hash<double> hasher;
+      size_t rtn = 0;
+      for (double x : xx) rtn = 31 * rtn + hasher(x);
+      return rtn;
+    }
+
     /// List of x knots
     std::vector<double> _xs;
+    /// List of log(x) knots, precomputed for efficiency
+    std::vector<double> _logxs;
+    /// Hash for this set of x knots
+    size_t _xgridhash = 0;
+
     /// List of Q2 knots
     std::vector<double> _q2s;
-    /// List of log(x) knots
-    std::vector<double> _logxs;
-    /// List of log(Q2) knots
+    /// List of log(Q2) knots, precomputed for efficiency
     std::vector<double> _logq2s;
+    /// Hash for this set of Q2 knots
+    size_t _q2gridhash = 0;
+
     /// List of xf values across the 2D knot array, stored as a strided [ix][iQ2] 1D array
     std::vector<double> _xfs;
+
 
   };
 
