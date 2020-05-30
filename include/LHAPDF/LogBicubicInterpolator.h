@@ -23,8 +23,6 @@ namespace LHAPDF {
 
     /// @brief Caching struct definition
     ///
-    /// @todo Flavour-specific XQ caching?
-    /// @todo Multi-value caching?
     /// @todo Cache more ipol-weight variables?
     struct XQ2Cache {
       // Subgrid hashes
@@ -49,7 +47,7 @@ namespace LHAPDF {
     /// @brief Get and update the current caching struct for interpolation params
     ///
     /// @note Implemented as a thread-safe Meyers Singleton.
-    /// @note Cache is handled separately for x and Q since they can vary very differently.
+    /// @note Cache is handled separately for x and Q since they can be sampled very differently.
     static XQ2Cache& _getCache(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2);
 
   };

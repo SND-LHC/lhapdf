@@ -70,7 +70,6 @@ namespace LHAPDF {
     // Update the x cache
     const size_t xhash = subgrid.xhash();
     const bool xok = instance.x == x;
-    cout << instance.xhash << " " << xhash << endl;
     const bool ixok = instance.ix == ix && instance.xhash == xhash;
     if (!xok) {
       instance.logx = log(x);
