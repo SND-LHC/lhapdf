@@ -1,5 +1,7 @@
 2020-05-30  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Extend to cross-flavour, subgrid-specific x and Q2 caches.
+
 	* Use the x and Q2 knot hashes in cache-flushing tests.
 
 	* Add a hash function computation and comparator to the KnotArray1F.

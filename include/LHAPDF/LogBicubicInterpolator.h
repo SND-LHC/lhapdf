@@ -21,34 +21,42 @@ namespace LHAPDF {
     /// Implementation of (x,Q2) interpolation
     double _interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const;
 
-    /// @brief Caching struct definition
-    ///
-    /// @todo Cache more ipol-weight variables?
-    struct XQ2Cache {
-      // Subgrid hashes
+    /// @brief x-caching struct definition
+    struct XCache {
+      // Subgrid hash
       size_t xhash = 0;
-      size_t q2hash = 0;
       // Defining params from last call (initialised to unphysical values, so first use will set the cache)
       double x = -1;
-      size_t ix = 0;
-      double q2 = -1;
-      size_t iq2 = 0;
+      size_t ix = SIZE_MAX;
       // Cached params
       double logx;
-      double logq2;
       double dlogx_1;
       double tlogx;
+    };
+
+    /// @brief Q2-caching struct definition
+    struct Q2Cache {
+      // Subgrid hashes
+      size_t q2hash = 0;
+      // Defining params from last call (initialised to unphysical values, so first use will set the cache)
+      double q2 = -1;
+      size_t iq2 = SIZE_MAX;
+      // Cached params
+      double logq2;
       double dlogq_0;
       double dlogq_1;
       double dlogq_2;
       double tlogq;
     };
 
-    /// @brief Get and update the current caching struct for interpolation params
+    /// @brief Get and update the current caching structs for interpolation params
     ///
     /// @note Implemented as a thread-safe Meyers Singleton.
-    /// @note Cache is handled separately for x and Q since they can be sampled very differently.
-    static XQ2Cache& _getCache(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2);
+    /// @note Caches are handled separately for x and Q since they can be sampled very differently.
+    ///@{
+    static XCache& _getCacheX(const KnotArray1F& subgrid, double x, size_t ix);
+    static Q2Cache& _getCacheQ2(const KnotArray1F& subgrid, double q2, size_t iq2);
+    ///@}
 
   };
 
