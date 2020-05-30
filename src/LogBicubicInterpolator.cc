@@ -69,7 +69,7 @@ namespace LHAPDF {
 
     // Update the x cache
     const size_t xhash = subgrid.xhash();
-    const bool xok = false; //instance.x == x;
+    const bool xok = instance.x == x;
     const bool ixok = false; //instance.ix != ix || instance.xhash != xhash;
     if (!xok) {
       instance.logx = log(x);
@@ -84,7 +84,7 @@ namespace LHAPDF {
 
     // Update the Q2 cache
     const size_t q2hash = subgrid.q2hash();
-    const bool q2ok = false; //instance.q2 == q2;
+    const bool q2ok = instance.q2 == q2;
     const bool iq2ok = false; //instance.iq2 != iq2 || instance.q2hash != q2hash;
     if (!q2ok) {
       instance.logq2 = log(q2);
