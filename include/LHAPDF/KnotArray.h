@@ -8,6 +8,7 @@
 #define LHAPDF_KnotArray_H
 
 #include "LHAPDF/Exceptions.h"
+#include "LHAPDF/Utils.h"
 
 namespace LHAPDF {
 
@@ -164,12 +165,7 @@ namespace LHAPDF {
 
 
     /// Utility function for making a hash code from a vector<double>
-    size_t _mkhash(const vector<double>& xx) {
-      hash<double> hasher;
-      size_t rtn = 0;
-      for (double x : xx) rtn = 31*rtn + hasher(x);
-      return rtn + 1;
-    }
+    size_t _mkhash(const std::vector<double>& xx) const;
 
     /// List of x knots
     std::vector<double> _xs;
