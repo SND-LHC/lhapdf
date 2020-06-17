@@ -1,3 +1,8 @@
+2020-06-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Make the caches fully thread-safe rather than just
+	initialization-safe, by use of maps on thread IDs.
+
 2020-05-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Extend to cross-flavour, subgrid-specific x and Q2 caches.

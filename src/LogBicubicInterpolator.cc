@@ -5,6 +5,8 @@
 //
 #include "LHAPDF/LogBicubicInterpolator.h"
 #include <iostream>
+#include <mutex>
+#include <thread>
 
 namespace LHAPDF {
 
@@ -60,27 +62,31 @@ namespace LHAPDF {
 
   // Static method for x cache acquisition
   LogBicubicInterpolator::XCache& LogBicubicInterpolator::_getCacheX(const KnotArray1F& subgrid, double x, size_t ix) {
-    /// Meyers Singleton is automatically thread-local since block scope:
-    /// https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
-    static map<size_t,XCache> xcaches;
+    // static mutex xmutex;
+    static map<thread::id,XCacheMap> xcachemaps; //< thread-safe Meyers Singleton
 
-    /// @todo Multi-cache as maps on the grid hashes!
-    /// @todo Fuzzy testing on x?
+    // Get the thread-local caches
+    const thread::id tid = this_thread::get_id();
+    XCacheMap& xcaches = xcachemaps[tid]; ///< @todo Need a lock for initialisation?
+
+    // Get and check the subgrid-specific x cache
+    /// @todo Make cache multi-level
     /// @todo Cache more ipol-weight variables?
-
-    // Update the x cache
+    /// @todo Fuzzy testing on x?
     const size_t xhash = subgrid.xhash();
     XCache& xcache = xcaches[xhash];
     const bool xok = xcache.x == x;
-    const bool ixok = xcache.ix == ix; // && xcache.xhash == xhash;
-    if (!xok) {
-      xcache.logx = log(x);
-    }
-    if (!ixok) {
-      xcache.xhash = xhash;
-      xcache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
-    }
+    const bool ixok = xcache.ix == ix;
+
+    // Update the x cache
     if (!xok || !ixok) {
+      if (!xok) {
+        xcache.logx = log(x);
+      }
+      if (!ixok) {
+        xcache.xhash = xhash;
+        xcache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
+      }
       xcache.tlogx = (xcache.logx - subgrid.logxs()[ix]) / xcache.dlogx_1;
     }
 
@@ -90,29 +96,33 @@ namespace LHAPDF {
 
   // Static method for Q2 cache acquisition
   LogBicubicInterpolator::Q2Cache& LogBicubicInterpolator::_getCacheQ2(const KnotArray1F& subgrid, double q2, size_t iq2) {
-    /// Meyers Singleton is automatically thread-local since block scope:
-    /// https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
-    static map<size_t,Q2Cache> q2caches;
+    // static mutex q2mutex;
+    static map<thread::id,Q2CacheMap> q2cachemaps; //< thread-safe Meyers Singleton
 
-    /// @todo Multi-cache as maps on the grid hashes!
+    // Get the thread-local caches
+    const thread::id tid = this_thread::get_id();
+    Q2CacheMap& q2caches = q2cachemaps[tid]; ///< @todo Need a lock for initialisation?
+
+    // Get and check the subgrid-specific Q2 cache
+    /// @todo Make cache multi-level
     /// @todo Fuzzy testing on Q2?
     /// @todo Cache more ipol-weight variables?
-
-    // Update the Q2 cache
     const size_t q2hash = subgrid.q2hash();
     Q2Cache& q2cache = q2caches[q2hash];
     const bool q2ok = q2cache.q2 == q2;
     const bool iq2ok = q2cache.iq2 == iq2; // && q2cache.q2hash == q2hash;
-    if (!q2ok) {
-      q2cache.logq2 = log(q2);
-    }
-    if (!iq2ok) {
-      q2cache.q2hash = q2hash;
-      q2cache.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
-      q2cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
-      q2cache.dlogq_2 = (iq2+2 != subgrid.xsize()) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
-    }
+
+    // Update the Q2 cache
     if (!q2ok || !iq2ok) {
+      if (!q2ok) {
+        q2cache.logq2 = log(q2);
+      }
+      if (!iq2ok) {
+        q2cache.q2hash = q2hash;
+        q2cache.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
+        q2cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
+        q2cache.dlogq_2 = (iq2+2 != subgrid.xsize()) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
+      }
       q2cache.tlogq = (q2cache.logq2 - subgrid.logq2s()[iq2]) / q2cache.dlogq_1;
     }
 
