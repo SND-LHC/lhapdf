@@ -63,41 +63,46 @@ namespace LHAPDF {
   // Static method for x cache acquisition
   LogBicubicInterpolator::XCache& LogBicubicInterpolator::_getCacheX(const KnotArray1F& subgrid, double x, size_t ix) {
     // static mutex xmutex;
-    static map<thread::id,XCachesMap> xcachemaps; //< thread-safe Meyers Singleton
+    static map<thread::id,XCachesMap> xcachesmaps; //< thread-safe Meyers Singleton
 
     // Get the thread-local caches
     const thread::id tid = this_thread::get_id();
-    XCacheMap& xcaches = xcachemaps[tid]; ///< @todo Need a lock for initialisation?
+    XCachesMap& xcachesmap = xcachesmaps[tid]; ///< @todo Need a lock for initialisation?
 
-    // Get the subgrid-specific x cache
+    // Get the subgrid-specific x-cache list
     const size_t xhash = subgrid.xhash();
-    XCache& xcache = xcaches[xhash];
+    XCaches& xcaches = xcachesmap[xhash];
 
-    // Check the multi-level cache
-    /// @todo Make cache multi-level
+    // Check the multi-level cache, and return if there's a match
     /// @todo Cache more ipol-weight variables?
     /// @todo Fuzzy testing on x?
     /// @todo Push back to an earlier stage, to avoid-refinding ix for same x and same grid
-    for (size_t i = 0; i < xcache.N; ++i) {
-      const size_t j = (xcache.ilast - i) % xcache.N; //< step backwards, deeper into history
-      const bool xok = xcache.x[j] == x;
+    /// @todo Check that the access scheme matches usage well
+    for (size_t i = 0; i < XCaches::N; ++i) {
+      const size_t j = (xcaches.ilast - i) % XCaches::N; //< step backwards, deeper into history
+      XCache& xcache = xcaches[j];
+      // cout << "x cache try #" << i << ": " << x << " vs " << xcache.x << endl;
+      const bool xok = xcache.x == x;
       // const bool ixok = xcache.ix == ix;
-      assert(xcache.ix[j] == ix); //< guaranteed to be same subgrid, so ix *must* be the same
-      if (!xok) continue;
-
-
-    // Update the x cache
-    if (!xok) {
-      if (!xok) {
-        xcache.logx = log(x);
+      // assert(xcache.ix == ix); //< guaranteed to be the same subgrid, so ix *must* be the same... right?
+      if (xok) {
+        // cout << "x=" << x << " cache hit on try #" << i+1 << endl;
+        xcaches.ilast = j;
+        return xcache;
       }
-      if (!ixok) {
-        // xcache.xhash = xhash;
-        xcache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
-      }
-      xcache.tlogx = (xcache.logx - subgrid.logxs()[ix]) / xcache.dlogx_1;
     }
 
+    // No match found: replace the oldest entry with new values, and return
+    const size_t j = (xcaches.ilast + 1) % XCaches::N;
+    // cout << "x cache fail: computing and writing to #" << j << endl;
+    XCache& xcache = xcaches[j];
+    xcache.x = x;
+    xcache.logx = log(x);
+    // if (!ixok) {
+    // xcache.xhash = xhash;
+    xcache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
+    xcache.tlogx = (xcache.logx - subgrid.logxs()[ix]) / xcache.dlogx_1;
+    xcaches.ilast = j;
     return xcache;
   }
 
@@ -105,35 +110,47 @@ namespace LHAPDF {
   // Static method for Q2 cache acquisition
   LogBicubicInterpolator::Q2Cache& LogBicubicInterpolator::_getCacheQ2(const KnotArray1F& subgrid, double q2, size_t iq2) {
     // static mutex q2mutex;
-    static map<thread::id,Q2CacheMap> q2cachemaps; //< thread-safe Meyers Singleton
+    static map<thread::id,Q2CachesMap> q2cachesmaps; //< thread-safe Meyers Singleton
 
     // Get the thread-local caches
     const thread::id tid = this_thread::get_id();
-    Q2CacheMap& q2caches = q2cachemaps[tid]; ///< @todo Need a lock for initialisation?
+    Q2CachesMap& q2cachesmap = q2cachesmaps[tid]; ///< @todo Need a lock for initialisation?
 
     // Get and check the subgrid-specific Q2 cache
-    /// @todo Make cache multi-level
+    const size_t q2hash = subgrid.q2hash();
+    Q2Caches& q2caches = q2cachesmap[q2hash];
+
+    // Check the multi-level cache, and return if there's a match
     /// @todo Fuzzy testing on Q2?
     /// @todo Cache more ipol-weight variables?
-    const size_t q2hash = subgrid.q2hash();
-    Q2Cache& q2cache = q2caches[q2hash];
-    const bool q2ok = q2cache.q2 == q2;
-    const bool iq2ok = q2cache.iq2 == iq2; // && q2cache.q2hash == q2hash;
-
-    // Update the Q2 cache
-    if (!q2ok || !iq2ok) {
-      if (!q2ok) {
-        q2cache.logq2 = log(q2);
+    /// @todo Push back to an earlier stage, to avoid-refinding iq2 for same q2 and same grid
+    /// @todo Check that the access scheme matches usage well
+    for (size_t i = 0; i < Q2Caches::N; ++i) {
+      const size_t j = (q2caches.ilast - i) % Q2Caches::N; //< step backwards, deeper into history
+      Q2Cache& q2cache = q2caches[j];
+      const bool q2ok = q2cache.q2 == q2;
+      // const bool iq2ok = q2cache.iq2 == iq2;
+      // assert(q2cache.iq2 == iq2); //< guaranteed to be the same subgrid, so iq2 *must* be the same... right?
+      if (q2ok) {
+        // cout << "Q2=" << q2 << " cache hit on try #" << i+1 << endl;
+        q2caches.ilast = j;
+        return q2cache;
       }
-      if (!iq2ok) {
-        q2cache.q2hash = q2hash;
-        q2cache.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
-        q2cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
-        q2cache.dlogq_2 = (iq2+2 != subgrid.xsize()) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
-      }
-      q2cache.tlogq = (q2cache.logq2 - subgrid.logq2s()[iq2]) / q2cache.dlogq_1;
     }
 
+    // No match found: replace the oldest entry with new values, and return
+
+    const size_t j = (q2caches.ilast + 1) % Q2Caches::N;
+    Q2Cache& q2cache = q2caches[j];
+    q2cache.q2 = q2;
+    q2cache.logq2 = log(q2);
+    // if (!iq2ok) {
+    //   q2cache.q2hash = q2hash;
+    q2cache.dlogq_0 = (iq2 != 0) ? subgrid.logq2s()[iq2] - subgrid.logq2s()[iq2-1] : -1; //< Don't evaluate (or use) if iq2-1 < 0
+    q2cache.dlogq_1 = subgrid.logq2s()[iq2+1] - subgrid.logq2s()[iq2];
+    q2cache.dlogq_2 = (iq2+2 != subgrid.xsize()) ? subgrid.logq2s()[iq2+2] - subgrid.logq2s()[iq2+1] : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
+    q2cache.tlogq = (q2cache.logq2 - subgrid.logq2s()[iq2]) / q2cache.dlogq_1;
+    q2caches.ilast = j;
     return q2cache;
   }
 

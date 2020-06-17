@@ -21,53 +21,44 @@ namespace LHAPDF {
     /// Implementation of (x,Q2) interpolation
     double _interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const;
 
+    /// @brief A single set of cached x-variables
     struct XCache {
+      /// Defining params from call (initialised to unphysical values, so first use will set the cache)
       double x = -1;
       //size_t ix;
-      // Cached params
+
+      /// Cached params
       double logx;
       double dlogx_1;
       double tlogx;
     };
 
-    /// @brief x-caching struct definition
-    ///
-    /// Implements a multi-level cache for a single subgrid hash
+    /// A multi-level x-variable cache for a single subgrid hash
     struct XCaches {
       // Number of cache levels
       static const size_t N = 16;
 
+      // // Subgrid hash
+      // size_t hash = 0;
+
       // Latest-call index
       size_t ilast = 0;
 
-      /// Default constructor, to initialize the defining params
-      XCaches() {
-        for (size_t i = 0; i < NCACHE; ++i) {
-          double x[i] = -1;
-          size_t ix[i] = SIZE_MAX;
-        }
-      }
+      // List of N cached-value sets
+      array<XCache, N> caches;
 
-      // // Subgrid hash
-      // size_t xhash = 0;
+      XCache& operator[] (size_t index) { return caches[index]; }
 
-      // Defining params from last call (initialised to unphysical values, so first use will set the cache)
-      double x[N];
-      size_t ix[N];
-      // Cached params
-      double logx[N];
-      double dlogx_1[N];
-      double tlogx[N];
     };
 
-    /// @brief Q2-caching struct definition
+
+    /// @brief A single set of cached Q2-variables
     struct Q2Cache {
-      // Subgrid hashes
-      size_t q2hash = 0;
-      // Defining params from last call (initialised to unphysical values, so first use will set the cache)
+      /// Defining params from call (initialised to unphysical values, so first use will set the cache)
       double q2 = -1;
-      size_t iq2 = SIZE_MAX;
-      // Cached params
+      // size_t iq2 = SIZE_MAX;
+
+      /// Cached params
       double logq2;
       double dlogq_0;
       double dlogq_1;
@@ -75,14 +66,33 @@ namespace LHAPDF {
       double tlogq;
     };
 
+    /// A multi-level Q2-variable cache for a single subgrid hash
+    struct Q2Caches {
+      // Number of cache levels
+      static const size_t N = 16;
+
+      // // Subgrid hash
+      // size_t hash = 0;
+
+      // Latest-call index
+      size_t ilast = 0;
+
+      // List of N cached-value sets
+      array<Q2Cache, N> caches;
+
+      Q2Cache& operator[] (size_t index) { return caches[index]; }
+
+    };
+
+
     /// @brief Get and update the current caching structs for interpolation params
     ///
     /// @note Caches are handled separately for x and Q since they can be sampled very differently.
     ///@{
-    using XCacheMap = map<size_t,XCache>;
+    using XCachesMap = map<size_t,XCaches>;
     static XCache& _getCacheX(const KnotArray1F& subgrid, double x, size_t ix);
 
-    using Q2CacheMap = map<size_t,Q2Cache>;
+    using Q2CachesMap = map<size_t,Q2Caches>;
     static Q2Cache& _getCacheQ2(const KnotArray1F& subgrid, double q2, size_t iq2);
     ///@}
 
