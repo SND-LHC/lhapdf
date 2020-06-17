@@ -63,28 +63,36 @@ namespace LHAPDF {
   // Static method for x cache acquisition
   LogBicubicInterpolator::XCache& LogBicubicInterpolator::_getCacheX(const KnotArray1F& subgrid, double x, size_t ix) {
     // static mutex xmutex;
-    static map<thread::id,XCacheMap> xcachemaps; //< thread-safe Meyers Singleton
+    static map<thread::id,XCachesMap> xcachemaps; //< thread-safe Meyers Singleton
 
     // Get the thread-local caches
     const thread::id tid = this_thread::get_id();
     XCacheMap& xcaches = xcachemaps[tid]; ///< @todo Need a lock for initialisation?
 
-    // Get and check the subgrid-specific x cache
+    // Get the subgrid-specific x cache
+    const size_t xhash = subgrid.xhash();
+    XCache& xcache = xcaches[xhash];
+
+    // Check the multi-level cache
     /// @todo Make cache multi-level
     /// @todo Cache more ipol-weight variables?
     /// @todo Fuzzy testing on x?
-    const size_t xhash = subgrid.xhash();
-    XCache& xcache = xcaches[xhash];
-    const bool xok = xcache.x == x;
-    const bool ixok = xcache.ix == ix;
+    /// @todo Push back to an earlier stage, to avoid-refinding ix for same x and same grid
+    for (size_t i = 0; i < xcache.N; ++i) {
+      const size_t j = (xcache.ilast - i) % xcache.N; //< step backwards, deeper into history
+      const bool xok = xcache.x[j] == x;
+      // const bool ixok = xcache.ix == ix;
+      assert(xcache.ix[j] == ix); //< guaranteed to be same subgrid, so ix *must* be the same
+      if (!xok) continue;
+
 
     // Update the x cache
-    if (!xok || !ixok) {
+    if (!xok) {
       if (!xok) {
         xcache.logx = log(x);
       }
       if (!ixok) {
-        xcache.xhash = xhash;
+        // xcache.xhash = xhash;
         xcache.dlogx_1 = subgrid.logxs()[ix+1] - subgrid.logxs()[ix];
       }
       xcache.tlogx = (xcache.logx - subgrid.logxs()[ix]) / xcache.dlogx_1;

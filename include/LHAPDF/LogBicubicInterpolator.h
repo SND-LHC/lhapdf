@@ -21,17 +21,43 @@ namespace LHAPDF {
     /// Implementation of (x,Q2) interpolation
     double _interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const;
 
-    /// @brief x-caching struct definition
     struct XCache {
-      // Subgrid hash
-      size_t xhash = 0;
-      // Defining params from last call (initialised to unphysical values, so first use will set the cache)
       double x = -1;
-      size_t ix = SIZE_MAX;
+      //size_t ix;
       // Cached params
       double logx;
       double dlogx_1;
       double tlogx;
+    };
+
+    /// @brief x-caching struct definition
+    ///
+    /// Implements a multi-level cache for a single subgrid hash
+    struct XCaches {
+      // Number of cache levels
+      static const size_t N = 16;
+
+      // Latest-call index
+      size_t ilast = 0;
+
+      /// Default constructor, to initialize the defining params
+      XCaches() {
+        for (size_t i = 0; i < NCACHE; ++i) {
+          double x[i] = -1;
+          size_t ix[i] = SIZE_MAX;
+        }
+      }
+
+      // // Subgrid hash
+      // size_t xhash = 0;
+
+      // Defining params from last call (initialised to unphysical values, so first use will set the cache)
+      double x[N];
+      size_t ix[N];
+      // Cached params
+      double logx[N];
+      double dlogx_1[N];
+      double tlogx[N];
     };
 
     /// @brief Q2-caching struct definition
