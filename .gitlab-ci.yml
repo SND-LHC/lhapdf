@@ -69,7 +69,7 @@ build-debian-gcc-py2:
     - export PATH=$INSTALL_PREFIX/bin:$PATH
     - export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
     - export PYTHONNAME=`python -c 'from __future__ import print_function; from distutils.sysconfig import get_config_var; print("python%s" % str(get_config_var("VERSION")))'`
-    - export PYTHONPATH=$INSTALL_PREFIX/lib/$PYTHONNAME/site-packages/:$PYTHONPATH
+    - export PYTHONPATH=$INSTALL_PREFIX/lib/$PYTHONNAME/site-packages/:$INSTALL_PREFIX/lib64/$PYTHONNAME/site-packages/:$PYTHONPATH
     - export LHAPDF_DATA_PATH=$INSTALL_PREFIX/share/LHAPDF
     - lhapdf -h
     - lhapdf update
@@ -78,6 +78,7 @@ build-debian-gcc-py2:
     - ./testpdf CT10nlo 5
     - ./testpdfset
     - ./testpdfcache
+    - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p.xfxQ(21,1e-3,126.0))'
   artifacts:
     when: always
     paths:
@@ -113,6 +114,3 @@ check-debian-gcc-py2:
   needs:
     - build-debian-gcc-py2
   <<: *check_template
-
-
-# TODO: Add Python testing
