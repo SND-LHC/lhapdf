@@ -38,7 +38,7 @@ stages:
 
 
 build-fedora-gcc-hepmc3-py3:
-  variables
+  variables:
     OS: fedora-gcc-hepmc3-py3
   <<: *build_template
 
@@ -83,26 +83,32 @@ build-debian-gcc-hepmc3-py2:
       - local/
       - examples/
     expire_in: 1 week
-  needs:
-    - build-$OS
 
 
 check-fedora-gcc-hepmc3-py3:
-  variables
+  variables:
     OS: fedora-gcc-hepmc3-py3
+  needs:
+    - build-fedora-gcc-hepmc3-py3
   <<: *check_template
 
 check-ubuntu-gcc-hepmc3-py3:
-  variables
+  variables:
     OS: ubuntu-gcc-hepmc3-py3
+  needs:
+    - build-ubuntu-gcc-hepmc3-py3
   <<: *check_template
 
 check-ubuntu-clang-hepmc3-py3:
-  variables
+  variables:
     OS: ubuntu-clang-hepmc3-py3
+  needs:
+    - build-ubuntu-clang-hepmc3-py3
   <<: *check_template
 
 check-debian-gcc-hepmc3-py2:
-  variables
+  variables:
     OS: debian-gcc-hepmc3-py2
+  needs:
+    - build-debian-gcc-hepmc3-py2
   <<: *check_template
