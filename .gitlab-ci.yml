@@ -23,6 +23,8 @@ stages:
     - make
     - make check
     - make install
+    - cd examples
+    - make
   artifacts:
     when: always
     paths:
@@ -73,7 +75,6 @@ build-debian-gcc-py2:
     - lhapdf update
     - lhapdf get CT10nlo
     - cd examples
-    - make
     - ./testpdf
     - ./testpdfset
     - ./testpdfcache
