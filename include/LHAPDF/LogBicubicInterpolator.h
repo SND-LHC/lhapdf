@@ -36,10 +36,7 @@ namespace LHAPDF {
     /// A multi-level x-variable cache for a single subgrid hash
     struct XCaches {
       // Number of cache levels
-      static const size_t N = 16;
-
-      // // Subgrid hash
-      // size_t hash = 0;
+      static const size_t N = 4;
 
       // Latest-call index
       size_t ilast = 0;
@@ -56,7 +53,6 @@ namespace LHAPDF {
     struct Q2Cache {
       /// Defining params from call (initialised to unphysical values, so first use will set the cache)
       double q2 = -1;
-      // size_t iq2 = SIZE_MAX;
 
       /// Cached params
       double logq2;
@@ -69,10 +65,7 @@ namespace LHAPDF {
     /// A multi-level Q2-variable cache for a single subgrid hash
     struct Q2Caches {
       // Number of cache levels
-      static const size_t N = 16;
-
-      // // Subgrid hash
-      // size_t hash = 0;
+      static const size_t N = 4;
 
       // Latest-call index
       size_t ilast = 0;

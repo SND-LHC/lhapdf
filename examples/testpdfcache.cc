@@ -9,9 +9,11 @@ int main() {
   const auto pdfs = set.mkPDFs<shared_ptr<const LHAPDF::PDF>>();
   for (double q = 10; q < 1e4; q *= 9) {
     for (double x = 1e-7; x < 1; x *= 10) {
-      for (auto p : pdfs) {
-        const double xf_g = p->xfxQ(21, 1e-3, 126.0);
-        cout << q << ", " << x << ": " << xf_g << endl;
+      for (int pid = -5; pid < 6; ++pid) {
+        for (auto p : pdfs) {
+          const volatile double xf_g = p->xfxQ(pid, x, q);
+          //cout << pid << ", " << x << ", " << q << ": " << xf_g << endl;
+        }
       }
     }
   }
