@@ -220,13 +220,13 @@ ssh://vcs@phab.hepforge.org/source/lhapdfhg` (requires a HepForge login account.
 
 See the following pages:
 
-- Code browser: https://lhapdf.hepforge.org/files.html
+- Git repository: https://gitlab.com/hepcedar/lhapdf/
+- Bug reports & task tracking: https://gitlab.com/hepcedar/lhapdf/-/issues
 - @ref todolist
 - @ref todo
 - @ref migration
 - @ref codingstyle
 - @ref design
-
 
 @todo Add some developer build guides, including the autotools, Cython, etc. gotchas.
 
