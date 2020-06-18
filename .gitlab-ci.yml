@@ -30,6 +30,7 @@ stages:
       - src/
       - wrappers/
       - tests/
+      - examples/
       - bin/
       - local/
     expire_in: 1 week
