@@ -75,7 +75,7 @@ build-debian-gcc-py2:
     - lhapdf update
     - lhapdf get CT10nlo
     - cd examples
-    - ./testpdf
+    - ./testpdf CT10nlo 5
     - ./testpdfset
     - ./testpdfcache
   artifacts:
