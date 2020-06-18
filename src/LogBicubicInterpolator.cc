@@ -128,6 +128,7 @@ namespace LHAPDF {
     for (size_t i = 0; i < Q2Caches::N; ++i) {
       const size_t j = (q2caches.ilast - i) % Q2Caches::N; //< step backwards, deeper into history
       Q2Cache& q2cache = q2caches[j];
+      // cout << "Q2 cache try #" << i << ": " << q2 << " vs " << q2cache.q2 << endl;
       const bool q2ok = q2cache.q2 == q2;
       // const bool iq2ok = q2cache.iq2 == iq2;
       // assert(q2cache.iq2 == iq2); //< guaranteed to be the same subgrid, so iq2 *must* be the same... right?
@@ -141,6 +142,7 @@ namespace LHAPDF {
     // No match found: replace the oldest entry with new values, and return
 
     const size_t j = (q2caches.ilast + 1) % Q2Caches::N;
+    // cout << "Q2 cache fail: computing and writing to #" << j << endl;
     Q2Cache& q2cache = q2caches[j];
     q2cache.q2 = q2;
     q2cache.logq2 = log(q2);

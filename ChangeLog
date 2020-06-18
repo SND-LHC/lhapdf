@@ -1,3 +1,8 @@
+2020-06-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Extend caches to multi-level, searching through the N previous
+	calls for x and Q2 independently.
+
 2020-06-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Make the caches fully thread-safe rather than just
