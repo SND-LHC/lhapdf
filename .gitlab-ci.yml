@@ -18,13 +18,11 @@ stages:
   script:
     - INSTALL_PREFIX="$CI_PROJECT_DIR/local"
     - mkdir -p $INSTALL_PREFIX/etc/bash_completion.d
-    - export PATH=$INSTALL_PREFIX/bin:$PATH
     - autoreconf -i
     - ./configure --prefix=$INSTALL_PREFIX
     - make
     - make check
     - make install
-    - lhapdf -h
   artifacts:
     when: always
     paths:
@@ -69,6 +67,7 @@ build-debian-gcc-hepmc3-py2:
     - export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
     - export PYTHONNAME=`python -c 'from __future__ import print_function; from distutils.sysconfig import get_config_var; print("python%s" % str(get_config_var("VERSION")))'`
     - export PYTHONPATH=$INSTALL_PREFIX/lib/$PYTHONNAME/site-packages/:$PYTHONPATH
+    - export LHAPDF_DATA_PATH=$INSTALL_PREFIX/share/LHAPDF
     - lhapdf -h
     - lhapdf update
     - lhapdf get CT10nlo
