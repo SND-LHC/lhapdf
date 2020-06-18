@@ -36,22 +36,22 @@ stages:
     expire_in: 1 week
 
 
-build-fedora-gcc-hepmc3-py3:
+build-fedora-gcc-py3:
   variables:
     OS: fedora-gcc-hepmc3-py3
   <<: *build_template
 
-build-ubuntu-gcc-hepmc3-py3:
+build-ubuntu-gcc-py3:
   variables:
     OS: ubuntu-gcc-hepmc3-py3
   <<: *build_template
 
-build-ubuntu-clang-hepmc3-py3:
+build-ubuntu-clang-py3:
   variables:
     OS: ubuntu-clang-hepmc3-py3
   <<: *build_template
 
-build-debian-gcc-hepmc3-py2:
+build-debian-gcc-py2:
   variables:
     OS: debian-gcc-hepmc3-py2
   <<: *build_template
@@ -85,32 +85,32 @@ build-debian-gcc-hepmc3-py2:
     expire_in: 1 week
 
 
-check-fedora-gcc-hepmc3-py3:
+check-fedora-gcc-py3:
   variables:
     OS: fedora-gcc-hepmc3-py3
   needs:
-    - build-fedora-gcc-hepmc3-py3
+    - build-fedora-gcc-py3
   <<: *check_template
 
-check-ubuntu-gcc-hepmc3-py3:
+check-ubuntu-gcc-py3:
   variables:
     OS: ubuntu-gcc-hepmc3-py3
   needs:
-    - build-ubuntu-gcc-hepmc3-py3
+    - build-ubuntu-gcc-py3
   <<: *check_template
 
-check-ubuntu-clang-hepmc3-py3:
+check-ubuntu-clang-py3:
   variables:
     OS: ubuntu-clang-hepmc3-py3
   needs:
-    - build-ubuntu-clang-hepmc3-py3
+    - build-ubuntu-clang-py3
   <<: *check_template
 
-check-debian-gcc-hepmc3-py2:
+check-debian-gcc-py2:
   variables:
     OS: debian-gcc-hepmc3-py2
   needs:
-    - build-debian-gcc-hepmc3-py2
+    - build-debian-gcc-py2
   <<: *check_template
 
 
