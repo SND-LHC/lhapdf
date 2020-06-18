@@ -32,7 +32,7 @@ LHAPDF6 is documented in more detail in http://arxiv.org/abs/1412.7420
 
 @section installsec Installation
 
-The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
+The source files can be downloaded from https://lhapdf.hepforge.org/downloads/
 
 Full installation and troubleshooting details are given at @ref install .
 

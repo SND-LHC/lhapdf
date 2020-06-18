@@ -92,7 +92,7 @@ namespace LHAPDF {
 
     // No match found: replace the oldest entry with new values, and return
     const size_t j = (xcaches.ilast + 1) % XCaches::N;
-    // cout << "x-cache miss: computing and writing to #" << j << endl;
+    cout << "x-cache miss: computing and writing to #" << j << endl;
     XCache& xcache = xcaches[j];
     xcache.x = x;
     xcache.logx = log(x);
@@ -137,7 +137,7 @@ namespace LHAPDF {
 
     // No match found: replace the oldest entry with new values, and return
     const size_t j = (q2caches.ilast + 1) % Q2Caches::N;
-    // cout << "Q2-cache miss: computing and writing to #" << j << endl;
+    cout << "Q2-cache miss: computing and writing to #" << j << endl;
     Q2Cache& q2cache = q2caches[j];
     q2cache.q2 = q2;
     q2cache.logq2 = log(q2);
