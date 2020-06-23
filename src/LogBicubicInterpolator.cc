@@ -100,6 +100,7 @@ namespace LHAPDF {
     XCachesMap& xcachesmap = _getXCachesMap();
     const size_t xhash = subgrid.xhash();
     XCaches& xcaches = xcachesmap[xhash];
+    // cout << "Cache size: " << xcaches.size() << endl;
 
     // Check the multi-level cache, and return if there's a match
     /// @todo Cache more ipol-weight variables?

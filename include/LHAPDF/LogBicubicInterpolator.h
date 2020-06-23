@@ -52,6 +52,8 @@ namespace LHAPDF {
       // List of N cached-value sets
       vector<XCache> caches{N};
 
+      size_t size() { return caches.size(); }
+
       XCache& operator[] (size_t index) { return caches[index]; }
 
     };
