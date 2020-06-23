@@ -36,13 +36,21 @@ namespace LHAPDF {
     /// A multi-level x-variable cache for a single subgrid hash
     struct XCaches {
       // Number of cache levels
-      static const size_t N = 4;
+      static size_t N;
+      // Cache access strategy
+      static int UPDATE_STEP;
+      // Cache access strategy
+      static bool UPDATE_ON_HIT;
+      // (Re)define cache size and search strategy
+      static void setup(size_t size, int update_step=+1, bool update_on_hit=true);
+      // Initialize a cache on this thread (call with explicit locks to ensure safe initialisation for each thread)
+      static void init();
 
       // Latest-call index
       size_t ilast = 0;
 
       // List of N cached-value sets
-      array<XCache, N> caches;
+      vector<XCache> caches{N};
 
       XCache& operator[] (size_t index) { return caches[index]; }
 

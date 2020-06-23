@@ -1,3 +1,9 @@
+2020-06-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Update the cache strategy for 'replays' (thanks to Tim Martin
+	for the profiling and diagnosis), and make cache size and
+	search/update strategy configurable at runtime.
+
 2020-06-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Extend caches to multi-level, searching through the N previous
