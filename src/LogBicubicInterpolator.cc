@@ -40,7 +40,8 @@ namespace LHAPDF {
 
     /// Calculate adjacent d(xf)/dx at all grid locations for fixed iq2
     ///
-    /// @todo Store pre-cached dlogxs, dlogq2s on subgrids, to replace these denominators? Any real speed gain for the extra memory?
+    /// @todo Store pre-cached dlogxs, dlogq2s on subgrids, to replace these difference terms?
+    ///    Any real speed gain here? Adjacent entries are likely to already be cache-friendly.
     double _dxf_dlogx(const KnotArray1F& subgrid, size_t ix, size_t iq2) {
       const size_t nxknots = subgrid.xs().size();
       if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
@@ -60,14 +61,18 @@ namespace LHAPDF {
   }
 
 
+
+  // Syntactic sugar for a map of cache vectors, used to cache specific to a subgrid
+  using XCachesMap = map<size_t,LogBicubicInterpolator::XCaches>;
+
   // Get the thread-safe singleton container of per-thread x caches
-  map<thread::id,LogBicubicInterpolator::XCachesMap>& _getXCachesMaps() {
-    static map<thread::id,LogBicubicInterpolator::XCachesMap> xcachesmaps; //< thread-safe Meyers Singleton
+  map<thread::id,XCachesMap>& _getXCachesMaps() {
+    static map<thread::id,XCachesMap> xcachesmaps; //< thread-safe Meyers Singleton
     return xcachesmaps;
   }
 
   // Get the x caches map for this thread
-  LogBicubicInterpolator::XCachesMap& _getXCachesMap() {
+  XCachesMap& _getXCachesMap() {
     // Get the thread-local caches
     /// @todo Need a lock for initialisation? Would then cost on every read... not good.
     ///       A better way could be to lock on grid construction: a one-off. Or explicitly init the cache
@@ -76,12 +81,12 @@ namespace LHAPDF {
   }
 
   // Static cache-strategy defaults
-  size_t LogBicubicInterpolator::XCaches::N = 4;
+  size_t LogBicubicInterpolator::XCaches::SIZE = 1;
   bool LogBicubicInterpolator::XCaches::UPDATE_ON_HIT = true;
   int LogBicubicInterpolator::XCaches::UPDATE_STEP = +1;
 
   void LogBicubicInterpolator::XCaches::setup(size_t size, int update_step, bool update_on_hit) {
-    XCaches::N = size;
+    XCaches::SIZE = size;
     XCaches::UPDATE_STEP = update_step;
     XCaches::UPDATE_ON_HIT = update_on_hit;
     _getXCachesMaps().clear();
@@ -90,7 +95,6 @@ namespace LHAPDF {
   void LogBicubicInterpolator::XCaches::init() {
     _getXCachesMap();
   }
-
 
   // Static method for x cache acquisition
   // NOTE: guaranteed to be the same subgrid, so ix *must* be the same: no need to cache
@@ -107,8 +111,8 @@ namespace LHAPDF {
     /// @todo Fuzzy testing on x?
     /// @todo Push back to an earlier stage, to avoid-refinding ix for same x and same grid
     /// @todo Check that the access scheme matches usage well
-    for (size_t i = 0; i < XCaches::N; ++i) {
-      const size_t j = (xcaches.ilast + 1) % XCaches::N;
+    for (size_t i = 0; i < XCaches::SIZE; ++i) {
+      const size_t j = (xcaches.ilast + 1) % XCaches::SIZE;
       XCache& xcache = xcaches[j];
       // cout << "x cache try #" << i << ": " << x << " vs " << xcache.x << endl;
       if (xcache.x == x) {
@@ -119,7 +123,7 @@ namespace LHAPDF {
     }
 
     // No match found: replace the oldest entry with new values, and return
-    const size_t j = (xcaches.ilast + XCaches::UPDATE_STEP) % XCaches::N;
+    const size_t j = (xcaches.ilast + XCaches::UPDATE_STEP) % XCaches::SIZE;
     // cout << "x-cache miss: computing and writing to #" << j << endl;
     XCache& xcache = xcaches[j];
     xcache.x = x;
@@ -131,39 +135,69 @@ namespace LHAPDF {
   }
 
 
-  // Static method for Q2 cache acquisition
-  // NOTE: guaranteed to be the same subgrid, so iq2 *must* be the same: no need to cache
-  LogBicubicInterpolator::Q2Cache& LogBicubicInterpolator::_getCacheQ2(const KnotArray1F& subgrid, double q2, size_t iq2) {
-    static map<thread::id,Q2CachesMap> q2cachesmaps; //< thread-safe Meyers Singleton
 
+  // Syntactic sugar for a map of cache vectors, used to cache specific to a subgrid
+  using Q2CachesMap = map<size_t,LogBicubicInterpolator::Q2Caches>;
+
+  // Get the thread-safe singleton container of per-thread Q2 caches
+  map<thread::id,Q2CachesMap>& _getQ2CachesMaps() {
+    static map<thread::id,Q2CachesMap> q2cachesmaps; //< thread-safe Meyers Singleton
+    return q2cachesmaps;
+  }
+
+  // Get the Q2 caches map for this thread
+  Q2CachesMap& _getQ2CachesMap() {
     // Get the thread-local caches
     /// @todo Need a lock for initialisation? Would then cost on every read... not good.
     ///       A better way could be to lock on grid construction: a one-off. Or explicitly init the cache
     const thread::id tid = this_thread::get_id();
-    Q2CachesMap& q2cachesmap = q2cachesmaps[tid];
+    return _getQ2CachesMaps()[tid];
+  }
 
-    // Get and check the subgrid-specific Q2 cache
+  // Static cache-strategy defaults
+  size_t LogBicubicInterpolator::Q2Caches::SIZE = 1;
+  bool LogBicubicInterpolator::Q2Caches::UPDATE_ON_HIT = true;
+  int LogBicubicInterpolator::Q2Caches::UPDATE_STEP = +1;
+
+  void LogBicubicInterpolator::Q2Caches::setup(size_t size, int update_step, bool update_on_hit) {
+    Q2Caches::SIZE = size;
+    Q2Caches::UPDATE_STEP = update_step;
+    Q2Caches::UPDATE_ON_HIT = update_on_hit;
+    _getQ2CachesMaps().clear();
+  }
+
+  void LogBicubicInterpolator::Q2Caches::init() {
+    _getQ2CachesMap();
+  }
+
+  // Static method for Q2 cache acquisition
+  // NOTE: guaranteed to be the same subgrid, so iq2 *must* be the same: no need to cache
+  LogBicubicInterpolator::Q2Cache& LogBicubicInterpolator::_getCacheQ2(const KnotArray1F& subgrid, double q2, size_t iq2) {
+
+    // Get the subgrid-specific x-cache list from the thread-local caches
+    Q2CachesMap& q2cachesmap = _getQ2CachesMap();
     const size_t q2hash = subgrid.q2hash();
     Q2Caches& q2caches = q2cachesmap[q2hash];
+    // cout << "Cache size: " << q2caches.size() << endl;
 
     // Check the multi-level cache, and return if there's a match
     /// @todo Fuzzy testing on Q2?
     /// @todo Cache more ipol-weight variables?
     /// @todo Push back to an earlier stage, to avoid-refinding iq2 for same q2 and same grid
     /// @todo Check that the access scheme matches usage well
-    for (size_t i = 0; i < Q2Caches::N; ++i) {
-      const size_t j = (q2caches.ilast - i) % Q2Caches::N; //< step backwards, deeper into history
+    for (size_t i = 0; i < Q2Caches::SIZE; ++i) {
+      const size_t j = (q2caches.ilast + i) % Q2Caches::SIZE;
       Q2Cache& q2cache = q2caches[j];
       // cout << "Q2 cache try #" << i << ": " << q2 << " vs " << q2cache.q2 << endl;
-        if (q2cache.q2 == q2) {
+      if (q2cache.q2 == q2) {
         // cout << "Q2-cache hit for Q2=" << q2 << " on try #" << i+1 << endl;
-        q2caches.ilast = j;
+        if (Q2Caches::UPDATE_ON_HIT) q2caches.ilast = j;
         return q2cache;
       }
     }
 
     // No match found: replace the oldest entry with new values, and return
-    const size_t j = (q2caches.ilast + 1) % Q2Caches::N;
+    const size_t j = (q2caches.ilast + Q2Caches::UPDATE_STEP) % Q2Caches::SIZE;
     // cout << "Q2-cache miss: computing and writing to #" << j << endl;
     Q2Cache& q2cache = q2caches[j];
     q2cache.q2 = q2;
@@ -175,6 +209,7 @@ namespace LHAPDF {
     q2caches.ilast = j;
     return q2cache;
   }
+
 
 
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const {
