@@ -187,7 +187,7 @@ special circumstances. Please let us know your experiences if you use it!
 @section support Support and bug reporting
 
 If you need assistance with LHAPDF, please contact the authors at
-lhapdf@projects.hepforge.org . Please also send feature suggestions to this
+lhapdf-support@cern.ch . Please also send feature suggestions to this
 address: please don't contact individual developers if you can avoid it.  We
 also accept compliments ;-)
 
@@ -214,9 +214,8 @@ assistance: there are often good explanations and solutions online.
 
 @section dev For developers
 
-To check out LHAPDF6 from Mercurial, use this command for read-only: `hg clone
-https://phab.hepforge.org/source/lhapdfhg/`, and this for read-write: `hg clone
-ssh://vcs@phab.hepforge.org/source/lhapdfhg` (requires a HepForge login account.)
+To check out LHAPDF6 from git, visit the GitLab page below and follow the clone instructions,
+either via SSH or HTTPS.
 
 See the following pages:
 
