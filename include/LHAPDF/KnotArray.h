@@ -1,13 +1,14 @@
 // -*- C++ -*-
 //
 // This file is part of LHAPDF
-// Copyright (C) 2012-2019 The LHAPDF collaboration (see AUTHORS for details)
+// Copyright (C) 2012-2020 The LHAPDF collaboration (see AUTHORS for details)
 //
 #pragma once
 #ifndef LHAPDF_KnotArray_H
 #define LHAPDF_KnotArray_H
 
 #include "LHAPDF/Exceptions.h"
+#include "LHAPDF/Utils.h"
 
 namespace LHAPDF {
 
@@ -27,7 +28,8 @@ namespace LHAPDF {
       : _xs(xknots), _q2s(q2knots), _xfs(xfs)
     {
       assert(_xfs.size() == size());
-      _synclogs();
+      _syncx();
+      _syncq2();
     }
 
     /// Constructor of a zero-valued array from x and Q2 knot values
@@ -36,7 +38,8 @@ namespace LHAPDF {
         _xfs(size(), 0.0)
     {
       assert(_xfs.size() == size());
-      _synclogs();
+      _syncx();
+      _syncq2();
     }
 
 
@@ -44,10 +47,11 @@ namespace LHAPDF {
     ///@{
 
     /// x knot setter
+    ///
     /// @note Also zeros the xfs array, which is invalidated by resetting the x knots
     void setxs(const std::vector<double>& xs) {
       _xs = xs;
-      _synclogs();
+      _syncx();
       _xfs = std::vector<double>(size(), 0.0);
     }
 
@@ -59,6 +63,10 @@ namespace LHAPDF {
 
     /// log(x) knot accessor
     const std::vector<double>& logxs() const { return _logxs; }
+
+    /// Hash comparator
+    bool samexs(const KnotArray1F& other) const { return _xgridhash == other._xgridhash; }
+    size_t xhash() const { return _xgridhash; }
 
     /// @brief Get the index of the closest x knot row <= x
     ///
@@ -81,10 +89,11 @@ namespace LHAPDF {
     ///@{
 
     /// Q2 knot setter
+    ///
     /// @note Also zeros the xfs array, which is invalidated by resetting the Q2 knots
     void setq2s(const std::vector<double>& q2s) {
       _q2s = q2s;
-      _synclogs();
+      _syncq2();
       _xfs = std::vector<double>(size(), 0.0);
     }
 
@@ -96,6 +105,10 @@ namespace LHAPDF {
 
     /// log(Q2) knot accessor
     const std::vector<double>& logq2s() const { return _logq2s; }
+
+    /// Hash comparator for Q2 knots
+    bool sameq2s(const KnotArray1F& other) const { return _q2gridhash == other._q2gridhash; }
+    size_t q2hash() const { return _q2gridhash; }
 
     /// Get the index of the closest Q2 knot row <= q2
     ///
@@ -135,24 +148,42 @@ namespace LHAPDF {
 
   private:
 
-    /// Synchronise log(x) and log(Q2) arrays from the x and Q2 ones
-    void _synclogs() {
+    /// Synchronise log(x) array and hash from the x array
+    void _syncx() {
       _logxs.resize(_xs.size());
-      _logq2s.resize(_q2s.size());
       for (size_t i = 0; i < _xs.size(); ++i) _logxs[i] = log(_xs[i]);
-      for (size_t i = 0; i < _q2s.size(); ++i) _logq2s[i] = log(_q2s[i]);
+      _xgridhash = _mkhash(_xs);
     }
+
+
+    /// Synchronise log(x) and log(Q2) arrays from the x and Q2 ones
+    void _syncq2() {
+      _logq2s.resize(_q2s.size());
+      for (size_t i = 0; i < _q2s.size(); ++i) _logq2s[i] = log(_q2s[i]);
+      _q2gridhash = _mkhash(_q2s);
+    }
+
+
+    /// Utility function for making a hash code from a vector<double>
+    size_t _mkhash(const std::vector<double>& xx) const;
 
     /// List of x knots
     std::vector<double> _xs;
+    /// List of log(x) knots, precomputed for efficiency
+    std::vector<double> _logxs;
+    /// Hash for this set of x knots
+    size_t _xgridhash = 0;
+
     /// List of Q2 knots
     std::vector<double> _q2s;
-    /// List of log(x) knots
-    std::vector<double> _logxs;
-    /// List of log(Q2) knots
+    /// List of log(Q2) knots, precomputed for efficiency
     std::vector<double> _logq2s;
+    /// Hash for this set of Q2 knots
+    size_t _q2gridhash = 0;
+
     /// List of xf values across the 2D knot array, stored as a strided [ix][iQ2] 1D array
     std::vector<double> _xfs;
+
 
   };
 
@@ -231,7 +262,7 @@ namespace LHAPDF {
     AlphaSArray(const std::vector<double>& q2knots, const std::vector<double>& as)
       : _q2s(q2knots), _as(as)
     {
-      _synclogs();
+      _syncq2s();
     }
 
     ///@}
@@ -314,7 +345,7 @@ namespace LHAPDF {
   private:
 
     /// Synchronise the log(Q2) array from the Q2 one
-    void _synclogs() {
+    void _syncq2s() {
       _logq2s.resize(_q2s.size());
       for (size_t i = 0; i < _q2s.size(); ++i) _logq2s[i] = log(_q2s[i]);
     }

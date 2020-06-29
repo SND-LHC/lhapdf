@@ -1,0 +1,116 @@
+stages:
+- build
+- check
+#- validate
+
+
+# before_script:
+#  - rm -rf /usr/local/bin/yoda*
+#  - rm -rf /usr/local/include/YODA
+#  - rm -rf /usr/local/lib/libYODA.*
+#  - rm -rf /usr/local/lib*/python*/site-packages/yoda*
+
+
+.build_template: &build_template
+  image:
+    hepstore/hepbase-$OS
+  stage: build
+  script:
+    - INSTALL_PREFIX="$CI_PROJECT_DIR/local"
+    - mkdir -p $INSTALL_PREFIX/etc/bash_completion.d
+    - autoreconf -i
+    - ./configure --prefix=$INSTALL_PREFIX
+    - make
+    - make check
+    - make install
+    - cd examples
+    - make
+  artifacts:
+    when: always
+    paths:
+      - include/
+      - src/
+      - wrappers/
+      - tests/
+      - examples/
+      - bin/
+      - local/
+    expire_in: 1 week
+
+
+build-fedora-gcc-py3:
+  variables:
+    OS: fedora-gcc-hepmc3-py3
+  <<: *build_template
+
+build-ubuntu-gcc-py3:
+  variables:
+    OS: ubuntu-gcc-hepmc3-py3
+  <<: *build_template
+
+build-ubuntu-clang-py3:
+  variables:
+    OS: ubuntu-clang-hepmc3-py3
+  <<: *build_template
+
+build-debian-gcc-py2:
+  variables:
+    OS: debian-gcc-hepmc3-py2
+  <<: *build_template
+
+
+
+.check_template: &check_template
+  stage: check
+  image:
+      hepstore/hepbase-$OS
+  script:
+    - INSTALL_PREFIX="$CI_PROJECT_DIR/local"
+    - export PATH=$INSTALL_PREFIX/bin:$PATH
+    - export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+    - export PYTHONNAME=`python -c 'from __future__ import print_function; from distutils.sysconfig import get_config_var; print("python%s" % str(get_config_var("VERSION")))'`
+    - export PYTHONPATH=$INSTALL_PREFIX/lib/$PYTHONNAME/site-packages/:$INSTALL_PREFIX/lib64/$PYTHONNAME/site-packages/:$PYTHONPATH
+    - export LHAPDF_DATA_PATH=$INSTALL_PREFIX/share/LHAPDF
+    - lhapdf -h
+    - lhapdf update
+    - lhapdf get CT10nlo
+    - cd examples
+    - ./testpdf CT10nlo 5
+    - ./testpdfset
+    - ./testpdfcache
+    - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p.xfxQ(21,1e-3,126.0))'
+  artifacts:
+    when: always
+    paths:
+      - local/
+      - examples/
+    expire_in: 1 week
+
+
+check-fedora-gcc-py3:
+  variables:
+    OS: fedora-gcc-hepmc3-py3
+  needs:
+    - build-fedora-gcc-py3
+  <<: *check_template
+
+check-ubuntu-gcc-py3:
+  variables:
+    OS: ubuntu-gcc-hepmc3-py3
+  needs:
+    - build-ubuntu-gcc-py3
+  <<: *check_template
+
+check-ubuntu-clang-py3:
+  variables:
+    OS: ubuntu-clang-hepmc3-py3
+  needs:
+    - build-ubuntu-clang-py3
+  <<: *check_template
+
+check-debian-gcc-py2:
+  variables:
+    OS: debian-gcc-hepmc3-py2
+  needs:
+    - build-debian-gcc-py2
+  <<: *check_template

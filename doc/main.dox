@@ -32,7 +32,7 @@ LHAPDF6 is documented in more detail in http://arxiv.org/abs/1412.7420
 
 @section installsec Installation
 
-The source files can be downloaded from https://www.hepforge.org/downloads/lhapdf
+The source files can be downloaded from https://lhapdf.hepforge.org/downloads/
 
 Full installation and troubleshooting details are given at @ref install .
 
@@ -187,7 +187,7 @@ special circumstances. Please let us know your experiences if you use it!
 @section support Support and bug reporting
 
 If you need assistance with LHAPDF, please contact the authors at
-lhapdf@projects.hepforge.org . Please also send feature suggestions to this
+lhapdf-support@cern.ch . Please also send feature suggestions to this
 address: please don't contact individual developers if you can avoid it.  We
 also accept compliments ;-)
 
@@ -214,19 +214,18 @@ assistance: there are often good explanations and solutions online.
 
 @section dev For developers
 
-To check out LHAPDF6 from Mercurial, use this command for read-only: `hg clone
-https://phab.hepforge.org/source/lhapdfhg/`, and this for read-write: `hg clone
-ssh://vcs@phab.hepforge.org/source/lhapdfhg` (requires a HepForge login account.)
+To check out LHAPDF6 from git, visit the GitLab page below and follow the clone instructions,
+either via SSH or HTTPS.
 
 See the following pages:
 
-- Code browser: https://lhapdf.hepforge.org/files.html
+- Git repository: https://gitlab.com/hepcedar/lhapdf/
+- Bug reports & task tracking: https://gitlab.com/hepcedar/lhapdf/-/issues
 - @ref todolist
 - @ref todo
 - @ref migration
 - @ref codingstyle
 - @ref design
-
 
 @todo Add some developer build guides, including the autotools, Cython, etc. gotchas.
 

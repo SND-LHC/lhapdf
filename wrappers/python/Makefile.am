@@ -2,7 +2,7 @@ EXTRA_DIST = lhapdf.cpp lhapdf.pyx clhapdf.pxd
 
 if WITH_CYTHON
 lhapdf.cpp: lhapdf.pyx clhapdf.pxd
-	cython lhapdf.pyx --cplus
+	cython lhapdf.pyx --cplus -2
 else
 lhapdf.cpp:
 	@echo "Not (re)generating lhapdf.cpp since Cython is not installed"
@@ -25,7 +25,7 @@ fix-out-of-source: $(FIXSOURCES)
 
 if WITH_PYTHON
 
-PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)"
+PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)"
 
 ## Always force setup.py, it's not good at guessing what needs to rebuild
 all-local: fix-out-of-source

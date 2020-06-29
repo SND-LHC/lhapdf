@@ -77,9 +77,6 @@ you don't want to install to `/usr/local`, which is the default). For example,
 
     ./configure --prefix=$HOME/local
 
-An example build script for LHAPDF6 on the CERN lxplus6 system is shown at the
-end of these instructions.
-
 
 @subsection altcomp Alternative compilers
 
@@ -102,41 +99,19 @@ location that you specified, call `make install`. You will (or at least
 `$prefix/share/LHAPDF`.
 
 
-@section lxplus Building on lxplus / LCG
+@section lxplus Building on lxplus / LCG Grid systems
 
 CERN's lxplus7 system runs CC7 Linux, whose system compiler and Python installations are
 sufficiently modern to compile LHAPDF (although the system compiler is not an official
 LCG platform). No special environment setup is needed on lxplus7 unless you want to
 interface with precompiled LCG software.
 
-By contrast the older lxplus6 system runs SLC6, for which the system compiler
-is neither supported by LCG nor LHAPDF: on this system you will need to set up a more
-modern LCG environment capable of compiling C++11 source code. Here is an example of how
-o build LHAPDF using LCG tools on lxplus6 (and lxplus7) -- although you can of course
-use other compiler and Python versions, build flags, etc. if you wish.
-
-    ## Set up LCG compiler & Python (required on SLC6/lxplus6, optional on CC7/lxplus7)
-    source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh
-    source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/Python/2.7.10/x86_64-slc6-gcc49-opt/Python-env.sh
-
-    ## Make an install directory
-    mkdir local
-
-    ## Build LHAPDF
-    wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-6.X.Y.tar.gz -O- | tar xz
-    cd LHAPDF-6.X.Y
-    ./configure --prefix=$PWD/../local
-    make -j2 && make install
-    cd ..
-
-    ## Set environment variables
-    export PATH=$PWD/local/bin:$PATH
-    export LD_LIBRARY_PATH=$PWD/local/lib:$LD_LIBRARY_PATH
-    export PYTHONPATH=$PWD/local/lib64/python2.6/site-packages:$PYTHONPATH
-
-    ## Test the scripts
-    lhapdf-config --help
-    lhapdf list
+By contrast the older lxplus6 system runs SLC6, for which the system compiler is
+neither supported by LCG nor LHAPDF. Unfortunately, previous setup recipes
+posted here have become non-functional with passage of time: it is therefore up
+to the user to figure out a SLC6 configuration capable of compiling C++11 source
+code... or, better, to move to the newer system, which is now standard on LCG
+computing resources.
 
 
 @section osx Building on Mac OS X

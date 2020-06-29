@@ -1,3 +1,27 @@
+2020-06-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Update the cache strategy for 'replays' (thanks to Tim Martin
+	for the profiling and diagnosis), and make cache size and
+	search/update strategy configurable at runtime.
+
+2020-06-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Extend caches to multi-level, searching through the N previous
+	calls for x and Q2 independently.
+
+2020-06-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Make the caches fully thread-safe rather than just
+	initialization-safe, by use of maps on thread IDs.
+
+2020-05-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Extend to cross-flavour, subgrid-specific x and Q2 caches.
+
+	* Use the x and Q2 knot hashes in cache-flushing tests.
+
+	* Add a hash function computation and comparator to the KnotArray1F.
+
 2020-05-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Convert caching struct acquisition to use a Meyers Singleton

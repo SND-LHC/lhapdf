@@ -6,27 +6,27 @@ LHAPDF6 TODO list
 =================
 
 
-VERSION 6.3.0
+VERSION 6.3.x
 -------------
 
 - **CPU-optimize the grid PDF interpolator code**
 
    Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
-   CPU. Caching grid index lookup, caching interpolation weights, encorage
-   vectorization.
+   CPU. Caching grid index lookup, caching interpolation weights, encourage
+   vectorization, optimise cache-friendliness. Multi-place caching given usage mode.
 
 
-- **New Fortran API completeness**
+- **Copy rather than recompute subgrid data and hashes between flavours?**
 
-   Extrapolation, interpolation, and alpha_s control, and metadata & uncertainty functions in Fortran.
+
+- **Chebyshev polynomial interpolation**
 
 
 - **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Bertone et al)**
 
 
-
-AS AND WHEN
------------
+VERSION 7.0.x
+-------------
 
 - **Restructure for greater use of vectorisation, GPUs, MPI, etc.?**
 
@@ -37,7 +37,13 @@ AS AND WHEN
 - **Resolved photon PDFs and TMDs (requires higher-dimensional interpolation)**
 
 
-- **Chebyshev polynomial interpolation**
+
+AS AND WHEN
+-----------
+
+- **New Fortran API completeness**
+
+   Extrapolation, interpolation, and alpha_s control, and metadata & uncertainty functions in Fortran.
 
 
 - **Add C++ SFINAE helpers for no-inheritance PDF interface definition**
