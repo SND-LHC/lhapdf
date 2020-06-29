@@ -78,7 +78,7 @@ namespace LHAPDF {
   const vector<double>& GridPDF::q2Knots() const {
     if (_q2knots.empty()) {
       // Get the list of Q2 knots by combining all subgrids
-      for (const pair<double, KnotArrayNF>& q2_ka : _knotarrays) {
+      for (const auto& q2_ka : _knotarrays) { //< auto to make clang happy re. key constness
         const KnotArrayNF& subgrid = q2_ka.second;
         const KnotArray1F& grid1 = subgrid.get_first();
         if (grid1.q2s().empty()) continue; //< @todo This shouldn't be possible, right? Throw instead, or ditch the check?

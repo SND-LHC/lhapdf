@@ -10,7 +10,8 @@ if USING_MPI
 endif
 
 libLHAPDF_la_SOURCES = \
-  PDF.cc PDFSet.cc GridPDF.cc PDFInfo.cc \
+  PDF.cc PDFSet.cc PDFInfo.cc \
+  GridPDF.cc KnotArray.cc \
   Interpolator.cc BilinearInterpolator.cc BicubicInterpolator.cc \
   LogBilinearInterpolator.cc LogBicubicInterpolator.cc \
   ErrExtrapolator.cc NearestPointExtrapolator.cc  ContinuationExtrapolator.cc \
