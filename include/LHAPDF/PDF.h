@@ -239,7 +239,8 @@ namespace LHAPDF {
       return (info().has_key("QMax")) ? sqr(info().get_entry_as<double>("QMax")) : numeric_limits<double>::max();
     }
 
-    /// @brief Check whether PDF is set to only return positive (definite) values or not.
+
+    /// @brief Check whether the PDF is set to only return positive (definite) values or not.
     ///
     /// This is to avoid overshooting in to negative values when
     /// interpolating/extrapolating PDFs that sharply decrease towards zero.
@@ -249,6 +250,11 @@ namespace LHAPDF {
         _forcePos = info().get_entry_as<unsigned int>("ForcePositive", 0);
       return _forcePos;
     }
+    /// @brief Set whether the PDF will only return positive (definite) values or not.
+    void setForcePositive(int mode) {
+      _forcePos = mode;
+    }
+
 
     /// @brief Check whether the given x is physically valid
     ///
@@ -400,6 +406,14 @@ namespace LHAPDF {
       return _flavors;
     }
 
+    /// @brief Manually set/override the list of flavours defined by this PDF set.
+    ///
+    /// @note The provided vector will be internally sorted into ascending numeric order.
+    void setFlavors(std::vector<int> const& flavors) {
+      _flavors = flavors;
+      sort(_flavors.begin(), _flavors.end());
+    }
+
     /// Checks whether @a id is a valid parton for this PDF.
     bool hasFlavor(int id) const;
 
@@ -408,6 +422,8 @@ namespace LHAPDF {
     /// "Order" is defined here and throughout LHAPDF as the maximum number of
     /// loops included in the matrix elements, in order to have an integer value
     /// for easy use in comparisons, as opposed to "LO", "NLO", etc. strings.
+    ///
+    /// @todo Provide a setter function?
     int orderQCD() const {
       return info().get_entry_as<int>("OrderQCD");
     }
@@ -418,11 +434,15 @@ namespace LHAPDF {
     ///
     /// Convenience interface to the Mass* info keywords.
     /// Returns -1 for an undefined PID.
+    ///
+    /// @todo Provide a setter function?
     double quarkMass(int id) const;
 
     /// @brief Get a flavor scale threshold in GeV by PDG code (|PID| = 1-6 only)
     /// Convenience interface to the Mass* and Threshold* info keywords.
     /// Returns -1 for an undefined PID.
+    ///
+    /// @todo Provide a setter function?
     double quarkThreshold(int id) const;
 
     ///@}

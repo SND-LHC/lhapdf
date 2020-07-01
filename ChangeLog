@@ -1,3 +1,10 @@
+2020-07-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Provide setter methods on PDF for the flavour list and
+	setPositive behaviour. Thanks to Valerio Bertone for the request.
+
+	* Convert the AlphaS raw pointer on PDF to a std::unique_ptr.
+
 2020-06-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Update the cache strategy for 'replays' (thanks to Tim Martin
