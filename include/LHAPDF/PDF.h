@@ -27,22 +27,16 @@ namespace LHAPDF {
   protected: //< These constructors should only be called by subclasses
 
     /// Internal convenience typedef for the AlphaS object handle
-    /// @todo Reinstate this unique_ptr when C++98 header compatibility is no longer an issue
-    // typedef unique_ptr<AlphaS> AlphaSPtr;
-    typedef AlphaS* AlphaSPtr;
+    typedef unique_ptr<AlphaS> AlphaSPtr;
 
     /// Force initialization of the only non-class member.
-    /// @todo Remove _alphas initialisation when it can be a smart ptr again
-    PDF() : _alphas(0), _forcePos(0) { }
+    PDF() : _forcePos(0) { }
 
 
   public:
 
     /// Virtual destructor, to allow unfettered inheritance
-    virtual ~PDF() {
-      /// @todo Remove this delete when C++98 is gone, and unique_ptr can be reinstated
-      delete _alphas;
-    }
+    virtual ~PDF() { }
 
 
   protected:
@@ -439,18 +433,21 @@ namespace LHAPDF {
 
     /// @brief Set the AlphaS calculator by pointer
     ///
-    /// The provided AlphaS must have been new'd, as it will not be copied
-    /// and ownership passes to this GridPDF: delete will be called on this ptr
-    /// when this PDF goes out of scope or another setAlphaS call is made.
+    /// The provided AlphaS must have been new'd, as it will not be copied and
+    /// ownership passes to this GridPDF: it will be deleted when this PDF goes
+    /// out of scope or another setAlphaS call is made.
     void setAlphaS(AlphaS* alphas) {
-      // _alphas.reset(alphas);
-      if (hasAlphaS()) delete _alphas;
-      _alphas = alphas;
+      _alphas.reset(alphas);
+    }
+
+    /// @brief Set the AlphaS calculator by smart pointer
+    void setAlphaS(AlphaSPtr alphas) {
+      _alphas = std::move(alphas);
     }
 
     /// @brief Check if an AlphaS calculator is set
     bool hasAlphaS() const {
-      return _alphas;
+      return bool(_alphas);
     }
 
     /// @brief Retrieve the AlphaS object for this PDF
@@ -486,9 +483,7 @@ namespace LHAPDF {
   protected:
 
     void _loadAlphaS() {
-      // _alphas.reset( mkAlphaS(info()) );
-      if (hasAlphaS()) delete _alphas;
-      _alphas = mkAlphaS(info());
+      _alphas.reset( mkAlphaS(info()) );
     }
 
     /// Get the set name from the member data file path (for internal use only)
@@ -502,13 +497,13 @@ namespace LHAPDF {
     /// Metadata container
     PDFInfo _info;
 
-    /// Locally cached list of supported PIDs
+    /// Locally cached list of supported PIDs (mutable for laziness/caching)
     mutable vector<int> _flavors;
 
-    /// Optionally loaded AlphaS object
+    /// Optionally loaded AlphaS object (mutable for laziness/caching)
     mutable AlphaSPtr _alphas;
 
-    /// @brief Cached flag for whether to return only positive (or postive definite) PDF values
+    /// @brief Cached flag for whether to return only positive (or positive definite) PDF values
     ///
     /// A negative value indicates that the flag has not been set. 0 = no
     /// forcing, 1 = force positive (i.e. 0 is permitted, negative values are
