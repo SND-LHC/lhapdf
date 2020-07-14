@@ -164,11 +164,13 @@ in the released set.
 Interpolator
 ------------
 MANDATORY (for grid PDFs)
-(enum string): linear, cubic
+(enum string): linear, cubic, log, logcubic
 
 The factory name string of the PDF grid interpolator to use -- only *needs* to
-be specified if overriding the default, which is cubic. Could also be
-member-specific, if necessary.
+be specified if overriding the default, which is logcubic. Could also be
+member-specific, if necessary. Linear and cubic are respectively linear and cubic interpolation
+in the linear x & Q2 spaces, and log and logcubic are the same but in
+the (recommended) log(x) and log(Q2) spaces.
 
 
 Extrapolator
