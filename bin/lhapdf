@@ -308,11 +308,16 @@ The main sub-commands that can be used are:
         self._scanpdfs()
 
         ## Filter PDFs on optional patterns and status
-        pdfs = globfilt(self.master_list.keys(), subargs.PATTERNS)
+        # pdfs = globfilt(self.master_list.keys(), subargs.PATTERNS)
+        pdfs = []
+        for pdf in self.master_list.keys():
+            if globfilt([pdf, str(self.master_list[pdf].id_code)], subargs.PATTERNS):
+                pdfs.append(pdf)
         if subargs.INSTALLED:
             pdfs = [pdf for pdf in pdfs if self.master_list[pdf].installed]
         if subargs.OUTDATED:
             pdfs = [pdf for pdf in pdfs if self.master_list[pdf].outdated]
+
 
         ## Display
         # TODO: (optional) ordering by LHAPDF ID code
@@ -337,7 +342,11 @@ The main sub-commands that can be used are:
         self._scanpdfs()
 
         ## Filter PDFs on optional patterns and status
-        pdfs = globfilt(self.installed.keys(), subargs.PATTERNS)
+        # pdfs = globfilt(self.installed.keys(), subargs.PATTERNS)
+        pdfs = []
+        for pdf in self.master_list.keys():
+            if globfilt([pdf, str(self.master_list[pdf].id_code)], subargs.PATTERNS):
+                pdfs.append(pdf)
 
         ## Display
         strs = []
