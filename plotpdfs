@@ -121,7 +121,7 @@ if "XF_X/PID" in args.PLOTS:
                 color = COLORS[i % len(COLORS)]
                 style = STYLES[j % len(STYLES)]
                 xf_vals = [pdfs[pname].xfxQ(pid, x,q) for x in xs]
-                title = "{}, $Q={}$".format(tex_str(palias(pname)), tex_float(q))
+                title = "{}, $Q={}~\\mathrm{{GeV}}$".format(tex_str(palias(pname)), tex_float(q))
                 plt.plot(xs, xf_vals, label=title, color=color, ls=style, lw=1.0)
         ax.set_xscale("log")
         #ax.set_ylim(bottom=0)
@@ -137,9 +137,9 @@ if "XF_X/PID" in args.PLOTS:
 if "XF_X/Q" in args.PLOTS:
     for j, q in enumerate(qs_few):
         plt.cla()
-        ax.text(0.95, 0.5, "$Q={}$".format(tex_float(q)), transform=ax.transAxes, ha="right", va="top")
+        #ax.text(0.95, 0.5, "$Q={}~\\mathrm{{GeV}}$".format(tex_float(q)), transform=ax.transAxes, ha="right", va="top")
         ax.set_xlabel("$x$")
-        ax.set_ylabel("$xf(x,Q)$")
+        ax.set_ylabel("$xf(x,Q={}~\\mathrm{{GeV}})$".format(tex_float(q)))
         for pid in pids:
             for i, pname in enumerate(args.PNAMES):
                 color = COLORS[pid % len(COLORS)]
@@ -185,9 +185,9 @@ if "XF_Q/PID" in args.PLOTS:
 if "XF_Q/X" in args.PLOTS:
     for j, x in enumerate(xs_few):
         plt.cla()
-        ax.text(0.95, 0.5, "$x={}$".format(tex_float(x)), transform=ax.transAxes, ha="right", va="bottom")
+        #ax.text(0.95, 0.5, "$x={}$".format(tex_float(x)), transform=ax.transAxes, ha="right", va="bottom")
         ax.set_xlabel("$Q$")
-        ax.set_ylabel("$xf(x,Q)$")
+        ax.set_ylabel("$xf(x={},Q)$".format(tex_float(x)))
         for pid in pids:
             for i, pname in enumerate(args.PNAMES):
                 color = COLORS[pid % len(COLORS)]
