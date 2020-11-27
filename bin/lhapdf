@@ -97,7 +97,7 @@ def download_url(source, dest_dir, dryrun=False):
             import shutil
             shutil.copy(source, dest_filepath)
         except:
-            logging.error("Unable to download %s" % source)
+            logging.debug("Unable to download %s" % source)
             return False
 
     else: # URL
@@ -115,7 +115,7 @@ def download_url(source, dest_dir, dryrun=False):
                 file_size = int(content_length)
         except urllib.URLError:
             e = sys.exc_info()[1]
-            logging.error("Unable to download %s" % url)
+            logging.debug("Unable to download %s" % url)
             return False
 
         logging.debug("Downloading from %s" % url)
@@ -173,7 +173,7 @@ def extract_tarball(tar_filename, dest_dir, keep_tarball):
         tar_file.extractall(dest_dir)
         tar_file.close()
     except:
-        logging.error("Unable to extract %s" % tar_filename)
+        logging.error("Unable to extract %s to %s" % (tar_filename, dest_dir))
     if not keep_tarball:
         try:
             os.remove(tarpath)
@@ -194,9 +194,13 @@ def convertBytes(size, nDecimalPoints=1):
 
 
 def download_file(sources, filename, dest_dir, dryrun=False):
+    sources_tried = []
     for source in sources:
-        if download_url(source + filename, dest_dir, dryrun):
+        url = source + filename
+        if download_url(url, dest_dir, dryrun):
             return True
+        sources_tried.append(url)
+    logging.error("Unable to download from any of %s" % sources_tried)
     return False
 
 
@@ -245,8 +249,8 @@ The main sub-commands that can be used are:
         ap.add_argument("--listdir", default=DATADIR, dest="LISTDIR", help="Directory containing the lhapdf.index list file [default: %(default)s]")
         ap.add_argument("--pdfdir", default=DATADIR, dest="PDFDIR", help="Directory for installation of PDF set data [default: %(default)s]")
         ap.add_argument("--source", default=[CVMFSBASE, URLBASE], action="append", dest="SOURCES", help="Prepend a path or URL to be used as a source of data files [default: %(default)s]")
-        ap.add_argument("--quiet", help="Suppress normal messages", dest="VERBOSITY", action="store_const", const=logging.ERROR, default=logging.INFO)
-        ap.add_argument("--verbose", help="Output debug messages", dest="VERBOSITY", action="store_const", const=logging.DEBUG, default=logging.INFO)
+        ap.add_argument("-q", "--quiet", help="Suppress normal messages", dest="VERBOSITY", action="store_const", const=logging.ERROR, default=logging.INFO)
+        ap.add_argument("-v", "--verbose", help="Output debug messages", dest="VERBOSITY", action="store_const", const=logging.DEBUG, default=logging.INFO)
         if VERSION:
             ap.add_argument("--version", action="version", version=VERSION)
         self.mainargs, otherargs = ap.parse_known_args()
@@ -276,7 +280,7 @@ The main sub-commands that can be used are:
 
         ## List and install commands require us to build lists of reference and installed PDFs
         indexpath = os.path.join(self.mainargs.LISTDIR, INDEX_FILENAME)
-        logging.debug("Index file =", indexpath)
+        logging.debug("Index file = " + indexpath)
         for pdf in get_reference_list(indexpath):
             self.master_list[pdf.name] = pdf
         for pdf in get_installed_list(self.mainargs.PDFDIR):
@@ -395,10 +399,10 @@ The main sub-commands that can be used are:
         ## Filter PDFs on optional patterns
         pdfs = globfilt(self.master_list.keys(), subargs.PATTERNS)
 
+        if not pdfs:
+            logging.warning("No PDFs known matching patterns: %s" % ", ".join(subargs.PATTERNS))
+
         for pdf in sorted(pdfs):
-            if pdf not in self.master_list:
-                logging.warning("PDF not recognised: %s" % pdf)
-                continue
             if pdf in self.installed and not subargs.UPGRADE:
                 logging.warning("PDF already installed: %s (use --upgrade to force install)" % pdf)
                 continue
