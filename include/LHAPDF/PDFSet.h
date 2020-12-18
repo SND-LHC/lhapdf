@@ -243,6 +243,8 @@ namespace LHAPDF {
     /// the number of parameters.
     ///
     /// See the @ref uncertainties group for more details
+    ///
+    /// @todo Add option to restrict replica mean & stddev calculation to a central CI set?
     PDFUncertainty uncertainty(const std::vector<double>& values,
                                double cl=100*erf(1/sqrt(2)), bool alternative=false) const;
 
