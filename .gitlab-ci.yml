@@ -11,6 +11,7 @@ stages:
 #  - rm -rf /usr/local/lib*/python*/site-packages/yoda*
 
 
+# TODO: add a hepbase-osx??
 .build_template: &build_template
   image:
     hepstore/hepbase-$OS
@@ -23,8 +24,20 @@ stages:
     - make
     - make check
     - make install
+    # TODO: cache set downloads
+    - lhapdf get cteq6 CT10 MMHT2014nnlo68cl NNPDF31_lo_as_0118
     - cd examples
     - make
+    - ./analyticpdf
+    - ./compatibility
+    - ./testpdfset CT10
+    - ./testpdfunc CT10
+    - ./testpdf CT10 0
+    - ./testpdfcache
+    - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
+    - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
+    - ./fexample1
+    - ./fexample2
   artifacts:
     when: always
     paths:

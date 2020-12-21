@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-Usage: %prog <PDF1> [<PDF2> [...]]
+Usage: %(prog)s <PDF1> [<PDF2> [...]]
 
 Test PDF xf, alpha_s, and metadata values for the named LHAPDF6 sets.
 """
