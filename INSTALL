@@ -4,12 +4,12 @@
 @tableofcontents
 
 
-@section downloads Source file downloads
+@section install_downloads Source file downloads
 
 The source files can be downloaded from https://lhapdf.hepforge.org/downloads/
 
 
-@section quickstart Quick start instructions
+@section install_quickstart Quick start instructions
 
 If you have a C++11 compiler, building LHAPDF >= 6.2 should be straightforward:
 
@@ -34,8 +34,46 @@ dependencies. Earlier versions rely on the Boost C++ header library. We
 recommend upgrading to the current series to avoid that complication (and
 benefit from other improvements, too).
 
+At run-time you may need to set some environment variable: see the next section
+for details.
 
-@section compilers Build tools
+
+@section install_paths Run-time search paths
+
+If you aren't installing LHAPDF into a standard, system-wide location, you will
+probably need to set some environment variables for it to work at runtime (and
+perhaps even during the installation).
+
+LHAPDF's primary installation mode is as a shared library, `libLHAPDF.so` (or
+`libLHAPDF.dylib` on Macs). This minimises code duplication and application
+rebuilds by being the single source of compiled code on your system --
+executables just refer to `libLHAPDF`'s code symbols at runtime rather than
+having to "statically" copy them into their own code. (If you *really* want
+static linking, make sure to provide the `-static` flag when linking your
+application, of point it explicitly at `libLHAPDF.a`.) Shared libraries need to
+be locateable at runtime, though, which means that you need to either place them
+in a standard "system" location, or set an environment variable to add your own
+custom install paths (usually `lib/` or `lib64/` within your installation tree)
+to the library-search mechanism. The environment variable for shared-library
+searching is `LD_LIBRARY_PATH` on Linux systems, and `DYLD_LIBRARY_PATH` on
+Macs (and FreeBSD).
+
+The same logic applies also to LHAPDF's own executables, which should live in
+the `bin/` directory within your installation tree, and its Python package which
+typically lives in `lib/pythonX.Y/site-packages`. The relevant environment
+variables are respectively `PATH` and `PYTHONPATH` for these searches. You may
+need to set at least the Python search path *before* installation, since this is
+under control of Python's own installer mechanism, which can be quite zealous.
+
+A sample environment variable setup, placing a new LHAPDF custom installation
+under `/foo/lhapdf`, to be searched *after* other custom locations, is
+
+    export PATH=$PATH:/foo/lhapdf/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/foo/lhapdf/lib
+    export PYTHONPATH=$PYTHONPATH:/foo/lhapdf/lib/python3.9/site-packages
+
+
+@section install_compilers Build tools
 
 LHAPDF6 just needs your system to have a copy of Make and a C++11 compiler:
 there is no Fortran code and hence no need for gfortran. We have tested with
@@ -51,15 +89,20 @@ and Python versions, and other such fun. If you want to build LHAPDF on a Mac,
 please see @ref osx.
 
 
-@subsection pyext Python
+@subsection install_pyext Python
 
 If you want to build the Python interface to LHAPDF (which is very nice!), you
 will need the Python development headers to be installed (e.g. via the
 `python-dev` Ubuntu package). If the `Python.h` header is not found by
 `configure`, no Python extension module will be built.
 
+You may also need to make sure that the `PYTHONPATH` environment variable (see
+above) is set to include your module-installation directory *before* installing,
+if it isn't a system-wide path: Python is sometimes configured to refuse to
+install to locations not already in the Python search path.
 
-@section lhapdf Building LHAPDF
+
+@section install_lhapdf Building LHAPDF
 
 If you have downloaded a release tarball for LHAPDF 6.X.Y, unpack it with `tar
 xf LHAPDF-6.X.Y.tar.gz`, then `cd` to the newly-created directory.
@@ -78,7 +121,7 @@ you don't want to install to `/usr/local`, which is the default). For example,
     ./configure --prefix=$HOME/local
 
 
-@subsection altcomp Alternative compilers
+@subsection install_altcomp Alternative compilers
 
 If you want to use an alternative C++ compiler, then you can specify the CXX
 variable on the command line. This is essential on OS X Mavericks and later,
@@ -99,22 +142,7 @@ location that you specified, call `make install`. You will (or at least
 `$prefix/share/LHAPDF`.
 
 
-@section lxplus Building on lxplus / LCG Grid systems
-
-CERN's lxplus7 system runs CC7 Linux, whose system compiler and Python installations are
-sufficiently modern to compile LHAPDF (although the system compiler is not an official
-LCG platform). No special environment setup is needed on lxplus7 unless you want to
-interface with precompiled LCG software.
-
-By contrast the older lxplus6 system runs SLC6, for which the system compiler is
-neither supported by LCG nor LHAPDF. Unfortunately, previous setup recipes
-posted here have become non-functional with passage of time: it is therefore up
-to the user to figure out a SLC6 configuration capable of compiling C++11 source
-code... or, better, to move to the newer system, which is now standard on LCG
-computing resources.
-
-
-@section osx Building on Mac OS X
+@section install_osx Building on Mac OS X
 
 Builds are typically straightforward on Linux, but Mac OS X unfortunately has a
 long history of incoherent system compiler setups, which have been worked around
