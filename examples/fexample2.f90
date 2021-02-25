@@ -4,7 +4,7 @@ program example2
   integer lhaids(3)
   character*50 setnames(3)
   data lhaids /11000, 25300, 303600/
-  data setnames /"CT10nlo", "MMHT2014nnlo68cl", "NNPDF31_lo_as_0118"/
+  data setnames /"CT10nlo", "MMHT2014nnlo68cl", "NNPDF31_nnlo_as_0118"/
 
   nsets = 3
   nmem = 0
