@@ -10,7 +10,8 @@ import lhapdf
 
 x = 0.1
 q = 100.0
-pset = lhapdf.getPDFSet("CT10nnlo") # ErrorType: hessian
+pset = lhapdf.getPDFSet("CT10nlo") # ErrorType: hessian
+#pset = lhapdf.getPDFSet("CT10nnlo") # ErrorType: hessian
 #pset = lhapdf.getPDFSet("abm12lhc_5_nnlo") # ErrorType: symmhessian
 #pset = lhapdf.getPDFSet("NNPDF30_nnlo_as_0118") # ErrorType: replicas
 #pset = lhapdf.getPDFSet("NNPDF30_nnlo_nf_5_pdfas") # ErrorType: replicas+as
