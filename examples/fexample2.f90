@@ -3,7 +3,7 @@ program example2
   double precision f(-6:6)
   integer lhaids(3)
   character*50 setnames(3)
-  data lhaids /11000, 25100, 303600/
+  data lhaids /11000, 25300, 303600/
   data setnames /"CT10nlo", "MMHT2014nnlo68cl", "NNPDF31_lo_as_0118"/
 
   nsets = 3
