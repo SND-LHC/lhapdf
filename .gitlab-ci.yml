@@ -28,17 +28,17 @@ stages:
     # - export LD_LIBRARY_PATH="$CI_PROJECT_DIR/local/lib:$CI_PROJECT_DIR/local/lib64:$LD_LIBRARY_PATH"
     # - export PYTHONPATH="$(ls -d1 $CI_PROJECT_DIR/local/lib/python*/site-packages):$PYTHONPATH"
     # # TODO: cache set downloads
-    # - lhapdf get cteq6 CT10nlo MMHT2014nnlo68cl NNPDF31_lo_as_0118
+    # - lhapdf get CT10nlo MMHT2014nnlo68cl NNPDF31_lo_as_0118
     # - cd examples
-    # - make
+    - make
     # - ./analyticpdf
     # - ./compatibility
     # - ./testpdfset CT10nlo
     # - ./testpdfunc CT10nlo
     # - ./testpdf CT10nlo 0
     # - ./testpdfcache
-    # - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
-    # - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
+    - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
+    - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
     # - ./fexample1
     # - ./fexample2
   artifacts:
@@ -97,7 +97,7 @@ build-ubuntu-gcc-py2:
     #- lhapdf update
     - lhapdf get cteq6 CT10nlo MMHT2014nnlo68cl NNPDF31_lo_as_0118
     - cd examples
-    - make
+    # - make
     - ./analyticpdf
     - ./compatibility
     - ./testpdfset CT10nlo
@@ -107,8 +107,8 @@ build-ubuntu-gcc-py2:
     - head testpdfcache.dat
     - tail testpdfcache.dat
     - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p.xfxQ(21,1e-3,126.0))'
-    - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
-    - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
+    # - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
+    # - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
     - ./fexample1
     - ./fexample2
     # - lhapdf get CT10nlo
