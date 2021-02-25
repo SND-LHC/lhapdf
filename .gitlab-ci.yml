@@ -69,10 +69,15 @@ build-ubuntu-clang-py3:
     OS: ubuntu-clang-hepmc3-py3
   <<: *build_template
 
-build-debian-gcc-py2:
+build-ubuntu-gcc-py2:
   variables:
-    OS: debian-gcc-hepmc3-py2
+    OS: ubuntu-gcc-hepmc3-py2
   <<: *build_template
+
+# build-debian-gcc-py2:
+#   variables:
+#     OS: debian-gcc-hepmc3-py2
+#   <<: *build_template
 
 
 
@@ -143,9 +148,16 @@ check-ubuntu-clang-py3:
     - build-ubuntu-clang-py3
   <<: *check_template
 
-check-debian-gcc-py2:
+check-ubuntu-gcc-py2:
   variables:
-    OS: debian-gcc-hepmc3-py2
+    OS: ubuntu-gcc-hepmc3-py2
   needs:
-    - build-debian-gcc-py2
+    - build-ubuntu-gcc-py2
   <<: *check_template
+
+# check-debian-gcc-py2:
+#   variables:
+#     OS: debian-gcc-hepmc3-py2
+#   needs:
+#     - build-debian-gcc-py2
+#   <<: *check_template
