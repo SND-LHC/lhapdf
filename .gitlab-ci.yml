@@ -24,23 +24,23 @@ stages:
     - make
     - make check
     - make install
-    - export PATH="$CI_PROJECT_DIR/local/bin:$PATH"
-    - export LD_LIBRARY_PATH="$CI_PROJECT_DIR/local/lib:$CI_PROJECT_DIR/local/lib64:$LD_LIBRARY_PATH"
-    - export PYTHONPATH="$(ls -d1 $CI_PROJECT_DIR/local/lib/python*/site-packages):$PYTHONPATH"
-    # TODO: cache set downloads
-    - lhapdf get cteq6 CT10nlo MMHT2014nnlo68cl NNPDF31_lo_as_0118
-    - cd examples
-    - make
-    - ./analyticpdf
-    - ./compatibility
-    - ./testpdfset CT10
-    - ./testpdfunc CT10
-    - ./testpdf CT10 0
-    - ./testpdfcache
-    - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
-    - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
-    - ./fexample1
-    - ./fexample2
+    # - export PATH="$CI_PROJECT_DIR/local/bin:$PATH"
+    # - export LD_LIBRARY_PATH="$CI_PROJECT_DIR/local/lib:$CI_PROJECT_DIR/local/lib64:$LD_LIBRARY_PATH"
+    # - export PYTHONPATH="$(ls -d1 $CI_PROJECT_DIR/local/lib/python*/site-packages):$PYTHONPATH"
+    # # TODO: cache set downloads
+    # - lhapdf get cteq6 CT10nlo MMHT2014nnlo68cl NNPDF31_lo_as_0118
+    # - cd examples
+    # - make
+    # - ./analyticpdf
+    # - ./compatibility
+    # - ./testpdfset CT10nlo
+    # - ./testpdfunc CT10nlo
+    # - ./testpdf CT10nlo 0
+    # - ./testpdfcache
+    # - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
+    # - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
+    # - ./fexample1
+    # - ./fexample2
   artifacts:
     when: always
     paths:
@@ -87,16 +87,33 @@ build-debian-gcc-py2:
     - export PYTHONNAME=`python -c 'from __future__ import print_function; from distutils.sysconfig import get_config_var; print("python%s" % str(get_config_var("VERSION")))'`
     - export PYTHONPATH=$INSTALL_PREFIX/lib/$PYTHONNAME/site-packages/:$INSTALL_PREFIX/lib64/$PYTHONNAME/site-packages/:$PYTHONPATH
     - export LHAPDF_DATA_PATH=$INSTALL_PREFIX/share/LHAPDF
+    # TODO: cache set downloads
     - lhapdf -h
-    - lhapdf update
-    - lhapdf get CT10nlo
+    #- lhapdf update
+    - lhapdf get cteq6 CT10nlo MMHT2014nnlo68cl NNPDF31_lo_as_0118
     - cd examples
-    - ./testpdf CT10nlo 5
-    - ./testpdfset
+    - make
+    - ./analyticpdf
+    - ./compatibility
+    - ./testpdfset CT10nlo
+    - ./testpdfunc CT10nlo
+    - ./testpdf CT10nlo 0
     - ./testpdfcache > testpdfcache.dat
     - head testpdfcache.dat
     - tail testpdfcache.dat
     - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p.xfxQ(21,1e-3,126.0))'
+    - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
+    - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
+    - ./fexample1
+    - ./fexample2
+    # - lhapdf get CT10nlo
+    # - cd examples
+    # - ./testpdf CT10nlo 5
+    # - ./testpdfset
+    # - ./testpdfcache > testpdfcache.dat
+    # - head testpdfcache.dat
+    # - tail testpdfcache.dat
+    # - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p.xfxQ(21,1e-3,126.0))'
   artifacts:
     when: always
     paths:
