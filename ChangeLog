@@ -1,3 +1,11 @@
+2021-03-31  Andy Buckley  <andy.buckley@cern.ch>
+
+	* PDFSet::uncertainties() now allows alternative=True for
+	non-replica sets (in which case it does nothing). This is more
+	convenient when calculating uncertainties over many error-set
+	types and you want to use the alternatives mode should any of them
+	be replica sets.
+
 2020-11-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* lhapdf script bugfixes and improvements, including only

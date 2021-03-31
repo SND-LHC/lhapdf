@@ -60,49 +60,51 @@ namespace LHAPDF {
     PDFUncertainty rtn;
     rtn.central = values[0];
 
-    if (alternative && startswith(errorType(), "replicas")) {
+    if (startswith(errorType(), "replicas") {
+      if (alternative) {
 
-      // Compute median and requested CL directly from probability distribution of replicas.
-      // Sort "values" into increasing order, ignoring zeroth member (average over replicas).
-      // Also ignore possible parameter variations included at the end of the set.
-      vector<double> sorted = values;
-      sort(sorted.begin()+1, sorted.end()-2*npar);
-      // Define central value to be median.
-      if (nmem % 2) { // odd nmem => one middle value
-        rtn.central = sorted[nmem/2 + 1];
-      } else { // even nmem => average of two middle values
-        rtn.central = 0.5*(sorted[nmem/2] + sorted[nmem/2 + 1]);
-      }
-      // Define uncertainties via quantiles with a CL given by reqCL.
-      const int upper = round(0.5*(1+reqCL)*nmem); // round to nearest integer
-      const int lower = 1 + round(0.5*(1-reqCL)*nmem); // round to nearest integer
-      rtn.errplus = sorted[upper] - rtn.central;
-      rtn.errminus = rtn.central - sorted[lower];
-      rtn.errsymm = 0.5*(rtn.errplus + rtn.errminus); // symmetrised
+        // Compute median and requested CL directly from probability distribution of replicas.
+        // Sort "values" into increasing order, ignoring zeroth member (average over replicas).
+        // Also ignore possible parameter variations included at the end of the set.
+        vector<double> sorted = values;
+        sort(sorted.begin()+1, sorted.end()-2*npar);
+        // Define central value to be median.
+        if (nmem % 2) { // odd nmem => one middle value
+          rtn.central = sorted[nmem/2 + 1];
+        } else { // even nmem => average of two middle values
+          rtn.central = 0.5*(sorted[nmem/2] + sorted[nmem/2 + 1]);
+        }
+        // Define uncertainties via quantiles with a CL given by reqCL.
+        const int upper = round(0.5*(1+reqCL)*nmem); // round to nearest integer
+        const int lower = 1 + round(0.5*(1-reqCL)*nmem); // round to nearest integer
+        rtn.errplus = sorted[upper] - rtn.central;
+        rtn.errminus = rtn.central - sorted[lower];
+        rtn.errsymm = 0.5*(rtn.errplus + rtn.errminus); // symmetrised
 
-    } else if (alternative) {
+        // Used to throw an error if alternative=True and set type isn't replica, but that's just inconvenient
+        // } else if (alternative) {
+        //   throw UserError("Error in LHAPDF::PDFSet::uncertainty. This PDF set is not in the format of replicas.");
 
-      throw UserError("Error in LHAPDF::PDFSet::uncertainty. This PDF set is not in the format of replicas.");
+      } else {
 
-    } else if (startswith(errorType(), "replicas")) {
-
-      // Calculate the average and standard deviation using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2.
-      double av = 0.0, sd = 0.0;
-      for (size_t imem = 1; imem <= nmem; imem++) {
-        av += values[imem];
-        sd += sqr(values[imem]);
-      }
-      av /= nmem; sd /= nmem;
-      sd = nmem/(nmem-1.0)*(sd-sqr(av));
-      sd = (sd > 0.0 && nmem > 1) ? sqrt(sd) : 0.0;
-      rtn.central = av;
-      rtn.errplus = rtn.errminus = rtn.errsymm = sd;
+        // Calculate the average and standard deviation using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2.
+        double av = 0.0, sd = 0.0;
+        for (size_t imem = 1; imem <= nmem; imem++) {
+          av += values[imem];
+          sd += sqr(values[imem]);
+        }
+        av /= nmem; sd /= nmem;
+        sd = nmem/(nmem-1.0)*(sd-sqr(av));
+        sd = (sd > 0.0 && nmem > 1) ? sqrt(sd) : 0.0;
+        rtn.central = av;
+        rtn.errplus = rtn.errminus = rtn.errsymm = sd;
 
     } else if (startswith(errorType(), "symmhessian")) {
 
       double errsymm = 0;
-      for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
+      for (size_t ieigen = 1; ieigen <= nmem; ieigen++) {
         errsymm += sqr(values[ieigen]-values[0]);
+      }
       errsymm = sqrt(errsymm);
       rtn.errplus = rtn.errminus = rtn.errsymm = errsymm;
 
