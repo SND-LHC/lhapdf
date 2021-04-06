@@ -60,9 +60,9 @@ namespace LHAPDF {
     PDFUncertainty rtn;
     rtn.central = values[0];
 
-    if (startswith(errorType(), "replicas") {
-      if (alternative) {
+    if (startswith(errorType(), "replicas")) {
 
+      if (alternative) {
         // Compute median and requested CL directly from probability distribution of replicas.
         // Sort "values" into increasing order, ignoring zeroth member (average over replicas).
         // Also ignore possible parameter variations included at the end of the set.
@@ -81,13 +81,9 @@ namespace LHAPDF {
         rtn.errminus = rtn.central - sorted[lower];
         rtn.errsymm = 0.5*(rtn.errplus + rtn.errminus); // symmetrised
 
-        // Used to throw an error if alternative=True and set type isn't replica, but that's just inconvenient
-        // } else if (alternative) {
-        //   throw UserError("Error in LHAPDF::PDFSet::uncertainty. This PDF set is not in the format of replicas.");
-
       } else {
 
-        // Calculate the average and standard deviation using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2.
+        // Calculate the average and standard deviation using Eqs. (2.3) and (2.4) of arXiv:1106.5788v2
         double av = 0.0, sd = 0.0;
         for (size_t imem = 1; imem <= nmem; imem++) {
           av += values[imem];
@@ -98,6 +94,7 @@ namespace LHAPDF {
         sd = (sd > 0.0 && nmem > 1) ? sqrt(sd) : 0.0;
         rtn.central = av;
         rtn.errplus = rtn.errminus = rtn.errsymm = sd;
+      }
 
     } else if (startswith(errorType(), "symmhessian")) {
 
