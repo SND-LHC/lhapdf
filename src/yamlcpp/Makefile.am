@@ -1,8 +1,7 @@
-## How to make our mangled yaml-cpp from the yaml-cpp-0.6.0.tar.gz tarball
-# In the unpacked tarball directory:
-# for i in `find yaml-cpp -type f -name "*.h" -o -name "*.cpp"`; do
-#   sed -e 's/namespace YAML/namespace LHAPDF_YAML/' -e 's/YAML::/LHAPDF_YAML::/g' "$i" -i
-# done
+## How to make our mangled yaml-cpp from the yaml-cpp tarball
+# tar xf yaml-cpp-0.6.3.tar.gz
+# for i in `find yaml-cpp-yaml-cpp-0.6.3/ -type f -name "*.h" -o -name "*.cpp"`; do \
+#   sed -e 's/namespace YAML/namespace LHAPDF_YAML/' -e 's/YAML::/LHAPDF_YAML::/g' -i "$i"; done
 
 EXTRA_DIST = yaml-cpp
 noinst_LTLIBRARIES = liblhapdf-yaml-cpp.la
