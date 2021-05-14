@@ -22,6 +22,17 @@ def text_encode(text):
         raise ValueError("Requires text input")
 
 
+# An enum wrapper for accessing parton ID codes, including iteration.
+# Named to match the sub-namespace in C++, so they're accessed with equivalent scope name.
+cpdef enum PIDs:
+    GLUON = 0
+    DOWN = 1
+    UP = 2
+    STRANGE = 3
+    CHARM = 4
+    BOTTOM = 5
+    TOP = 6
+
 
 cdef class PDF:
     """\

@@ -1,3 +1,9 @@
+2021-05-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a PIDs::PIDCode enum (and PIDs enum with equivalent
+	signature in Python) for more semantic access to particle ID
+	codes.
+
 2021-04-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Update embedded yaml-cpp code to version 0.6.3.

@@ -20,6 +20,22 @@
 namespace LHAPDF {
 
 
+  /// @defgroup partonids Parton ID codes
+  /// @{
+  /// Convenience/clarity enum for specifying parton IDs
+  namespace PIDs { //< for scoping to avoid conflicts, e.g. PID::GLUON rather than just GLUON
+    enum PIDCode { GLUON = 0, // equivalent to 21
+                   DOWN = 1,
+                   UP = 2,
+                   STRANGE = 3,
+                   CHARM = 4,
+                   BOTTOM = 5,
+                   TOP = 6 };
+  }
+  /// @}
+
+
+
   /// @brief PDF is the general interface for access to parton density information.
   ///
   /// The PDF interface declares the general form of all PDF types, such as Grid based or analytic.
