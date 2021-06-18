@@ -21,21 +21,27 @@ namespace LHAPDF {
     }
 
     /// One-dimensional cubic interpolation
-    inline double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH) {
-      // Pre-calculate powers of T
-      const double t2 = T*T;
-      const double t3 = t2*T;
+    ///
+    /// @arg t is the fractional distance of the evaluation x into the dx
+    /// interval.  @arg vl and @arg vh are the function values at the low and
+    /// high edges of the interval. @arg vl and @arg vh are linearly
+    /// extrapolated value changes from the product of dx and the discrete low-
+    /// and high-edge derivative estimates.
+    ///
+    /// @note Need a reference for this. I don't think it's a cubic spline... maybe cubic Bessel?
+    inline double _interpolateCubic(double t, double vl, double vdl, double vh, double vdh) {
+      // Pre-calculate powers of t
+      const double t2 = t*t;
+      const double t3 = t*t2;
 
-      // Calculate left point
-      const double p0 = (2*t3 - 3*t2 + 1)*VL;
-      const double m0 = (t3 - 2*t2 + T)*VDL;
-
-      // Calculate right point
-      const double p1 = (-2*t3 + 3*t2)*VH;
-      const double m1 = (t3 - t2)*VDH;
-
+      // Calculate polynomial (why grouped by input param rather than powers of t?)
+      const double p0 = (2*t3 - 3*t2 + 1)*vl;
+      const double m0 = (t3 - 2*t2 + t)*vdl;  //< AB: 2*t2??
+      const double p1 = (-2*t3 + 3*t2)*vh;
+      const double m1 = (t3 - t2)*vdh;
       return p0 + m0 + p1 + m1;
     }
+
 
 
     /// Calculate adjacent d(xf)/dx at all grid locations for fixed iq2
