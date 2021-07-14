@@ -292,11 +292,37 @@ namespace LHAPDF {
       _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
     }
 
+    // For how many flavours is the grid stored
+    size_t size() const { return shape.back(); }
+
+    /// Is this container empty?
+    bool empty() const { return _grid.empty(); }
+
+    /// Access the Q2s array
+    // as they dont exist anymore in the old form, this now returns a vector
+    // instead of the reference to one
+    const std::vector<double> xs() const {
+      return std::vector<double> (_grid.begin(), _grid.begin()+shape[0]);
+    }
+
+    /// Access the Q2s array
+    const std::vector<double> q2s() const {
+      return std::vector<double> (_grid.begin() + shape[0], _grid.begin() + shape[0] + shape[1]);
+    }
+
+    // Access the grid
+    const std::vector<double>& grid() const {
+      return _grid;
+    }
+    
     // Version for general number of dimensions
     std::vector<size_t> idbelow(std::vector<double> vals);
-    
+
     const double xf(std::vector<int> ids);
 
+    const std::vector<double> igrid(const int i);
+
+    
     // the below should be private
     //   uncomment, to make the hacky value filling easier
     //   once the I/O is done, this can become private
