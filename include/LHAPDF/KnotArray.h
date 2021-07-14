@@ -274,11 +274,11 @@ namespace LHAPDF {
       return indexbelow(q2, shape[0], shape[1]);
     }
     
-    const double getxf(double ix, double iq, int ipid){
+    const double getxf(double ix, double iq, int ipid) const {
       return _grid[ix*shape[1]*shape[2] + iq*shape[2] + ipid];
     }
 
-    const double xf(double ix, double iq, int pid){
+    const double xf(double ix, double iq, int pid) const {
       if(pid == 21 || pid == 0){
 	return getxf(ix, iq, 10);
       } else if(pid < 0){
@@ -298,15 +298,25 @@ namespace LHAPDF {
     // instead of the reference to one
     const std::vector<double> xs() const {
       // untested!
-      return std::vector<double> (_grid.begin(), _grid.begin()+shape[0]);
+      std::cerr << "not implemented yet" << std::endl;
+      throw;
     }
 
+    const double xs(const int id) const {
+      return _knots[id];
+    }
+    
     /// Access the Q2s array
     const std::vector<double> q2s() const {
       // untested!
-      return std::vector<double> (_grid.begin() + shape[0], _grid.begin() + shape[0] + shape[1]);
+      std::cerr << "not implemented yet" << std::endl;
+      throw;
     }
 
+    const double q2s(const int id) const {
+      return _knots[shape[0] + id];
+    }
+    
     // Access the grid
     const std::vector<double>& grid() const {
       // untested!
