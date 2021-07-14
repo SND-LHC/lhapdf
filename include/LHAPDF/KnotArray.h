@@ -246,7 +246,75 @@ namespace LHAPDF {
 
   };
 
+  class KnotArray{
+  public:
 
+    // ------ Basically "new" versions of the old methods in
+    //        KnotArrayNF
+    
+    size_t indexbelow(double value, size_t start, size_t size) const {
+      // tested!
+      size_t i = upper_bound(_knots.begin() + start, _knots.begin()+start+size, value) - _knots.begin();
+      i -= start;           // move to the start of the knots
+      if (i == size) i -= 1; // can't return the last knot index
+      i -= 1;               // step back to get the knot <= x behaviour
+      return i;
+    }
+    
+    size_t ixbelow(double x) const {
+      // tested!
+      return indexbelow(x, 0, shape[0]);
+    }
+
+    size_t iq2below(double q2) const {
+      // tested
+      return indexbelow(q2, shape[0], shape[1]);
+    }
+    
+    const double getxf(double ix, double iq, int ipid){
+      // tested!
+      return _grid[ix*shape[1]*shape[2] + iq*shape[2] + ipid];
+    }
+
+    const double xf(double ix, double iq, int pid){
+      // tested!
+      if(pid == 21 || pid == 0){
+	return getxf(ix, iq, 10);
+      } else if(pid < 0){
+	return getxf(ix, iq, pid - 5);
+      } else{
+	return getxf(ix, iq, pid + 4);
+      }
+    }
+    
+    void setxf(double ix, double iq, int pid, double value){
+      // Untested!
+      _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
+    }
+
+    // Version for general number of dimensions
+    std::vector<size_t> idbelow(std::vector<double> vals);
+    
+    const double xf(std::vector<int> ids);
+
+    // the below should be private
+    //   uncomment, to make the hacky value filling easier
+    //   once the I/O is done, this can become private
+    //private:
+
+    // Shape of the interpolation grid
+    std::vector<size_t> shape;
+    
+    // Gridvalues
+    // TODO order
+    // natural order would  [pid, x, q, ...]
+    // Coalesced memory for [x, q, ..., pid] <--
+    std::vector<double> _grid;
+    
+    // Knots, assumes the same grid for all particle ids in the set
+    std::vector<double> _knots;    
+  };
+  
 
   /// Internal storage class for alpha_s interpolation grids
   class AlphaSArray {
@@ -358,7 +426,5 @@ namespace LHAPDF {
     std::vector<double> _as;
 
   };
-
-
 }
 #endif

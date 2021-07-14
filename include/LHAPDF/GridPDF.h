@@ -46,6 +46,7 @@ namespace LHAPDF {
       _loadPlugins();
       _loadData(_mempath);
       _forcePos = -1;
+      fillNewDataStructures();
     }
 
     /// Constructor from an LHAPDF ID
@@ -206,9 +207,56 @@ namespace LHAPDF {
 
     ///@}
 
+    void fillNewDataStructures(){
+      // Temporary function to fill the new memory structues, as I dont want to deal with the
+      // I/O just yet
+
+      // Hard-code _shape as [x, q2, pid]
+      _knotarray.shape.clear();
+      _knotarray._grid.clear();
+      _knotarray._knots.clear();
+      
+      // Fill shape
+      const KnotArrayNF& subgrid1 = _knotarrays.begin()->second;
+      const KnotArray1F& grid1 = subgrid1.get_first();
+      _knotarray.shape.resize(3);
+      _knotarray.shape[0] = grid1.xsize();
+      _knotarray.shape[1] = grid1.q2size();
+      _knotarray.shape[2] = subgrid1.size();
+      std::cout << "{xsize, q2size, n_pids} = {" << _knotarray.shape[0] << ", " <<
+	_knotarray.shape[1] << ", " << _knotarray.shape[2] << "}" << std::endl;
+      
+      // resize vectors accordingly
+      _knotarray._grid.resize(_knotarray.shape[0] * _knotarray.shape[1] * _knotarray.shape[2]);
+      //_knots.resize(shape[0] + shape[1]);
+      
+      // fill knots
+      for(double xs : grid1.xs()){
+	_knotarray._knots.push_back(xs);
+      }
+      for(double q2 : grid1.q2s()){
+	_knotarray._knots.push_back(q2);
+      }
+
+      // fill grid
+      int ct1 = 0;
+      for(int flav : flavors()){
+	auto grid2 = subgrid(flav, 100);
+	auto gxfs = grid2.xfs();
+	double ct2 = 0;
+	for(double xfv : gxfs){
+	  _knotarray._grid[ct2*_knotarray.shape.back() + ct1] = xfv;
+	  ++ct2;
+	}
+	++ct1;
+      }
+    }
+    
 
   private:
-
+    // *new* memory object, to handle basically everything
+    KnotArray _knotarray;
+	
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
     std::map<double, KnotArrayNF> _knotarrays;
 
