@@ -68,7 +68,7 @@ namespace LHAPDF {
     /// x/Q2 index lookup (and their caching) are done centrally in the
     /// Interpolator base class so do not need to be re-implemented in each
     /// flavour of interpolator.
-    virtual double _interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const = 0;
+    virtual double _interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, size_t id) const = 0;
 
     /// @todo Implement this NF version, with a cached KnotArrayNF?
     // virtual double _interpolateXQ2(const KnotArrayNF& subgrid, int id, double x, size_t ix, double q2, size_t iq2) const;
