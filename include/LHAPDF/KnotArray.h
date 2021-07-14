@@ -248,36 +248,37 @@ namespace LHAPDF {
 
   class KnotArray{
   public:
-
     // ------ Basically "new" versions of the old methods in
     //        KnotArrayNF
-    
+
+    // For how many flavours is the grid stored
+    size_t size() const { return shape.back(); }
+
+    /// Is this container empty?
+    bool empty() const { return _grid.empty(); }
+
+    // General function to find the knot below a given value
     size_t indexbelow(double value, size_t start, size_t size) const {
-      // tested!
       size_t i = upper_bound(_knots.begin() + start, _knots.begin()+start+size, value) - _knots.begin();
-      i -= start;           // move to the start of the knots
+      i -= start;            // move to the start of the knots
       if (i == size) i -= 1; // can't return the last knot index
-      i -= 1;               // step back to get the knot <= x behaviour
+      i -= 1;                // step back to get the knot <= x behaviour
       return i;
     }
     
     size_t ixbelow(double x) const {
-      // tested!
       return indexbelow(x, 0, shape[0]);
     }
 
     size_t iq2below(double q2) const {
-      // tested
       return indexbelow(q2, shape[0], shape[1]);
     }
     
     const double getxf(double ix, double iq, int ipid){
-      // tested!
       return _grid[ix*shape[1]*shape[2] + iq*shape[2] + ipid];
     }
 
     const double xf(double ix, double iq, int pid){
-      // tested!
       if(pid == 21 || pid == 0){
 	return getxf(ix, iq, 10);
       } else if(pid < 0){
@@ -292,26 +293,23 @@ namespace LHAPDF {
       _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
     }
 
-    // For how many flavours is the grid stored
-    size_t size() const { return shape.back(); }
-
-    /// Is this container empty?
-    bool empty() const { return _grid.empty(); }
-
     /// Access the Q2s array
     // as they dont exist anymore in the old form, this now returns a vector
     // instead of the reference to one
     const std::vector<double> xs() const {
+      // untested!
       return std::vector<double> (_grid.begin(), _grid.begin()+shape[0]);
     }
 
     /// Access the Q2s array
     const std::vector<double> q2s() const {
+      // untested!
       return std::vector<double> (_grid.begin() + shape[0], _grid.begin() + shape[0] + shape[1]);
     }
 
     // Access the grid
     const std::vector<double>& grid() const {
+      // untested!
       return _grid;
     }
     
