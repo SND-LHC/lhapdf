@@ -246,17 +246,19 @@ namespace LHAPDF {
       }
 
       // fill grid
-      int ct1 = 0;
+      size_t ct1 = 0;
       for(int flav : flavors()){
+	std::cout << flav << std::endl;
 	auto grid2 = subgrid(flav, 100);
-	auto gxfs = grid2.xfs();
-	double ct2 = 0;
+	auto gxfs  = grid2.xfs();
+	size_t ct2 = 0;
 	for(double xfv : gxfs){
 	  data._grid[ct2*data.shape.back() + ct1] = xfv;
 	  ++ct2;
 	}
 	++ct1;
       }
+      auto grid3 = subgrid(-5, 100);
     }
     
 

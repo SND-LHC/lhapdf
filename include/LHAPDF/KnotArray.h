@@ -282,7 +282,7 @@ namespace LHAPDF {
       if(pid == 21 || pid == 0){
 	return getxf(ix, iq, 10);
       } else if(pid < 0){
-	return getxf(ix, iq, pid - 5);
+	return getxf(ix, iq, pid + 5);
       } else{
 	return getxf(ix, iq, pid + 4);
       }
