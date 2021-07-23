@@ -95,6 +95,9 @@ namespace LHAPDF {
 
 
   double GridPDF::_xfxQ2(int id, double x, double q2) const {
+#ifdef DEBUG
+    std::cout << "GridPDF::_xfxQ2(" << id << ", " << x << ", " << q2 << ") " << std::endl;
+#endif
     /// Decide whether to use interpolation or extrapolation... the sanity checks
     /// are done in the public PDF::xfxQ2 function.
     // cout << "From GridPDF[0]: x = " << x << ", Q2 = " << q2 << endl;
@@ -215,9 +218,12 @@ namespace LHAPDF {
             /// @todo Handle sea/valence representations via internal pseudo-PIDs
 	    //  MK: What?
           } else {
+	    // MK: reserve space first
+	    /*
             if (iblockline == 4) { // on the first line of the xf block, resize the arrays
               ipid_xfs.resize(xsize * (knots.size() - xsize) * pids.size());
             }
+	    */
             while (nparser >> ftoken) {
               ipid_xfs.push_back(ftoken);
             }
@@ -230,8 +236,7 @@ namespace LHAPDF {
 	    */
           }
 
-        } else { // we *are* on a block separator line
-	  
+        } else { // we *are* on a block separator line	
           // Check that the expected number of data lines were seen in the last block
 	  // MK: Does not work anymore, how to translate?
 	  /*
@@ -276,6 +281,10 @@ namespace LHAPDF {
       // MK: write proper setter methods 
       data._knots = knots;
       data._grid  = ipid_xfs;
+      data.shape.resize(3);
+      data.shape[0] = xsize;
+      data.shape[1] = knots.size() - xsize;
+      data.shape[2] = pids.size();
       
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")
@@ -286,9 +295,6 @@ namespace LHAPDF {
     } catch (std::exception& e) {
       throw ReadError("Read error while parsing " + mempath + " as a GridPDF data file");
     }
-    
-	  
-    
   }
 
 

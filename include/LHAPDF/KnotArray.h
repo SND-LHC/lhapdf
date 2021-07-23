@@ -252,17 +252,21 @@ namespace LHAPDF {
     //        KnotArrayNF
 
     // For how many flavours is the grid stored
-    size_t size() const { return shape.back(); }
-
+    size_t size()   const { return shape.back(); }
+    size_t xsize()  const { return shape[0]; }
+    size_t q2size() const { return shape[1]; }
+    
     /// Is this container empty?
     bool empty() const { return _grid.empty(); }
-
+    
     // General function to find the knot below a given value
     size_t indexbelow(double value, size_t start, size_t size) const {
       size_t i = upper_bound(_knots.begin() + start, _knots.begin()+start+size, value) - _knots.begin();
       i -= start;            // move to the start of the knots
       if (i == size) i -= 1; // can't return the last knot index
       i -= 1;                // step back to get the knot <= x behaviour
+      if (_knots[i]+start == _knots[i+1]+start) i -= 1;
+      //if (_knots[i] == _knots[i-1]) i -= 1;
       return i;
     }
     
@@ -297,7 +301,7 @@ namespace LHAPDF {
     // as they dont exist anymore in the old form, this now returns a vector
     // instead of the reference to one
     const std::vector<double> xs() const {
-      // untested!
+      // MK: test
       std::cerr << "not implemented yet" << std::endl;
       throw;
     }
@@ -308,7 +312,7 @@ namespace LHAPDF {
     
     /// Access the Q2s array
     const std::vector<double> q2s() const {
-      // untested!
+      // MK: test
       std::cerr << "not implemented yet" << std::endl;
       throw;
     }
@@ -319,9 +323,27 @@ namespace LHAPDF {
     
     // Access the grid
     const std::vector<double>& grid() const {
-      // untested!
+      // MK: test
       return _grid;
     }
+
+    const bool inRangeX(double value) const {
+      // MK: test
+      // add test to ensure knots are of approroate lenght
+      if(value < _knots[0]) return false;
+      if(value > _knots[shape[0]-1]) return false;
+      return true;
+    }
+    
+    const bool inRangeQ2(double value) const {
+      // MK: test
+      // add test to ensure knots are of approroate lenght
+      if(value < _knots[shape[0]]) return false;
+      if(value > _knots[shape[1] + shape[0] - 1]) return false;
+      return true;
+    }
+
+
     
     // Version for general number of dimensions
     std::vector<size_t> idbelow(std::vector<double> vals);

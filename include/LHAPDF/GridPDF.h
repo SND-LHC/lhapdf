@@ -204,90 +204,15 @@ namespace LHAPDF {
   public:
 
     /// Check if x is in the grid range
-    // MK: translate?
-    // FIX!!
     bool inRangeX(double x) const {
-      //assert(!xKnots().empty());
-      //if (x < xKnots().front()) return false;
-      //if (x > xKnots().back()) return false;
-      return true;
+      return data.inRangeX(x);
     }
 
     /// Check if q2 is in the grid range
-    //MK: Translate?
-    // FIX!!
     bool inRangeQ2(double q2) const {
-      assert(!q2Knots().empty());
-      //if (q2 < q2Knots().front()) return false;
-      //if (q2 > q2Knots().back()) return false;
-      return true;
+      return data.inRangeQ2(q2);
     }
-
     ///@}
-
-    /*
-    void fillNewDataStructures(){
-      // Temporary function to fill the new memory structues, as I dont want to deal with the
-      // I/O just yet
-
-      // Hard-code _shape as [x, q2, pid]
-      data.shape.clear();
-      data._grid.clear();
-      data._knots.clear();
-      
-      // Fill shape
-      data.shape.resize(3);
-      
-      // fill knots
-      int xpts = 0;
-      for (const auto& q2_ka : _knotarrays) {
-        const KnotArrayNF& subgrid = q2_ka.second;
-        const KnotArray1F& grid1 = subgrid.get_first();
-	for(double xs : grid1.xs()){
-	  data._knots.push_back(xs);
-	  ++xpts;
-	}
-	break;
-      }
-      data.shape[0] = xpts;
-
-      // fill q2 knots
-      int q2pts = 0;
-      for (const auto& q2_ka : _knotarrays) {
-        const KnotArrayNF& subgrid = q2_ka.second;
-        const KnotArray1F& grid1 = subgrid.get_first();
-        if (grid1.q2s().empty()) throw;
-        for (double q2 : grid1.q2s()) {
-	  data._knots.push_back(q2);
-	  ++q2pts;
-        }
-      }
-
-      data.shape[1] = q2pts;
-      data.shape[2] = flavors().size();
-
-      // resize vectors accordingly
-      data._grid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
-
-      
-      // fill grid
-      size_t ct1 = 0;
-      for(int flav : flavors()){
-	size_t ct2 = 0;
-	for (const auto& q2_ka : _knotarrays) {
-	  const KnotArrayNF& subgrid = q2_ka.second;
-	  const KnotArray1F& grid1 = subgrid.get_pid(flav);
-	  auto gxfs  = grid1.xfs();
-
-	  for(double xfv : gxfs){
-	    data._grid[ct2*data.shape.back() + ct1] = xfv;
-	    ++ct2;
-	  }
-	}
-	++ct1;
-      }
-    }
-    */
 
   private:
     // *new* memory object, to handle basically everything
