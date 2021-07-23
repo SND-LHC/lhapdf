@@ -60,7 +60,7 @@ namespace LHAPDF {
     return *_extrapolator;
   }
 
-
+  /*
   const KnotArrayNF& GridPDF::subgrid(double q2) const {
     assert(q2 >= 0);
     assert(!q2Knots().empty());
@@ -73,8 +73,10 @@ namespace LHAPDF {
     // std::cout << "Using subgrid #" << std::distance(_knotarrays.begin(), it) << std::endl;
     return it->second;
   }
+  */
 
-
+  // MK: translate?
+  /*
   const vector<double>& GridPDF::q2Knots() const {
     if (_q2knots.empty()) {
       // Get the list of Q2 knots by combining all subgrids
@@ -89,6 +91,7 @@ namespace LHAPDF {
     }
     return _q2knots;
   }
+  */
 
 
   double GridPDF::_xfxQ2(int id, double x, double q2) const {
@@ -157,11 +160,11 @@ namespace LHAPDF {
 
   void GridPDF::_loadData(const std::string& mempath) {
     string line, prevline;
-    int iblock(0), iblockline(0), iline(0);
-    vector<double> xs, q2s;
+    int iblock(0), iblockline(0), iline(0), xsize(0);
+    vector<double> knots;
     vector<int> pids;
-    vector< vector<double> > ipid_xfs;
-
+    vector<double> ipid_xfs;
+    
     try {
       IFile file(mempath.c_str());
       NumParser nparser; double ftoken; int itoken;
@@ -186,12 +189,22 @@ namespace LHAPDF {
           // Parse the data lines
           nparser.reset(line);
           if (iblockline == 1) { // x knots line
-            while (nparser >> ftoken) xs.push_back(ftoken);
-            if (xs.empty())
-              throw ReadError("Empty x knot array on line " + to_str(iline));
+	    if(iblock == 1){
+	      while (nparser >> ftoken) knots.push_back(ftoken);
+	      if (knots.empty())
+		throw ReadError("Empty x knot array on line " + to_str(iline));
+	      xsize = knots.size();
+	    } else { // the x grid should be the same as for the fist i block
+	      int tmp = 0;
+	      while (nparser >> ftoken) {
+		if(ftoken != knots[tmp])
+		  throw ReadError("Mismatch in the x-knots");
+	      }
+	    }
+	    
           } else if (iblockline == 2) { // Q knots line
-            while (nparser >> ftoken) q2s.push_back(ftoken*ftoken); // note Q -> Q2
-            if (q2s.empty())
+            while (nparser >> ftoken) knots.push_back(ftoken*ftoken); // note Q -> Q2
+            if (knots.size() == xsize)
               throw ReadError("Empty Q knot array on line " + to_str(iline));
           } else if (iblockline == 3) { // internal flavor IDs ordering line
             while (nparser >> itoken) pids.push_back(itoken);
@@ -200,33 +213,34 @@ namespace LHAPDF {
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(pids.size()) +
                               " parton flavors declared but " + to_str(flavors().size()) + " expected from Flavors metadata");
             /// @todo Handle sea/valence representations via internal pseudo-PIDs
+	    //  MK: What?
           } else {
             if (iblockline == 4) { // on the first line of the xf block, resize the arrays
-              ipid_xfs.resize(pids.size());
-              const size_t subgridsize = xs.size()*q2s.size();
-              for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
-                ipid_xfs[ipid].reserve(subgridsize);
-              }
+              ipid_xfs.resize(xsize * (knots.size() - xsize) * pids.size());
             }
-            size_t ipid = 0;
             while (nparser >> ftoken) {
-              ipid_xfs[ipid].push_back(ftoken);
-              ipid += 1;
+              ipid_xfs.push_back(ftoken);
             }
             // Check that each line has many tokens as there should be flavours
+	    // MK: does not work anymore, how to translate that?
+	    /*
             if (ipid != pids.size())
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
                               " flavor entries seen but " + to_str(pids.size()) + " expected");
+	    */
           }
 
         } else { // we *are* on a block separator line
-
+	  
           // Check that the expected number of data lines were seen in the last block
+	  // MK: Does not work anymore, how to translate?
+	  /*
           if (iblock > 0 && iblockline - 1 != int(xs.size()*q2s.size()) + 3)
             throw ReadError("PDF grid data error on line " + to_str(iline) + ": " +
                             to_str(iblockline-1) + " data lines were seen in block " + to_str(iblock-1) +
                             " but " + to_str(xs.size()*q2s.size() + 3) + " expected");
-
+	  */
+			    
           // Ignore block registration if we've just finished reading the 0th (metadata) block
           if (iblock > 0) {
 
@@ -235,6 +249,7 @@ namespace LHAPDF {
               throw ReadError("Empty xf values array in data block " + to_str(iblock) + ", ending on line " + to_str(iline));
 
             // Register data from the block into the GridPDF data structure
+	    /*
             KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
             for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
               const int pid = pids[ipid];
@@ -243,28 +258,37 @@ namespace LHAPDF {
               // Populate the xf data array
               arraynf[pid].setxfs(ipid_xfs[ipid]);
             }
+	    */
           }
 
           // Increment/reset the block and line counters, subgrid arrays, etc.
           iblock += 1;
           iblockline = 0;
+	  /*
           xs.clear(); q2s.clear();
           for (size_t ipid = 0; ipid < pids.size(); ++ipid)
             ipid_xfs[ipid].clear();
           pids.clear();
+	  */
         }
+	
       }
+      // MK: write proper setter methods 
+      data._knots = knots;
+      data._grid  = ipid_xfs;
+      
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")
         throw ReadError("Grid file " + mempath + " is not properly terminated: .dat files MUST end with a --- separator line");
-
       // Error handling
     } catch (Exception& e) {
       throw;
     } catch (std::exception& e) {
       throw ReadError("Read error while parsing " + mempath + " as a GridPDF data file");
     }
-
+    
+	  
+    
   }
 
 

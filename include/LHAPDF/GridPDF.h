@@ -46,9 +46,6 @@ namespace LHAPDF {
       _loadPlugins();
       _loadData(_mempath);
       _forcePos = -1;
-
-      // only untill "real" I/O is implemented for the new KnotArray
-      fillNewDataStructures();
     }
 
     /// Constructor from an LHAPDF ID
@@ -163,9 +160,12 @@ namespace LHAPDF {
     ///@{
 
     /// Directly access the knot arrays in non-const mode, for programmatic filling
+    // MK: translate?
+    /*
     std::map<double, KnotArrayNF>& knotarrays() {
       return _knotarrays;
     }
+    */
 
     // accerror to new data structure
     const KnotArray& knotarray() const {
@@ -173,21 +173,28 @@ namespace LHAPDF {
     }
 
     /// Get the N-flavour subgrid containing Q2 = q2
-    const KnotArrayNF& subgrid(double q2) const;
+    // MK: translate?
+    //const KnotArrayNF& subgrid(double q2) const;
 
     /// Get the 1-flavour subgrid for PID=id containing Q2 = q2
+    // MK: translate?
+    /*
     const KnotArray1F& subgrid(int id, double q2) const {
       return subgrid(q2).get_pid(id);
     }
+    */
 
     /// @brief Return a representative list of interpolation knots in x
     ///
     /// The x knot array for the first flavor grid of the lowest-Q2 subgrid is returned.
+    // MK: translate?
+    /*
     const vector<double>& xKnots() const {
       const KnotArrayNF& subgrid1 = _knotarrays.begin()->second;
       const KnotArray1F& grid1 = subgrid1.get_first();
       return grid1.xs();
     }
+    */
 
     /// @brief Return a representative list of interpolation knots in Q2
     ///
@@ -197,23 +204,28 @@ namespace LHAPDF {
   public:
 
     /// Check if x is in the grid range
+    // MK: translate?
+    // FIX!!
     bool inRangeX(double x) const {
-      assert(!xKnots().empty());
-      if (x < xKnots().front()) return false;
-      if (x > xKnots().back()) return false;
+      //assert(!xKnots().empty());
+      //if (x < xKnots().front()) return false;
+      //if (x > xKnots().back()) return false;
       return true;
     }
 
     /// Check if q2 is in the grid range
+    //MK: Translate?
+    // FIX!!
     bool inRangeQ2(double q2) const {
       assert(!q2Knots().empty());
-      if (q2 < q2Knots().front()) return false;
-      if (q2 > q2Knots().back()) return false;
+      //if (q2 < q2Knots().front()) return false;
+      //if (q2 > q2Knots().back()) return false;
       return true;
     }
 
     ///@}
 
+    /*
     void fillNewDataStructures(){
       // Temporary function to fill the new memory structues, as I dont want to deal with the
       // I/O just yet
@@ -224,43 +236,58 @@ namespace LHAPDF {
       data._knots.clear();
       
       // Fill shape
-      const KnotArrayNF& subgrid1 = _knotarrays.begin()->second;
-      const KnotArray1F& grid1 = subgrid1.get_first();
       data.shape.resize(3);
-      data.shape[0] = grid1.xsize();
-      data.shape[1] = grid1.q2size();
-      data.shape[2] = subgrid1.size();
-      std::cout << "{xsize, q2size, n_pids} = {" << data.shape[0] << ", " <<
-	data.shape[1] << ", " << data.shape[2] << "}" << std::endl;
-      
-      // resize vectors accordingly
-      data._grid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
-      //_knots.resize(shape[0] + shape[1]);
       
       // fill knots
-      for(double xs : grid1.xs()){
-	data._knots.push_back(xs);
+      int xpts = 0;
+      for (const auto& q2_ka : _knotarrays) {
+        const KnotArrayNF& subgrid = q2_ka.second;
+        const KnotArray1F& grid1 = subgrid.get_first();
+	for(double xs : grid1.xs()){
+	  data._knots.push_back(xs);
+	  ++xpts;
+	}
+	break;
       }
-      for(double q2 : grid1.q2s()){
-	data._knots.push_back(q2);
+      data.shape[0] = xpts;
+
+      // fill q2 knots
+      int q2pts = 0;
+      for (const auto& q2_ka : _knotarrays) {
+        const KnotArrayNF& subgrid = q2_ka.second;
+        const KnotArray1F& grid1 = subgrid.get_first();
+        if (grid1.q2s().empty()) throw;
+        for (double q2 : grid1.q2s()) {
+	  data._knots.push_back(q2);
+	  ++q2pts;
+        }
       }
 
+      data.shape[1] = q2pts;
+      data.shape[2] = flavors().size();
+
+      // resize vectors accordingly
+      data._grid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
+
+      
       // fill grid
       size_t ct1 = 0;
       for(int flav : flavors()){
-	std::cout << flav << std::endl;
-	auto grid2 = subgrid(flav, 100);
-	auto gxfs  = grid2.xfs();
 	size_t ct2 = 0;
-	for(double xfv : gxfs){
-	  data._grid[ct2*data.shape.back() + ct1] = xfv;
-	  ++ct2;
+	for (const auto& q2_ka : _knotarrays) {
+	  const KnotArrayNF& subgrid = q2_ka.second;
+	  const KnotArray1F& grid1 = subgrid.get_pid(flav);
+	  auto gxfs  = grid1.xfs();
+
+	  for(double xfv : gxfs){
+	    data._grid[ct2*data.shape.back() + ct1] = xfv;
+	    ++ct2;
+	  }
 	}
 	++ct1;
       }
-      auto grid3 = subgrid(-5, 100);
     }
-    
+    */
 
   private:
     // *new* memory object, to handle basically everything
@@ -268,13 +295,13 @@ namespace LHAPDF {
     KnotArray data;
 	
     /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
-    std::map<double, KnotArrayNF> _knotarrays;
+    //std::map<double, KnotArrayNF> _knotarrays;
 
     // /// Caching vector of x knot values
     // mutable std::vector<double> _xknots;
 
     /// Caching vector of Q2 knot values
-    mutable std::vector<double> _q2knots;
+    //mutable std::vector<double> _q2knots;
 
     /// Typedef of smart pointer for ipol memory handling
     typedef unique_ptr<Interpolator> InterpolatorPtr;
