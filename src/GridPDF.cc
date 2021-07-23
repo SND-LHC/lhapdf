@@ -202,6 +202,7 @@ namespace LHAPDF {
 	      while (nparser >> ftoken) {
 		if(ftoken != knots[tmp])
 		  throw ReadError("Mismatch in the x-knots");
+		++tmp;
 	      }
 	    }
 	    
@@ -210,7 +211,16 @@ namespace LHAPDF {
             if (knots.size() == xsize)
               throw ReadError("Empty Q knot array on line " + to_str(iline));
           } else if (iblockline == 3) { // internal flavor IDs ordering line
-            while (nparser >> itoken) pids.push_back(itoken);
+	    if(iblock == 1){
+	      while (nparser >> itoken) pids.push_back(itoken);
+	    } else {
+	      int tmp = 0;
+	      while (nparser >> itoken) {
+		if (itoken != pids[tmp])
+		  throw ReadError("Mismatch in the pids");
+		++tmp;
+	      }
+	    }
             // Check that each line has many tokens as there should be flavours
             if (pids.size() != flavors().size())
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(pids.size()) +
