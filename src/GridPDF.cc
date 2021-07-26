@@ -167,28 +167,23 @@ namespace LHAPDF {
     vector<double> knots;
     vector<int> pids;
     vector<double> ipid_xfs;
-    
-    try {
+
+    // MK: do we really need to read the file twice?
+    try{
       IFile file(mempath.c_str());
       NumParser nparser; double ftoken; int itoken;
       while (getline(*file, line)) {
-        // Trim the current line to ensure that there is no effect of leading spaces, etc.
         line = trim(line);
-        prevline = line; // used to test the last line after the while loop fails
-
+	
         // If the line is commented out, increment the line number but not the block line
         iline += 1;
         if (line.find("#") == 0) continue;
         iblockline += 1;
 
         if (line != "---") { // if we are not on a block separator line...
-
           // Block 0 is the metadata, which we ignore here
           if (iblock == 0) continue;
-
-          // Debug printout
-          // cout << iline << " = block line #" << iblockline << " => " << line << endl;
-
+	  
           // Parse the data lines
           nparser.reset(line);
           if (iblockline == 1) { // x knots line
@@ -227,23 +222,78 @@ namespace LHAPDF {
                               " parton flavors declared but " + to_str(flavors().size()) + " expected from Flavors metadata");
             /// @todo Handle sea/valence representations via internal pseudo-PIDs
 	    //  MK: What?
+          }
+	} else{
+	  ++iblock;
+	  iblockline = 0;
+	}
+      }
+    } catch (Exception& e) {
+      throw;
+    } catch (std::exception& e) {
+      throw ReadError("Read error while parsing " + mempath + " as a GridPDF data file");
+    }
+
+    iblock = 0; iblockline = 0; iline = 0;
+
+    // feed data into KnotArray
+    // MK: write proper setter functions
+    data._knots = knots;    
+    data.shape.resize(3);
+    data.shape[0] = xsize;
+    data.shape[1] = knots.size() - xsize;
+    data.shape[2] = pids.size();
+    data._pids = pids;
+
+    // create lookuptable to get index id from pid
+    data.initPidLookup();
+    
+    // sets size of data vector
+    ipid_xfs.resize(data.shape[0] * data.shape[1] * data.shape[2]);
+    
+    int qloc(0), qtot(0);
+    try {
+      int index(0);
+      int xindex(0);
+      
+      IFile file(mempath.c_str());
+      NumParser nparser; double ftoken; int itoken;
+      while (getline(*file, line)) {
+
+        // Trim the current line to ensure that there is no effect of leading spaces, etc.
+        line = trim(line);
+        prevline = line; // used to test the last line after the while loop fails
+
+        // If the line is commented out, increment the line number but not the block line
+        iline += 1;
+        if (line.find("#") == 0) continue;
+        iblockline += 1;
+
+        if (line != "---") { // if we are not on a block separator line...
+          // Block 0 is the metadata, which we ignore here
+          if (iblock == 0) continue;
+          nparser.reset(line);
+	  if (iblockline == 2) { // Find out how many q values are there
+	    qloc = 0;
+            while (nparser >> ftoken) ++qloc;
+	  } else if (iblockline < 4){
+	    continue;
           } else {
-	    // MK: reserve space first
-	    /*
-            if (iblockline == 4) { // on the first line of the xf block, resize the arrays
-              ipid_xfs.resize(xsize * (knots.size() - xsize) * pids.size());
-            }
-	    */
             while (nparser >> ftoken) {
-              ipid_xfs.push_back(ftoken);
-            }
+	      ipid_xfs[xindex*data.shape[2]*data.shape[1]
+		       + qtot*data.shape[2]
+		       + index] = ftoken;
+	      ++index;
+            }	    
+	    if( (iblockline != 3) && (iblockline - 3) % qloc == 0){
+	      ++xindex;
+	      index = 0;
+	    }
             // Check that each line has many tokens as there should be flavours
-	    // MK: does not work anymore, how to translate that?
-	    /*
-            if (ipid != pids.size())
-              throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(ipid) +
+            if (index % pids.size() != 0)
+	      // MK: Error message gives wrong output bc. index % pids.size() is not the number of pids
+              throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(index % pids.size()) +
                               " flavor entries seen but " + to_str(pids.size()) + " expected");
-	    */
           }
 
         } else { // we *are* on a block separator line	
@@ -258,44 +308,24 @@ namespace LHAPDF {
 			    
           // Ignore block registration if we've just finished reading the 0th (metadata) block
           if (iblock > 0) {
-
+	    
             // Throw if the last subgrid block was of zero size
             if (ipid_xfs.empty())
               throw ReadError("Empty xf values array in data block " + to_str(iblock) + ", ending on line " + to_str(iline));
-
-            // Register data from the block into the GridPDF data structure
-	    /*
-            KnotArrayNF& arraynf = _knotarrays[q2s.front()]; //< Reference to newly created subgrid object
-            for (size_t ipid = 0; ipid < pids.size(); ++ipid) {
-              const int pid = pids[ipid];
-              // Create the 2D array with the x and Q2 knot positions
-              arraynf[pid] = KnotArray1F(xs, q2s);
-              // Populate the xf data array
-              arraynf[pid].setxfs(ipid_xfs[ipid]);
-            }
-	    */
           }
 
-          // Increment/reset the block and line counters, subgrid arrays, etc.
+          // Increment/reset the block and line counters, etc
           iblock += 1;
           iblockline = 0;
-	  /*
-          xs.clear(); q2s.clear();
-          for (size_t ipid = 0; ipid < pids.size(); ++ipid)
-            ipid_xfs[ipid].clear();
-          pids.clear();
-	  */
+	  index = 0;
+	  xindex = 0;
+	  qtot += qloc;
         }
 	
       }
       // MK: write proper setter methods 
-      data._knots = knots;
       data._grid  = ipid_xfs;
-      data.shape.resize(3);
-      data.shape[0] = xsize;
-      data.shape[1] = knots.size() - xsize;
-      data.shape[2] = pids.size();
-      
+            
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")
         throw ReadError("Grid file " + mempath + " is not properly terminated: .dat files MUST end with a --- separator line");
@@ -304,7 +334,7 @@ namespace LHAPDF {
       throw;
     } catch (std::exception& e) {
       throw ReadError("Read error while parsing " + mempath + " as a GridPDF data file");
-    }
+    }	
   }
 
 
