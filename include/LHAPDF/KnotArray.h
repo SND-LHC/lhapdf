@@ -279,10 +279,11 @@ namespace LHAPDF {
     }
     
     const double getxf(double ix, double iq, int ipid) const {
-      return _grid[ix*shape[1]*shape[2] + iq*shape[2] + ipid];
+      return _grid[ix*shape[2]*shape[1] + iq*shape[2] + ipid];
     }
 
     const double xf(double ix, double iq, int pid) const {
+      return getxf(ix, iq, _pidLookup.find(pid)->second);
       if(pid == 21 || pid == 0){
 	return getxf(ix, iq, 10);
       } else if(pid < 0){
@@ -343,7 +344,17 @@ namespace LHAPDF {
       return true;
     }
 
-
+    void initPidLookup(){
+      if(_pids.size() == 0){
+	// MK: is there a better LHAPDF error for that?
+	std::cerr << "Internal error when constructing lookup table; need to fill pids before construction"<< std::endl;
+	throw;
+      }
+      for(int i(0); i<_pids.size(); ++i){
+	_pidLookup.insert(std::pair<int,int>(_pids[i],i));
+      }
+      
+    }
     
     // Version for general number of dimensions
     std::vector<size_t> idbelow(std::vector<double> vals);
@@ -362,13 +373,15 @@ namespace LHAPDF {
     std::vector<size_t> shape;
     
     // Gridvalues
-    // TODO order
-    // natural order would  [pid, x, q, ...]
-    // Coalesced memory for [x, q, ..., pid] <--
     std::vector<double> _grid;
     
     // Knots, assumes the same grid for all particle ids in the set
-    std::vector<double> _knots;    
+    std::vector<double> _knots;
+
+    // order the pids are filled in
+    std::vector<int> _pids;
+    std::map<int, int> _pidLookup;
+    
   };
   
 
