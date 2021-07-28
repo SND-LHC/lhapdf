@@ -66,31 +66,31 @@ namespace LHAPDF {
     /// @todo Also treat the x top/bottom edges carefully, cf. the Q2 ones
 
     // check edges, including internal discontinuity
-    const bool q2_lower = ( (iq2 == 0) && (grid.q2s(iq2) == grid.q2s(iq2-1)));
-    const bool q2_upper = ( (iq2 == grid.q2size() -1) && (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
-    const bool ix_lower = ( (ix == 0) );
-    const bool ix_upper = ( (ix == grid.xsize()) );
+    const bool q2_lower = ( (iq2 == 0) || (grid.q2s(iq2) == grid.q2s(iq2-1)));
+    const bool q2_upper = ( (iq2 == grid.q2size() -1) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
+    //const bool ix_lower = ( (ix == 0) );
+    //const bool ix_upper = ( (ix == grid.xsize()) );
     
     // Distance parameters
     const double dx = grid.xs(ix+1) - grid.xs(ix);
     const double tx = (x - grid.xs(ix)) / dx;
     /// @todo Only compute these if the +1 and +2 indices are guaranteed to be valid
     // i.e. check if that is in range, and there is no discontinuitie there
-    const double dq_0 = grid.q2s(iq2) - grid.q2s(iq2-1);
-    const double dq_1 = grid.q2s(iq2+1) - grid.q2s(iq2);
+    const double dq_0 = grid.q2s(iq2  ) - grid.q2s(iq2-1);
+    const double dq_1 = grid.q2s(iq2+1) - grid.q2s(iq2  );
     const double dq_2 = grid.q2s(iq2+2) - grid.q2s(iq2+1);
     const double dq = dq_1;
     const double tq = (q2 - grid.q2s(iq2)) / dq;
 
     // Points in Q2
-    double vl = _interpolateCubic(tx, grid.xf(ix, iq2, id), _ddx(grid, ix, iq2, id) * dx,
-				  grid.xf(ix+1, iq2, id), _ddx(grid, ix+1, iq2, id) * dx);
-    double vh = _interpolateCubic(tx, grid.xf(ix, iq2+1, id), _ddx(grid, ix, iq2+1, id) * dx,
+    double vl = _interpolateCubic(tx, grid.xf(ix,   iq2,   id), _ddx(grid, ix, iq2, id) * dx,
+				  grid.xf(ix+1, iq2,   id), _ddx(grid, ix+1, iq2, id) * dx);
+    double vh = _interpolateCubic(tx, grid.xf(ix,   iq2+1, id), _ddx(grid, ix, iq2+1, id) * dx,
 				  grid.xf(ix+1, iq2+1, id), _ddx(grid, ix+1, iq2+1, id) * dx);
-
+    
     // Derivatives in Q2
     double vdl, vdh;
-    if (iq2 == 0) {
+    if (q2_lower) {
       // Forward difference for lower q
       vdl = (vh - vl) / dq_1;
       // Central difference for higher q
@@ -98,7 +98,7 @@ namespace LHAPDF {
 				     grid.xf(ix+1, iq2+2, id), _ddx(grid, ix+1, iq2+2, id) * dx);
       vdh = (vdl + (vhh - vh)/dq_2) / 2.0;
     }
-    else if (iq2+1 == grid.q2size()-1) {
+    else if (q2_upper) {
       // Backward difference for higher q
       vdh = (vh - vl) / dq_1;
       // Central difference for lower q
