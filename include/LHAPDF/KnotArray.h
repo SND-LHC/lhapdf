@@ -278,19 +278,12 @@ namespace LHAPDF {
       return indexbelow(q2, shape[0], shape[1]);
     }
     
-    const double getxf(double ix, double iq, int ipid) const {
+    const double getxf(int ix, int iq, int ipid) const {
       return _grid[ix*shape[2]*shape[1] + iq*shape[2] + ipid];
     }
 
-    const double xf(double ix, double iq, int pid) const {
-      return getxf(ix, iq, _pidLookup.find(pid)->second);
-      if(pid == 21 || pid == 0){
-	return getxf(ix, iq, 10);
-      } else if(pid < 0){
-	return getxf(ix, iq, pid + 5);
-      } else{
-	return getxf(ix, iq, pid + 4);
-      }
+    const double xf(int ix, int iq, int pid) const {
+      return getxf(ix, iq, pid); // _pidLookup.find(pid)->second);
     }
     
     void setxf(double ix, double iq, int pid, double value){
@@ -307,7 +300,7 @@ namespace LHAPDF {
       throw;
     }
 
-    const double xs(const int id) const {
+    const inline double &xs(const int id) const {
       return _knots[id];
     }
     
@@ -380,8 +373,7 @@ namespace LHAPDF {
 
     // order the pids are filled in
     std::vector<int> _pids;
-    std::map<int, int> _pidLookup;
-    
+    std::map<int, int> _pidLookup;    
   };
   
 

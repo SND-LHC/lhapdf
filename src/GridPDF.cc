@@ -102,16 +102,18 @@ namespace LHAPDF {
     /// are done in the public PDF::xfxQ2 function.
     // cout << "From GridPDF[0]: x = " << x << ", Q2 = " << q2 << endl;
     double xfx = 0;
+    // MK: write propper function
+    int _id = data._pidLookup.find(id)->second;
     if (inRangeXQ2(x, q2)) {
       // cout << "From GridPDF[ipol]: x = " << x << ", Q2 = " << q2 << endl;
       // cout << "Num subgrids = " << _knotarrays.size() << endl;
       // int i = 0;
       // for (std::map<double, KnotArrayNF>::const_iterator it = _knotarrays.begin(); it != _knotarrays.end(); ++it)
       //   cout << "#" << i++ << " from Q = " << sqrt(it->first) << endl;
-      xfx = interpolator().interpolateXQ2(id, x, q2);
+      xfx = interpolator().interpolateXQ2(_id, x, q2);
     } else {
       // cout << "From GridPDF[xpol]: x = " << x << ", Q2 = " << q2 << endl;
-      xfx = extrapolator().extrapolateXQ2(id, x, q2);
+      xfx = extrapolator().extrapolateXQ2(_id, x, q2);
     }
     return xfx;
   }
