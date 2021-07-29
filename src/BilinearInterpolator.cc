@@ -21,12 +21,10 @@ namespace LHAPDF {
 
 
   double BilinearInterpolator::_interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, int id) const {
-    /*
-    if (subgrid.logxs().size() < 2)
+    if (grid.xssize() < 2)
       throw GridError("PDF subgrids are required to have at least 2 x-knots for use with BilinearInterpolator");
-    if (subgrid.logq2s().size() < 2)
+    if (grid.q2size() < 2)
       throw GridError("PDF subgrids are required to have at least 2 Q2-knots for use with BilinearInterpolator");
-    */
     
     // First interpolate in x
     const double f_ql = _interpolateLinear(x, grid.xs(ix), grid.xs(ix+1), grid.xf(ix, iq2, id), grid.xf(ix+1, iq2, id));

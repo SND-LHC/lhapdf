@@ -25,15 +25,15 @@ namespace LHAPDF {
       // Pre-calculate powers of T
       const double t2 = T*T;
       const double t3 = t2*T;
-
+      
       // Calculate left point
       const double p0 = (2*t3 - 3*t2 + 1)*VL;
       const double m0 = (t3 - 2*t2 + T)*VDL;
-
+      
       // Calculate right point
       const double p1 = (-2*t3 + 3*t2)*VH;
       const double m1 = (t3 - t2)*VDH;
-
+      
       return p0 + m0 + p1 + m1;
     }
 
@@ -65,6 +65,9 @@ namespace LHAPDF {
     // Raise an error if there are too few knots even for a linear fall-back
     const size_t nxknots = grid.xsize();
     const size_t nq2knots = grid.q2size();
+
+    // MK: do you really need different number of knots in the directions?
+    //   probably should be <2 for both methods, and fall back to linear in both cases.
     if (nxknots < 4)
       throw GridError("PDF subgrids are required to have at least 4 x-knots for use with LogBicubicInterpolator");
     if (nq2knots < 2)
@@ -94,18 +97,15 @@ namespace LHAPDF {
     // else proceed with cubic interpolation:
 
     // Pre-calculate parameters
-    /// @todo Remove this redundant step: it's now just making aliases for the cache variables
     const double& dlogx_1 = grid.logxs(ix+1) - grid.logxs(ix);
     const double& tlogx = (logx - grid.logxs(ix)) / dlogx_1;    
     const double& dlogq_0 = (iq2 != 0) ? grid.logq2s(iq2) - grid.logq2s(iq2-1) : -1; //< Don't evaluate (or use) if iq2-1 < 0
-    const double& dlogq_1 = grid.logq2s(iq2+1) - grid.logq2s(iq2);
-    
+    const double& dlogq_1 = grid.logq2s(iq2+1) - grid.logq2s(iq2);    
     // isnt this supposed to be grid.q2size()?
     const double& dlogq_2 = (iq2+2 != grid.xsize()) ? grid.logq2s(iq2+2) - grid.logq2s(iq2+1) : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
     const double& tlogq = (logq2 - grid.logq2s(iq2)) / dlogq_1;
 
     /// @todo Statically pre-compute the whole nx * nq gradiant array? I.e. _dxf_dlogx for all points in all grids. Memory ~doubling :-/ Could cache them as they are used...
-
     // Points in Q2
     double vl = _interpolateCubic(tlogx, grid.xf(ix, iq2, id), _dxf_dlogx(grid, ix, iq2, id) * dlogx_1,
 				  grid.xf(ix+1, iq2, id), _dxf_dlogx(grid, ix+1, iq2, id) * dlogx_1);
