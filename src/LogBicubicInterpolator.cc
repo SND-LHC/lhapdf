@@ -5,8 +5,6 @@
 //
 #include "LHAPDF/LogBicubicInterpolator.h"
 #include <iostream>
-#include <mutex>
-#include <thread>
 
 namespace LHAPDF {
 
@@ -61,8 +59,9 @@ namespace LHAPDF {
       throw GridError("Attempting to access an Q-knot index past the end of the array, in linear fallback mode");
 
     // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
-    const double logx = log(x);
-    const double& logq2 = log(q2);
+    // these two lines make for roughly 20% of the computing time
+    const double logx  = log(x);
+    const double logq2 = log(q2);
 
     if (nq2knots < 4) {
       // First interpolate in x
