@@ -37,27 +37,6 @@ namespace LHAPDF {
       return p0 + m0 + p1 + m1;
     }
 
-
-    /// Calculate adjacent d(xf)/dx at all grid locations for fixed iq2
-    ///
-    /// @todo Store pre-cached dlogxs, dlogq2s on subgrids, to replace these difference terms?
-    ///    Any real speed gain here? Adjacent entries are likely to already be cache-friendly.
-    double _dxf_dlogx(const KnotArray& grid, size_t ix, size_t iq2, int id) {
-      const size_t nxknots = grid.xsize();
-      if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
-        /// @note We evaluate the most likely condition first to help compiler branch prediction
-        const double lddx = (grid.xf(ix, iq2, id) - grid.xf(ix-1, iq2, id)) / (grid.logxs(ix) - grid.logxs(ix-1));
-	const double rddx = (grid.xf(ix+1, iq2, id) - grid.xf(ix, iq2, id)) / (grid.logxs(ix+1) - grid.logxs(ix));
-        return (lddx + rddx) / 2.0;
-      } else if (ix == 0) { //< If at leftmost edge, use forward difference
-	return (grid.xf(ix+1, iq2, id) - grid.xf(ix, iq2, id)) / (grid.logxs(ix+1) - grid.logxs(ix));
-      } else if (ix == nxknots-1) { //< If at rightmost edge, use backward difference
-        return (grid.xf(ix, iq2, id) - grid.xf(ix-1, iq2, id)) / (grid.logxs(ix) - grid.logxs(ix-1));
-      } else {
-        throw LogicError("We shouldn't be able to get here!");
-      }
-    }
-
   }
   
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, int id) const {
@@ -107,10 +86,10 @@ namespace LHAPDF {
 
     /// @todo Statically pre-compute the whole nx * nq gradiant array? I.e. _dxf_dlogx for all points in all grids. Memory ~doubling :-/ Could cache them as they are used...
     // Points in Q2
-    double vl = _interpolateCubic(tlogx, grid.xf(ix, iq2, id), _dxf_dlogx(grid, ix, iq2, id) * dlogx_1,
-				  grid.xf(ix+1, iq2, id), _dxf_dlogx(grid, ix+1, iq2, id) * dlogx_1);
-    double vh = _interpolateCubic(tlogx, grid.xf(ix, iq2+1, id), _dxf_dlogx(grid, ix, iq2+1, id) * dlogx_1,
-				  grid.xf(ix+1, iq2+1, id), _dxf_dlogx(grid, ix+1, iq2+1, id) * dlogx_1);
+    double vl = _interpolateCubic(tlogx, grid.xf(ix, iq2, id), grid.dxf(ix, iq2, id) * dlogx_1,
+				  grid.xf(ix+1, iq2, id), grid.dxf(ix+1, iq2, id) * dlogx_1);
+    double vh = _interpolateCubic(tlogx, grid.xf(ix, iq2+1, id), grid.dxf(ix, iq2+1, id) * dlogx_1,
+				  grid.xf(ix+1, iq2+1, id), grid.dxf(ix+1, iq2+1, id) * dlogx_1);
 
 
     const bool q2_lower = ( (iq2 == 0) || (grid.q2s(iq2) == grid.q2s(iq2-1)));
@@ -121,27 +100,27 @@ namespace LHAPDF {
     if (!q2_lower && !q2_upper){
       // Central difference for both q
       /// @note We evaluate the most likely condition first to help compiler branch prediction
-      double vll = _interpolateCubic(tlogx, grid.xf(ix, iq2-1, id), _dxf_dlogx(grid, ix, iq2-1, id) * dlogx_1,
-				     grid.xf(ix+1, iq2-1, id), _dxf_dlogx(grid, ix+1, iq2-1, id) * dlogx_1);
+      double vll = _interpolateCubic(tlogx, grid.xf(ix, iq2-1, id), grid.dxf(ix, iq2-1, id) * dlogx_1,
+				     grid.xf(ix+1, iq2-1, id), grid.dxf(ix+1, iq2-1, id) * dlogx_1);
       vdl = ( (vh - vl)/dlogq_1 + (vl - vll)/dlogq_0 ) / 2.0;
-      double vhh = _interpolateCubic(tlogx, grid.xf(ix, iq2+2, id), _dxf_dlogx(grid, ix, iq2+2, id) * dlogx_1,
-				     grid.xf(ix+1, iq2+2, id), _dxf_dlogx(grid, ix+1, iq2+2, id) * dlogx_1);
+      double vhh = _interpolateCubic(tlogx, grid.xf(ix, iq2+2, id), grid.dxf(ix, iq2+2, id) * dlogx_1,
+				     grid.xf(ix+1, iq2+2, id), grid.dxf(ix+1, iq2+2, id) * dlogx_1);
       vdh = ( (vh - vl)/dlogq_1 + (vhh - vh)/dlogq_2 ) / 2.0;
     }
     else if (q2_lower) {
       // Forward difference for lower q
       vdl = (vh - vl) / dlogq_1;
       // Central difference for higher q
-      double vhh = _interpolateCubic(tlogx, grid.xf(ix, iq2+2, id), _dxf_dlogx(grid, ix, iq2+2, id) * dlogx_1,
-				     grid.xf(ix+1, iq2+2, id), _dxf_dlogx(grid, ix+1, iq2+2, id) * dlogx_1);
+      double vhh = _interpolateCubic(tlogx, grid.xf(ix, iq2+2, id), grid.dxf(ix, iq2+2, id) * dlogx_1,
+				     grid.xf(ix+1, iq2+2, id), grid.dxf(ix+1, iq2+2, id) * dlogx_1);
       vdh = (vdl + (vhh - vh)/dlogq_2) / 2.0;
     }
     else if (q2_upper) {
       // Backward difference for higher q
       vdh = (vh - vl) / dlogq_1;
       // Central difference for lower q
-      double vll = _interpolateCubic(tlogx, grid.xf(ix, iq2-1, id), _dxf_dlogx(grid, ix, iq2-1, id) * dlogx_1,
-				     grid.xf(ix+1, iq2-1, id), _dxf_dlogx(grid, ix+1, iq2-1, id) * dlogx_1);
+      double vll = _interpolateCubic(tlogx, grid.xf(ix, iq2-1, id), grid.dxf(ix, iq2-1, id) * dlogx_1,
+				     grid.xf(ix+1, iq2-1, id), grid.dxf(ix+1, iq2-1, id) * dlogx_1);
       vdl = (vdh + (vl - vll)/dlogq_0) / 2.0;
     }
     else throw LogicError("We shouldn't be able to get here!");
