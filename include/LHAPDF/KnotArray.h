@@ -300,8 +300,12 @@ namespace LHAPDF {
       throw;
     }
 
-    const inline double &xs(const int id) const {
+    const double xs(const int id) const {
       return _knots[id];
+    }
+
+    const double logxs(const int id) const {
+      return _log_knots[id];
     }
     
     /// Access the Q2s array
@@ -314,6 +318,11 @@ namespace LHAPDF {
     const double q2s(const int id) const {
       return _knots[shape[0] + id];
     }
+
+    const double logq2s(const int id) const {
+      return _log_knots[shape[0] + id];
+    }
+
     
     // Access the grid
     const std::vector<double>& grid() const {
@@ -358,8 +367,7 @@ namespace LHAPDF {
 
     
     // the below should be private
-    //   uncomment, to make the hacky value filling easier
-    //   once the I/O is done, this can become private
+    //   need to write some propper setter/getter functions before privatising them
     //private:
 
     // Shape of the interpolation grid
@@ -367,10 +375,13 @@ namespace LHAPDF {
     
     // Gridvalues
     std::vector<double> _grid;
-    
+
     // Knots, assumes the same grid for all particle ids in the set
     std::vector<double> _knots;
 
+    // precompute log knots
+    std::vector<double> _log_knots;
+    
     // order the pids are filled in
     std::vector<int> _pids;
     std::map<int, int> _pidLookup;    

@@ -240,7 +240,11 @@ namespace LHAPDF {
 
     // feed data into KnotArray
     // MK: write proper setter functions
-    data._knots = knots;    
+    data._knots = knots;
+    for(double knot : knots){
+      data._log_knots.push_back(log(knot));
+    }
+    
     data.shape.resize(3);
     data.shape[0] = xsize;
     data.shape[1] = knots.size() - xsize;
