@@ -112,9 +112,13 @@ namespace LHAPDF {
     double vh = _interpolateCubic(tlogx, grid.xf(ix, iq2+1, id), _dxf_dlogx(grid, ix, iq2+1, id) * dlogx_1,
 				  grid.xf(ix+1, iq2+1, id), _dxf_dlogx(grid, ix+1, iq2+1, id) * dlogx_1);
 
+
+    const bool q2_lower = ( (iq2 == 0) || (grid.q2s(iq2) == grid.q2s(iq2-1)));
+    const bool q2_upper = ( (iq2 == grid.q2size() -1) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
+
     // Derivatives in Q2
     double vdl, vdh;
-    if (iq2 > 0 && iq2+1 < iq2max) {
+    if (!q2_lower && !q2_upper){
       // Central difference for both q
       /// @note We evaluate the most likely condition first to help compiler branch prediction
       double vll = _interpolateCubic(tlogx, grid.xf(ix, iq2-1, id), _dxf_dlogx(grid, ix, iq2-1, id) * dlogx_1,
@@ -124,7 +128,7 @@ namespace LHAPDF {
 				     grid.xf(ix+1, iq2+2, id), _dxf_dlogx(grid, ix+1, iq2+2, id) * dlogx_1);
       vdh = ( (vh - vl)/dlogq_1 + (vhh - vh)/dlogq_2 ) / 2.0;
     }
-    else if (iq2 == 0) {
+    else if (q2_lower) {
       // Forward difference for lower q
       vdl = (vh - vl) / dlogq_1;
       // Central difference for higher q
@@ -132,7 +136,7 @@ namespace LHAPDF {
 				     grid.xf(ix+1, iq2+2, id), _dxf_dlogx(grid, ix+1, iq2+2, id) * dlogx_1);
       vdh = (vdl + (vhh - vh)/dlogq_2) / 2.0;
     }
-    else if (iq2+1 == iq2max) {
+    else if (q2_upper) {
       // Backward difference for higher q
       vdh = (vh - vl) / dlogq_1;
       // Central difference for lower q
