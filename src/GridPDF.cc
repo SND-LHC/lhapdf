@@ -330,7 +330,7 @@ namespace LHAPDF {
 	
       }
       // MK: write proper setter methods 
-      data._grid  = ipid_xfs;
+      data._grid = ipid_xfs;
             
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")
@@ -340,7 +340,35 @@ namespace LHAPDF {
       throw;
     } catch (std::exception& e) {
       throw ReadError("Read error while parsing " + mempath + " as a GridPDF data file");
-    }	
+    }
+
+    // precompute derivative values
+    // MK: use proper setter/getter
+    data._dgrid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
+
+    const int nxknots = data.xsize();
+    for(int ix(0); ix<nxknots; ++ix){
+      for(int iq2(0); iq2<data.q2size(); ++iq2){
+	for(int id(0); id<data.size(); ++id){
+	  double derivative = 0;
+	  // in principle, we could get rid of the if/else's but since this only has to be done
+	  //   choose the method that reads better
+	  if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
+	    /// @note We evaluate the most likely condition first to help compiler branch prediction
+	    const double lddx = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / (data.logxs(ix) - data.logxs(ix-1));
+	    const double rddx = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / (data.logxs(ix+1) - data.logxs(ix));
+	    derivative = (lddx + rddx) / 2.0;
+	  } else if (ix == 0) { //< If at leftmost edge, use forward difference
+	    derivative = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / (data.logxs(ix+1) - data.logxs(ix));
+	  } else if (ix == nxknots-1) { //< If at rightmost edge, use backward difference
+	    derivative = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / (data.logxs(ix) - data.logxs(ix-1));
+	  } else {
+	    throw LogicError("We shouldn't be able to get here!");
+	  }
+	  data._dgrid[ix*data.shape[1]*data.shape[2] + iq2*data.shape[2] + id] = derivative;
+	}
+      }
+    }
   }
 
 

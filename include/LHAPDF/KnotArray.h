@@ -278,12 +278,12 @@ namespace LHAPDF {
       return indexbelow(q2, shape[0], shape[1]);
     }
     
-    const double getxf(int ix, int iq, int ipid) const {
-      return _grid[ix*shape[2]*shape[1] + iq*shape[2] + ipid];
+    const double getxf(int ix, int iq2, int ipid) const {
+      return _grid[ix*shape[2]*shape[1] + iq2*shape[2] + ipid];
     }
 
-    const double xf(int ix, int iq, int pid) const {
-      return getxf(ix, iq, pid); // _pidLookup.find(pid)->second);
+    const double xf(int ix, int iq2, int pid) const {
+      return getxf(ix, iq2, pid); // _pidLookup.find(pid)->second);
     }
     
     void setxf(double ix, double iq, int pid, double value){
@@ -291,6 +291,10 @@ namespace LHAPDF {
       _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
     }
 
+    const double dxf(int ix, int iq2, int ipid) const {
+      return _dgrid[ix*shape[2]*shape[1] + iq2*shape[2] + ipid];
+    }
+    
     /// Access the Q2s array
     // as they dont exist anymore in the old form, this now returns a vector
     // instead of the reference to one
@@ -375,6 +379,11 @@ namespace LHAPDF {
     
     // Gridvalues
     std::vector<double> _grid;
+
+    // precompute derivatives
+    //   in principle, would need different values for the log derivatives and the linear ones
+    //   since log is the defaule, only do it for that one
+    std::vector<double> _dgrid;
 
     // Knots, assumes the same grid for all particle ids in the set
     std::vector<double> _knots;
