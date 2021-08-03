@@ -269,11 +269,11 @@ namespace LHAPDF {
       //if (_knots[i] == _knots[i-1]) i -= 1;
       return i;
     }
-    
+
     size_t ixbelow(double x) const {
       return indexbelow(x, 0, shape[0]);
     }
-
+    
     size_t iq2below(double q2) const {
       return indexbelow(q2, shape[0], shape[1]);
     }
@@ -334,32 +334,44 @@ namespace LHAPDF {
       return _grid;
     }
 
-    const bool inRangeX(double value) const {
+    const bool inRangeX(double x) const {
       // MK: test
       // add test to ensure knots are of approroate lenght
-      if(value < _knots[0]) return false;
-      if(value > _knots[shape[0]-1]) return false;
+      if(x < _knots[0]) return false;
+      if(x > _knots[shape[0]-1]) return false;
       return true;
     }
     
-    const bool inRangeQ2(double value) const {
+    const bool inRangeQ2(double q2) const {
       // MK: test
       // add test to ensure knots are of approroate lenght
-      if(value < _knots[shape[0]]) return false;
-      if(value > _knots[shape[1] + shape[0] - 1]) return false;
+      if(q2 < _knots[shape[0]]) return false;
+      if(q2 > _knots[shape[1] + shape[0] - 1]) return false;
       return true;
     }
 
+    int findPidInPids(const int pid){
+      std::vector<int>::iterator it = std::find(_pids.begin(), _pids.end(), pid);
+      if(it == _pids.end()){
+	return -1;
+      } else {
+	return std::distance(_pids.begin(), it);
+      }
+    }
+    
     void initPidLookup(){
+      _lookup.clear();
       if(_pids.size() == 0){
 	// MK: is there a better LHAPDF error for that?
 	std::cerr << "Internal error when constructing lookup table; need to fill pids before construction"<< std::endl;
 	throw;
       }
-      for(int i(0); i<_pids.size(); ++i){
-	_pidLookup.insert(std::pair<int,int>(_pids[i],i));
-      }
+      for(int i(-6); i<0; i++)
+	_lookup.push_back(findPidInPids(i));
       
+      _lookup.push_back(findPidInPids(21));
+      for(int i(1); i<=6; i++)
+	_lookup.push_back(findPidInPids(i));
     }
     
     // Version for general number of dimensions
@@ -393,6 +405,7 @@ namespace LHAPDF {
     
     // order the pids are filled in
     std::vector<int> _pids;
+    std::vector<int> _lookup;
     std::map<int, int> _pidLookup;    
   };
   

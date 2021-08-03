@@ -153,6 +153,8 @@ namespace LHAPDF {
     /// @brief Get PDF xf(x,Q2) value (via grid inter/extrapolators)
     double _xfxQ2(int id, double x, double q2) const;
 
+    void   _xfxQ2(double x, double q2, std::vector<double>& ret) const;
+
 
   public:
 
@@ -172,6 +174,11 @@ namespace LHAPDF {
       return data;
     }
 
+    KnotArray& Data() {
+      return data;
+    }
+
+    
     /// Get the N-flavour subgrid containing Q2 = q2
     // MK: translate?
     //const KnotArrayNF& subgrid(double q2) const;

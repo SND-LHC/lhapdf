@@ -95,15 +95,20 @@ namespace LHAPDF {
 
 
   double GridPDF::_xfxQ2(int id, double x, double q2) const {
-#ifdef DEBUG
-    std::cout << "GridPDF::_xfxQ2(" << id << ", " << x << ", " << q2 << ") " << std::endl;
-#endif
     /// Decide whether to use interpolation or extrapolation... the sanity checks
     /// are done in the public PDF::xfxQ2 function.
-    // cout << "From GridPDF[0]: x = " << x << ", Q2 = " << q2 << endl;
+    //cout << "From GridPDF[0]: x = " << x << ", Q2 = " << q2 << endl;
     double xfx = 0;
     // MK: write propper function
-    int _id = data._pidLookup.find(id)->second;
+    //int _id = data._pidLookup.find(id)->second;
+    int _id;
+    if(id != 21){
+      _id = data._lookup[id + 6];
+    } else{
+      _id = data._lookup[0 + 6];
+    }
+    if(_id == -1) return 0;
+    
     if (inRangeXQ2(x, q2)) {
       // cout << "From GridPDF[ipol]: x = " << x << ", Q2 = " << q2 << endl;
       // cout << "Num subgrids = " << _knotarrays.size() << endl;
@@ -116,6 +121,21 @@ namespace LHAPDF {
       xfx = extrapolator().extrapolateXQ2(_id, x, q2);
     }
     return xfx;
+  }
+  
+  void GridPDF::_xfxQ2(double x, double q2, std::vector<double>& ret) const {
+    //std::cout << "GridPDF::_xfxQ2 : " << x << " " << q2 << std::endl;
+    if (inRangeXQ2(x, q2)) {
+      interpolator().interpolateXQ2(x, q2, ret);
+    } else {
+      // Originally, this part was done in PDF::xfxQ2(double, double, vector)
+      const int _n = flavors().size();
+      ret.clear();
+      ret.resize(_n - 1);
+      for (int i = 0; i < _n; ++i) {
+	extrapolator().extrapolateXQ2(_n, x, q2);
+      }
+    }
   }
 
 
