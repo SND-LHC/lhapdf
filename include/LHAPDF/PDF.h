@@ -150,6 +150,7 @@ namespace LHAPDF {
     /// @param rtn Vector of PDF xf(x,q2) values, to be filled
     void xfxQ2(double x, double q2, std::vector<double>& rtn) const;
 
+    
     /// @brief Get the PDF xf(x) value at (x,q) for "standard" PIDs.
     ///
     /// This version fills a user-supplied vector to avoid container
@@ -209,6 +210,8 @@ namespace LHAPDF {
     /// @param q2 Squared energy (renormalization) scale
     /// @return the value of xf(x,q2)
     virtual double _xfxQ2(int id, double x, double q2) const = 0;
+
+    virtual void _xfxQ2(double x, double q2, std::vector<double>& ret) const = 0;
 
     ///@}
 
@@ -338,6 +341,7 @@ namespace LHAPDF {
 
     /// Combined range check for x and Q2
     bool inRangeXQ2(double x, double q2) const {
+      //std::cout << "PDF::inRangeXQ2 : " << x << " " << q2 << std::endl;
       return inRangeX(x) && inRangeQ2(q2);
     }
 

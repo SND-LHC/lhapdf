@@ -18,6 +18,7 @@ namespace LHAPDF {
   class BicubicInterpolator : public Interpolator {
   public:
     double _interpolateXQ2(const KnotArray& subgrid, double x, size_t ix, double q2, size_t iq2, int id) const;
+    void _interpolateXQ2(const KnotArray& subgrid, double x, size_t ix, double q2, size_t iq2, std::vector<double>& ret) const;
   };
 
 
