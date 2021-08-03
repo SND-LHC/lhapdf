@@ -83,10 +83,7 @@ namespace LHAPDF {
     const int _n = flavors().size();
     rtn.clear();
     rtn.resize(_n);
-    for (int i = 0; i < _n; ++i) {
-      const int id = i-6; // PID = 0 is automatically treated as PID = 21
-      rtn[i] = xfxQ2(id, x, q2);
-    }
+    _xfxQ2(x, q2, rtn);
   }
 
   std::map<int, double> PDF::xfxQ2(double x, double q2) const {
