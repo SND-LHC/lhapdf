@@ -155,9 +155,9 @@ namespace LHAPDF {
     for(int pid(-6); pid <= 6; ++pid){
       int id = grid._lookup[pid + 6];
       if(id == -1){
-	ret[id] = 0;
+	ret[pid + 6] = 0;
       } else {
-	ret[id] = _interpolate(grid, ix, iq2, id, shared);
+	ret[id + 6] = _interpolate(grid, ix, iq2, id, shared);
       }
     }
   }
