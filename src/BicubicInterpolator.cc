@@ -18,7 +18,7 @@ namespace LHAPDF {
       double dx, tx, dq_0, dq_1, dq_2, dq, tq;
     };
 
-    shared_data fill(KnotArray& grid, double x, double q2, size_t ix, size_t iq2){
+    shared_data fill(const KnotArray& grid, double x, double q2, size_t ix, size_t iq2){
       // check edges, including internal discontinuity
       shared_data shared;
       shared.q2_lower = ( (iq2 == 0) || (grid.q2s(iq2) == grid.q2s(iq2-1)));
@@ -117,7 +117,7 @@ namespace LHAPDF {
 	return _interpolateCubic(_share.tq, vl, vdl, vh, vdh);
     }
 
-    void _checkGridSize(KnotArray& grid, size_t ix, size_t iq2){
+    void _checkGridSize(const KnotArray& grid, size_t ix, size_t iq2){
       // MK: if they have at least 2 knots, falls back to linear interpolator
       if (grid.xsize() < 4)
 	throw GridError("PDF subgrids are required to have at least 4 x-knots for use with BicubicInterpolator");    

@@ -157,7 +157,7 @@ namespace LHAPDF {
       if(id == -1){
 	ret[pid + 6] = 0;
       } else {
-	ret[id + 6] = _interpolate(grid, ix, iq2, id, shared);
+	ret[pid + 6] = _interpolate(grid, ix, iq2, id, shared);
       }
     }
   }
