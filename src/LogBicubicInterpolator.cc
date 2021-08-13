@@ -28,7 +28,7 @@ namespace LHAPDF {
     /// extrapolated value changes from the product of dx and the discrete low-
     /// and high-edge derivative estimates.
     ///
-    /// @note Need a reference for this. I don't think it's a cubic spline... maybe cubic Bessel?
+    /// @note See Numerical Recipes 3.6: http://www.it.uom.gr/teaching/linearalgebra/NumericalRecipiesInC/c3-6.pdf
     inline double _interpolateCubic(double t, double vl, double vdl, double vh, double vdh) {
       // Pre-calculate powers of t
       const double t2 = t*t;

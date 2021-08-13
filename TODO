@@ -6,8 +6,18 @@ LHAPDF6 TODO list
 =================
 
 
-VERSION 6.3.x
+VERSION 6.4.x
 -------------
+
+
+- **Expose setInterpolator/setExtrapolator functions in Python**
+
+  It would be useful to be able to overload the .info-specified interpolator and
+  extrapolator of a PDF or set from Python as well as C++. But we don't really want
+  to have to map the interfaces of those classes. It would already be useful to
+  have string-arg versions of those functions in C++: let's make those and map them
+  to Python as the first step.
+
 
 - **CPU-optimize the grid PDF interpolator code**
 
@@ -19,7 +29,39 @@ VERSION 6.3.x
 - **Copy rather than recompute subgrid data and hashes between flavours?**
 
 
-- **Chebyshev polynomial interpolation**
+VERSION 6.5.x
+-------------
+
+- **5th order polynomials with fallback**
+
+  Based on Tushar's GSoC work.
+
+
+- **Lagrange polynomial interpolation with Chebyshev knots**
+
+  The idea is to provide a smooth "whole function" interpolation with no
+  derivative discontinuities across knot points... at the cost of having
+  to perform whole-function fits. Chebyshev knots are denser at the
+  ends of the range, to calm Runge's phenomenon.
+
+
+- **Mix and match 1D interpolators**
+
+  The whole-function polynomials will require a lot of evaluations if
+  performed in both directions. We should implement the 1D Lagrange and
+  other interpolators as free "ipol utility" functions, so they can be
+  mixed and matched, e.g. "Chebyshev-Lagrange" in x, with mini-spline type
+  interpolation of a given order in the other.
+
+  Mix-and-match mode will require the PDF code to ask the second-direction
+  interpolator what values it needs evaluations for, before executing the
+  first-direction interpolator on them.
+
+  The string-based ipol specification probably needs to become a bit more
+  intelligent, parsing a string format for ipol order & scheme specs rather
+  than the current fixed-value approach. Perhaps a version of the function
+  accepting two strings, one for x and one for Q2, to be joined correctly
+  into the single-string form.
 
 
 - **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Bertone et al)**
