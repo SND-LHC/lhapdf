@@ -1,5 +1,8 @@
 2021-08-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Update the fast ASCII NumParser to always use the C
+	locale. Thanks to Dmitry Kalinkin for highlighting the issue.
+
 	* Enable out-of-source builds, avoiding sensitivity to
 	pre-installed versions during the build, and converting the Cython
 	syntax to Py3-style. Thanks to Christian Holm Christensen for the
