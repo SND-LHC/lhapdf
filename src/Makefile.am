@@ -3,8 +3,8 @@ SUBDIRS = yamlcpp
 lib_LTLIBRARIES = libLHAPDF.la
 noinst_LTLIBRARIES = libLHAPDFInfo.la libLHAPDFPaths.la
 
-AM_CPPFLAGS += -I$(top_srcdir)/include -I$(prefix)/include
-AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib -avoid-version
+AM_CPPFLAGS += -I$(top_srcdir)/include -I$(top_builddir)/include 
+AM_LDFLAGS += -L$(top_builddir)/src -avoid-version
 if USING_MPI
   AM_CPPFLAGS += -DHAVE_MPI=1
 endif

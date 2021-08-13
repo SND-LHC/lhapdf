@@ -590,15 +590,15 @@ cdef class AlphaS:
          elif scheme == "FIXED":
            s = FIXED
          else:
-           print "You can only set the flavor scheme to FIXED or VARIABLE"
+           print("You can only set the flavor scheme to FIXED or VARIABLE")
            return
          self._ptr.setFlavorScheme(s,nf)
      def flavorScheme(self):
          cdef FlavorScheme s = self._ptr.flavorScheme()
          if int(s) == 0:
-           print "FIXED"
+           print("FIXED")
          if int(s) == 1:
-           print "VARIABLE"
+           print("VARIABLE")
 
 
 def getConfig():
