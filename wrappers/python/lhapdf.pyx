@@ -1,5 +1,7 @@
 #cython: embedsignature=True, c_string_type=str, c_string_encoding=utf8
 
+from __future__ import print_function
+
 cimport clhapdf as c
 from clhapdf cimport FlavorScheme
 from libcpp.string cimport string

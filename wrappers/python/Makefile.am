@@ -2,7 +2,7 @@ EXTRA_DIST = lhapdf.cpp lhapdf.pyx clhapdf.pxd
 
 if WITH_CYTHON
 lhapdf.cpp: lhapdf.pyx clhapdf.pxd
-	cython $(srcdir)/lhapdf.pyx --cplus -3 -o lhapdf.cpp
+	cython $(srcdir)/lhapdf.pyx --cplus -2 -o lhapdf.cpp
 else
 lhapdf.cpp:
 	@echo "Not (re)generating lhapdf.cpp since Cython is not installed"
