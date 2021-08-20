@@ -80,9 +80,8 @@ namespace LHAPDF {
 
 
   void PDF::xfxQ2(double x, double q2, std::vector<double>& rtn) const {
-    const int _n = flavors().size();
     rtn.clear();
-    rtn.resize(_n);
+    rtn.resize(14);
     _xfxQ2(x, q2, rtn);
   }
 

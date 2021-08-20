@@ -102,13 +102,17 @@ namespace LHAPDF {
     // MK: write propper function
     //int _id = data._pidLookup.find(id)->second;
     int _id;
-    if(id != 21){
+    if(id < 21){ // includes -6, ..., -1, 1, ..., 6
       _id = data._lookup[id + 6];
-    } else{
+    } else if (id == 21){
       _id = data._lookup[0 + 6];
+    } else if (id == 22){
+      _id = data._lookup[13];
+    } else{
+      std::cout << id << std::endl;
     }
     if(_id == -1) return 0;
-    
+
     if (inRangeXQ2(x, q2)) {
       // cout << "From GridPDF[ipol]: x = " << x << ", Q2 = " << q2 << endl;
       // cout << "Num subgrids = " << _knotarrays.size() << endl;
@@ -131,7 +135,7 @@ namespace LHAPDF {
       // Originally, this part was done in PDF::xfxQ2(double, double, vector)
       const int _n = flavors().size();
       ret.clear();
-      ret.resize(_n - 1);
+      ret.resize(_n);
       for (int i = 0; i < _n; ++i) {
 	extrapolator().extrapolateXQ2(_n, x, q2);
       }

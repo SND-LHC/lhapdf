@@ -372,6 +372,7 @@ namespace LHAPDF {
       _lookup.push_back(findPidInPids(21));
       for(int i(1); i<=6; i++)
 	_lookup.push_back(findPidInPids(i));
+      _lookup.push_back(findPidInPids(22));
     }
     
     // Version for general number of dimensions
