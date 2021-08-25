@@ -17,7 +17,10 @@ TODO:
   * Force PDF behaviour toward x = 1... and Q = 0?
 """
 
+from __future__ import print_function
+
 ## Parse the command line to get the set names for migration (in LHAPDF5 format)
+# TODO: convert to use argparse
 import optparse
 p = optparse.OptionParser(usage=__doc__)
 p.add_option("--desc", dest="META_SETDESC", metavar="DESC", help="a value for the SetDesc metadata field", default="")

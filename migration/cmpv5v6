@@ -23,8 +23,13 @@ Output is given in the following format:
   x Q fractional_accuracy
 """
 
-import optparse, os, sys
+from __future__ import print_function
+import os, sys
 
+
+## Parse command-line arguments
+# TODO: convert to argparse
+import optparse
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
 op.add_option("-c", dest="CUTOFF", metavar="VAL", help="scale below which small deviations are not considered important", type=float, default=None)
@@ -34,6 +39,7 @@ op.add_option("--as", dest="TYPE", metavar="TYPE", help="alpha_s comparison mode
 op.add_option("-q", dest="VERBOSITY", help="be quiet", action="store_const", const=0, default=1)
 op.add_option("-v", dest="VERBOSITY", help="be verbose", action="store_const", const=2, default=1)
 opts, args = op.parse_args()
+
 
 ## Use different epsilon regulariser defaults for xf and alpha_s comparisons
 if opts.CUTOFF is None:

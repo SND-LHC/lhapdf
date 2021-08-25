@@ -3,13 +3,11 @@
 from __future__ import print_function
 
 import argparse
-
 ap = argparse.ArgumentParser()
 ap.add_argument("DATFILE", metavar="FILE", help="data file to process")
 args = ap.parse_args()
 
 import datetime
-
 revs, dates, nsets = [], [], []
 with open(args.DATFILE) as f:
     for line in f:

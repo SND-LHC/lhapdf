@@ -12,11 +12,9 @@ TODO:
 """
 
 from __future__ import print_function
+import sys, os
 
 import argparse
-import sys
-import os
-
 ap = argparse.ArgumentParser(usage=__doc__)
 ap.add_argument("PNAMES", metavar="NAME", nargs="+", help="PDF members to include in the plots")
 ap.add_argument("--xfmin", dest="XFMIN", metavar="NUM", help="minimum xf value [default: %(default)s]", type=float,
@@ -50,7 +48,6 @@ if not args.PNAMES:
     sys.exit(1)
 
 import matplotlib.pyplot as plt
-
 plt.rcParams["font.family"] = "serif"
 # plt.rcParams["font.serif"] = "Computer Modern Roman"
 plt.rcParams["text.usetex"] = True
@@ -94,7 +91,6 @@ def tex_float(f):
 ## Get sampling points in x,Q
 from math import log10
 import numpy as np
-
 xs = np.logspace(log10(args.XMIN), 0, 100)
 qs = np.logspace(0, log10(args.QMAX), 100)
 xs_few = [float(x) for x in args.XS.split(",")]  # [1e-5, 1e-3, 1e-2, 1e-1]
@@ -104,7 +100,6 @@ pids = [int(i) for i in args.PIDS.split(",")]  # [0] + range(1,5+1) + [-i for i 
 
 ## Load PDFs for plotting, indexed by name
 import lhapdf
-
 lhapdf.setVerbosity(args.VERBOSITY)
 pdfs = {pname: lhapdf.mkPDF(pname) for pname in args.PNAMES}
 print()

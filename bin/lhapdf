@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 
 from __future__ import print_function
-
-import logging
-import os
-import sys
+import logging, os, sys
+import argparse
 
 ## Base paths etc. for set and index file downloading
 CVMFSBASE = "/cvmfs/sft.cern.ch/lcg/external/lhapdfsets/current/"
@@ -148,11 +146,9 @@ def download_url(source, dest_dir, dryrun=False):
                     dest_file.write(buffer)
 
                     status = chr(13) + "%s: " % os.path.basename(url)
+                    status += r"%s" % convertBytes(file_size_dl).rjust(10)
                     if file_size:
-                        status += r"%s [%3.1f%%]" % (
-                            convertBytes(file_size_dl).rjust(10), file_size_dl * 100. / file_size)
-                    else:
-                        status += r"%s" % convertBytes(file_size_dl).rjust(10)
+                        status += r"[%3.1f%%]" % (file_size_dl * 100. / file_size)
                     sys.stdout.write(status + " ")
             except urllib.URLError:
                 e = sys.exc_info()[1]
@@ -222,7 +218,6 @@ def globfilt(pdfs, patterns):
     return rtn
 
 
-import argparse
 
 
 class CommandHandler(object):
@@ -280,6 +275,7 @@ The main sub-commands that can be used are:
         ## Use dispatch pattern to invoke method with same name:
         getattr(self, self.mainargs.COMMAND)(otherargs)
 
+
     def _scanpdfs(self):
         self.master_list, self.installed = {}, {}
 
@@ -303,6 +299,7 @@ The main sub-commands that can be used are:
                 self.master_list[pdf].outdated = False
             else:
                 self.master_list[pdf].outdated = self.installed[pdf].version < self.master_list[pdf].version
+
 
     def list(self, otherargs):
         """List all standard PDF sets, or search using a Unix-style pattern.
@@ -341,8 +338,10 @@ The main sub-commands that can be used are:
                 print(pdf)
         sys.exit(0)
 
+
     def ls(self, otherargs):
         self.list(otherargs)
+
 
     def show(self, otherargs):
         """Show details for installed PDF sets matching Unix-style patterns."""
@@ -377,6 +376,7 @@ The main sub-commands that can be used are:
         print("\n\n".join(strs))
         sys.exit(0)
 
+
     def update(self, otherargs):
         """Update the list of available PDF sets."""
         ap = argparse.ArgumentParser(description=__doc__, usage="%(prog)s update")
@@ -386,6 +386,7 @@ The main sub-commands that can be used are:
         else:
             print("PDF index file location not known: can't update")
         sys.exit(0)
+
 
     def install(self, otherargs):
         """Download and unpack a list of PDFs, or those matching a Unix-style pattern."""
@@ -420,8 +421,10 @@ The main sub-commands that can be used are:
             if download_file(self.mainargs.SOURCES, tar_filename, self.mainargs.PDFDIR, dryrun=subargs.DRYRUN):
                 extract_tarball(tar_filename, self.mainargs.PDFDIR, subargs.KEEP_TARBALLS)
 
+
     def get(self, otherargs):
         self.install(otherargs)
+
 
     def upgrade(self, otherargs):
         """Reinstall all PDF sets considered outdated by the local reference list"""
