@@ -3,11 +3,13 @@
 from __future__ import print_function
 
 import argparse
+
 ap = argparse.ArgumentParser()
 ap.add_argument("DATFILE", metavar="FILE", help="data file to process")
 args = ap.parse_args()
 
 import datetime
+
 revs, dates, nsets = [], [], []
 with open(args.DATFILE) as f:
     for line in f:
@@ -20,10 +22,11 @@ with open(args.DATFILE) as f:
 import os.path
 import matplotlib
 import matplotlib.pyplot as plt
+
 # import matplotlib.dates as mdates
 # import matplotlib.cbook as cbook
 plt.plot(dates, nsets)
-stabledate = datetime.date.fromtimestamp(1375890958.00) #< 6.0.0 release at revision 413
+stabledate = datetime.date.fromtimestamp(1375890958.00)  # < 6.0.0 release at revision 413
 plt.axvline(stabledate, color="r", linestyle="--")
 plt.xlim(left=stabledate)
 plt.xlabel("Year")

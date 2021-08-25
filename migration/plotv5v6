@@ -22,7 +22,7 @@ op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical l
 opts, args = op.parse_args()
 
 if not (args and all(os.path.exists(a) for a in args)):
-    print "Null args = '%s'" % " ".join(args)
+    print("Null args = '%s'" % " ".join(args))
     sys.exit(1)
 
 if "as" in opts.TYPE:
@@ -105,7 +105,7 @@ for _, fname in sorted(index_fname.iteritems()):
 
 ## Escape early with no plot output if there are no non-zero values
 if not valid:
-    print "No non-zero data values; cannot plot on a log scale... exiting"
+    print("No non-zero data values; cannot plot on a log scale... exiting")
     sys.exit(2)
 
 ## Set up axes with log scales

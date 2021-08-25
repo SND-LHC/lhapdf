@@ -69,7 +69,7 @@ for lha5name in args:
         lha5name = lha5name.split(":")[0]
     else:
         setname = os.path.splitext(lha5name)[0]
-    print "Migrating %s -> %s" % (lha5name, setname)
+    print("Migrating %s -> %s" % (lha5name, setname))
     outdir = os.path.join(opts.OUTDIR, setname)
 
     ## Create output dir if needed, otherwise update the dir timestamp for convenience
@@ -103,14 +103,14 @@ for lha5name in args:
     pids.append(21)
     if lhapdf.hasPhoton():
         pids.append(22)
-    print "PIDs:", pids
+    print("PIDs:", pids)
 
     ## This will be filled with the set's Q anchors for alpha_s ipol
     alphas_qs = None
 
     ## Iterate over each member in the set
     for member in xrange(numMembers):
-        print "Converting member #%d" % member
+        print("Converting member #%d" % member)
         lhapdf.initPDF(member)
 
         ## Find the x and Q range extremes
@@ -139,14 +139,14 @@ for lha5name in args:
             del q2s
             #print xs
         else:
-            print "Overriding original grid with a new log-lin x sampling and log Q sampling"
+            print("Overriding original grid with a new log-lin x sampling and log Q sampling")
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.linspace(0.075, 0.2, 6)) + list(numpy.linspace(0.25, 1.0, 18))
             # xs = list(numpy.logspace(math.log10(xmin), math.log10(0.05), 40)) + list(numpy.logspace(math.log10(0.075), 0, 21))
             # xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + [1.0 - i for i in numpy.logspace(math.log10(0.002), math.log10(0.1), 18)])
             xs = sorted(list(numpy.logspace(math.log10(xmin), 0, 70)) + list(numpy.linspace(0.1, 0.99, 50)))
             qs = [qmin] + list(numpy.logspace(math.log10(qmin), math.log10(qmax), 100))[1:-1] + [qmax] # dense resampling in logQ between Qmin and Qmax (with care re. exact endpoints)
-            print "Manual x grid: ", ", ".join("%0.2g" % x for x in xs)
-            print "Manual Q grid: ", ", ".join("%0.2g" % q for q in qs)
+            print("Manual x grid: ", ", ".join("%0.2g" % x for x in xs))
+            print("Manual Q grid: ", ", ".join("%0.2g" % q for q in qs))
 
         ## If a file of x knots is provided, override whatever was calculated before
         if opts.XSFILE:
@@ -156,7 +156,7 @@ for lha5name in args:
                 xs += [float(sx) for sx in l.split()]
             xs.sort()
             if member == 0:
-                print "Overriding x knots with:", ["%4.2g" % x for x in xs]
+                print("Overriding x knots with:", ["%4.2g" % x for x in xs])
         ## Same for Qs from override file
         if opts.QSFILE:
             qs = []
@@ -165,7 +165,7 @@ for lha5name in args:
                 qs += [float(sq) for sq in l.split()]
             qs.sort()
             if member == 0:
-                print "Overriding Q knots with:", ["%4.2g" % q for q in qs]
+                print("Overriding Q knots with:", ["%4.2g" % q for q in qs])
 
         def fuzzyeq(a, b, tol=1e-6):
             if a == b:
@@ -191,7 +191,7 @@ for lha5name in args:
             xs.append(xmax)
         ## Debug printout
         if opts.VERBOSE:
-            print "x grid: ", ", ".join("%0.2g" % x for x in xs)
+            print("x grid: ", ", ".join("%0.2g" % x for x in xs))
 
         ## Tidy the Q knots array
         ## Fill in extra Q sampling points if manually specified
@@ -211,7 +211,7 @@ for lha5name in args:
                 qs.append(qmax)
         ## Debug printout
         if opts.VERBOSE:
-            print "Q grid: ", ", ".join("%0.2g" % q for q in qs)
+            print("Q grid: ", ", ".join("%0.2g" % q for q in qs))
 
 
         ## Re-obtain the x and Q extrema values from the grids, just in case. Sometimes LHAPDF5 lies...
@@ -220,7 +220,7 @@ for lha5name in args:
         qmax = qs[-1]
         # print "x = [%0.2g, %0.2g], Q = [%0.2g, %0.2g]" % (xmin, xmax, qmin, qmax)
         if not xmin or not xmax or not qmin or not qmax:
-            print "WARNING: x and/or Q limits not correctly obtained"
+            print("WARNING: x and/or Q limits not correctly obtained")
 
 
         ## Detect and assign Q interpolation subgrids (use a single subgrid if there are no subgrids)
@@ -231,7 +231,7 @@ for lha5name in args:
             for iq in xrange(len(qs)-1):
                 if qs[iq+1] - qs[iq] < 1e-3:
                     if opts.VERBOSE:
-                        print "Flavour threshold detected by tiny Q grid knot separation:", qs[iq], "->", qs[iq+1], "GeV"
+                        print("Flavour threshold detected by tiny Q grid knot separation:", qs[iq], "->", qs[iq+1], "GeV")
                     split_points.append(iq)
         # TODO: Check that the split points correspond to flavour thresholds?
 
@@ -246,13 +246,13 @@ for lha5name in args:
             if end is not None:
                 end += 1 # want to include the split point knot, so increment unless it's the last one
             if opts.VERBOSE:
-                print "Subgrid from Q =", qs[start], "to", qs[end-1 if end is not None else -1]
+                print("Subgrid from Q =", qs[start], "to", qs[end-1 if end is not None else -1])
             qgrid = qs[start:end]
             if isplit > 0:
                 del qgrid[1] # remove the mq+epsilon knot since we don't want gaps in Q coverage
             qgrids.append(qgrid)
         if opts.VERBOSE or len(qgrids) > 1:
-            print "Number of Q subgrids = %d" % len(qgrids)
+            print("Number of Q subgrids = %d" % len(qgrids))
 
         if len(qgrids) > 1:
             ## Offset subgrid boundaries at flavour thresholds for later alpha_s sampling
@@ -271,9 +271,9 @@ for lha5name in args:
             for qs in qgrids:
                 alphas_qs += qs
         else:
-            print "Overriding original alpha_s grid with a new log Q sampling"
+            print("Overriding original alpha_s grid with a new log Q sampling")
             alphas_qs = [qmin] + list(numpy.logspace(math.log10(qmin), math.log10(qmax), 100))[1:-1] + [qmax] # dense resampling in logQ between Qmin and Qmax
-            print "Manual alpha_s Q grid: ", ", ".join("%0.2g" % q for q in alphas_qs)
+            print("Manual alpha_s Q grid: ", ", ".join("%0.2g" % q for q in alphas_qs))
         if len(qgrids) > 1:
             ## Add explicit sampling point at Z mass
             alphas_qs_offset = sorted( alphas_qs_offset + [MZ] )
@@ -282,7 +282,7 @@ for lha5name in args:
             ## Add explicit sampling points at heavy quark and Z masses
             alphas_qs = sorted( alphas_qs + [lhapdf.getQMass(1, 4), lhapdf.getQMass(1, 5), MZ] )
         if opts.VERBOSE:
-            print "alpha_s Qs =", alphas_qs
+            print("alpha_s Qs =", alphas_qs)
 
         ## Create the set-level metadata file corresponding to zeroth member.
         if member == 0:
