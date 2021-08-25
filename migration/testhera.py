@@ -18,8 +18,8 @@ xfgs_hf = [p_hf.xfxQ2(21, x, q) for x in xs]
 def fmt(xs):
     return ["%4g" % x for x in xs]
 
-print
-print fmt(xs), "\n"
-print fmt(xfgs_lh), "\n"
-print fmt(xfgs_hf), "\n"
-print fmt([xfgs_hf[i]/xfgs_lh[i] - 1.0 for i in xrange(len(xs))]), "\n"
+print("")
+print(fmt(xs), "\n")
+print(fmt(xfgs_lh), "\n")
+print(fmt(xfgs_hf), "\n")
+print(fmt([xfgs_hf[i]/xfgs_lh[i] - 1.0 for i in xrange(len(xs))]), "\n")
