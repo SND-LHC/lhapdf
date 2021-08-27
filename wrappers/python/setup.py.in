@@ -9,15 +9,14 @@ incdir_src = os.path.abspath("@top_srcdir@/include")
 incdir_build = os.path.abspath("@top_builddir@/include")
 libdir = os.path.abspath("@top_builddir@/src/.libs")
 
-
 ## Configure the C++ extension and LHAPDF package
 ext = Extension("lhapdf",
                 ["lhapdf.cpp"],
-                include_dirs = [incdir_src, incdir_build],
+                include_dirs=[incdir_src, incdir_build],
                 extra_compile_args=["-I@prefix@/include"],
-                library_dirs = [libdir],
-                language = "C++",
-                libraries = ["stdc++", "LHAPDF"])
-setup(name = "LHAPDF",
-      version = "@PACKAGE_VERSION@",
-      ext_modules = [ext])
+                library_dirs=[libdir],
+                language="C++",
+                libraries=["stdc++", "LHAPDF"])
+setup(name="LHAPDF",
+      version="@PACKAGE_VERSION@",
+      ext_modules=[ext])
