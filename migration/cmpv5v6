@@ -28,41 +28,41 @@ import os, sys
 
 
 ## Parse command-line arguments
-# TODO: convert to argparse
-import optparse
-op = optparse.OptionParser(usage=__doc__)
-op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
-op.add_option("-c", dest="CUTOFF", metavar="VAL", help="scale below which small deviations are not considered important", type=float, default=None)
-op.add_option("-t", dest="TARGET", metavar="ACC", help="nominal target scale for accuracy, above which a warning will be written to stdout", type=float, default=1e-3)
-op.add_option("-T", dest="TOLERANCE", metavar="TOL", help="tolerance scale for accuracy above which a warning will be written to stdout", type=float, default=0.1)
-op.add_option("--as", dest="TYPE", metavar="TYPE", help="alpha_s comparison mode", action="store_const", const="as", default="xf")
-op.add_option("-q", dest="VERBOSITY", help="be quiet", action="store_const", const=0, default=1)
-op.add_option("-v", dest="VERBOSITY", help="be verbose", action="store_const", const=2, default=1)
-opts, args = op.parse_args()
+import argparse
+ap = argparse.ArgumentParser(usage=__doc__)
+ap.add_argument("DATFILES", nargs="+")
+ap.add_argument("-o", dest="OUTPUT", metavar="FILE", help="output file", default="accuracy.dat")
+ap.add_argument("-c", dest="CUTOFF", metavar="VAL", help="scale below which small deviations are not considered important", type=float, default=None)
+ap.add_argument("-t", dest="TARGET", metavar="ACC", help="nominal target scale for accuracy, above which a warning will be written to stdout", type=float, default=1e-3)
+ap.add_argument("-T", dest="TOLERANCE", metavar="TOL", help="tolerance scale for accuracy above which a warning will be written to stdout", type=float, default=0.1)
+ap.add_argument("--as", dest="TYPE", metavar="TYPE", help="alpha_s comparison mode", action="store_const", const="as", default="xf")
+ap.add_argument("-q", dest="VERBOSITY", help="be quiet", action="store_const", const=0, default=1)
+ap.add_argument("-v", dest="VERBOSITY", help="be verbose", action="store_const", const=2, default=1)
+args = ap.parse_args()
 
 
 ## Use different epsilon regulariser defaults for xf and alpha_s comparisons
-if opts.CUTOFF is None:
-    if opts.TYPE == "xf":
-        opts.CUTOFF = 0.05
-    elif opts.TYPE == "as":
-        opts.CUTOFF = 0.05
+if args.CUTOFF is None:
+    if args.TYPE == "xf":
+        args.CUTOFF = 0.05
+    elif args.TYPE == "as":
+        args.CUTOFF = 0.05
 
-if not (len(args) == 2 and all(os.path.exists(a) for a in args)):
-    print("Wrong args = '%s'" % " ".join(args))
+if len(args.DATFILES) != 2 or not all(os.path.exists(a) for a in args.DATFILES):
+    print("Wrong args = '%s'" % " ".join(args.DATFILES))
     sys.exit(1)
-#print "Comparing", args[0], args[1]
+#print "Comparing", args.DATFILES[0], args.DATFILES[1]
 
-f5 = open(args[0])
-f6 = open(args[1])
-out = open(opts.OUTPUT, "w")
+f5 = open(args.DATFILES[0])
+f6 = open(args.DATFILES[1])
+out = open(args.OUTPUT, "w")
 
 def diff(a, b):
     return abs(a-b)
 def fracdiff(a, b):
     if a == 0 and b == 0: return 0.0
     return abs(a-b) / max(abs(a), abs(b))
-def accuracy(ref, test, epsilon=opts.CUTOFF/opts.TARGET):
+def accuracy(ref, test, epsilon=args.CUTOFF/args.TARGET):
     if ref == 0 and test == 0: return 0.0
     ## First defn
     #return abs((test + epsilon) / (ref + epsilon)) - 1.0
@@ -77,26 +77,26 @@ while True:
     if not l5 or not l6:
         break
     ## PDF value comparisons
-    if opts.TYPE == "xf":
+    if args.TYPE == "xf":
         lnx5, lnq5, xf5 = [float(a) for a in l5.split()]
         lnx6, lnq6, xf6 = [float(b) for b in l6.split()]
         assert fracdiff(lnx5, lnx6) < 1e-8 and fracdiff(lnq5, lnq6) < 1e-8
         diff56, acc56 = diff(xf5, xf6), accuracy(xf5, xf6)
         #out.write("%0.3e %0.3e %0.3e\n" % (lnx5, lnq5, diff56))
         out.write("%0.3e %0.3e %0.3e\n" % (lnx5, lnq5, acc56))
-        if opts.VERBOSITY == 2 or (opts.VERBOSITY == 1 and acc56 > opts.TOLERANCE):
+        if args.VERBOSITY == 2 or (args.VERBOSITY == 1 and acc56 > args.TOLERANCE):
             print("%0.3e, %0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
-                  (lnx5, lnq5, xf5, xf6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL"))
+                  (lnx5, lnq5, xf5, xf6, diff56, acc56, "PASS" if acc56 < args.TOLERANCE else "FAIL"))
     ## alpha_s comparisons
-    elif opts.TYPE == "as":
+    elif args.TYPE == "as":
         lnq5, as5 = [float(a) for a in l5.split()]
         lnq6, as6 = [float(b) for b in l6.split()]
         assert fracdiff(lnq5, lnq6) < 1e-8
         diff56, acc56 = diff(as5, as6), accuracy(as5, as6)
         out.write("%0.3e %0.3e\n" % (lnq5, acc56))
-        if opts.VERBOSITY == 2 or (opts.VERBOSITY == 1 and acc56 > opts.TOLERANCE):
+        if args.VERBOSITY == 2 or (args.VERBOSITY == 1 and acc56 > args.TOLERANCE):
             print("%0.3e:   %0.3e vs. %0.3e   =   %0.3e, %0.3e   =>   %s" % \
-                  (lnq5, as5, as6, diff56, acc56, "PASS" if acc56 < opts.TOLERANCE else "FAIL"))
+                  (lnq5, as5, as6, diff56, acc56, "PASS" if acc56 < args.TOLERANCE else "FAIL"))
     ## Update accuracy threshold failure filters
     for acc_cut in failcounts:
         if acc56 > acc_cut:
@@ -106,5 +106,6 @@ while True:
 #print failcounts
 for acc_cut in sorted(failcounts.keys())[1:]:
     failrate = failcounts[acc_cut] / float(failcounts[-1])
-    if failrate and (acc_cut > 5e-3 or opts.VERBOSITY == 2 or failrate > 1e-2):
-        print("%0.1f%% of points fail acc < %0.1e cut in print %s vs %s" % (100*failrate, acc_cut, args[0], args[1]))
+    if failrate and (acc_cut > 5e-3 or args.VERBOSITY == 2 or failrate > 1e-2):
+        print("%0.1f%% of points fail acc < %0.1e cut in print %s vs %s" % \
+              (100*failrate, acc_cut, args.DATFILES[0], args.DATFILES[1]))

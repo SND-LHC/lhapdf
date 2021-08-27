@@ -6,27 +6,32 @@ Usage: %prog <data1.dat> <data2.dat> [...]
 Plot the given PDF and alpha_s comparison files.
 """
 
-import optparse, os, sys
+from __future__ import print_function
+import os, sys
 
-op = optparse.OptionParser(usage=__doc__)
-op.add_option("-o", dest="OUTPUT", metavar="FILE", help="output file [default: %default]", default="cmpv5v6.pdf")
-op.add_option("--axis", dest="AXIS", metavar="AXIS", help="axes mode (xf plotting only): x, q [default: %default]", default="x")
-op.add_option("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, xfdiff, as, asdiff [default: %default]", default="xfdiff")
-op.add_option("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy [default: %default]", default="xy")
-op.add_option("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation [default: %default]", type=float, default=1e-3)
-op.add_option("--xmin", dest="XMIN", metavar="X", help="low edge of the range in x [default: %default]", type=float, default=None)
-op.add_option("--qmax", dest="QMAX", metavar="Q", help="high edge of the range in Q [default: %default]", type=float, default=None)
-op.add_option("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated [default: %default]", default=None)
-op.add_option("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated [default: %default]", default=None)
-op.add_option("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE [default: %default]", default=None)
-opts, args = op.parse_args()
 
-if not (args and all(os.path.exists(a) for a in args)):
-    print("Null args = '%s'" % " ".join(args))
+## Parse command-line arguments
+import argparse
+ap = argparse.ArgumentParser(usage=__doc__)
+ap.add_argument("DATFILES", nargs="+")
+ap.add_argument("-o", dest="OUTPUT", metavar="FILE", help="output file [default: %default]", default="cmpv5v6.pdf")
+ap.add_argument("--axis", dest="AXIS", metavar="AXIS", help="axes mode (xf plotting only): x, q [default: %default]", default="x")
+ap.add_argument("--type", dest="TYPE", metavar="TYPE", help="value type being plotted: xf, xfdiff, as, asdiff [default: %default]", default="xfdiff")
+ap.add_argument("--log", dest="LOG", metavar="SCALETYPE", help="axes logarithmic plotting: x, y, xy [default: %default]", default="xy")
+ap.add_argument("-t", dest="TOLERANCE", metavar="TOL", help="acceptable level of fractional deviation [default: %default]", type=float, default=1e-3)
+ap.add_argument("--xmin", dest="XMIN", metavar="X", help="low edge of the range in x [default: %default]", type=float, default=None)
+ap.add_argument("--qmax", dest="QMAX", metavar="Q", help="high edge of the range in Q [default: %default]", type=float, default=None)
+ap.add_argument("--xlim", dest="XLIM", metavar="Xlow:Xhigh", help="edges of the plot range in x, colon-separated [default: %default]", default=None)
+ap.add_argument("--ylim", dest="YLIM", metavar="Ylow:Yhigh", help="edges of the plot range in y, colon-separated [default: %default]", default=None)
+ap.add_argument("--vlines", dest="VLINES", metavar="FILE", help="plot a vertical line at each of the space-separated values in FILE [default: %default]", default=None)
+args = ap.parse_args()
+
+if not args.DATFILES or not all(os.path.exists(a) for a in args.DATFILES):
+    print("Null args = '%s'" % " ".join(args.DATFILES))
     sys.exit(1)
 
-if "as" in opts.TYPE:
-    opts.AXIS = "q"
+if "as" in args.TYPE:
+    args.AXIS = "q"
 
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "serif"
@@ -50,7 +55,7 @@ def latex_float(f):
 ## Do correct sorting, and labels as file:label args
 index_fname = {}
 fname_label = {}
-for i, a in enumerate(args):
+for i, a in enumerate(args.DATFILES):
     #print i, a
     index = i
     if ":" in a:
@@ -83,14 +88,14 @@ for _, fname in sorted(index_fname.iteritems()):
     f = open(fname)
     xs, vals = [], []
     for line in f:
-        if opts.TYPE.startswith("xf"):
+        if args.TYPE.startswith("xf"):
             x, q, val = [float(a) for a in line.split()]
-            if opts.AXIS == "x":
+            if args.AXIS == "x":
                 xs.append(x)
-            elif opts.AXIS == "q":
+            elif args.AXIS == "q":
                 xs.append(q)
             vals.append(val)
-        elif opts.TYPE.startswith("as"):
+        elif args.TYPE.startswith("as"):
             q, val = [float(a) for a in line.split()]
             xs.append(q)
             vals.append(val)
@@ -109,47 +114,47 @@ if not valid:
     sys.exit(2)
 
 ## Set up axes with log scales
-if "x" in opts.LOG:
+if "x" in args.LOG:
     plt.xscale("log")
-if "y" in opts.LOG:
+if "y" in args.LOG:
     plt.yscale("log")
-    if "diff" in opts.TYPE:
+    if "diff" in args.TYPE:
         plt.ylim(ymin=1e-5)
 
 ## Set (override) axis limits
-if opts.XLIM:
-    xlow, xhigh = opts.XLIM.split(":")
+if args.XLIM:
+    xlow, xhigh = args.XLIM.split(":")
     if xlow: plt.xlim(xmin=float(xlow))
     if xhigh: plt.xlim(xmax=float(xhigh))
-if opts.YLIM:
-    ylow, yhigh = opts.YLIM.split(":")
+if args.YLIM:
+    ylow, yhigh = args.YLIM.split(":")
     if ylow: plt.ylim(ymin=float(ylow))
     if yhigh: plt.ylim(ymax=float(yhigh))
 
 ## Set up axis labels
-if opts.TYPE == "xf":
+if args.TYPE == "xf":
     plt.ylabel("$xf(x,Q)$")
-elif opts.TYPE == "xfdiff":
+elif args.TYPE == "xfdiff":
     plt.ylabel(r"$|f_6 - f_5| / (|f_5| + \epsilon)$")
     # plt.ylabel(r"$|f_6+\epsilon|/|f_5+\epsilon| - 1$")
-elif opts.TYPE == "as":
+elif args.TYPE == "as":
     plt.ylabel(r"$\alpha_s(Q)$")
-elif opts.TYPE == "asdiff":
+elif args.TYPE == "asdiff":
     plt.ylabel(r"$|\alpha_6 - \alpha_5| / (|\alpha_5| + \epsilon)$")
 
 ## Set up plot titles
-if opts.AXIS == "x":
+if args.AXIS == "x":
     plt.xlabel("$x$")
-    if opts.XMIN:
-        plt.axvline(opts.XMIN, linewidth=1, color="black", linestyle=":")
-elif opts.AXIS == "q":
+    if args.XMIN:
+        plt.axvline(args.XMIN, linewidth=1, color="black", linestyle=":")
+elif args.AXIS == "q":
     plt.xlabel("$Q$")
-    if opts.QMAX:
-        plt.axvline(opts.QMAX, linewidth=1, color="black", linestyle=":")
+    if args.QMAX:
+        plt.axvline(args.QMAX, linewidth=1, color="black", linestyle=":")
 
 ## Plot vertical lines from a file (e.g. for marking all knot values)
-if opts.VLINES:
-    f = open(opts.VLINES)
+if args.VLINES:
+    f = open(args.VLINES)
     for line in f:
         for xval in [float(x) for x in line.split()]:
             plt.axvline(xval, linewidth=1, color="gray", linestyle=":")
@@ -160,8 +165,8 @@ for t in l.get_texts():
     t.set_size("xx-small")
 
 ## If plotting fractional deviations, draw the tolerance level
-if "diff" in opts.TYPE:
-    plt.axhline(opts.TOLERANCE, linewidth=1, color="red", linestyle=":")
+if "diff" in args.TYPE:
+    plt.axhline(args.TOLERANCE, linewidth=1, color="red", linestyle=":")
 
 ## Save the plot
-plt.savefig(opts.OUTPUT)
+plt.savefig(args.OUTPUT)
