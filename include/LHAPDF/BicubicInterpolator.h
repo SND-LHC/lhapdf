@@ -17,6 +17,7 @@ namespace LHAPDF {
   /// This class will interpolate in 2D using a bicubic hermite spline.
   class BicubicInterpolator : public Interpolator {
   public:
+    BicubicInterpolator(){ setType("cubic"); }
     double _interpolateXQ2(const KnotArray& subgrid, double x, size_t ix, double q2, size_t iq2, int id) const;
     void _interpolateXQ2(const KnotArray& subgrid, double x, size_t ix, double q2, size_t iq2, std::vector<double>& ret) const;
   };

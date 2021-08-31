@@ -12,45 +12,29 @@ namespace LHAPDF {
   namespace { // Unnamed namespace
     struct shared_data{
       // Pre-calculate parameters
-      double dlogx_1, tlogx, dlogq_0, dlogq_1,  dlogq_2, tlogq;
-
+      double logx, logq2, dlogx_1, dlogq_0, dlogq_1,  dlogq_2, tlogq;
+      double tlogx;
       // bools to find out if at grid edges
       bool q2_lower, q2_upper;
     };
-
+    
     shared_data fill(const KnotArray& grid, double x, double q2, size_t ix, size_t iq2){
       shared_data shared;
-      const double logx  = log(x);
-      const double logq2 = log(q2);
-
-      /*
-      // Fall back to LogBilinearInterpolator if either 2 or 3 Q-knots
-      if (nq2knots < 4) {
-      // First interpolate in x
-      const double logx0 = grid.logxs(ix);
-      const double logx1 = grid.logxs(ix+1);
-      const double f_ql = _interpolateLinear(logx, logx0, logx1, grid.xf(ix, iq2, id),   grid.xf(ix+1, iq2, id));
-      const double f_qh = _interpolateLinear(logx, logx0, logx1, grid.xf(ix, iq2+1, id), grid.xf(ix+1, iq2+1, id));
-      // Then interpolate in Q2, using the x-ipol results as anchor points
-      return _interpolateLinear(logq2, grid.logq2s(iq2), grid.logq2s(iq2+1), f_ql, f_qh);
-      }
-      */
-      // else proceed with cubic interpolation:
+      shared.logx  = std::log(x);
+      shared.logq2 = std::log(q2); // only required for fallback mode
 
       // Pre-calculate parameters
       shared.dlogx_1 = grid.logxs(ix+1) - grid.logxs(ix);
-      shared.tlogx   = (logx - grid.logxs(ix)) / shared.dlogx_1;    
-      shared.dlogq_0 = (iq2 != 0) ? grid.logq2s(iq2) - grid.logq2s(iq2-1) : -1; //< Don't evaluate (or use) if iq2-1 < 0
-      shared.dlogq_1 = grid.logq2s(iq2+1) - grid.logq2s(iq2);    
-      shared.dlogq_2 = (iq2+2 != grid.q2size()) ? grid.logq2s(iq2+2) - grid.logq2s(iq2+1) : -1; //< Don't evaluate (or use) if iq2+2 > iq2max
-      shared.tlogq   = (logq2 - grid.logq2s(iq2)) / shared.dlogq_1;
-
+      shared.tlogx   = (shared.logx - grid.logxs(ix)) / shared.dlogx_1;
+      shared.dlogq_0 = 1./(grid.logq2s(iq2) - grid.logq2s(iq2-1)); // only ever need the 1/values of the differences
+      shared.dlogq_1 = grid.logq2s(iq2+1) - grid.logq2s(iq2);
+      shared.dlogq_2 = 1./(grid.logq2s(iq2+2) - grid.logq2s(iq2+1));
+      shared.tlogq   = (shared.logq2 - grid.logq2s(iq2)) / shared.dlogq_1;
+      
       shared.q2_lower = ( (iq2 == 0) || (grid.q2s(iq2) == grid.q2s(iq2-1)));
       shared.q2_upper = ( (iq2 == grid.q2size() -1) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
       return shared;
     }
-
-
 		    
     /// One-dimensional linear interpolation for y(x)
     inline double _interpolateLinear(double x, double xl, double xh, double yl, double yh)	{
@@ -75,49 +59,57 @@ namespace LHAPDF {
       
       return p0 + m0 + p1 + m1;
     }
+      
+    inline double _interpolateCubic(double T, const double *coeffs){
+      const double x = T;
+      const double x2 = x*x;
+      const double x3 = x2*x;
+      return coeffs[0]*x3 + coeffs[1]*x2 + coeffs[2]*x + coeffs[3];
+    }
+    
 
     double _interpolate(const KnotArray &grid, int ix, int iq2, int id, shared_data &_share){
-      double vl = _interpolateCubic(_share.tlogx, grid.xf(ix, iq2, id), grid.dxf(ix, iq2, id) * _share.dlogx_1,
-				    grid.xf(ix+1, iq2, id), grid.dxf(ix+1, iq2, id) * _share.dlogx_1);
-      double vh = _interpolateCubic(_share.tlogx, grid.xf(ix, iq2+1, id), grid.dxf(ix, iq2+1, id) * _share.dlogx_1,
-				    grid.xf(ix+1, iq2+1, id), grid.dxf(ix+1, iq2+1, id) * _share.dlogx_1);
-      
+      double vl = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2,id,0));
+      double vh = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2+1,id,0));
+
       // Derivatives in Q2
       double vdl, vdh;
-      if (!_share.q2_lower && !_share.q2_upper){
-	// Central difference for both q
-	/// @note We evaluate the most likely condition first to help compiler branch prediction
-	double vll = _interpolateCubic(_share.tlogx, grid.xf(ix, iq2-1, id), grid.dxf(ix, iq2-1, id) * _share.dlogx_1,
-				       grid.xf(ix+1, iq2-1, id), grid.dxf(ix+1, iq2-1, id) * _share.dlogx_1);
-	// replace with better derivative estimate?
-	vdl = ( (vh - vl)/_share.dlogq_1 + (vl - vll)/_share.dlogq_0 ) / 2.0;
-	double vhh = _interpolateCubic(_share.tlogx, grid.xf(ix, iq2+2, id), grid.dxf(ix, iq2+2, id) * _share.dlogx_1,
-				       grid.xf(ix+1, iq2+2, id), grid.dxf(ix+1, iq2+2, id) * _share.dlogx_1);
-	vdh = ( (vh - vl)/_share.dlogq_1 + (vhh - vh)/_share.dlogq_2 ) / 2.0;
-      }
-      else if (_share.q2_lower) {
+
+      if (_share.q2_lower) {
 	// Forward difference for lower q
-	vdl = (vh - vl) / _share.dlogq_1;
+	vdl = (vh - vl);
 	// Central difference for higher q
-	double vhh = _interpolateCubic(_share.tlogx, grid.xf(ix, iq2+2, id), grid.dxf(ix, iq2+2, id) * _share.dlogx_1,
-				       grid.xf(ix+1, iq2+2, id), grid.dxf(ix+1, iq2+2, id) * _share.dlogx_1);
-	vdh = (vdl + (vhh - vh)/_share.dlogq_2) / 2.0;
+	double vhh = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2+2,id,0));
+	vdh = (vdl + (vhh - vh) * _share.dlogq_1 * _share.dlogq_2) * 0.5;
       }
       else if (_share.q2_upper) {
 	// Backward difference for higher q
-	vdh = (vh - vl) / _share.dlogq_1;
+	vdh = (vh - vl);
 	// Central difference for lower q
-	double vll = _interpolateCubic(_share.tlogx, grid.xf(ix, iq2-1, id), grid.dxf(ix, iq2-1, id) * _share.dlogx_1,
-				       grid.xf(ix+1, iq2-1, id), grid.dxf(ix+1, iq2-1, id) * _share.dlogx_1);
-	vdl = (vdh + (vl - vll)/_share.dlogq_0) / 2.0;
+	double vll = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2-1,id,0));
+	vdl = (vdh + (vl - vll) * _share.dlogq_1 * _share.dlogq_0) * 0.5;
+      } else {
+	// Central difference for both q
+	double vll = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2-1,id,0));
+	// replace with better derivative estimate?
+	vdl = ( (vh - vl) + (vl - vll)*_share.dlogq_1 * _share.dlogq_0 ) * 0.5;
+	double vhh = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2+2,id,0));
+	vdh = ( (vh - vl) + (vhh - vh)*_share.dlogq_1 * _share.dlogq_2 ) * 0.5;
       }
-      else throw LogicError("We shouldn't be able to get here!");
 
-      vdl *= _share.dlogq_1;
-      vdh *= _share.dlogq_1;
       return _interpolateCubic(_share.tlogq, vl, vdl, vh, vdh);
     }
-
+    
+    double _interpolateFallback(const KnotArray &grid, int ix, int iq2, int id, shared_data &_share){
+      // First interpolate in x
+      const double logx0 = grid.logxs(ix);
+      const double logx1 = grid.logxs(ix+1);
+      const double f_ql = _interpolateLinear(_share.logx, logx0, logx1, grid.xf(ix, iq2, id),   grid.xf(ix+1, iq2, id));
+      const double f_qh = _interpolateLinear(_share.logx, logx0, logx1, grid.xf(ix, iq2+1, id), grid.xf(ix+1, iq2+1, id));
+      // Then interpolate in Q2, using the x-ipol results as anchor points
+      return _interpolateLinear(_share.logq2, grid.logq2s(iq2), grid.logq2s(iq2+1), f_ql, f_qh);
+    }
+      
     void _checkGridSize(const KnotArray& grid, const int ix, const int iq2){
       // Raise an error if there are too few knots even for a linear fall-back
       const size_t nxknots = grid.xsize();
@@ -144,20 +136,36 @@ namespace LHAPDF {
   double LogBicubicInterpolator::_interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, int id) const {
     _checkGridSize(grid, ix, iq2);
     shared_data shared = fill(grid, x, q2, ix, iq2);
-    return _interpolate(grid, ix, iq2, id, shared);
+    // if it is an upper and a lower edge, there can only be two notes
+    //   use lineare fallback in that case, but have default be the cubic case
+    if(!shared.q2_lower && !shared.q2_upper) 
+      return _interpolate(grid, ix, iq2, id, shared);
+    // Fallback mode
+    return _interpolateFallback(grid, ix, iq2, id, shared);
   }
 
   void LogBicubicInterpolator::_interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, std::vector<double>& ret) const {
     _checkGridSize(grid, ix, iq2);
     shared_data shared = fill(grid, x, q2, ix, iq2);
 
-    ret.resize(13);
-    for(int pid(-6); pid <= 6; ++pid){
-      int id = grid._lookup[pid + 6];
-      if(id == -1){
-	ret[pid + 6] = 0;
-      } else {
-	ret[pid + 6] = _interpolate(grid, ix, iq2, id, shared);
+    //ret.resize(13);
+    if(!shared.q2_lower && !shared.q2_upper){
+      for(int pid(-6); pid <= 6; ++pid){
+	int id = grid._lookup[pid + 6];
+	if(id == -1){
+	  ret[pid + 6] = 0;
+	} else {
+	  ret[pid + 6] = _interpolate(grid, ix, iq2, id, shared);
+	}
+      }
+    } else {
+      for(int pid(-6); pid <= 6; ++pid){
+	int id = grid._lookup[pid + 6];
+	if(id == -1){
+	  ret[pid + 6] = 0;
+	} else {
+	  ret[pid + 6] = _interpolateFallback(grid, ix, iq2, id, shared);
+	}
       }
     }
   }

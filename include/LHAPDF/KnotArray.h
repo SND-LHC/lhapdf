@@ -294,6 +294,10 @@ namespace LHAPDF {
     const double dxf(int ix, int iq2, int ipid) const {
       return _dgrid[ix*shape[2]*shape[1] + iq2*shape[2] + ipid];
     }
+
+    const double& coeff(int ix, int iq2, int pid, int in) const {
+      return _coeffs[ix*(shape[1])*shape[2]*4 + iq2*shape[2]*4 + pid*4 + in];
+    }
     
     /// Access the Q2s array
     // as they dont exist anymore in the old form, this now returns a vector
@@ -398,6 +402,8 @@ namespace LHAPDF {
     //   since log is the defaule, only do it for that one
     std::vector<double> _dgrid;
 
+    std::vector<double> _coeffs;
+    
     // Knots, assumes the same grid for all particle ids in the set
     std::vector<double> _knots;
 

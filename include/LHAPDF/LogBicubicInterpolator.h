@@ -16,8 +16,10 @@ namespace LHAPDF {
   ///
   /// This class will interpolate in 2D using a bicubic hermite spline.
   class LogBicubicInterpolator : public Interpolator {
+    
   public:
-
+    LogBicubicInterpolator(){ setType("logcubic"); }
+    
     /// Implementation of (x,Q2) interpolation
     double _interpolateXQ2(const KnotArray& subgrid, double x, size_t ix, double q2, size_t iq2, int id) const;
 
@@ -117,7 +119,6 @@ namespace LHAPDF {
     ///@}
 
   };
-
 
 }
 

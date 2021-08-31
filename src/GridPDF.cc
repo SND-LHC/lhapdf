@@ -17,10 +17,17 @@ using namespace std;
 
 namespace LHAPDF {
 
-
+  
   void GridPDF::setInterpolator(Interpolator* ipol) {
     _interpolator.reset(ipol);
     _interpolator->bind(this);
+    if(_interpolator->getType() == "logcubic"){
+      _computeDerivatives(data, true);
+      _computePolynomialCoefficients(data, true);
+    } else if(_interpolator->getType() == "cubic"){
+      _computeDerivatives(data, false);
+      _computePolynomialCoefficients(data, false);
+    }
   }
 
   void GridPDF::setInterpolator(const std::string& ipolname) {
@@ -184,8 +191,75 @@ namespace LHAPDF {
       bool _error;
     };
 
+    
   }
 
+  
+  void GridPDF::_computeDerivatives(KnotArray &data, bool logspace){
+    data._dgrid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
+	
+    const int nxknots = data.xsize();
+    for(int ix(0); ix<nxknots; ++ix){
+      for(int iq2(0); iq2<data.q2size(); ++iq2){
+	for(int id(0); id<data.size(); ++id){
+	  double derivative, del1, del2;
+	  if(logspace){
+	    del1 = data.logxs(ix)   - data.logxs(ix-1);
+	    del2 = data.logxs(ix+1) - data.logxs(ix);
+	  } else {
+	    del1 = data.xs(ix)   - data.xs(ix-1);
+	    del2 = data.xs(ix+1) - data.xs(ix);
+	  }
+	  if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
+	    const double lddx = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
+	    const double rddx = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
+	    derivative = (lddx + rddx) / 2.0;
+	  } else if (ix == 0) { //< If at leftmost edge, use forward difference
+	    derivative = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
+	  } else if (ix == nxknots-1) { //< If at rightmost edge, use backward difference
+	    derivative = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
+	  } else {
+	    throw LogicError("We shouldn't be able to get here!");
+	  }
+	  data._dgrid[ix*data.shape[1]*data.shape[2] + iq2*data.shape[2] + id] = derivative;
+	}
+      }
+    }
+  }
+
+  void GridPDF::_computePolynomialCoefficients(KnotArray &data, bool logspace){
+    const int nxknots = data.xsize();
+    std::vector<double> shape{data.xsize()-1, data.q2size(), data.size(), 4};
+    data._coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
+      
+    for(int ix(0); ix<nxknots-1; ++ix){
+      for(int iq2(0); iq2<data.q2size(); ++iq2){
+	for(int id(0); id<data.size(); ++id){
+	  double dlogx;
+	  if(logspace){
+	    dlogx = data.logxs(ix+1) - data.logxs(ix);
+	  } else{
+	    dlogx = data.xs(ix+1) - data.xs(ix);
+	  }
+	  double VL  = data.xf (ix,   iq2, id);
+	  double VH  = data.xf (ix+1, iq2, id);
+	  double VDL = data.dxf(ix,   iq2, id) * dlogx;
+	  double VDH = data.dxf(ix+1, iq2, id) * dlogx;
+
+	  // polynomial coefficients
+	  double a = VDH + VDL - 2*VH + 2*VL;
+	  double b = 3*VH - 3*VL - 2*VDL - VDH;
+	  double c = VDL;
+	  double d = VL;
+
+	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 0] = a;
+	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 1] = b;
+	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 2] = c;
+	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 3] = d;
+	}
+      }
+    }
+  }
 
   void GridPDF::_loadData(const std::string& mempath) {
     string line, prevline;
@@ -364,34 +438,6 @@ namespace LHAPDF {
       throw;
     } catch (std::exception& e) {
       throw ReadError("Read error while parsing " + mempath + " as a GridPDF data file");
-    }
-
-    // precompute derivative values
-    // MK: use proper setter/getter
-    data._dgrid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
-
-    const int nxknots = data.xsize();
-    for(int ix(0); ix<nxknots; ++ix){
-      for(int iq2(0); iq2<data.q2size(); ++iq2){
-	for(int id(0); id<data.size(); ++id){
-	  double derivative = 0;
-	  // in principle, we could get rid of the if/else's but since this only has to be done
-	  //   choose the method that reads better
-	  if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
-	    /// @note We evaluate the most likely condition first to help compiler branch prediction
-	    const double lddx = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / (data.logxs(ix) - data.logxs(ix-1));
-	    const double rddx = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / (data.logxs(ix+1) - data.logxs(ix));
-	    derivative = (lddx + rddx) / 2.0;
-	  } else if (ix == 0) { //< If at leftmost edge, use forward difference
-	    derivative = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / (data.logxs(ix+1) - data.logxs(ix));
-	  } else if (ix == nxknots-1) { //< If at rightmost edge, use backward difference
-	    derivative = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / (data.logxs(ix) - data.logxs(ix-1));
-	  } else {
-	    throw LogicError("We shouldn't be able to get here!");
-	  }
-	  data._dgrid[ix*data.shape[1]*data.shape[2] + iq2*data.shape[2] + id] = derivative;
-	}
-      }
     }
   }
 

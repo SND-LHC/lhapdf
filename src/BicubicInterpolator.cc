@@ -46,6 +46,13 @@ namespace LHAPDF {
       return yl + (x - xl) / (xh - xl) * (yh - yl);
     }
 
+    inline double _interpolateCubic(double T, const double *coeffs){
+      const double x = T;
+      const double x2 = x*x;
+      const double x3 = x2*x;
+      return coeffs[0]*x3 + coeffs[1]*x2 + coeffs[2]*x + coeffs[3];
+    }
+    
     // One-dimensional cubic interpolation    
     inline double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH) {
       // Pre-calculate powers of T
@@ -78,43 +85,37 @@ namespace LHAPDF {
     }
 
     double _interpolate(const KnotArray& grid, size_t ix, size_t iq2, int id, shared_data& _share){
-	// Points in Q2
-	double vl = _interpolateCubic(_share.tx, grid.xf(ix,   iq2,   id), _ddx(grid, ix, iq2, id) * _share.dx,
-				      grid.xf(ix+1, iq2,   id), _ddx(grid, ix+1, iq2, id) * _share.dx);
-	double vh = _interpolateCubic(_share.tx, grid.xf(ix,   iq2+1, id), _ddx(grid, ix, iq2+1, id) * _share.dx,
-				      grid.xf(ix+1, iq2+1, id), _ddx(grid, ix+1, iq2+1, id) * _share.dx);
+      // Points in Q2
+      double vl = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2,id,0));
+      double vh = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2+1,id,0));
     
-	// Derivatives in Q2
-	double vdl, vdh;
-	if (_share.q2_lower) {
-	  // Forward difference for lower q
-	  vdl = (vh - vl) / _share.dq_1;
-	  // Central difference for higher q
-	  double vhh = _interpolateCubic(_share.tx, grid.xf(ix, iq2+2, id), _ddx(grid, ix, iq2+2, id) * _share.dx,
-					 grid.xf(ix+1, iq2+2, id), _ddx(grid, ix+1, iq2+2, id) * _share.dx);
-	  vdh = (vdl + (vhh - vh)/_share.dq_2) / 2.0;
-	}
-	else if (_share.q2_upper) {
-	  // Backward difference for higher q
-	  vdh = (vh - vl) / _share.dq_1;
-	  // Central difference for lower q
-	  double vll = _interpolateCubic(_share.tx, grid.xf(ix, iq2-1, id), _ddx(grid, ix, iq2-1, id) * _share.dx,
-					 grid.xf(ix+1, iq2-1, id), _ddx(grid, ix+1, iq2-1, id) * _share.dx);
-	  vdl = (vdh + (vl - vll)/_share.dq_0) / 2.0;
-	}
-	else {
-	  // Central difference for both q
-	  double vll = _interpolateCubic(_share.tx, grid.xf(ix, iq2-1, id), _ddx(grid, ix, iq2-1, id) * _share.dx,
-					 grid.xf(ix+1, iq2-1, id), _ddx(grid, ix+1, iq2-1, id) * _share.dx);
-	  vdl = ( (vh - vl)/_share.dq_1 + (vl - vll)/_share.dq_0 ) / 2.0;
-	  double vhh = _interpolateCubic(_share.tx, grid.xf(ix, iq2+2, id), _ddx(grid, ix, iq2+2, id) * _share.dx,
-					 grid.xf(ix+1, iq2+2, id), _ddx(grid, ix+1, iq2+2, id) * _share.dx);
-	  vdh = ( (vh - vl)/_share.dq_1 + (vhh - vh)/_share.dq_2 ) / 2.0;
-	}
+      // Derivatives in Q2
+      double vdl, vdh;
+      if (_share.q2_lower) {
+	// Forward difference for lower q
+	vdl = (vh - vl) / _share.dq_1;
+	// Central difference for higher q
+	double vhh = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2+2,id,0));
+	vdh = (vdl + (vhh - vh)/_share.dq_2) / 2.0;
+      }
+      else if (_share.q2_upper) {
+	// Backward difference for higher q
+	vdh = (vh - vl) / _share.dq_1;
+	// Central difference for lower q
+	double vll = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2-1,id,0));
+	vdl = (vdh + (vl - vll)/_share.dq_0) / 2.0;
+      }
+      else {
+	// Central difference for both q
+	double vll = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2-1,id,0));
+	vdl = ( (vh - vl)/_share.dq_1 + (vl - vll)/_share.dq_0 ) / 2.0;
+	double vhh = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2+2,id,0));
+	vdh = ( (vh - vl)/_share.dq_1 + (vhh - vh)/_share.dq_2 ) / 2.0;
+      }
 
-	vdl *= _share.dq;
-	vdh *= _share.dq;
-	return _interpolateCubic(_share.tq, vl, vdl, vh, vdh);
+      vdl *= _share.dq;
+      vdh *= _share.dq;
+      return _interpolateCubic(_share.tq, vl, vdl, vh, vdh);
     }
 
     void _checkGridSize(const KnotArray& grid, size_t ix, size_t iq2){

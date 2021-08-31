@@ -43,16 +43,16 @@ namespace LHAPDF {
     /// Constructor from a set name and member ID
     GridPDF(const std::string& setname, int member) {
       _loadInfo(setname, member); // Sets _mempath
-      _loadPlugins();
       _loadData(_mempath);
+      _loadPlugins();
       _forcePos = -1;
     }
 
     /// Constructor from an LHAPDF ID
     GridPDF(int lhaid) {
       _loadInfo(lhaid); // Sets _mempath
+      _loadData(_mempath); 
       _loadPlugins();
-      _loadData(_mempath);
       _forcePos = -1;
     }
 
@@ -77,6 +77,10 @@ namespace LHAPDF {
 
     /// Load the PDF grid data block (not the metadata) from the given PDF member file
     void _loadData(const std::string& mempath);
+
+    /// Precompute polynomial coefficients and approximate derivatives at knot positions
+    void _computeDerivatives(KnotArray &data, bool logspace);
+    void _computePolynomialCoefficients(KnotArray &data, bool logspace);
 
 
   public:

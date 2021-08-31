@@ -59,6 +59,15 @@ namespace LHAPDF {
     /// @todo Make an all-PID version of interpolateQ and Q2?
 
     ///@}
+    
+    void setType(std::string t){
+      _type = t;
+    }
+
+    std::string getType(){
+      return _type;
+    }
+    
 
 
   protected:
@@ -76,11 +85,9 @@ namespace LHAPDF {
     /// @todo Implement this NF version, with a cached KnotArrayNF?
     // virtual double _interpolateXQ2(const KnotArrayNF& subgrid, int id, double x, size_t ix, double q2, size_t iq2) const;
 
-
   private:
-
     const GridPDF* _pdf;
-
+    std::string _type;
   };
 
 
