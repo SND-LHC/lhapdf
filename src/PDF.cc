@@ -78,10 +78,9 @@ namespace LHAPDF {
     for (int id : flavors()) rtn[id] = xfxQ2(id, x, q2);
   }
 
-
-  void PDF::xfxQ2(double x, double q2, std::vector<double>& rtn) const {
+  void PDF::xfxQ2(double x, double q2, std::vector<double>& rtn) const {    
     rtn.clear();
-    rtn.resize(14);
+    rtn.resize(13);
     _xfxQ2(x, q2, rtn);
   }
 

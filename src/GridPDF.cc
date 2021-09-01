@@ -67,40 +67,6 @@ namespace LHAPDF {
     return *_extrapolator;
   }
 
-  /*
-  const KnotArrayNF& GridPDF::subgrid(double q2) const {
-    assert(q2 >= 0);
-    assert(!q2Knots().empty());
-    map<double, KnotArrayNF>::const_iterator it = _knotarrays.upper_bound(q2);
-    if (it == _knotarrays.begin())
-      throw GridError("Requested Q2 " + to_str(q2) + " is lower than any available Q2 subgrid (lowest Q2 = " + to_str(q2Knots().front()) + ")");
-    if (it == _knotarrays.end() && q2 > q2Knots().back())
-      throw GridError("Requested Q2 " + to_str(q2) + " is higher than any available Q2 subgrid (highest Q2 = " + to_str(q2Knots().back()) + ")");
-    --it; // upper_bound (and lower_bound) returns the entry *above* q2: we need to decrement by one element
-    // std::cout << "Using subgrid #" << std::distance(_knotarrays.begin(), it) << std::endl;
-    return it->second;
-  }
-  */
-
-  // MK: translate?
-  /*
-  const vector<double>& GridPDF::q2Knots() const {
-    if (_q2knots.empty()) {
-      // Get the list of Q2 knots by combining all subgrids
-      for (const auto& q2_ka : _knotarrays) { //< auto to make clang happy re. key constness
-        const KnotArrayNF& subgrid = q2_ka.second;
-        const KnotArray1F& grid1 = subgrid.get_first();
-        if (grid1.q2s().empty()) continue; //< @todo This shouldn't be possible, right? Throw instead, or ditch the check?
-        for (double q2 : grid1.q2s()) {
-          if (_q2knots.empty() || q2 != _q2knots.back()) _q2knots.push_back(q2);
-        }
-      }
-    }
-    return _q2knots;
-  }
-  */
-
-
   double GridPDF::_xfxQ2(int id, double x, double q2) const {
     /// Decide whether to use interpolation or extrapolation... the sanity checks
     /// are done in the public PDF::xfxQ2 function.
@@ -108,16 +74,7 @@ namespace LHAPDF {
     double xfx = 0;
     // MK: write propper function
     //int _id = data._pidLookup.find(id)->second;
-    int _id;
-    if(id < 21){ // includes -6, ..., -1, 1, ..., 6
-      _id = data._lookup[id + 6];
-    } else if (id == 21){
-      _id = data._lookup[0 + 6];
-    } else if (id == 22){
-      _id = data._lookup[13];
-    } else{
-      std::cout << id << std::endl;
-    }
+    int _id = data.get_pid(id);
     if(_id == -1) return 0;
 
     if (inRangeXQ2(x, q2)) {
@@ -139,12 +96,8 @@ namespace LHAPDF {
     if (inRangeXQ2(x, q2)) {
       interpolator().interpolateXQ2(x, q2, ret);
     } else {
-      // Originally, this part was done in PDF::xfxQ2(double, double, vector)
-      const int _n = flavors().size();
-      ret.clear();
-      ret.resize(_n);
-      for (int i = 0; i < _n; ++i) {
-	extrapolator().extrapolateXQ2(_n, x, q2);
+      for (int i = 0; i < 13; ++i) {
+	ret[i] = extrapolator().extrapolateXQ2(i, x, q2);
       }
     }
   }
