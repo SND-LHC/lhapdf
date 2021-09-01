@@ -265,7 +265,7 @@ namespace LHAPDF {
       i -= start;            // move to the start of the knots
       if (i == size) i -= 1; // can't return the last knot index
       i -= 1;                // step back to get the knot <= x behaviour
-      if (_knots[i]+start == _knots[i+1]+start) i -= 1;
+      if (_knots[i]+start == _knots[i+1]+start) i -= 1; // should actually never happen
       //if (_knots[i] == _knots[i-1]) i -= 1;
       return i;
     }
@@ -287,7 +287,6 @@ namespace LHAPDF {
     }
     
     void setxf(double ix, double iq, int pid, double value){
-      // Untested!
       _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
     }
 
@@ -303,9 +302,10 @@ namespace LHAPDF {
     // as they dont exist anymore in the old form, this now returns a vector
     // instead of the reference to one
     const std::vector<double> xs() const {
-      // MK: test
-      std::cerr << "not implemented yet" << std::endl;
-      throw;
+      std::vector<double>::const_iterator start = _knots.begin();
+      std::vector<double>::const_iterator end   = _knots.begin() + shape[0];
+      std::vector<double> xs(start, end);
+      return xs;
     }
 
     const double xs(const int id) const {
@@ -318,9 +318,10 @@ namespace LHAPDF {
     
     /// Access the Q2s array
     const std::vector<double> q2s() const {
-      // MK: test
-      std::cerr << "not implemented yet" << std::endl;
-      throw;
+      std::vector<double>::const_iterator start = _knots.begin() + shape[0];
+      std::vector<double>::const_iterator end   = _knots.begin() + shape[0] + shape[1];
+      std::vector<double> q2s(start, end);
+      return q2s;
     }
 
     const double q2s(const int id) const {
@@ -334,10 +335,14 @@ namespace LHAPDF {
     
     // Access the grid
     const std::vector<double>& grid() const {
-      // MK: test
       return _grid;
     }
 
+    // Access the polynomial coefficients
+    const std::vector<double>& coefficients() const {
+      return _coeffs;
+    }
+    
     const bool inRangeX(double x) const {
       // MK: test
       // add test to ensure knots are of approroate lenght
