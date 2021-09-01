@@ -198,14 +198,7 @@ namespace LHAPDF {
     /// @brief Return a representative list of interpolation knots in x
     ///
     /// The x knot array for the first flavor grid of the lowest-Q2 subgrid is returned.
-    // MK: translate?
-    /*
-    const vector<double>& xKnots() const {
-      const KnotArrayNF& subgrid1 = _knotarrays.begin()->second;
-      const KnotArray1F& grid1 = subgrid1.get_first();
-      return grid1.xs();
-    }
-    */
+    const vector<double>& xKnots() const;
 
     /// @brief Return a representative list of interpolation knots in Q2
     ///

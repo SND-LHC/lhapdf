@@ -45,7 +45,15 @@ namespace LHAPDF {
     return *_interpolator;
   }
 
-
+  const vector<double>& GridPDF::xKnots() const{
+    std::vector<double> _xs = data.xs();
+    return _xs;
+  }
+  
+  const vector<double>& GridPDF::q2Knots() const{
+    std::vector<double> _q2s = data.q2s();
+    return _q2s;
+  }
 
   void GridPDF::setExtrapolator(Extrapolator* xpol) {
     _extrapolator.reset(xpol);
