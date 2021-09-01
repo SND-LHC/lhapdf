@@ -331,7 +331,6 @@ namespace LHAPDF {
     const double logq2s(const int id) const {
       return _log_knots[shape[0] + id];
     }
-
     
     // Access the grid
     const std::vector<double>& grid() const {
@@ -345,7 +344,7 @@ namespace LHAPDF {
     
     const bool inRangeX(double x) const {
       // MK: test
-      // add test to ensure knots are of approroate lenght
+      // add test to ensure knots are of approriate lenght
       if(x < _knots[0]) return false;
       if(x > _knots[shape[0]-1]) return false;
       return true;
@@ -353,19 +352,32 @@ namespace LHAPDF {
     
     const bool inRangeQ2(double q2) const {
       // MK: test
-      // add test to ensure knots are of approroate lenght
+      // add test to ensure knots are of approriate lenght
       if(q2 < _knots[shape[0]]) return false;
       if(q2 > _knots[shape[1] + shape[0] - 1]) return false;
       return true;
     }
 
-    int findPidInPids(const int pid){
-      std::vector<int>::iterator it = std::find(_pids.begin(), _pids.end(), pid);
-      if(it == _pids.end()){
+    int findPidInPids(int pid) const {
+      std::vector<int>::const_iterator it = std::find(_pids.begin(), _pids.end(), pid);
+      if(it == _pids.end())
 	return -1;
-      } else {
+      else
 	return std::distance(_pids.begin(), it);
-      }
+    }
+
+    bool has_pid(int id) const {
+      int _id = findPidInPids(id);
+      return _id != -1;
+    }
+
+    int get_pid(int id) const {
+      // hardcoded lookup table for particle ids
+      // -6,...,-1,21/0,1,...,6,22
+      if(id < 21) return _lookup[id + 6];
+      else if (id == 21) return _lookup[0 + 6];
+      else if (id == 22) return _lookup[13];
+      else return findPidInPids(id);
     }
     
     void initPidLookup(){
@@ -388,7 +400,7 @@ namespace LHAPDF {
     std::vector<size_t> idbelow(std::vector<double> vals);
 
     const double xf(std::vector<int> ids);
-
+    
     const std::vector<double> igrid(const int i);
 
     
@@ -403,15 +415,12 @@ namespace LHAPDF {
     std::vector<double> _grid;
 
     // precompute derivatives
-    //   in principle, would need different values for the log derivatives and the linear ones
-    //   since log is the defaule, only do it for that one
     std::vector<double> _dgrid;
-
     std::vector<double> _coeffs;
     
     // Knots, assumes the same grid for all particle ids in the set
     std::vector<double> _knots;
-
+    
     // precompute log knots
     std::vector<double> _log_knots;
     
