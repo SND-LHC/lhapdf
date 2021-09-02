@@ -68,13 +68,12 @@ namespace LHAPDF {
     }
     
 
-    double _interpolate(const KnotArray &grid, int ix, int iq2, int id, shared_data &_share){
+    double _interpolate(const KnotArray &grid, size_t ix, size_t iq2, int id, shared_data &_share){
       double vl = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2,id,0));
       double vh = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2+1,id,0));
 
       // Derivatives in Q2
       double vdl, vdh;
-
       if (_share.q2_lower) {
 	// Forward difference for lower q
 	vdl = (vh - vl);
@@ -100,7 +99,7 @@ namespace LHAPDF {
       return _interpolateCubic(_share.tlogq, vl, vdl, vh, vdh);
     }
     
-    double _interpolateFallback(const KnotArray &grid, int ix, int iq2, int id, shared_data &_share){
+    double _interpolateFallback(const KnotArray &grid, size_t ix, size_t iq2, int id, shared_data &_share){
       // First interpolate in x
       const double logx0 = grid.logxs(ix);
       const double logx1 = grid.logxs(ix+1);
@@ -110,7 +109,7 @@ namespace LHAPDF {
       return _interpolateLinear(_share.logq2, grid.logq2s(iq2), grid.logq2s(iq2+1), f_ql, f_qh);
     }
       
-    void _checkGridSize(const KnotArray& grid, const int ix, const int iq2){
+    void _checkGridSize(const KnotArray& grid, const size_t ix, const size_t iq2){
       // Raise an error if there are too few knots even for a linear fall-back
       const size_t nxknots = grid.xsize();
       const size_t nq2knots = grid.q2size();
@@ -148,7 +147,6 @@ namespace LHAPDF {
     _checkGridSize(grid, ix, iq2);
     shared_data shared = fill(grid, x, q2, ix, iq2);
 
-    //ret.resize(13);
     if(!shared.q2_lower && !shared.q2_upper){
       for(int pid(-6); pid <= 6; ++pid){
 	int id = grid._lookup[pid + 6];
