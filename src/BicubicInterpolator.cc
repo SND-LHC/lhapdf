@@ -22,7 +22,7 @@ namespace LHAPDF {
       // check edges, including internal discontinuity
       shared_data shared;
       shared.q2_lower = ( (iq2 == 0) || (grid.q2s(iq2) == grid.q2s(iq2-1)));
-      shared.q2_upper = ( (iq2 == grid.q2size() -1) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
+      shared.q2_upper = ( (iq2 + 1 == grid.q2size() -1) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
       //const bool ix_lower = ( (ix == 0) );
       //const bool ix_upper = ( (ix == grid.xsize()) );
     

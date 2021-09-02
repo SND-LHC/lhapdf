@@ -335,6 +335,11 @@ namespace LHAPDF {
       return _grid;
     }
 
+    // Access the grid
+    const std::vector<double>& knots() const {
+      return _knots;
+    }
+    
     // Access the polynomial coefficients
     const std::vector<double>& coefficients() const {
       return _coeffs;

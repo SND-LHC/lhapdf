@@ -30,9 +30,9 @@ namespace LHAPDF {
       shared.dlogq_1 = grid.logq2s(iq2+1) - grid.logq2s(iq2);
       shared.dlogq_2 = 1./(grid.logq2s(iq2+2) - grid.logq2s(iq2+1));
       shared.tlogq   = (shared.logq2 - grid.logq2s(iq2)) / shared.dlogq_1;
-      
+
       shared.q2_lower = ( (iq2 == 0) || (grid.q2s(iq2) == grid.q2s(iq2-1)));
-      shared.q2_upper = ( (iq2 == grid.q2size() -1) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
+      shared.q2_upper = ( (iq2+1 == grid.q2size() - 1 ) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
       return shared;
     }
 		    
@@ -137,8 +137,9 @@ namespace LHAPDF {
     shared_data shared = fill(grid, x, q2, ix, iq2);
     // if it is an upper and a lower edge, there can only be two notes
     //   use lineare fallback in that case, but have default be the cubic case
-    if(!shared.q2_lower && !shared.q2_upper) 
+    if(!shared.q2_lower || !shared.q2_upper)
       return _interpolate(grid, ix, iq2, id, shared);
+    
     // Fallback mode
     return _interpolateFallback(grid, ix, iq2, id, shared);
   }
@@ -146,8 +147,8 @@ namespace LHAPDF {
   void LogBicubicInterpolator::_interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, std::vector<double>& ret) const {
     _checkGridSize(grid, ix, iq2);
     shared_data shared = fill(grid, x, q2, ix, iq2);
-
-    if(!shared.q2_lower && !shared.q2_upper){
+    
+    if(!shared.q2_lower || !shared.q2_upper){
       for(int pid(-6); pid <= 6; ++pid){
 	int id = grid._lookup[pid + 6];
 	if(id == -1){
