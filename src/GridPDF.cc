@@ -45,14 +45,12 @@ namespace LHAPDF {
     return *_interpolator;
   }
 
-  const vector<double>& GridPDF::xKnots() const{
-    std::vector<double> _xs = data.xs();
-    return _xs;
+  vector<double>& GridPDF::xKnots() {
+    return data.xs();
   }
   
-  const vector<double>& GridPDF::q2Knots() const{
-    std::vector<double> _q2s = data.q2s();
-    return _q2s;
+  vector<double>& GridPDF::q2Knots() {
+    return data.q2s();
   }
 
   void GridPDF::setExtrapolator(Extrapolator* xpol) {
@@ -78,29 +76,19 @@ namespace LHAPDF {
   double GridPDF::_xfxQ2(int id, double x, double q2) const {
     /// Decide whether to use interpolation or extrapolation... the sanity checks
     /// are done in the public PDF::xfxQ2 function.
-    //cout << "From GridPDF[0]: x = " << x << ", Q2 = " << q2 << endl;
     double xfx = 0;
-    // MK: write propper function
-    //int _id = data._pidLookup.find(id)->second;
     int _id = data.get_pid(id);
     if(_id == -1) return 0;
 
     if (inRangeXQ2(x, q2)) {
-      // cout << "From GridPDF[ipol]: x = " << x << ", Q2 = " << q2 << endl;
-      // cout << "Num subgrids = " << _knotarrays.size() << endl;
-      // int i = 0;
-      // for (std::map<double, KnotArrayNF>::const_iterator it = _knotarrays.begin(); it != _knotarrays.end(); ++it)
-      //   cout << "#" << i++ << " from Q = " << sqrt(it->first) << endl;
       xfx = interpolator().interpolateXQ2(_id, x, q2);
     } else {
-      // cout << "From GridPDF[xpol]: x = " << x << ", Q2 = " << q2 << endl;
       xfx = extrapolator().extrapolateXQ2(_id, x, q2);
     }
     return xfx;
   }
   
   void GridPDF::_xfxQ2(double x, double q2, std::vector<double>& ret) const {
-    //std::cout << "GridPDF::_xfxQ2 : " << x << " " << q2 << std::endl;
     if (inRangeXQ2(x, q2)) {
       interpolator().interpolateXQ2(x, q2, ret);
     } else {

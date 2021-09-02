@@ -301,11 +301,10 @@ namespace LHAPDF {
     /// Access the Q2s array
     // as they dont exist anymore in the old form, this now returns a vector
     // instead of the reference to one
-    const std::vector<double> xs() const {
-      std::vector<double>::const_iterator start = _knots.begin();
-      std::vector<double>::const_iterator end   = _knots.begin() + shape[0];
-      std::vector<double> xs(start, end);
-      return xs;
+    std::vector<double>& xs() {
+      _xs.resize(shape[0]);
+      std::copy(_knots.begin(), _knots.begin() + shape[0], _xs.begin());
+      return _xs;
     }
 
     const double xs(const int id) const {
@@ -317,11 +316,10 @@ namespace LHAPDF {
     }
     
     /// Access the Q2s array
-    const std::vector<double> q2s() const {
-      std::vector<double>::const_iterator start = _knots.begin() + shape[0];
-      std::vector<double>::const_iterator end   = _knots.begin() + shape[0] + shape[1];
-      std::vector<double> q2s(start, end);
-      return q2s;
+    std::vector<double>& q2s(){
+      _q2s.resize(shape[1]);
+      std::copy(_knots.begin() + shape[0], _knots.begin() + shape[0] + shape[1], _q2s.begin());
+      return _q2s;
     }
 
     const double q2s(const int id) const {
@@ -343,16 +341,12 @@ namespace LHAPDF {
     }
     
     const bool inRangeX(double x) const {
-      // MK: test
-      // add test to ensure knots are of approriate lenght
       if(x < _knots[0]) return false;
       if(x > _knots[shape[0]-1]) return false;
       return true;
     }
     
     const bool inRangeQ2(double q2) const {
-      // MK: test
-      // add test to ensure knots are of approriate lenght
       if(q2 < _knots[shape[0]]) return false;
       if(q2 > _knots[shape[1] + shape[0] - 1]) return false;
       return true;
@@ -427,7 +421,12 @@ namespace LHAPDF {
     // order the pids are filled in
     std::vector<int> _pids;
     std::vector<int> _lookup;
-    std::map<int, int> _pidLookup;    
+    std::map<int, int> _pidLookup;
+
+    //
+    std::vector<double> _xs;
+    std::vector<double> _q2s;
+
   };
   
 

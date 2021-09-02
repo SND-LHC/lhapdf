@@ -198,12 +198,12 @@ namespace LHAPDF {
     /// @brief Return a representative list of interpolation knots in x
     ///
     /// The x knot array for the first flavor grid of the lowest-Q2 subgrid is returned.
-    const vector<double>& xKnots() const;
+    vector<double>& xKnots();
 
     /// @brief Return a representative list of interpolation knots in Q2
     ///
     /// Constructed and cached by walking over all subgrids and concatenating their Q2 lists: expensive!
-    const vector<double>& q2Knots() const;
+    vector<double>& q2Knots();
 
   public:
 
