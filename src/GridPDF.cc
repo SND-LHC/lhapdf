@@ -147,10 +147,10 @@ namespace LHAPDF {
   void GridPDF::_computeDerivatives(KnotArray &data, bool logspace){
     data._dgrid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
 	
-    const int nxknots = data.xsize();
-    for(int ix(0); ix<nxknots; ++ix){
-      for(int iq2(0); iq2<data.q2size(); ++iq2){
-	for(int id(0); id<data.size(); ++id){
+    const size_t nxknots = data.xsize();
+    for(size_t ix(0); ix<nxknots; ++ix){
+      for(size_t iq2(0); iq2<data.q2size(); ++iq2){
+	for(size_t id(0); id<data.size(); ++id){
 	  double derivative, del1, del2;
 	  if(logspace){
 	    del1 = data.logxs(ix)   - data.logxs(ix-1);
@@ -177,13 +177,13 @@ namespace LHAPDF {
   }
 
   void GridPDF::_computePolynomialCoefficients(KnotArray &data, bool logspace){
-    const int nxknots = data.xsize();
-    std::vector<double> shape{data.xsize()-1, data.q2size(), data.size(), 4};
+    const size_t nxknots = data.xsize();
+    std::vector<size_t> shape{data.xsize()-1, data.q2size(), data.size(), 4};
     data._coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
       
-    for(int ix(0); ix<nxknots-1; ++ix){
-      for(int iq2(0); iq2<data.q2size(); ++iq2){
-	for(int id(0); id<data.size(); ++id){
+    for(size_t ix(0); ix<nxknots-1; ++ix){
+      for(size_t iq2(0); iq2<data.q2size(); ++iq2){
+	for(size_t id(0); id<data.size(); ++id){
 	  double dlogx;
 	  if(logspace){
 	    dlogx = data.logxs(ix+1) - data.logxs(ix);
@@ -212,7 +212,8 @@ namespace LHAPDF {
 
   void GridPDF::_loadData(const std::string& mempath) {
     string line, prevline;
-    int iblock(0), iblockline(0), iline(0), xsize(0);
+    int iblock(0), iblockline(0), iline(0);
+    size_t xsize(0);
     vector<double> knots;
     vector<int> pids;
     vector<double> ipid_xfs;
@@ -310,7 +311,7 @@ namespace LHAPDF {
       int xindex(0);
       
       IFile file(mempath.c_str());
-      NumParser nparser; double ftoken; int itoken;
+      NumParser nparser; double ftoken;
       while (getline(*file, line)) {
 
         // Trim the current line to ensure that there is no effect of leading spaces, etc.

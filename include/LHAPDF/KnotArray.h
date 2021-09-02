@@ -365,9 +365,10 @@ namespace LHAPDF {
       return _id != -1;
     }
 
-    int get_pid(int id) const {
+    inline int get_pid(int id) const {
       // hardcoded lookup table for particle ids
       // -6,...,-1,21/0,1,...,6,22
+      // if id outside of this range, search in list of ids
       if(id < 21) return _lookup[id + 6];
       else if (id == 21) return _lookup[0 + 6];
       else if (id == 22) return _lookup[13];
