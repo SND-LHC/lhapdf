@@ -79,7 +79,7 @@ namespace LHAPDF {
     double xfx = 0;
     int _id = data.get_pid(id);
     if(_id == -1) return 0;
-
+    
     if (inRangeXQ2(x, q2)) {
       xfx = interpolator().interpolateXQ2(_id, x, q2);
     } else {
@@ -92,8 +92,13 @@ namespace LHAPDF {
     if (inRangeXQ2(x, q2)) {
       interpolator().interpolateXQ2(x, q2, ret);
     } else {
-      for (int i = 0; i < 13; ++i) {
-	ret[i] = extrapolator().extrapolateXQ2(i, x, q2);
+      for (int id = 0; id < 13; ++id) {
+	int _id = data.get_pid(id - 6);
+	if(_id == -1) {
+	  ret[id] = 0;
+	} else {
+	  ret[id] = extrapolator().extrapolateXQ2(_id, x, q2);
+	}
       }
     }
   }
