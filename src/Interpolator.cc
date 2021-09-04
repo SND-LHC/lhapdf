@@ -10,34 +10,22 @@ namespace LHAPDF {
 
 
   double Interpolator::interpolateXQ2(int id, double x, double q2) const {
-    // Subgrid lookup
-    /// @todo Do this in two stages to cache the KnotArrayNF?
-    /// @todo Add flavour error checking
-
+    /// @todo Why do we make the detour via the Interpolator, instead of makin
+    ///       the below calls from the derived classes?
     const KnotArray& grid = pdf().knotarray();
-    
-    /// @todo Cache this index lookup for performance?
-    //  Maybe compiler finds this, as this is now *always* the same call
     const size_t ix  = grid.ixbelow(x);
     const size_t iq2 = grid.iq2below(q2);
     
-    /// Call the overloaded interpolation routine on this subgrid
+    /// Call the overloaded interpolation routine
     return _interpolateXQ2(grid, x, ix, q2, iq2, id);
   }
 
   void Interpolator::interpolateXQ2(double x, double q2, std::vector<double>& ret) const {
-    // Subgrid lookup
-    /// @todo Do this in two stages to cache the KnotArrayNF?
-    /// @todo Add flavour error checking
-
     const KnotArray& grid = pdf().knotarray();
-    
-    /// @todo Cache this index lookup for performance?
-    //  Maybe compiler finds this, as this is now *always* the same call
     const size_t ix  = grid.ixbelow(x);
     const size_t iq2 = grid.iq2below(q2);
     
-    /// Call the overloaded interpolation routine on this subgrid
+    /// Call the overloaded interpolation routine
     _interpolateXQ2(grid, x, ix, q2, iq2, ret);
   }
   
