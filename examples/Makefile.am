@@ -3,7 +3,6 @@ AM_LDFLAGS += -L$(top_builddir)/src -L$(prefix)/lib
 LIBS = -lLHAPDF
 
 noinst_PROGRAMS = testpdf testpdfset testpdfcache analyticpdf compatibility testpdfunc hessian2replicas reweight
-noinst_PROGRAMS = testpdf testpdfset analyticpdf compatibility testpdfunc hessian2replicas reweight
 testpdf_SOURCES = testpdf.cc
 testpdfset_SOURCES = testpdfset.cc
 testpdfcache_SOURCES = testpdfcache.cc
