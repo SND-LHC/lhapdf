@@ -73,6 +73,7 @@ namespace LHAPDF {
       double vh = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2+1,id,0));
 
       // Derivatives in Q2
+      /// @todo changes derivative approximation to take knot distance into account
       double vdl, vdh;
       if (_share.q2_lower) {
 	// Forward difference for lower q
