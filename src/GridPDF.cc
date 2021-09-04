@@ -45,11 +45,11 @@ namespace LHAPDF {
     return *_interpolator;
   }
 
-  vector<double>& GridPDF::xKnots() {
+  const vector<double>& GridPDF::xKnots() const {
     return data.xs();
   }
   
-  vector<double>& GridPDF::q2Knots() {
+  const vector<double>& GridPDF::q2Knots() const {
     return data.q2s();
   }
 
@@ -218,8 +218,9 @@ namespace LHAPDF {
   void GridPDF::_loadData(const std::string& mempath) {
     string line, prevline;
     int iblock(0), iblockline(0), iline(0);
-    size_t xsize(0);
-    vector<double> knots;
+    vector<double> xknots;
+    vector<double> q2knots;
+
     vector<int> pids;
     vector<double> ipid_xfs;
 
@@ -243,22 +244,21 @@ namespace LHAPDF {
           nparser.reset(line);
           if (iblockline == 1) { // x knots line
 	    if(iblock == 1){
-	      while (nparser >> ftoken) knots.push_back(ftoken);
-	      if (knots.empty())
+	      while (nparser >> ftoken) xknots.push_back(ftoken);
+	      if (xknots.empty())
 		throw ReadError("Empty x knot array on line " + to_str(iline));
-	      xsize = knots.size();
 	    } else { // the x grid should be the same as for the fist i block
 	      int tmp = 0;
 	      while (nparser >> ftoken) {
-		if(ftoken != knots[tmp])
+		if(ftoken != xknots[tmp])
 		  throw ReadError("Mismatch in the x-knots");
 		++tmp;
 	      }
 	    }
 	    
           } else if (iblockline == 2) { // Q knots line
-            while (nparser >> ftoken) knots.push_back(ftoken*ftoken); // note Q -> Q2
-            if (knots.size() == xsize)
+            while (nparser >> ftoken) q2knots.push_back(ftoken*ftoken); // note Q -> Q2
+            if (q2knots.size() == 0)
               throw ReadError("Empty Q knot array on line " + to_str(iline));
           } else if (iblockline == 3) { // internal flavor IDs ordering line
 	    if(iblock == 1){
@@ -276,7 +276,6 @@ namespace LHAPDF {
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(pids.size()) +
                               " parton flavors declared but " + to_str(flavors().size()) + " expected from Flavors metadata");
             /// @todo Handle sea/valence representations via internal pseudo-PIDs
-	    //  MK: What?
           }
 	} else{
 	  ++iblock;
@@ -292,17 +291,17 @@ namespace LHAPDF {
     iblock = 0; iblockline = 0; iline = 0;
 
     // feed data into KnotArray
-    // MK: write proper setter functions
-    data._knots = knots;
-    for(double knot : knots){
-      data._log_knots.push_back(log(knot));
-    }
+    data.setXknots() = xknots;
+    data.setQ2knots() = q2knots;
+    data.fillLogKnots();
     
-    data.shape.resize(3);
-    data.shape[0] = xsize;
-    data.shape[1] = knots.size() - xsize;
-    data.shape[2] = pids.size();
-    data._pids = pids;
+    std::vector<size_t> shape(3);
+    shape[0] = xknots.size();
+    shape[1] = q2knots.size();
+    shape[2] = pids.size();
+    data.setShape() = shape;
+    
+    data.setPids() = pids;
 
     // create lookuptable to get index id from pid
     data.initPidLookup();

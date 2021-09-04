@@ -245,15 +245,21 @@ namespace LHAPDF {
     std::map<int, KnotArray1F> _map;
 
   };
-
+  
+  /// @brief Internal storage class for PDF data point grids
+  ///
+  /// We use "array" to refer to the "raw" knot grid, while "grid" means a grid-based PDF.
+  /// The "1F" means that this is a single-flavour array
   class KnotArray{
   public:
-    // ------ Basically "new" versions of the old methods in
-    //        KnotArrayNF
+    
+    /// How many flavours are stored in the grid stored
+    size_t size() const { return shape.back(); }
 
-    // For how many flavours is the grid stored
-    size_t size()   const { return shape.back(); }
-    size_t xsize()  const { return shape[0]; }
+    /// How many x knots are there
+    size_t xsize() const { return shape[0]; }
+
+    /// How many q2 knots are there
     size_t q2size() const { return shape[1]; }
     
     /// Is this container empty?
@@ -270,6 +276,7 @@ namespace LHAPDF {
       return i;
     }
 
+    
     size_t ixbelow(double x) const {
       return indexbelow(x, 0, shape[0]);
     }
@@ -278,19 +285,19 @@ namespace LHAPDF {
       return indexbelow(q2, shape[0], shape[1]);
     }
     
-    const double getxf(int ix, int iq2, int ipid) const {
+    double getxf(int ix, int iq2, int ipid) const {
       return _grid[ix*shape[2]*shape[1] + iq2*shape[2] + ipid];
     }
 
-    const double xf(int ix, int iq2, int pid) const {
-      return getxf(ix, iq2, pid); // _pidLookup.find(pid)->second);
+    double xf(int ix, int iq2, int pid) const {
+      return getxf(ix, iq2, pid); 
     }
     
     void setxf(double ix, double iq, int pid, double value){
       _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
     }
 
-    const double dxf(int ix, int iq2, int ipid) const {
+    double dxf(int ix, int iq2, int ipid) const {
       return _dgrid[ix*shape[2]*shape[1] + iq2*shape[2] + ipid];
     }
 
@@ -301,33 +308,29 @@ namespace LHAPDF {
     /// Access the Q2s array
     // as they dont exist anymore in the old form, this now returns a vector
     // instead of the reference to one
-    std::vector<double>& xs() {
-      _xs.resize(shape[0]);
-      std::copy(_knots.begin(), _knots.begin() + shape[0], _xs.begin());
+    const std::vector<double>& xs() const {
       return _xs;
     }
 
-    const double xs(const int id) const {
-      return _knots[id];
+    double xs(const int id) const {
+      return _xs[id];
     }
 
-    const double logxs(const int id) const {
-      return _log_knots[id];
+    double logxs(const int id) const {
+      return _logxs[id];
     }
     
     /// Access the Q2s array
-    std::vector<double>& q2s(){
-      _q2s.resize(shape[1]);
-      std::copy(_knots.begin() + shape[0], _knots.begin() + shape[0] + shape[1], _q2s.begin());
+    const std::vector<double>& q2s() const {
       return _q2s;
     }
 
-    const double q2s(const int id) const {
-      return _knots[shape[0] + id];
+    double q2s(const int id) const {
+      return _q2s[id];
     }
 
-    const double logq2s(const int id) const {
-      return _log_knots[shape[0] + id];
+    double logq2s(const int id) const {
+      return _logq2s[id];
     }
     
     // Access the grid
@@ -335,9 +338,22 @@ namespace LHAPDF {
       return _grid;
     }
 
-    // Access the grid
-    const std::vector<double>& knots() const {
+    // Non const access the knots used for the filling
+    std::vector<double>& setXknots() {
       return _knots;
+    }
+
+    // Non const acess to the q2knots used for the filling
+    std::vector<double>& setQ2knots() {
+      return _q2s;
+    }
+
+    std::vector<int>& setPids() {
+      return _pids;
+    }
+
+    std::vector<size_t>& setShape(){
+      return shape;
     }
     
     // Access the polynomial coefficients
@@ -345,13 +361,13 @@ namespace LHAPDF {
       return _coeffs;
     }
     
-    const bool inRangeX(double x) const {
+    bool inRangeX(double x) const {
       if(x < _knots[0]) return false;
       if(x > _knots[shape[0]-1]) return false;
       return true;
     }
     
-    const bool inRangeQ2(double q2) const {
+    bool inRangeQ2(double q2) const {
       if(q2 < _knots[shape[0]]) return false;
       if(q2 > _knots[shape[1] + shape[0] - 1]) return false;
       return true;
@@ -395,17 +411,17 @@ namespace LHAPDF {
 	_lookup.push_back(findPidInPids(i));
       _lookup.push_back(findPidInPids(22));
     }
-    
-    // Version for general number of dimensions
-    std::vector<size_t> idbelow(std::vector<double> vals);
 
-    const double xf(std::vector<int> ids);
-    
-    const std::vector<double> igrid(const int i);
+    void fillLogKnots() {
+      _logxs.resize(_xs.size());
+      for(size_t i(0); i<_xs.size(); ++i)
+	_logxs[i] = log(_xs[i]);
 
+      _logq2s.resize(_q2s.size());
+      for(size_t i(0); i<_q2s.size(); ++i)
+	_logq2s[i] = log(_q2s[i]);
+    }
     
-    // the below should be private
-    //   need to write some propper setter/getter functions before privatising them
     //private:
 
     // Shape of the interpolation grid
@@ -416,6 +432,8 @@ namespace LHAPDF {
 
     // precompute derivatives
     std::vector<double> _dgrid;
+
+    // Storage for the precomputed polynomial coefficients
     std::vector<double> _coeffs;
     
     // Knots, assumes the same grid for all particle ids in the set
@@ -427,11 +445,12 @@ namespace LHAPDF {
     // order the pids are filled in
     std::vector<int> _pids;
     std::vector<int> _lookup;
-    std::map<int, int> _pidLookup;
 
-    //
+    // knots
     std::vector<double> _xs;
     std::vector<double> _q2s;
+    std::vector<double> _logxs;
+    std::vector<double> _logq2s;
 
   };
   

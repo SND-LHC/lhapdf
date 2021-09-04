@@ -10,17 +10,18 @@ namespace LHAPDF {
 
 
   namespace { // Unnamed namespace
-
     // Return the value in the given list that best matches the target value
-    double _findClosestMatch(const vector<double>& knots, double target, size_t start, size_t size) {
-      vector<double>::const_iterator it = lower_bound(knots.begin() + start, knots.begin() + size, target);
+    double _findClosestMatch(const vector<double>& cands, double target) {
+      // cout << "From NPXpol: knots = ["; for (double c : cands) cout << c << " "; cout << endl;
+      vector<double>::const_iterator it = lower_bound(cands.begin(), cands.end(), target);
       const double upper = *it;
-      const double lower = (it == knots.begin() + start) ? upper : *(--it); //< Avoid decrementing the first entry
+      const double lower = (it == cands.begin()) ? upper : *(--it); //< Avoid decrementing the first entry
       /// @todo Closeness in linear or log space? Hmm...
       if (fabs(target - upper) < fabs(target - lower)) return upper;
       return lower;
     }
 
+    
   }
 
 
@@ -28,8 +29,8 @@ namespace LHAPDF {
     /// Find the closest valid x and Q2 points, either on- or off-grid, and use the current interpolator
     /// @todo We should *always* interpolate x -> 1.0
     const KnotArray data = pdf().knotarray();
-    const double closestX  = (pdf().inRangeX(x))   ? x  : _findClosestMatch(data.knots(), x, 0, data.shape[1]);
-    const double closestQ2 = (pdf().inRangeQ2(q2)) ? q2 : _findClosestMatch(data.knots(), q2,data.shape[1], data.shape[0] + data.shape[1]);
+    const double closestX  = (pdf().inRangeX(x))   ? x  : _findClosestMatch(data.xs(), x);
+    const double closestQ2 = (pdf().inRangeQ2(q2)) ? q2 : _findClosestMatch(data.q2s(), q2);
     return pdf().interpolator().interpolateXQ2(id, closestX, closestQ2);
   }
 
