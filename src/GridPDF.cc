@@ -79,7 +79,6 @@ namespace LHAPDF {
     double xfx = 0;
     int _id = data.get_pid(id);
     if(_id == -1) return 0;
-    
     if (inRangeXQ2(x, q2)) {
       xfx = interpolator().interpolateXQ2(_id, x, q2);
     } else {
@@ -151,19 +150,19 @@ namespace LHAPDF {
   
   void GridPDF::_computeDerivatives(KnotArray &data, bool logspace){
     data._dgrid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
-	
     const size_t nxknots = data.xsize();
     for(size_t ix(0); ix<nxknots; ++ix){
       for(size_t iq2(0); iq2<data.q2size(); ++iq2){
 	for(size_t id(0); id<data.size(); ++id){
 	  double derivative, del1, del2;
 	  if(logspace){
-	    del1 = data.logxs(ix)   - data.logxs(ix-1);
-	    del2 = data.logxs(ix+1) - data.logxs(ix);
+	    del1 = (ix == 0)           ? 0 : data.logxs(ix)   - data.logxs(ix-1);
+	    del2 = (ix == nxknots - 1) ? 0 : data.logxs(ix+1) - data.logxs(ix);
 	  } else {
-	    del1 = data.xs(ix)   - data.xs(ix-1);
-	    del2 = data.xs(ix+1) - data.xs(ix);
+	    del1 = (ix == 0)           ? 0 : data.xs(ix)   - data.xs(ix-1);
+	    del2 = (ix == nxknots - 1) ? 0 : data.xs(ix+1) - data.xs(ix);
 	  }
+	  
 	  if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
 	    const double lddx = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
 	    const double rddx = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
@@ -185,7 +184,7 @@ namespace LHAPDF {
     const size_t nxknots = data.xsize();
     std::vector<size_t> shape{data.xsize()-1, data.q2size(), data.size(), 4};
     data._coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
-      
+
     for(size_t ix(0); ix<nxknots-1; ++ix){
       for(size_t iq2(0); iq2<data.q2size(); ++iq2){
 	for(size_t id(0); id<data.size(); ++id){
@@ -291,8 +290,8 @@ namespace LHAPDF {
     iblock = 0; iblockline = 0; iline = 0;
 
     // feed data into KnotArray
-    data.setXknots() = xknots;
-    data.setQ2knots() = q2knots;
+    data.setxknots() = xknots;
+    data.setq2knots() = q2knots;
     data.fillLogKnots();
     
     std::vector<size_t> shape(3);

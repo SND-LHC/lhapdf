@@ -266,23 +266,19 @@ namespace LHAPDF {
     bool empty() const { return _grid.empty(); }
     
     // General function to find the knot below a given value
-    size_t indexbelow(double value, size_t start, size_t size) const {
-      size_t i = upper_bound(_knots.begin() + start, _knots.begin()+start+size, value) - _knots.begin();
-      i -= start;            // move to the start of the knots
-      if (i == size) i -= 1; // can't return the last knot index
+    size_t indexbelow(double value, const std::vector<double>& knots) const {
+      size_t i = upper_bound(knots.begin(), knots.end(), value) - knots.begin();
+      if (i == knots.size()) i -= 1; // can't return the last knot index
       i -= 1;                // step back to get the knot <= x behaviour
-      if (_knots[i]+start == _knots[i+1]+start) i -= 1; // should actually never happen
-      //if (_knots[i] == _knots[i-1]) i -= 1;
       return i;
     }
-
     
     size_t ixbelow(double x) const {
-      return indexbelow(x, 0, shape[0]);
+      return indexbelow(x, _xs);
     }
     
     size_t iq2below(double q2) const {
-      return indexbelow(q2, shape[0], shape[1]);
+      return indexbelow(q2, _q2s);
     }
     
     double getxf(int ix, int iq2, int ipid) const {
@@ -312,11 +308,16 @@ namespace LHAPDF {
       return _xs;
     }
 
-    double xs(const int id) const {
+    const std::vector<double>& logxs() const {
+      return _logxs;
+    }
+
+    
+    double xs(int id) const {
       return _xs[id];
     }
 
-    double logxs(const int id) const {
+    double logxs(int id) const {
       return _logxs[id];
     }
     
@@ -324,12 +325,16 @@ namespace LHAPDF {
     const std::vector<double>& q2s() const {
       return _q2s;
     }
+    
+    const std::vector<double>& logq2s() const {
+      return _logq2s;
+    }
 
-    double q2s(const int id) const {
+    double q2s(int id) const {
       return _q2s[id];
     }
 
-    double logq2s(const int id) const {
+    double logq2s(int id) const {
       return _logq2s[id];
     }
     
@@ -339,12 +344,12 @@ namespace LHAPDF {
     }
 
     // Non const access the knots used for the filling
-    std::vector<double>& setXknots() {
-      return _knots;
+    std::vector<double>& setxknots() {
+      return _xs;
     }
 
     // Non const acess to the q2knots used for the filling
-    std::vector<double>& setQ2knots() {
+    std::vector<double>& setq2knots() {
       return _q2s;
     }
 
@@ -362,14 +367,14 @@ namespace LHAPDF {
     }
     
     bool inRangeX(double x) const {
-      if(x < _knots[0]) return false;
-      if(x > _knots[shape[0]-1]) return false;
+      if(x < _xs.front()) return false;
+      if(x > _xs.back())   return false;
       return true;
     }
     
     bool inRangeQ2(double q2) const {
-      if(q2 < _knots[shape[0]]) return false;
-      if(q2 > _knots[shape[1] + shape[0] - 1]) return false;
+      if(q2 < _q2s.front()) return false;
+      if(q2 > _q2s.back())   return false;
       return true;
     }
 
@@ -435,12 +440,6 @@ namespace LHAPDF {
 
     // Storage for the precomputed polynomial coefficients
     std::vector<double> _coeffs;
-    
-    // Knots, assumes the same grid for all particle ids in the set
-    std::vector<double> _knots;
-    
-    // precompute log knots
-    std::vector<double> _log_knots;
     
     // order the pids are filled in
     std::vector<int> _pids;
