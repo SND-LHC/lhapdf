@@ -70,20 +70,6 @@ namespace LHAPDF {
       return p0 + m0 + p1 + m1;
     }
 
-    // Provides d/dx at all grid locations
-    double _ddx(const KnotArray& grid, size_t ix, size_t iq2, int id) {
-      /// @todo Re-order this if so that branch prediction will favour the "normal" central case
-      if (ix == 0) { //< If at leftmost edge, use forward difference
-        return (grid.xf(ix+1, iq2, id) - grid.xf(ix, iq2, id)) / (grid.xs(ix+1) - grid.xs(ix));
-      } else if (ix == grid.xsize() - 1) { //< If at rightmost edge, use backward difference
-        return (grid.xf(ix, iq2, id) - grid.xf(ix-1, iq2, id)) / (grid.xs(ix) - grid.xs(ix-1));
-      } else { //< If central, use the central difference
-        const double lddx = (grid.xf(ix, iq2, id) - grid.xf(ix-1, iq2, id)) / (grid.xs(ix) - grid.xs(ix-1));
-        const double rddx = (grid.xf(ix+1, iq2, id) - grid.xf(ix, iq2, id)) / (grid.xs(ix+1) - grid.xs(ix));
-        return (lddx + rddx) / 2.0;
-      }
-    }
-
     double _interpolate(const KnotArray& grid, size_t ix, size_t iq2, int id, shared_data& _share){
       // Points in Q2
       double vl = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2,id,0));
