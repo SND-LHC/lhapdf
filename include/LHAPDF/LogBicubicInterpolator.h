@@ -109,15 +109,6 @@ namespace LHAPDF {
 
     };
 
-
-    /// @brief Get and update the current caching structs for interpolation params
-    ///
-    /// @note Caches are handled separately for x and Q since they can be sampled very differently.
-    ///@{
-    static XCache& _getCacheX(const KnotArray1F& subgrid, double x, size_t ix);
-    static Q2Cache& _getCacheQ2(const KnotArray1F& subgrid, double q2, size_t iq2);
-    ///@}
-
   };
 
 }

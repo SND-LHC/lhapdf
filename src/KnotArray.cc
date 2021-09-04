@@ -8,12 +8,30 @@
 
 namespace LHAPDF {
 
+  void KnotArray::initPidLookup(){
+    _lookup.clear();
+    if(_pids.size() == 0){
+      // MK: is there a better LHAPDF error for that?
+      std::cerr << "Internal error when constructing lookup table; need to fill pids before construction"<< std::endl;
+      throw;
+    }
+    for(int i(-6); i<0; i++)
+      _lookup.push_back(findPidInPids(i));
+      
+    _lookup.push_back(findPidInPids(21));
+    for(int i(1); i<=6; i++)
+      _lookup.push_back(findPidInPids(i));
+    _lookup.push_back(findPidInPids(22));
+  }
 
-  size_t KnotArray1F::_mkhash(const std::vector<double>& xx) const {
-    std::hash<double> hasher;
-    size_t rtn = 0;
-    for (double x : xx) rtn = 31*rtn + hasher(x);
-    return rtn + 1;
+  void KnotArray::fillLogKnots() {
+    _logxs.resize(_xs.size());
+    for(size_t i(0); i<_xs.size(); ++i)
+      _logxs[i] = log(_xs[i]);
+
+    _logq2s.resize(_q2s.size());
+    for(size_t i(0); i<_q2s.size(); ++i)
+      _logq2s[i] = log(_q2s[i]);
   }
   
 }

@@ -165,14 +165,6 @@ namespace LHAPDF {
     /// @name Info about the grid, and access to the raw data points
     ///@{
 
-    /// Directly access the knot arrays in non-const mode, for programmatic filling
-    // MK: translate?
-    /*
-    std::map<double, KnotArrayNF>& knotarrays() {
-      return _knotarrays;
-    }
-    */
-
     // accerror to new data structure
     const KnotArray& knotarray() const {
       return data;
@@ -181,19 +173,6 @@ namespace LHAPDF {
     KnotArray& Data() {
       return data;
     }
-
-    
-    /// Get the N-flavour subgrid containing Q2 = q2
-    // MK: translate?
-    //const KnotArrayNF& subgrid(double q2) const;
-
-    /// Get the 1-flavour subgrid for PID=id containing Q2 = q2
-    // MK: translate?
-    /*
-    const KnotArray1F& subgrid(int id, double q2) const {
-      return subgrid(q2).get_pid(id);
-    }
-    */
 
     /// @brief Return a representative list of interpolation knots in x
     ///
@@ -223,15 +202,6 @@ namespace LHAPDF {
     // name?
     KnotArray data;
 	
-    /// Map of multi-flavour KnotArrays "binned" for lookup by low edge in Q2
-    //std::map<double, KnotArrayNF> _knotarrays;
-
-    // /// Caching vector of x knot values
-    // mutable std::vector<double> _xknots;
-
-    /// Caching vector of Q2 knot values
-    //mutable std::vector<double> _q2knots;
-
     /// Typedef of smart pointer for ipol memory handling
     typedef unique_ptr<Interpolator> InterpolatorPtr;
 
