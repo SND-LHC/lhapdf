@@ -290,7 +290,7 @@ namespace LHAPDF {
     shape[0] = xknots.size();
     shape[1] = q2knots.size();
     shape[2] = pids.size();
-    data.shape = shape;
+    data.shape() = shape;
     
     data.setPids() = pids;
 
@@ -298,7 +298,7 @@ namespace LHAPDF {
     data.initPidLookup();
     
     // sets size of data vector
-    ipid_xfs.resize(data.shape[0] * data.shape[1] * data.shape[2]);
+    ipid_xfs.resize(data.shape(0) * data.shape(1) * data.shape(2));
     
     int qloc(0), qtot(0);
     try {
@@ -329,8 +329,8 @@ namespace LHAPDF {
 	    continue;
           } else {
             while (nparser >> ftoken) {
-	      ipid_xfs[xindex*data.shape[2]*data.shape[1]
-		       + qtot*data.shape[2]
+	      ipid_xfs[xindex*data.shape(2)*data.shape(1)
+		       + qtot*data.shape(2)
 		       + index] = ftoken;
 	      ++index;
             }	    

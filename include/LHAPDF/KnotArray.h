@@ -21,13 +21,13 @@ namespace LHAPDF {
   public:
     
     /// How many flavours are stored in the grid stored
-    size_t size() const { return shape.back(); }
+    size_t size() const { return _shape.back(); }
 
     /// How many x knots are there
-    size_t xsize() const { return shape[0]; }
+    size_t xsize() const { return _shape[0]; }
 
     /// How many q2 knots are there
-    size_t q2size() const { return shape[1]; }
+    size_t q2size() const { return _shape[1]; }
     
     /// Is this container empty?
     bool empty() const { return _grid.empty(); }
@@ -49,7 +49,7 @@ namespace LHAPDF {
     }
     
     double getxf(int ix, int iq2, int ipid) const {
-      return _grid[ix*shape[2]*shape[1] + iq2*shape[2] + ipid];
+      return _grid[ix*_shape[2]*_shape[1] + iq2*_shape[2] + ipid];
     }
 
     double xf(int ix, int iq2, int pid) const {
@@ -57,11 +57,11 @@ namespace LHAPDF {
     }
     
     void setxf(double ix, double iq, int pid, double value){
-      _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
+      _grid[ix*_shape[1]*_shape[2] + iq*_shape[2] + pid] = value;
     }
 
     const double& coeff(int ix, int iq2, int pid, int in) const {
-      return _coeffs[ix*(shape[1])*shape[2]*4 + iq2*shape[2]*4 + pid*4 + in];
+      return _coeffs[ix*(_shape[1])*_shape[2]*4 + iq2*_shape[2]*4 + pid*4 + in];
     }
 
     std::vector<double>& coeff() {
@@ -126,15 +126,12 @@ namespace LHAPDF {
       return _pids;
     }
 
-    /*
     std::vector<size_t>& shape(){
-      return shape;
+      return _shape;
     }
-    */
-    
-    // Access the polynomial coefficients
-    const std::vector<double>& coefficients() const {
-      return _coeffs;
+
+    size_t shape(int id) const {
+      return _shape[id];
     }
     
     bool inRangeX(double x) const {
@@ -176,10 +173,10 @@ namespace LHAPDF {
 
     void fillLogKnots();
     
-    // Shape of the interpolation grid
-    std::vector<size_t> shape;
-    
   private:
+    // Shape of the interpolation grid
+    std::vector<size_t> _shape;
+        
      // Gridvalues
     std::vector<double> _grid;
 
