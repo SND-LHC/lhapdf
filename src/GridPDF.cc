@@ -203,7 +203,7 @@ namespace LHAPDF {
 	}
       }
     }
-    data.coeff() = coeffs;
+    data.setCoeffs() = coeffs;
   }
 
   void GridPDF::_loadData(const std::string& mempath) {
@@ -282,7 +282,7 @@ namespace LHAPDF {
     iblock = 0; iblockline = 0; iline = 0;
 
     // feed data into KnotArray
-    data.setxknots() = xknots;
+    data.setxknots()  = xknots;
     data.setq2knots() = q2knots;
     data.fillLogKnots();
     
@@ -290,7 +290,7 @@ namespace LHAPDF {
     shape[0] = xknots.size();
     shape[1] = q2knots.size();
     shape[2] = pids.size();
-    data.shape() = shape;
+    data.setShape() = shape;
     
     data.setPids() = pids;
 
@@ -372,7 +372,7 @@ namespace LHAPDF {
         }
 	
       }
-      data.grid() = ipid_xfs;
+      data.setGrid() = ipid_xfs;
             
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")

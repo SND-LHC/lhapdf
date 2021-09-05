@@ -118,12 +118,8 @@ namespace LHAPDF {
       oss << scientific << x << " > " << xMax;
       throw RangeError(oss.str());
 
-    } else {
-      std::cerr << "x = " << x << ", xmin = " << xMin << ", xMax = " << xMax <<	std::endl;
-      std::cerr << " q2 = " << q2 << ", q2Min = " << q2Min << ", q2Max = " << q2Max << std::endl;
-      throw LogicError("We shouldn't be able to get here!\n  In ContinuationExtrapolator::extrapolateXQ2");
-
-    }
+    } else throw LogicError("We shouldn't be able to get here!");
+    
     return xpdf;
 
   }

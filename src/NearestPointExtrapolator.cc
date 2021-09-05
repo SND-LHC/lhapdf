@@ -10,6 +10,7 @@ namespace LHAPDF {
 
 
   namespace { // Unnamed namespace
+    
     // Return the value in the given list that best matches the target value
     double _findClosestMatch(const vector<double>& cands, double target) {
       // cout << "From NPXpol: knots = ["; for (double c : cands) cout << c << " "; cout << endl;
@@ -21,7 +22,6 @@ namespace LHAPDF {
       return lower;
     }
 
-    
   }
 
 

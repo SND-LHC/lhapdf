@@ -341,7 +341,6 @@ namespace LHAPDF {
 
     /// Combined range check for x and Q2
     bool inRangeXQ2(double x, double q2) const {
-      //std::cout << "PDF::inRangeXQ2 : " << x << " " << q2 << std::endl;
       return inRangeX(x) && inRangeQ2(q2);
     }
 

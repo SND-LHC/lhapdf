@@ -40,109 +40,39 @@ namespace LHAPDF {
       return i;
     }
     
-    size_t ixbelow(double x) const {
-      return indexbelow(x, _xs);
-    }
+    size_t ixbelow(double x) const { return indexbelow(x, _xs); }
     
-    size_t iq2below(double q2) const {
-      return indexbelow(q2, _q2s);
-    }
+    size_t iq2below(double q2) const { return indexbelow(q2, _q2s); }
     
-    double getxf(int ix, int iq2, int ipid) const {
+    double xf(int ix, int iq2, int ipid) const {
       return _grid[ix*_shape[2]*_shape[1] + iq2*_shape[2] + ipid];
     }
-
-    double xf(int ix, int iq2, int pid) const {
-      return getxf(ix, iq2, pid); 
-    }
     
-    void setxf(double ix, double iq, int pid, double value){
-      _grid[ix*_shape[1]*_shape[2] + iq*_shape[2] + pid] = value;
-    }
-
     const double& coeff(int ix, int iq2, int pid, int in) const {
       return _coeffs[ix*(_shape[1])*_shape[2]*4 + iq2*_shape[2]*4 + pid*4 + in];
     }
 
-    std::vector<double>& coeff() {
-      return _coeffs;
-    }
-
-    const int lookUpPid(int id) const {
-      return _lookup[id];
-      
-    }
+    int lookUpPid(int id) const { return _lookup[id]; }
     
-    /// Access the Q2s array
-    const std::vector<double>& xs() const {
-      return _xs;
-    }
+    double xs(int id) const { return _xs[id]; }
 
-    const std::vector<double>& logxs() const {
-      return _logxs;
-    }
+    double logxs(int id) const { return _logxs[id]; }
     
-    double xs(int id) const {
-      return _xs[id];
-    }
+    double q2s(int id) const { return _q2s[id]; }
 
-    double logxs(int id) const {
-      return _logxs[id];
-    }
+    double logq2s(int id) const { return _logq2s[id]; }
     
-    /// Access the Q2s array
-    const std::vector<double>& q2s() const {
-      return _q2s;
-    }
-    
-    const std::vector<double>& logq2s() const {
-      return _logq2s;
-    }
-
-    double q2s(int id) const {
-      return _q2s[id];
-    }
-
-    double logq2s(int id) const {
-      return _logq2s[id];
-    }
-    
-    // Access the grid
-    std::vector<double>& grid() {
-      return _grid;
-    }
-
-    // Non const access the knots used for the filling
-    std::vector<double>& setxknots() {
-      return _xs;
-    }
-
-    // Non const acess to the q2knots used for the filling
-    std::vector<double>& setq2knots() {
-      return _q2s;
-    }
-
-    std::vector<int>& setPids() {
-      return _pids;
-    }
-
-    std::vector<size_t>& shape(){
-      return _shape;
-    }
-
-    size_t shape(int id) const {
-      return _shape[id];
-    }
+    size_t shape(int id) const { return _shape[id]; }
     
     bool inRangeX(double x) const {
       if(x < _xs.front()) return false;
-      if(x > _xs.back())   return false;
+      if(x > _xs.back())  return false;
       return true;
     }
     
     bool inRangeQ2(double q2) const {
       if(q2 < _q2s.front()) return false;
-      if(q2 > _q2s.back())   return false;
+      if(q2 > _q2s.back())  return false;
       return true;
     }
 
@@ -172,6 +102,28 @@ namespace LHAPDF {
     void initPidLookup();
 
     void fillLogKnots();
+    
+    /// Const accessors to the internal data container
+    const std::vector<double>& xs() const { return _xs; }
+
+    const std::vector<double>& logxs() const { return _logxs; }
+
+    const std::vector<double>& q2s() const { return _q2s; }
+    
+    const std::vector<double>& logq2s() const { return _logq2s; }
+
+    /// Non const accessors for programmatic filling
+    std::vector<double>& setCoeffs() { return _coeffs; }
+
+    std::vector<double>& setGrid() { return _grid; }
+
+    std::vector<double>& setxknots() { return _xs; }
+
+    std::vector<double>& setq2knots() { return _q2s; }
+
+    std::vector<size_t>& setShape(){ return _shape; }
+    
+    std::vector<int>&    setPids() { return _pids; }
     
   private:
     // Shape of the interpolation grid
