@@ -180,9 +180,6 @@ namespace LHAPDF {
     // Gridvalues
     std::vector<double> _grid;
 
-    // precompute derivatives
-    std::vector<double> _dgrid;
-
     // Storage for the precomputed polynomial coefficients
     std::vector<double> _coeffs;
     

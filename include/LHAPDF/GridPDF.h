@@ -79,8 +79,7 @@ namespace LHAPDF {
     void _loadData(const std::string& mempath);
 
     /// Precompute polynomial coefficients and approximate derivatives at knot positions
-    void _computeDerivatives(KnotArray &data, bool logspace);
-    void _computePolynomialCoefficients(KnotArray &data, bool logspace);
+    void _computePolynomialCoefficients(bool logspace);
 
 
   public:

@@ -22,11 +22,9 @@ namespace LHAPDF {
     _interpolator.reset(ipol);
     _interpolator->bind(this);
     if(_interpolator->getType() == "logcubic"){
-      _computeDerivatives(data, true);
-      _computePolynomialCoefficients(data, true);
+      _computePolynomialCoefficients(true);
     } else if(_interpolator->getType() == "cubic"){
-      _computeDerivatives(data, false);
-      _computePolynomialCoefficients(data, false);
+      _computePolynomialCoefficients(false);
     }
   }
 
@@ -144,43 +142,36 @@ namespace LHAPDF {
       bool _error;
     };
 
-    
-  }
-
-  
-  void GridPDF::_computeDerivatives(KnotArray &data, bool logspace){
-    data._dgrid.resize(data.shape[0] * data.shape[1] * data.shape[2]);
-    const size_t nxknots = data.xsize();
-    for(size_t ix(0); ix<nxknots; ++ix){
-      for(size_t iq2(0); iq2<data.q2size(); ++iq2){
-	for(size_t id(0); id<data.size(); ++id){
-	  double derivative, del1, del2;
-	  if(logspace){
-	    del1 = (ix == 0)           ? 0 : data.logxs(ix)   - data.logxs(ix-1);
-	    del2 = (ix == nxknots - 1) ? 0 : data.logxs(ix+1) - data.logxs(ix);
-	  } else {
-	    del1 = (ix == 0)           ? 0 : data.xs(ix)   - data.xs(ix-1);
-	    del2 = (ix == nxknots - 1) ? 0 : data.xs(ix+1) - data.xs(ix);
-	  }
-	  
-	  if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
-	    const double lddx = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
-	    const double rddx = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
-	    derivative = (lddx + rddx) / 2.0;
-	  } else if (ix == 0) { //< If at leftmost edge, use forward difference
-	    derivative = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
-	  } else if (ix == nxknots-1) { //< If at rightmost edge, use backward difference
-	    derivative = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
-	  } else {
-	    throw LogicError("We shouldn't be able to get here!");
-	  }
-	  data._dgrid[ix*data.shape[1]*data.shape[2] + iq2*data.shape[2] + id] = derivative;
-	}
+      
+    double _ddx(KnotArray& data, size_t ix, size_t iq2, int id, bool logspace){
+      const size_t nxknots = data.xsize();
+      double del1, del2;
+      if(logspace){
+	del1 = (ix == 0)           ? 0 : data.logxs(ix)   - data.logxs(ix-1);
+	del2 = (ix == nxknots - 1) ? 0 : data.logxs(ix+1) - data.logxs(ix);
+      } else {
+	del1 = (ix == 0)           ? 0 : data.xs(ix)   - data.xs(ix-1);
+	del2 = (ix == nxknots - 1) ? 0 : data.xs(ix+1) - data.xs(ix);
+      }	  
+      if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
+	const double lddx = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
+	const double rddx = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
+	return (lddx + rddx) / 2.0;
+      } else if (ix == 0) { //< If at leftmost edge, use forward difference
+	return (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
+      } else if (ix == nxknots-1) { //< If at rightmost edge, use backward difference
+	return (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
+      } else {
+	throw LogicError("We shouldn't be able to get here!");
       }
     }
-  }
 
-  void GridPDF::_computePolynomialCoefficients(KnotArray &data, bool logspace){
+    
+  } // End unnamed namespace
+
+
+  
+  void GridPDF::_computePolynomialCoefficients(bool logspace){
     const size_t nxknots = data.xsize();
     std::vector<size_t> shape{data.xsize()-1, data.q2size(), data.size(), 4};
     data._coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
@@ -196,8 +187,8 @@ namespace LHAPDF {
 	  }
 	  double VL  = data.xf (ix,   iq2, id);
 	  double VH  = data.xf (ix+1, iq2, id);
-	  double VDL = data.dxf(ix,   iq2, id) * dlogx;
-	  double VDH = data.dxf(ix+1, iq2, id) * dlogx;
+	  double VDL = _ddx(data, ix,   iq2, id, logspace) * dlogx;
+	  double VDH = _ddx(data, ix+1, iq2, id, logspace) * dlogx;
 
 	  // polynomial coefficients
 	  double a = VDH + VDL - 2*VH + 2*VL;
