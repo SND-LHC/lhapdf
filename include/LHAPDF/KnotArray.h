@@ -60,10 +60,6 @@ namespace LHAPDF {
       _grid[ix*shape[1]*shape[2] + iq*shape[2] + pid] = value;
     }
 
-    double dxf(int ix, int iq2, int ipid) const {
-      return _dgrid[ix*shape[2]*shape[1] + iq2*shape[2] + ipid];
-    }
-
     const double& coeff(int ix, int iq2, int pid, int in) const {
       return _coeffs[ix*(shape[1])*shape[2]*4 + iq2*shape[2]*4 + pid*4 + in];
     }
