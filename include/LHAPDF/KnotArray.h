@@ -63,10 +63,17 @@ namespace LHAPDF {
     const double& coeff(int ix, int iq2, int pid, int in) const {
       return _coeffs[ix*(shape[1])*shape[2]*4 + iq2*shape[2]*4 + pid*4 + in];
     }
+
+    std::vector<double>& coeff() {
+      return _coeffs;
+    }
+
+    const int lookUpPid(int id) const {
+      return _lookup[id];
+      
+    }
     
     /// Access the Q2s array
-    // as they dont exist anymore in the old form, this now returns a vector
-    // instead of the reference to one
     const std::vector<double>& xs() const {
       return _xs;
     }
@@ -74,7 +81,6 @@ namespace LHAPDF {
     const std::vector<double>& logxs() const {
       return _logxs;
     }
-
     
     double xs(int id) const {
       return _xs[id];
@@ -102,7 +108,7 @@ namespace LHAPDF {
     }
     
     // Access the grid
-    const std::vector<double>& grid() const {
+    std::vector<double>& grid() {
       return _grid;
     }
 
@@ -120,9 +126,11 @@ namespace LHAPDF {
       return _pids;
     }
 
-    std::vector<size_t>& setShape(){
+    /*
+    std::vector<size_t>& shape(){
       return shape;
     }
+    */
     
     // Access the polynomial coefficients
     const std::vector<double>& coefficients() const {
@@ -168,12 +176,11 @@ namespace LHAPDF {
 
     void fillLogKnots();
     
-    //private:
-
     // Shape of the interpolation grid
     std::vector<size_t> shape;
     
-    // Gridvalues
+  private:
+     // Gridvalues
     std::vector<double> _grid;
 
     // Storage for the precomputed polynomial coefficients

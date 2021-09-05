@@ -46,7 +46,7 @@ namespace LHAPDF {
     _checkGridSize(grid);
     ret.resize(13);    
     for(int pid(-6); pid <= 6; ++pid){
-      int id = grid._lookup[pid + 6];
+      int id = grid.lookUpPid(pid + 6);
       if(id == -1){
 	ret[pid + 6] = 0;
       } else {

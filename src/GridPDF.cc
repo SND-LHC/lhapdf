@@ -174,8 +174,8 @@ namespace LHAPDF {
   void GridPDF::_computePolynomialCoefficients(bool logspace){
     const size_t nxknots = data.xsize();
     std::vector<size_t> shape{data.xsize()-1, data.q2size(), data.size(), 4};
-    data._coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
-
+    std::vector<double> coeffs;
+    coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
     for(size_t ix(0); ix<nxknots-1; ++ix){
       for(size_t iq2(0); iq2<data.q2size(); ++iq2){
 	for(size_t id(0); id<data.size(); ++id){
@@ -196,13 +196,14 @@ namespace LHAPDF {
 	  double c = VDL;
 	  double d = VL;
 
-	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 0] = a;
-	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 1] = b;
-	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 2] = c;
-	  data._coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 3] = d;
+	  coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 0] = a;
+	  coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 1] = b;
+	  coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 2] = c;
+	  coeffs[ix*shape[1]*shape[2]*shape[3] + iq2*shape[2]*shape[3] + id*shape[3] + 3] = d;
 	}
       }
     }
+    data.coeff() = coeffs;
   }
 
   void GridPDF::_loadData(const std::string& mempath) {
@@ -289,7 +290,7 @@ namespace LHAPDF {
     shape[0] = xknots.size();
     shape[1] = q2knots.size();
     shape[2] = pids.size();
-    data.setShape() = shape;
+    data.shape = shape;
     
     data.setPids() = pids;
 
@@ -371,8 +372,7 @@ namespace LHAPDF {
         }
 	
       }
-      // MK: write proper setter methods 
-      data._grid = ipid_xfs;
+      data.grid() = ipid_xfs;
             
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")
