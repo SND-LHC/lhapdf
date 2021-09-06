@@ -19,7 +19,7 @@ struct AnalyticPDF : public LHAPDF::PDF {
   }
 
   void _xfxQ2(double x, double q2, std::vector<double>& ret) const {
-    for(int id(-5); id<5; ++id)
+    for (int id(-5); id<5; ++id)
       _xfxQ2(id,x,q2);
   }
 

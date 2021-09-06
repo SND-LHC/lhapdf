@@ -26,7 +26,7 @@ namespace {
   
   int findPidInPids(int pid, const std::vector<int>& pids) {
     std::vector<int>::const_iterator it = std::find(pids.begin(), pids.end(), pid);
-    if(it == pids.end())
+    if (it == pids.end())
       return -1;
     else
       return std::distance(pids.begin(), it);
@@ -88,15 +88,15 @@ namespace LHAPDF {
 
     /// check if value within the boundaries of xknots
     bool inRangeX(double x) const {
-      if(x < _xs.front()) return false;
-      if(x > _xs.back())  return false;
+      if (x < _xs.front()) return false;
+      if (x > _xs.back())  return false;
       return true;
     }
 
     /// check if value within the boundaries of q2knots
     bool inRangeQ2(double q2) const {
-      if(q2 < _q2s.front()) return false;
-      if(q2 > _q2s.back())  return false;
+      if (q2 < _q2s.front()) return false;
+      if (q2 > _q2s.back())  return false;
       return true;
     }
 
@@ -104,7 +104,7 @@ namespace LHAPDF {
       // hardcoded lookup table for particle ids
       // -6,...,-1,21/0,1,...,6,22
       // if id outside of this range, search in list of ids
-      if(id < 21) return _lookup[id + 6];
+      if (id < 21) return _lookup[id + 6];
       else if (id == 21) return _lookup[0 + 6];
       else if (id == 22) return _lookup[13];
       else return findPidInPids(id, _pids);

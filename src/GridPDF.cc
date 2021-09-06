@@ -21,9 +21,9 @@ namespace LHAPDF {
   void GridPDF::setInterpolator(Interpolator* ipol) {
     _interpolator.reset(ipol);
     _interpolator->bind(this);
-    if(_interpolator->getType() == "logcubic"){
+    if (_interpolator->getType() == "logcubic"){
       _computePolynomialCoefficients(true);
-    } else if(_interpolator->getType() == "cubic"){
+    } else if (_interpolator->getType() == "cubic"){
       _computePolynomialCoefficients(false);
     }
   }
@@ -76,7 +76,7 @@ namespace LHAPDF {
     /// are done in the public PDF::xfxQ2 function.
     double xfx = 0;
     int _id = data.get_pid(id);
-    if(_id == -1) return 0;
+    if (_id == -1) return 0;
     if (inRangeXQ2(x, q2)) {
       xfx = interpolator().interpolateXQ2(_id, x, q2);
     } else {
@@ -91,7 +91,7 @@ namespace LHAPDF {
     } else {
       for (int id = 0; id < 13; ++id) {
 	int _id = data.get_pid(id - 6);
-	if(_id == -1) {
+	if (_id == -1) {
 	  ret[id] = 0;
 	} else {
 	  ret[id] = extrapolator().extrapolateXQ2(_id, x, q2);
@@ -146,7 +146,7 @@ namespace LHAPDF {
     double _ddx(KnotArray& data, size_t ix, size_t iq2, int id, bool logspace){
       const size_t nxknots = data.xsize();
       double del1, del2;
-      if(logspace){
+      if (logspace){
 	del1 = (ix == 0)           ? 0 : data.logxs(ix)   - data.logxs(ix-1);
 	del2 = (ix == nxknots - 1) ? 0 : data.logxs(ix+1) - data.logxs(ix);
       } else {
@@ -176,11 +176,11 @@ namespace LHAPDF {
     std::vector<size_t> shape{data.xsize()-1, data.q2size(), data.size(), 4};
     std::vector<double> coeffs;
     coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
-    for(size_t ix(0); ix<nxknots-1; ++ix){
-      for(size_t iq2(0); iq2<data.q2size(); ++iq2){
-	for(size_t id(0); id<data.size(); ++id){
+    for (size_t ix(0); ix<nxknots-1; ++ix){
+      for (size_t iq2(0); iq2<data.q2size(); ++iq2){
+	for (size_t id(0); id<data.size(); ++id){
 	  double dlogx;
-	  if(logspace){
+	  if (logspace){
 	    dlogx = data.logxs(ix+1) - data.logxs(ix);
 	  } else{
 	    dlogx = data.xs(ix+1) - data.xs(ix);
@@ -233,14 +233,14 @@ namespace LHAPDF {
           // Parse the data lines
           nparser.reset(line);
           if (iblockline == 1) { // x knots line
-	    if(iblock == 1){
+	    if (iblock == 1){
 	      while (nparser >> ftoken) xknots.push_back(ftoken);
 	      if (xknots.empty())
 		throw ReadError("Empty x knot array on line " + to_str(iline));
 	    } else { // the x grid should be the same as for the fist i block
 	      int tmp = 0;
 	      while (nparser >> ftoken) {
-		if(ftoken != xknots[tmp])
+		if (ftoken != xknots[tmp])
 		  throw ReadError("Mismatch in the x-knots");
 		++tmp;
 	      }
@@ -251,7 +251,7 @@ namespace LHAPDF {
             if (q2knots.size() == 0)
               throw ReadError("Empty Q knot array on line " + to_str(iline));
           } else if (iblockline == 3) { // internal flavor IDs ordering line
-	    if(iblock == 1){
+	    if (iblock == 1){
 	      while (nparser >> itoken) pids.push_back(itoken);
 	    } else {
 	      int tmp = 0;
@@ -333,7 +333,7 @@ namespace LHAPDF {
 		       + index] = ftoken;
 	      ++index;
             }	    
-	    if( (iblockline != 3) && (iblockline - 3) % qloc == 0){
+	    if ( (iblockline != 3) && (iblockline - 3) % qloc == 0){
 	      ++xindex;
 	      index = 0;
 	    }

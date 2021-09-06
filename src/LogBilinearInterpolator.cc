@@ -55,9 +55,9 @@ namespace LHAPDF {
     shared_data shared = fill(grid, x, q2, ix);
     
     // First interpolate in x
-    for(int pid(-6); pid <= 6; ++pid){
+    for (int pid(-6); pid <= 6; ++pid){
       int id = grid.lookUpPid(pid + 6);
-      if(id == -1){
+      if (id == -1){
 	ret[pid + 6] = 0;
       } else {
 	ret[pid + 6] = _interpolate(grid, ix, iq2, id, shared);

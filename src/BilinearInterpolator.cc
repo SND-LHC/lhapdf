@@ -45,9 +45,9 @@ namespace LHAPDF {
   void BilinearInterpolator::_interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, std::vector<double>& ret) const{
     _checkGridSize(grid);
     ret.resize(13);    
-    for(int pid(-6); pid <= 6; ++pid){
+    for (int pid(-6); pid <= 6; ++pid){
       int id = grid.lookUpPid(pid + 6);
-      if(id == -1){
+      if (id == -1){
 	ret[pid + 6] = 0;
       } else {
 	ret[pid + 6] = _interpolateSinglePid(grid, x, ix, q2, iq2, id);

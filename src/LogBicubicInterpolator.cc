@@ -138,7 +138,7 @@ namespace LHAPDF {
     shared_data shared = fill(grid, x, q2, ix, iq2);
     // if it is an upper and a lower edge, there can only be two notes
     //   use lineare fallback in that case, but have default be the cubic case
-    if(!shared.q2_lower || !shared.q2_upper)
+    if (!shared.q2_lower || !shared.q2_upper)
       return _interpolate(grid, ix, iq2, id, shared);
     
     // Fallback mode
@@ -149,19 +149,19 @@ namespace LHAPDF {
     _checkGridSize(grid, ix, iq2);
     shared_data shared = fill(grid, x, q2, ix, iq2);
     
-    if(!shared.q2_lower || !shared.q2_upper){
-      for(int pid(-6); pid <= 6; ++pid){
+    if (!shared.q2_lower || !shared.q2_upper){
+      for (int pid(-6); pid <= 6; ++pid){
 	int id = grid.lookUpPid(pid + 6);
-	if(id == -1){
+	if (id == -1){
 	  ret[pid + 6] = 0;
 	} else {
 	  ret[pid + 6] = _interpolate(grid, ix, iq2, id, shared);
 	}
       }
     } else {
-      for(int pid(-6); pid <= 6; ++pid){
+      for (int pid(-6); pid <= 6; ++pid){
 	int id = grid.lookUpPid(pid + 6);
-	if(id == -1){
+	if (id == -1){
 	  ret[pid + 6] = 0;
 	} else {
 	  ret[pid + 6] = _interpolateFallback(grid, ix, iq2, id, shared);
