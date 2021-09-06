@@ -215,7 +215,6 @@ namespace LHAPDF {
     vector<int> pids;
     vector<double> ipid_xfs;
 
-    // MK: do we really need to read the file twice?
     try{
       IFile file(mempath.c_str());
       NumParser nparser; double ftoken; int itoken;
@@ -281,17 +280,17 @@ namespace LHAPDF {
 
     iblock = 0; iblockline = 0; iline = 0;
 
-    // feed data into KnotArray
+    // fill the knots of Knotarray
     data.setxknots()  = xknots;
     data.setq2knots() = q2knots;
     data.fillLogKnots();
-    
+
+    // fill shape of Knotarray
     std::vector<size_t> shape(3);
     shape[0] = xknots.size();
     shape[1] = q2knots.size();
     shape[2] = pids.size();
     data.setShape() = shape;
-    
     data.setPids() = pids;
 
     // create lookuptable to get index id from pid
@@ -340,14 +339,14 @@ namespace LHAPDF {
 	    }
             // Check that each line has many tokens as there should be flavours
             if (index % pids.size() != 0)
-	      // MK: Error message gives wrong output bc. index % pids.size() is not the number of pids
+	      /// @todo Error message gives wrong output bc. index % pids.size() is not the number of pids
               throw ReadError("PDF grid data error on line " + to_str(iline) + ": " + to_str(index % pids.size()) +
                               " flavor entries seen but " + to_str(pids.size()) + " expected");
           }
 
         } else { // we *are* on a block separator line	
           // Check that the expected number of data lines were seen in the last block
-	  // MK: Does not work anymore, how to translate?
+	  // Does not work anymore, how to translate?
 	  /*
           if (iblock > 0 && iblockline - 1 != int(xs.size()*q2s.size()) + 3)
             throw ReadError("PDF grid data error on line " + to_str(iline) + ": " +

@@ -11,17 +11,17 @@ namespace LHAPDF {
   void KnotArray::initPidLookup(){
     _lookup.clear();
     if(_pids.size() == 0){
-      // MK: is there a better LHAPDF error for that?
+      // Is there a better LHAPDF error for that?
       std::cerr << "Internal error when constructing lookup table; need to fill pids before construction"<< std::endl;
       throw;
     }
     for(int i(-6); i<0; i++)
-      _lookup.push_back(findPidInPids(i));
+      _lookup.push_back(findPidInPids(i, _pids));
       
-    _lookup.push_back(findPidInPids(21));
+    _lookup.push_back(findPidInPids(21, _pids));
     for(int i(1); i<=6; i++)
-      _lookup.push_back(findPidInPids(i));
-    _lookup.push_back(findPidInPids(22));
+      _lookup.push_back(findPidInPids(i, _pids));
+    _lookup.push_back(findPidInPids(22, _pids));
   }
 
   void KnotArray::fillLogKnots() {

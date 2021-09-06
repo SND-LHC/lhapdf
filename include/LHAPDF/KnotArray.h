@@ -10,6 +10,31 @@
 #include "LHAPDF/Exceptions.h"
 #include "LHAPDF/Utils.h"
 
+namespace {
+
+  
+  // Hide some internal functions from outside API view
+
+  // General function to find the knot below a given value
+  size_t indexbelow(double value, const std::vector<double>& knots) {
+    size_t i = upper_bound(knots.begin(), knots.end(), value) - knots.begin();
+    if (i == knots.size()) i -= 1; // can't return the last knot index
+    i -= 1;                // step back to get the knot <= x behaviour
+    return i;
+  }
+
+  
+  int findPidInPids(int pid, const std::vector<int>& pids) {
+    std::vector<int>::const_iterator it = std::find(pids.begin(), pids.end(), pid);
+    if(it == pids.end())
+      return -1;
+    else
+      return std::distance(pids.begin(), it);
+  }
+
+
+}
+
 namespace LHAPDF {
 
   
@@ -32,28 +57,25 @@ namespace LHAPDF {
     /// Is this container empty?
     bool empty() const { return _grid.empty(); }
     
-    // General function to find the knot below a given value
-    size_t indexbelow(double value, const std::vector<double>& knots) const {
-      size_t i = upper_bound(knots.begin(), knots.end(), value) - knots.begin();
-      if (i == knots.size()) i -= 1; // can't return the last knot index
-      i -= 1;                // step back to get the knot <= x behaviour
-      return i;
-    }
-    
+    /// find the largest grid index below given x, such that xknots[index] < x
     size_t ixbelow(double x) const { return indexbelow(x, _xs); }
-    
+
+    /// find the largest grid index below given q2, such that q2knots[index] < q2
     size_t iq2below(double q2) const { return indexbelow(q2, _q2s); }
-    
+
+    /// convenient accessor to the grid values
     double xf(int ix, int iq2, int ipid) const {
       return _grid[ix*_shape[2]*_shape[1] + iq2*_shape[2] + ipid];
     }
-    
+
+    /// convenient accessor to the polynomial coefficients, returns reference rather than value, to be able to read multiple adjacent at once
     const double& coeff(int ix, int iq2, int pid, int in) const {
       return _coeffs[ix*(_shape[1])*_shape[2]*4 + iq2*_shape[2]*4 + pid*4 + in];
     }
 
+    /// accessor to the internal 'lookup table' for the pid's
     int lookUpPid(int id) const { return _lookup[id]; }
-    
+
     double xs(int id) const { return _xs[id]; }
 
     double logxs(int id) const { return _logxs[id]; }
@@ -63,30 +85,19 @@ namespace LHAPDF {
     double logq2s(int id) const { return _logq2s[id]; }
     
     size_t shape(int id) const { return _shape[id]; }
-    
+
+    /// check if value within the boundaries of xknots
     bool inRangeX(double x) const {
       if(x < _xs.front()) return false;
       if(x > _xs.back())  return false;
       return true;
     }
-    
+
+    /// check if value within the boundaries of q2knots
     bool inRangeQ2(double q2) const {
       if(q2 < _q2s.front()) return false;
       if(q2 > _q2s.back())  return false;
       return true;
-    }
-
-    int findPidInPids(int pid) const {
-      std::vector<int>::const_iterator it = std::find(_pids.begin(), _pids.end(), pid);
-      if(it == _pids.end())
-	return -1;
-      else
-	return std::distance(_pids.begin(), it);
-    }
-
-    bool has_pid(int id) const {
-      int _id = findPidInPids(id);
-      return _id != -1;
     }
 
     inline int get_pid(int id) const {
@@ -96,7 +107,11 @@ namespace LHAPDF {
       if(id < 21) return _lookup[id + 6];
       else if (id == 21) return _lookup[0 + 6];
       else if (id == 22) return _lookup[13];
-      else return findPidInPids(id);
+      else return findPidInPids(id, _pids);
+    }
+
+    bool has_pid(int id) const {
+      return get_pid(id) != -1;
     }
     
     void initPidLookup();
