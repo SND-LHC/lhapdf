@@ -15,6 +15,11 @@ cdef extern from "../../include/LHAPDF/Paths.h" namespace "LHAPDF":
     cdef vector[string] availablePDFSets()
     cdef string findFile(string)
 
+
+# cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF::PIDs":
+#     ctypedef enum PIDCode:
+#         GLUON, DOWN, UP, STRANGE, CHARM, BOTTOM, TOP
+
 cdef extern from "../../include/LHAPDF/PDF.h" namespace "LHAPDF":
     cdef cppclass PDF:
         double xfxQ(int, double, double) except +
@@ -78,10 +83,11 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         double randomValueFromHessian(vector[double]&, vector[double]&, bool) except +
         void _checkPdfType(vector[string]&) except +
 
+
+
 cdef extern from "../../include/LHAPDF/AlphaS.h" namespace "LHAPDF::AlphaS":
     ctypedef enum FlavorScheme:
-        FIXED
-        VARIABLE
+        FIXED, VARIABLE
 
 cdef extern from "../../include/LHAPDF/AlphaS.h" namespace "LHAPDF":
     cdef cppclass AlphaS:
@@ -101,6 +107,8 @@ cdef extern from "../../include/LHAPDF/AlphaS.h" namespace "LHAPDF":
         void setLambda(unsigned int, double) except +
         void setFlavorScheme(FlavorScheme scheme, int nf) except +
         FlavorScheme flavorScheme() except +
+        # void setFlavorScheme(int scheme, int nf) except +
+        # int flavorScheme() except +
 
 cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
     cdef struct PDFUncertainty:

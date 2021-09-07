@@ -24,13 +24,11 @@ namespace LHAPDF {
   /// @{
   /// Convenience/clarity enum for specifying parton IDs
   namespace PIDs { //< for scoping to avoid conflicts, e.g. PID::GLUON rather than just GLUON
-    enum PIDCode { GLUON = 0, // equivalent to 21
-                   DOWN = 1,
-                   UP = 2,
-                   STRANGE = 3,
-                   CHARM = 4,
-                   BOTTOM = 5,
-                   TOP = 6 };
+    enum PIDCode {
+      ATOP = -6, ABOTTOM = -5, ACHARM = -4, ASTRANGE = -3, AUP = -2, ADOWN = -1,
+      GLUON = 0, // equivalent to 21
+      DOWN = 1, UP = 2, STRANGE = 3, CHARM = 4, BOTTOM = 5, TOP = 6
+    };
   }
   /// @}
 
