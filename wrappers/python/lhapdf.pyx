@@ -1,17 +1,16 @@
 #cython: embedsignature=True, c_string_type=str, c_string_encoding=utf8
 
+from __future__ import print_function
+
 cimport clhapdf as c
-from clhapdf cimport FlavorScheme
+from clhapdf cimport FlavorScheme as cFlavorScheme
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+
 try:
     from itertools import izip as zip
 except ImportError: # python 3.x version
     pass
-
-# For some reason this has to be declared again in order for everything to work...
-ctypedef enum FlavorScheme:
-    FIXED, VARIABLE
 
 def text_encode(text):
     if isinstance(text, unicode):
@@ -22,16 +21,16 @@ def text_encode(text):
         raise ValueError("Requires text input")
 
 
-# An enum wrapper for accessing parton ID codes, including iteration.
-# Named to match the sub-namespace in C++, so they're accessed with equivalent scope name.
-cpdef enum PIDs:
-    GLUON = 0
-    DOWN = 1
-    UP = 2
-    STRANGE = 3
-    CHARM = 4
-    BOTTOM = 5
-    TOP = 6
+
+cpdef enum FlavorScheme:
+    # "Available flavour-number schemes for alpha_s running"
+    FIXED = 0, VARIABLE
+
+cpdef enum PIDCode:
+    # "Standard PDF parton ID codes"
+    ATOP=-6, ABOTTOM=-5, ACHARM=-4, ASTRANGE=-3, AUP=-2, ADOWN=-1,
+    GLUON=0,
+    DOWN=1, UP=2, STRANGE=3, CHARM=4, BOTTOM=5, TOP=6
 
 
 cdef class PDF:
@@ -452,7 +451,7 @@ cdef class PDFSet:
 
     def uncertainty(self, vals, cl=68.268949, alternative=False):
         """\
-	Return a PDFUncertainty object corresponding to central value and errors computed
+        Return a PDFUncertainty object corresponding to central value and errors computed
         from the vals list. If unspecified (as a percentage), the confidence level cl defaults
         to 1-sigma. For replicas, by default (alternative=False) the central value is given by
         the mean and the uncertainty by the standard deviation (possibly rescaled to cl), but
@@ -461,7 +460,7 @@ cdef class PDFSet:
         For a combined PDF+parameter set, the parameter variation uncertainties are computed
         from the last 2*npar set members, where npar is the number of parameters, and a
         breakdown of the separate PDF and parameter variation uncertainties is available.
-	"""
+        """
         cdef c.PDFUncertainty unc = self._ptr.uncertainty(vals, cl, alternative)
         return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale, unc.errplus_pdf, unc.errminus_pdf, unc.errsymm_pdf, unc.err_par)
 
@@ -513,92 +512,108 @@ cdef class PDFInfo(Info):
 
 
 cdef class AlphaS:
-     """\
-     Interface to alpha_s calculations using various schemes.
-     """
-     cdef c.AlphaS* _ptr
-     cdef set_ptr(self, c.AlphaS* ptr):
-         self._ptr = ptr
+    """\
+    Interface to alpha_s calculations using various schemes.
+    """
+    cdef c.AlphaS* _ptr
+    cdef set_ptr(self, c.AlphaS* ptr):
+        self._ptr = ptr
 
-     def __dealloc__(self):
-         del self._ptr
-         #pass
+    def __dealloc__(self):
+        del self._ptr
+        #pass
 
-     @property
-     def type(self):
-         "Get the method of alpha_s calculation as a string"
-         return self._ptr.type()
+    @property
+    def type(self):
+        "Get the method of alpha_s calculation as a string"
+        return self._ptr.type()
 
-     def alphasQ(self, double q):
-         "Get alpha_s value at scale q"
-         return self._ptr.alphasQ(q)
+    def alphasQ(self, double q):
+        "Get alpha_s value at scale q"
+        return self._ptr.alphasQ(q)
 
-     def alphasQ2(self, double q2):
-         "Get alpha_s value at scale q"
-         return self._ptr.alphasQ2(q2)
+    def alphasQ2(self, double q2):
+        "Get alpha_s value at scale q"
+        return self._ptr.alphasQ2(q2)
 
-     def numFlavorsQ(self, double q):
-         "Get number of active flavors at scale q"
-         return self._ptr.numFlavorsQ(q)
+    def numFlavorsQ(self, double q):
+        "Get number of active flavors at scale q"
+        return self._ptr.numFlavorsQ(q)
 
-     def numFlavorsQ2(self, double q2):
-         "Get number of active flavors at scale q"
-         return self._ptr.numFlavorsQ2(q2)
+    def numFlavorsQ2(self, double q2):
+        "Get number of active flavors at scale q"
+        return self._ptr.numFlavorsQ2(q2)
 
-     def quarkMass(self, int id):
-         "Get mass of quark with PID code id"
-         return self._ptr.quarkMass(id)
+    def quarkMass(self, int id):
+        "Get mass of quark with PID code id"
+        return self._ptr.quarkMass(id)
 
-     def setQuarkMass(self, int id, double value):
-         "Set mass of quark with PID code id"
-         self._ptr.setQuarkMass(id, value)
+    def setQuarkMass(self, int id, double value):
+        "Set mass of quark with PID code id"
+        self._ptr.setQuarkMass(id, value)
 
-     def quarkThreshold(self, int id):
-         "Get activation threshold of quark with PID code id"
-         return self._ptr.quarkThreshold(id)
+    def quarkThreshold(self, int id):
+        "Get activation threshold of quark with PID code id"
+        return self._ptr.quarkThreshold(id)
 
-     def setQuarkThreshold(self, int id, double value):
-         "Set activation threshold of quark with PID code id"
-         self._ptr.setQuarkThreshold(id, value)
+    def setQuarkThreshold(self, int id, double value):
+        "Set activation threshold of quark with PID code id"
+        self._ptr.setQuarkThreshold(id, value)
 
-     def orderQCD(self):
-         "Get the QCD running order (max num loops) for this alphaS"
-         return self._ptr.orderQCD()
+    def orderQCD(self):
+        "Get the QCD running order (max num loops) for this alphaS"
+        return self._ptr.orderQCD()
 
-     def setOrderQCD(self, int order):
-         "Set the QCD running order (max num loops) for this alphaS"
-         self._ptr.setOrderQCD(order)
+    def setOrderQCD(self, int order):
+        "Set the QCD running order (max num loops) for this alphaS"
+        self._ptr.setOrderQCD(order)
 
-     def setMZ(self, double mz):
-         "Set the Z mass (used in ODE solver)"
-         self._ptr.setMZ(mz)
+    def setMZ(self, double mz):
+        "Set the Z mass (used in ODE solver)"
+        self._ptr.setMZ(mz)
 
-     def setAlphaSMZ(self, double alphas):
-         "Set alpha_s at the Z mass (used in ODE solver)"
-         self._ptr.setAlphaSMZ(alphas)
+    def setAlphaSMZ(self, double alphas):
+        "Set alpha_s at the Z mass (used in ODE solver)"
+        self._ptr.setAlphaSMZ(alphas)
 
-     def setLambda(self, int id, double val):
-         "Set the id'th LambdaQCD value (used in analytic solver)"
-         self._ptr.setLambda(id, val)
+    def setLambda(self, int id, double val):
+        "Set the id'th LambdaQCD value (used in analytic solver)"
+        self._ptr.setLambda(id, val)
 
-     def setFlavorScheme(self, scheme, int nf):
-         "Set the flavor scheme. nf is the fixed number (if FIXED)"
-         "or the max number (if VARIABLE)"
-         cdef FlavorScheme s
-         if scheme == "VARIABLE":
-           s = VARIABLE
-         elif scheme == "FIXED":
-           s = FIXED
+    def setFlavorScheme(self, scheme, int nf):
+        """\
+        Set the flavor scheme. nf is the fixed number (if FIXED)
+        or the max number (if VARIABLE)"""
+        # cdef FlavorScheme s
+        # if scheme == "VARIABLE":
+        #   s = VARIABLE
+        # elif scheme == "FIXED":
+        #   s = FIXED
+        cdef cFlavorScheme s
+        if type(scheme) is FlavorScheme:
+            s = int(scheme.real)
+        elif type(scheme) is int:
+            return self.setFlavorScheme(FlavorScheme(scheme), nf)
+        elif scheme == "VARIABLE":
+            return self.setFlavorScheme(VARIABLE, nf)
+        elif scheme == "FIXED":
+            return self.setFlavorScheme(FIXED, nf)
+        else:
+            print("You can only set the flavor scheme to FIXED or VARIABLE")
+            return
+        self._ptr.setFlavorScheme(s, nf)
+
+    def flavorScheme(self, as_str=True):
+         s = FlavorScheme(int(self._ptr.flavorScheme()))
+         if not as_str:
+             return s
          else:
-           print "You can only set the flavor scheme to FIXED or VARIABLE"
-           return
-         self._ptr.setFlavorScheme(s,nf)
-     def flavorScheme(self):
-         cdef FlavorScheme s = self._ptr.flavorScheme()
-         if int(s) == 0:
-           print "FIXED"
-         if int(s) == 1:
-           print "VARIABLE"
+             return s.name
+         # cdef FlavorScheme s = self._ptr.flavorScheme()
+         # if int(s) == 0:
+         #   return "FIXED"
+         # if int(s) == 1:
+         #   print("VARIABLE")
 
 
 def getConfig():
@@ -709,22 +724,22 @@ def mkBareAlphaS(as_type):
 
 
 def weightxQ(int id, double x, double Q, PDF basepdf, PDF newpdf, aschk=5e-2):
-    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    """Reweight from basepdf to newpdf with flavor id and kinematics x and Q2."""
     from cython.operator import dereference
     return c.weightxQ(id, x, Q, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
 
 def weightxQ2(int id, double x, double Q2, PDF basepdf, PDF newpdf, aschk=5e-2):
-    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    """Reweight from basepdf to newpdf with flavor id and kinematics x and Q2."""
     from cython.operator import dereference
     return c.weightxQ2(id, x, Q2, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
 
 def weightxxQ(int id1, int id2, double x1, double x2, double Q, PDF basepdf, PDF newpdf, aschk=5e-2):
-    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    """Reweight from basepdf to newpdf with flavor id and kinematics x and Q2."""
     from cython.operator import dereference
     return c.weightxxQ(id1, id2, x1, x2, Q, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
 
 def weightxxQ2(int id1, int id2, double x1, double x2, double Q2, PDF basepdf, PDF newpdf, aschk=5e-2):
-    """Reweight from basepdf to newpdf with flavour id and kinematics x and Q2."""
+    """Reweight from basepdf to newpdf with flavor id and kinematics x and Q2."""
     from cython.operator import dereference
     return c.weightxxQ2(id1, id2, x1, x2, Q2, dereference(basepdf._ptr), dereference(newpdf._ptr), aschk)
 
