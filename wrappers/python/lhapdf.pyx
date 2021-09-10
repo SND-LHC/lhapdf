@@ -97,6 +97,7 @@ cdef class PDF:
     #     cdef c.AlphaS* ptr = &self._ptr.alphaS()
     #     cdef AlphaS obj = AlphaS.__new__(AlphaS)
     #     obj.set_ptr(ptr)
+    #     obj.set_parent(self)
     #     return obj
 
     def alphasQ(self, q):
@@ -235,6 +236,7 @@ cdef class PDF:
     cdef _info(self):
         cdef PDFInfo obj = PDFInfo.__new__(PDFInfo)
         obj.set_ptr(&self._ptr.info())
+        obj.set_parent(self)
         return obj
 
     def info(self):
@@ -482,7 +484,12 @@ cdef class PDFInfo(Info):
     """\
     A class handling the metadata that defines a given PDF.
     """
-    pass
+
+    cdef object _parent
+
+    cdef set_parent(self, parent):
+        # Keep a reference to the parent PDF object to prevent python from removing it.
+        self._parent = parent
 
     # cdef c.PDFInfo* _ptr
     # cdef set_ptr(self, c.PDFInfo* ptr):
@@ -516,12 +523,14 @@ cdef class AlphaS:
     Interface to alpha_s calculations using various schemes.
     """
     cdef c.AlphaS* _ptr
+    cdef object _parent
+
     cdef set_ptr(self, c.AlphaS* ptr):
         self._ptr = ptr
 
-    def __dealloc__(self):
-        del self._ptr
-        #pass
+    cdef set_parent(self, parent):
+        # Keep a reference to the parent PDF object to prevent python from removing it.
+        self._parent = parent
 
     @property
     def type(self):
@@ -605,10 +614,7 @@ cdef class AlphaS:
 
     def flavorScheme(self, as_str=True):
          s = FlavorScheme(int(self._ptr.flavorScheme()))
-         if not as_str:
-             return s
-         else:
-             return s.name
+         return s if not as_str else s.name
          # cdef FlavorScheme s = self._ptr.flavorScheme()
          # if int(s) == 0:
          #   return "FIXED"

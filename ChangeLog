@@ -8,6 +8,10 @@
 	syntax to Py3-style. Thanks to Christian Holm Christensen for the
 	patch.
 
+2021-06-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Bugfix to Python wrapper object parentage handling, from Dmitry Kalinkin.
+
 2021-05-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a PIDs::PIDCode enum (and PIDs enum with equivalent
