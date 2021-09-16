@@ -36,7 +36,6 @@ stages:
     # - ./testpdfset CT10nlo
     # - ./testpdfunc CT10nlo
     # - ./testpdf CT10nlo 0
-    # - ./testpdfcache
     - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
     - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
     # - ./fexample1
@@ -103,9 +102,6 @@ build-ubuntu-gcc-py2:
     - ./testpdfset CT10nlo
     - ./testpdfunc CT10nlo
     - ./testpdf CT10nlo 0
-    - ./testpdfcache > testpdfcache.dat
-    - head testpdfcache.dat
-    - tail testpdfcache.dat
     - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p); print(p.xfxQ(21,1e-3,126.0))'
     # - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
     # - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
@@ -115,9 +111,6 @@ build-ubuntu-gcc-py2:
     # - cd examples
     # - ./testpdf CT10nlo 5
     # - ./testpdfset
-    # - ./testpdfcache > testpdfcache.dat
-    # - head testpdfcache.dat
-    # - tail testpdfcache.dat
     # - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p.xfxQ(21,1e-3,126.0))'
   artifacts:
     when: always
