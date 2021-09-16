@@ -1,3 +1,15 @@
+2021-09-16  Max Knobbe  <max.knobbe@uni-goettingen.de>
+	
+	* Restructure internal memory storage to increase performance and
+	simplify caching common computations for different particles. Most notably
+	replace KnotArray1F and KnotArrayNF with single class KnotArray.
+
+	* Precompute coefficients for polynomial interpolators at init time.
+
+	* Add specialised method to interpolators, to evaluate pdf's for all
+	common particles (-6,...-6,21) and allow for the caching of common computations
+	without	the need of a complicated cache.
+
 2021-08-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Update the fast ASCII NumParser to always use the C
