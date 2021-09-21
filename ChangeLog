@@ -1,5 +1,9 @@
+2021-09-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 6.4.0 release.
+
 2021-09-16  Max Knobbe  <max.knobbe@uni-goettingen.de>
-	
+
 	* Restructure internal memory storage to increase performance and
 	simplify caching common computations for different particles. Most notably
 	replace KnotArray1F and KnotArrayNF with single class KnotArray.
