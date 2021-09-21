@@ -54,10 +54,20 @@ namespace LHAPDF {
     /// Interpolate a single-point in (x,Q2)
     double interpolateXQ2(int id, double x, double q2) const;
 
+    void interpolateXQ2(double x, double q2, std::vector<double>& ret) const;
 
     /// @todo Make an all-PID version of interpolateQ and Q2?
 
     ///@}
+    
+    void setType(std::string t){
+      _type = t;
+    }
+
+    std::string getType(){
+      return _type;
+    }
+    
 
 
   protected:
@@ -68,16 +78,14 @@ namespace LHAPDF {
     /// x/Q2 index lookup (and their caching) are done centrally in the
     /// Interpolator base class so do not need to be re-implemented in each
     /// flavour of interpolator.
-    virtual double _interpolateXQ2(const KnotArray1F& subgrid, double x, size_t ix, double q2, size_t iq2) const = 0;
+    virtual double _interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, int id) const = 0;
 
-    /// @todo Implement this NF version, with a cached KnotArrayNF?
-    // virtual double _interpolateXQ2(const KnotArrayNF& subgrid, int id, double x, size_t ix, double q2, size_t iq2) const;
+    virtual void _interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, std::vector<double>& ret) const = 0;
 
 
   private:
-
     const GridPDF* _pdf;
-
+    std::string _type;
   };
 
 

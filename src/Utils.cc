@@ -88,11 +88,11 @@ namespace LHAPDF {
 
       if (x <= 0) return 1.0;
 
-      if( (x < 1.0) || (x < a) )
+      if ( (x < 1.0) || (x < a) )
         return( 1.0 - igam(a,x) );
 
       ax = a * log(x) - x - lgamma(a);
-      if( ax < -kMAXLOG )
+      if ( ax < -kMAXLOG )
         return( 0.0 );
 
       ax = exp(ax);
@@ -115,7 +115,7 @@ namespace LHAPDF {
           yc = y * c;
           pk = pkm1 * z  -  pkm2 * yc;
           qk = qkm1 * z  -  qkm2 * yc;
-          if(qk)
+          if (qk)
             {
               r = pk/qk;
               t = fabs( (ans - r)/r );
@@ -127,7 +127,7 @@ namespace LHAPDF {
           pkm1 = pk;
           qkm2 = qkm1;
           qkm1 = qk;
-          if( fabs(pk) > kBig )
+          if ( fabs(pk) > kBig )
             {
               pkm2 *= kBiginv;
               pkm1 *= kBiginv;
@@ -154,12 +154,12 @@ namespace LHAPDF {
 
       if (x <= 0)  return 0.0;
 
-      if( (x > 1.0) && (x > a ) )
+      if ( (x > 1.0) && (x > a ) )
         return( 1.0 - igamc(a,x) );
 
       /* Compute  x**a * exp(-x) / gamma(a)  */
       ax = a * log(x) - x - lgamma(a);
-      if( ax < -kMAXLOG )
+      if ( ax < -kMAXLOG )
         return( 0.0 );
 
       ax = exp(ax);

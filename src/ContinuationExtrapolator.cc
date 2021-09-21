@@ -30,16 +30,16 @@ namespace LHAPDF {
     // The ContinuationExtrapolator provides an implementation of the extrapolation used in
     // the MSTW standalone code (and LHAPDFv5 when using MSTW sets), G. Watt, October 2014.
 
-    const size_t nxknots = pdf().xKnots().size(); // total number of x knots (all subgrids)
-    const size_t nq2knots = pdf().q2Knots().size(); // total number of q2 knots (all subgrids)
+    const size_t nxknots = pdf().knotarray().xsize(); // total number of x knots (all subgrids)
+    const size_t nq2knots = pdf().knotarray().q2size(); // total number of q2 knots (all subgrids)
 
-    const double xMin = pdf().xKnots()[0]; // first x knot
-    const double xMin1 = pdf().xKnots()[1]; // second x knot
-    const double xMax = pdf().xKnots()[nxknots-1]; // last x knot
+    const double xMin  = pdf().knotarray().xs(0); // first x knot
+    const double xMin1 = pdf().knotarray().xs(1); // second x knot
+    const double xMax  = pdf().knotarray().xs(nxknots-1); // last x knot
 
-    const double q2Min = pdf().q2Knots()[0]; // first q2 knot
-    const double q2Max1 = pdf().q2Knots()[nq2knots-2]; // second-last q2 knot
-    const double q2Max = pdf().q2Knots()[nq2knots-1]; // last q2 knot
+    const double q2Min  = pdf().knotarray().q2s(0); // first q2 knot
+    const double q2Max1 = pdf().knotarray().q2s(nq2knots-2); // second-last q2 knot
+    const double q2Max  = pdf().knotarray().q2s(nq2knots-1); // last q2 knot
     
     double fxMin, fxMin1, fq2Max, fq2Max1, fq2Min, fq2Min1, xpdf, anom;
 
@@ -51,7 +51,6 @@ namespace LHAPDF {
       xpdf = _extrapolateLinear(x, xMin, xMin1, fxMin, fxMin1); // PDF at (x,q2)
 
     } else if ((x >= xMin && x <= xMax) && q2 > q2Max) {
-
       // Extrapolation in large q2 only.
       fq2Max = pdf().interpolator().interpolateXQ2(id, x, q2Max); // PDF at (x,q2Max)
       fq2Max1 = pdf().interpolator().interpolateXQ2(id, x, q2Max1); // PDF at (x,q2Max1)
@@ -120,7 +119,7 @@ namespace LHAPDF {
       throw RangeError(oss.str());
 
     } else throw LogicError("We shouldn't be able to get here!");
-  
+    
     return xpdf;
 
   }

@@ -9,6 +9,7 @@ int main() {
   LHAPDF::PDFSet set("CT10nlo");
   const auto pdfs = set.mkPDFs<shared_ptr<const LHAPDF::PDF>>();
 
+  /*
   // Test the built-in cache
   cout << "Original cache sizes = "
        << LHAPDF::LogBicubicInterpolator::XCaches::SIZE << " + "
@@ -38,6 +39,7 @@ int main() {
 
     }
   }
+  */
 
   return 0;
 }
