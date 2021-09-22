@@ -18,6 +18,8 @@ examples:
 if WITH_DOXYGEN
 doxy:
 	(cd doc && $(MAKE) doxy)
+doxy-upload:
+	rsync -r doc/doxygen/ login.hepforge.org:lhapdf/public_html/
 endif
 
 if WITH_PDFLATEX
@@ -25,9 +27,11 @@ manual:
 	(cd doc && $(MAKE) manual)
 endif
 
-## Clean out SVN and hg files
+## Clean out git
 dist-hook:
-	rm -rf `find $(distdir) -name ".svn" -o -name ".hg"`
+	rm -rf `find $(distdir) -name ".git"`
+dist-upload:
+	rsync $(DIST_ARCHIVES) login.hepforge.org:lhapdf/downloads/
 
 ## Remove the unused & misleading share/LHAPDF/sets directory on both install and uninstall!
 # TODO: Remove this hook entirely after a couple of versions
