@@ -18,7 +18,7 @@ examples:
 if WITH_DOXYGEN
 doxy:
 	(cd doc && $(MAKE) doxy)
-doxy-upload:
+doxy-upload: doxy
 	rsync -r doc/doxygen/ login.hepforge.org:lhapdf/public_html/
 endif
 
@@ -28,9 +28,11 @@ manual:
 endif
 
 ## Clean out git
-dist-hook:
-	rm -rf `find $(distdir) -name ".git"`
-dist-upload:
+#dist-hook:
+#	rm -rf `find $(distdir) -name ".git"`
+
+# Upload tarball
+dist-upload: dist
 	rsync $(DIST_ARCHIVES) login.hepforge.org:lhapdf/downloads/
 
 ## Remove the unused & misleading share/LHAPDF/sets directory on both install and uninstall!
