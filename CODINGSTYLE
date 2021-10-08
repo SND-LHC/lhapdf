@@ -63,9 +63,8 @@ LHAPDF >= 6.
   tested condition could happen other than a bug in the system: the user should
   be able to catch their own errors.
 
-- We're relying on the Boost and yaml-cpp libraries, but currently no
-  others. Get a feel for what is available in Boost, and in the LHAPDF/Utils.h
-  header: do not reinvent the wheel.
+- We don't rely on external libraries for core functionality.  Get a feel for
+  what is available in the LHAPDF/Utils.h header: do not reinvent the wheel.
 
 - "Flavour" is spelt the American way, "flavor" in all places in the code, for
   definiteness.

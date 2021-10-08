@@ -1,6 +1,6 @@
 check_PROGRAMS = testalphas testgrid testindex testinfo testpaths testperf testsetperf testnsetperf
 
-AM_CPPFLAGS += -I$(top_srcdir)/include 
+AM_CPPFLAGS += -I$(top_srcdir)/include
 AM_LDFLAGS += -L$(top_builddir)/src
 LIBS = -lLHAPDF
 
