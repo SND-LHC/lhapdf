@@ -69,6 +69,8 @@ procedure. We do not provide support for LHAPDF5, and a very strong case will
 be needed for further "official" set migrations beyond the many already available
 in LHAPDF6.
 
+@subsection newsets Submitting new PDF sets
+
 If you want to add new PDF sets to the standard collection, please contact the
 LHAPDF authors at lhapdf@projects.hepforge.org. You are expected to create and
 validate these PDF data files yourself, and to fix and update them in the case
