@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <locale>
+#include <clocale>
 #include <string>
 #include <stdexcept>
 #include <cstring>
@@ -18,7 +19,7 @@ using namespace std;
 
 namespace LHAPDF {
 
-  
+
   void GridPDF::setInterpolator(Interpolator* ipol) {
     _interpolator.reset(ipol);
     _interpolator->bind(this);
@@ -47,7 +48,7 @@ namespace LHAPDF {
   const vector<double>& GridPDF::xKnots() const {
     return data.xs();
   }
-  
+
   const vector<double>& GridPDF::q2Knots() const {
     return data.q2s();
   }
@@ -85,7 +86,7 @@ namespace LHAPDF {
     }
     return xfx;
   }
-  
+
   void GridPDF::_xfxQ2(double x, double q2, std::vector<double>& ret) const {
     if (inRangeXQ2(x, q2)) {
       interpolator().interpolateXQ2(x, q2, ret);
@@ -152,13 +153,13 @@ namespace LHAPDF {
         _locale_set = newlocale(LC_NUMERIC_MASK, "C", NULL);
         _locale_prev = uselocale(_locale_set);
         if (!_locale_prev) {
-          throw ReadError(std::string("Error setting locale: ") + strerror(errno));
+          throw ReadError(string("Error setting locale: ") + strerror(errno));
         }
       }
       // Returns the locale to the original setting
       void _reset_locale() {
         if (!uselocale(_locale_prev)) {
-          throw ReadError(std::string("Error setting locale: ") + strerror(errno));
+          throw ReadError(string("Error setting locale: ") + strerror(errno));
         }
         freelocale(_locale_set);
       }
@@ -173,7 +174,7 @@ namespace LHAPDF {
 
     };
 
-      
+
     double _ddx(KnotArray& data, size_t ix, size_t iq2, int id, bool logspace){
       const size_t nxknots = data.xsize();
       double del1, del2;
@@ -183,7 +184,7 @@ namespace LHAPDF {
       } else {
 	del1 = (ix == 0)           ? 0 : data.xs(ix)   - data.xs(ix-1);
 	del2 = (ix == nxknots - 1) ? 0 : data.xs(ix+1) - data.xs(ix);
-      }	  
+      }
       if (ix != 0 && ix != nxknots-1) { //< If central, use the central difference
 	const double lddx = (data.xf(ix, iq2, id) - data.xf(ix-1, iq2, id)) / del1;
 	const double rddx = (data.xf(ix+1, iq2, id) - data.xf(ix, iq2, id)) / del2;
@@ -197,15 +198,15 @@ namespace LHAPDF {
       }
     }
 
-    
+
   } // End unnamed namespace
 
 
-  
+
   void GridPDF::_computePolynomialCoefficients(bool logspace){
     const size_t nxknots = data.xsize();
-    std::vector<size_t> shape{data.xsize()-1, data.q2size(), data.size(), 4};
-    std::vector<double> coeffs;
+    vector<size_t> shape{data.xsize()-1, data.q2size(), data.size(), 4};
+    vector<double> coeffs;
     coeffs.resize(shape[0]*shape[1]*shape[2]*shape[3]);
     for (size_t ix(0); ix<nxknots-1; ++ix){
       for (size_t iq2(0); iq2<data.q2size(); ++iq2){
@@ -237,7 +238,7 @@ namespace LHAPDF {
     data.setCoeffs() = coeffs;
   }
 
-  void GridPDF::_loadData(const std::string& mempath) {
+  void GridPDF::_loadData(const string& mempath) {
     string line, prevline;
     int iblock(0), iblockline(0), iline(0);
     vector<double> xknots;
@@ -251,7 +252,7 @@ namespace LHAPDF {
       NumParser nparser; double ftoken; int itoken;
       while (getline(*file, line)) {
         line = trim(line);
-	
+
         // If the line is commented out, increment the line number but not the block line
         iline += 1;
         if (line.find("#") == 0) continue;
@@ -260,7 +261,7 @@ namespace LHAPDF {
         if (line != "---") { // if we are not on a block separator line...
           // Block 0 is the metadata, which we ignore here
           if (iblock == 0) continue;
-	  
+
           // Parse the data lines
           nparser.reset(line);
           if (iblockline == 1) { // x knots line
@@ -276,7 +277,7 @@ namespace LHAPDF {
 		++tmp;
 	      }
 	    }
-	    
+
           } else if (iblockline == 2) { // Q knots line
             while (nparser >> ftoken) q2knots.push_back(ftoken*ftoken); // note Q -> Q2
             if (q2knots.size() == 0)
@@ -317,7 +318,7 @@ namespace LHAPDF {
     data.fillLogKnots();
 
     // fill shape of Knotarray
-    std::vector<size_t> shape(3);
+    vector<size_t> shape(3);
     shape[0] = xknots.size();
     shape[1] = q2knots.size();
     shape[2] = pids.size();
@@ -326,15 +327,15 @@ namespace LHAPDF {
 
     // create lookuptable to get index id from pid
     data.initPidLookup();
-    
+
     // sets size of data vector
     ipid_xfs.resize(data.shape(0) * data.shape(1) * data.shape(2));
-    
+
     int qloc(0), qtot(0);
     try {
       int index(0);
       int xindex(0);
-      
+
       IFile file(mempath.c_str());
       NumParser nparser; double ftoken;
       while (getline(*file, line)) {
@@ -363,7 +364,7 @@ namespace LHAPDF {
 		       + qtot*data.shape(2)
 		       + index] = ftoken;
 	      ++index;
-            }	    
+            }
 	    if ( (iblockline != 3) && (iblockline - 3) % qloc == 0){
 	      ++xindex;
 	      index = 0;
@@ -375,7 +376,7 @@ namespace LHAPDF {
                               " flavor entries seen but " + to_str(pids.size()) + " expected");
           }
 
-        } else { // we *are* on a block separator line	
+        } else { // we *are* on a block separator line
           // Check that the expected number of data lines were seen in the last block
 	  // Does not work anymore, how to translate?
 	  /*
@@ -384,10 +385,10 @@ namespace LHAPDF {
                             to_str(iblockline-1) + " data lines were seen in block " + to_str(iblock-1) +
                             " but " + to_str(xs.size()*q2s.size() + 3) + " expected");
 	  */
-			    
+
           // Ignore block registration if we've just finished reading the 0th (metadata) block
           if (iblock > 0) {
-	    
+
             // Throw if the last subgrid block was of zero size
             if (ipid_xfs.empty())
               throw ReadError("Empty xf values array in data block " + to_str(iblock) + ", ending on line " + to_str(iline));
@@ -400,10 +401,10 @@ namespace LHAPDF {
 	  xindex = 0;
 	  qtot += qloc;
         }
-	
+
       }
       data.setGrid() = ipid_xfs;
-            
+
       // File reading finished: complain if it was not properly terminated
       if (prevline != "---")
         throw ReadError("Grid file " + mempath + " is not properly terminated: .dat files MUST end with a --- separator line");
