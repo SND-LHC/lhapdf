@@ -105,11 +105,6 @@ if test x$enable_lhaglue_cxx == xyes; then flag=1; else flag=0; fi
 AC_DEFINE_UNQUOTED(LHAPDF_LHA5CXX, $flag, "Whether LHAPDF5 C++ compatibility is available")
 
 
-## Find pdflatex if possible
-AC_PATH_PROG(PDFLATEX, pdflatex)
-AM_CONDITIONAL(WITH_PDFLATEX, [test x$PDFLATEX != x])
-
-
 ## Find Doxygen if possible
 AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, [test x$DOXYGEN != x])
