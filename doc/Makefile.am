@@ -10,11 +10,14 @@ doxy:
 	ln -sf $(top_srcdir)/INSTALL INSTALL.dox
 	ln -sf $(top_srcdir)/migration/README MIGRATION.dox
 	@$(DOXYGEN) || true
-install-doxy:
-	$(install_sh_DATA) html/* $(DESTDIR)$(pkgdatadir)/doc/html
-mostlyclean-local:
-	@rm -rf $(top_builddir)/html $(top_builddir)/latex
+install-data-local: doxy
+	@$(NORMAL_INSTALL)
+	$(MKDIR_P) $(DESTDIR)$(docdir)/doxygen/search
+	$(INSTALL_DATA) doxygen/*.* $(DESTDIR)$(docdir)/doxygen/
+	$(INSTALL_DATA) doxygen/search/* $(DESTDIR)$(docdir)/doxygen/search/
+
 uninstall-local:
-	@rm -rf $(DESTDIR)$(pkgdatadir)/doc; \
-	test ! -d $(DESTDIR)$(pkgdatadir) || rmdir --ignore-fail-on-non-empty $(DESTDIR)$(pkgdatadir)
+	@$(NORMAL_UNINSTALL)
+	@rm -rf $(DESTDIR)$(docdir)/doxygen
+	@test ! -d $(DESTDIR)$(docdir) || rmdir --ignore-fail-on-non-empty $(DESTDIR)$(docdir)
 endif
