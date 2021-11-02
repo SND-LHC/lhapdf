@@ -4,6 +4,7 @@ SUBDIRS = src include wrappers tests bin
 DIST_SUBDIRS = $(SUBDIRS) examples doc
 
 dist_noinst_SCRIPTS = mkindex plotpdfs testpdfs testlhapdf
+dist_noinst_DATA = CODINGSTYLE CONFIGFLAGS DATARELEASE DESIGN
 dist_pkgdata_DATA = lhapdf.conf pdfsets.index
 
 pkgconfigdir = $(libdir)/pkgconfig
