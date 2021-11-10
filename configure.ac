@@ -147,6 +147,7 @@ AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall "])
 AC_CEDAR_CHECKCXXFLAG([-Wno-long-long], [AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long "])
 AC_CEDAR_CHECKCXXFLAG([-Qunused-arguments], [AM_CPPFLAGS="$AM_CPPFLAGS -Qunused-arguments "])
+AC_CEDAR_CHECKCXXFLAG([-Wshadow], [AM_CPPFLAGS="$AM_CPPFLAGS -Wshadow "])
 
 
 ## Include $prefix in the compiler flags for the rest of the configure run
