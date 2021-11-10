@@ -98,8 +98,8 @@ namespace LHAPDF {
     while (true) {
       const size_t delim_pos = tmp.find(sep);
       if (delim_pos == string::npos) break;
-      const string s = tmp.substr(0, delim_pos);
-      if (!s.empty()) rtn.push_back(s); // Don't insert "empties"
+      const string stmp = tmp.substr(0, delim_pos);
+      if (!stmp.empty()) rtn.push_back(stmp); // Don't insert "empties"
       tmp.replace(0, delim_pos+1, ""); // Remove already-processed part
     }
     if (!tmp.empty()) rtn.push_back(tmp); // Don't forget the trailing component!
