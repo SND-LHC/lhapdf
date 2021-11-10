@@ -119,23 +119,23 @@ int main(int argc, char* argv[]) {
     // Calculate gluon PDF as median and 90% C.L. of replica probability distribution.
     cout << "Gluon distribution at Q = " << Q << " GeV (median and 90% C.L.)" << endl;
     printf(labformat.c_str()," #","x","xg","error+","error-","error");
-    const LHAPDF::PDFUncertainty xgErr = set.uncertainty(xgAll, 90, true);
-    printf(numformat.c_str(), x, xgErr.central, xgErr.errplus, xgErr.errminus, xgErr.errsymm);
+    const LHAPDF::PDFUncertainty xgRepErr = set.uncertainty(xgAll, 90, true);
+    printf(numformat.c_str(), x, xgRepErr.central, xgRepErr.errplus, xgRepErr.errminus, xgRepErr.errsymm);
     if (npar > 0) {
       // If npar > 0 the parameter variation uncertainty is scaled to the requested C.L.
       printf(labformat.c_str()," #","x","error_par","error_pdf+","error_pdf-","error_pdf");
-      printf(numformat.c_str(), x, xgErr.err_par, xgErr.errplus_pdf, xgErr.errminus_pdf, xgErr.errsymm_pdf);
+      printf(numformat.c_str(), x, xgRepErr.err_par, xgRepErr.errplus_pdf, xgRepErr.errminus_pdf, xgRepErr.errsymm_pdf);
     }
     cout << endl;
 
     // Calculate up-quark PDF as median and 68% C.L. of replica probability distribution.
     cout << "Up-quark distribution at Q = " << Q << " GeV (median and 68% C.L.)" << endl;
     printf(labformat.c_str()," #","x","xu","error+","error-","error");
-    const LHAPDF::PDFUncertainty xuErr = set.uncertainty(xuAll, 68, true);
-    printf(numformat.c_str(), x, xuErr.central, xuErr.errplus, xuErr.errminus, xuErr.errsymm);
+    const LHAPDF::PDFUncertainty xuRepErr = set.uncertainty(xuAll, 68, true);
+    printf(numformat.c_str(), x, xuRepErr.central, xuRepErr.errplus, xuRepErr.errminus, xuRepErr.errsymm);
     if (npar > 0) {
       printf(labformat.c_str()," #","x","error_par","error_pdf+","error_pdf-","error_pdf");
-      printf(numformat.c_str(), x, xuErr.err_par, xuErr.errplus_pdf, xuErr.errminus_pdf, xuErr.errsymm_pdf);
+      printf(numformat.c_str(), x, xuRepErr.err_par, xuRepErr.errplus_pdf, xuRepErr.errminus_pdf, xuRepErr.errsymm_pdf);
     }
     cout << endl;
 
