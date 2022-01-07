@@ -116,9 +116,6 @@ namespace LHAPDF {
       NumParser(const string& line) {
         reset(line);
       }
-      // Destructor
-      ~NumParser() {
-      }
 
       // Re-init to new line as char*
       void reset(const char* line=0) {
