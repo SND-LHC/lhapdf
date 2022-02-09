@@ -6,6 +6,9 @@ Usage: %(prog)s <PDF1> [<PDF2> [...]]
 Test PDF xf, alpha_s, and metadata values for the named LHAPDF6 sets.
 """
 
+from __future__ import print_function
+
+
 ## Parse the command line
 import argparse, sys
 ap = argparse.ArgumentParser(usage=__doc__)
