@@ -20,7 +20,7 @@ namespace LHAPDF {
 
 
   typedef std::map<std::string,std::string> FileContentMap;
-  static FileContentMap lhapdf_filecontents;
+  static thread_local FileContentMap lhapdf_filecontents;
 
 
   template <class FILETYPE>

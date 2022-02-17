@@ -149,7 +149,7 @@ namespace { //< Unnamed namespace to restrict visibility to this file
 
 
   /// Collection of active sets
-  static map<int, PDFSetHandler> ACTIVESETS;
+  static thread_local map<int, PDFSetHandler> ACTIVESETS;
 
   /// The currently active set
   int CURRENTSET = 0;

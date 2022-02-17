@@ -54,7 +54,7 @@ namespace LHAPDF {
 
   const std::vector<std::string>& availablePDFSets() {
     // Cached path list
-    static vector<string> rtn;
+    static thread_local vector<string> rtn;
     // Return cached list if valid
     if (!rtn.empty()) return rtn;
     // Otherwise this is the first time: populate the list

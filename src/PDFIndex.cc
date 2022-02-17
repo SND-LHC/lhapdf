@@ -12,7 +12,7 @@ namespace LHAPDF {
 
 
   std::map<int, std::string>& getPDFIndex() {
-    static map<int, string> _lhaindex;
+    static thread_local map<int, string> _lhaindex;
     if (_lhaindex.empty()) { // The map needs to be populated first
       string indexpath = findFile("pdfsets.index");
       if (indexpath.empty()) throw ReadError("Could not find a pdfsets.index file");
