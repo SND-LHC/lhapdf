@@ -6,20 +6,35 @@
 
 @section intro Introduction
 
-LHAPDF is a general purpose C++ interpolator, used for evaluating PDFs from
-discretised data files.  Previous versions of LHAPDF were written in Fortran
-77/90 and are documented at http://lhapdf.hepforge.org/lhapdf5/.
+LHAPDF is the standard tool for evaluating parton distribution functions (PDFs)
+in high-energy physics. PDFs encode the flavour and momentum structure of
+composite particles, such as protons, pions and nuclei; most cross-section
+calculations are based on parton-level matrix-elements which must be connected
+to the real interacting particles, hence PDFs are an essential ingredient of
+phenomenological and experimental studies at hadron and heavy-ion colliders
+(e.g. LHC, HERA, Tevatron, EIC, FCC) and in cosmic-ray physics.
 
-LHAPDF6 vastly reduces the memory overhead of the Fortran LHAPDF (from gigabytes
-to megabytes!), entirely removes restrictions on numbers of concurrent PDFs,
-allows access to single PDF members without needing to load whole sets, and
-separates a new standardised PDF data format from the code library so that new
-PDF sets may be created and released easier and faster. The C++ LHAPDF6 also
-permits arbitrary parton contents via the standard PDG ID code scheme, is
-computationally more efficient (particularly if only one or two flavours are
-required at each phase space point, as in PDF reweighting), and uses a flexible
-metadata system which fixes many fundamental metadata and concurrency bugs in
-LHAPDF5.
+PDFs themselves are fitted to a range of data by various collaborations. LHAPDF
+provides the definitive community library of such fits, in a standard
+data-format, as well as C++ and Python interfaces for evaluating them. Written
+as a general purpose C++ interpolator for estimating PDFs from discretised data
+files, it has also found more general uses, such as for fragmentation functions
+(essentially the inverse of PDFs).
+
+
+@section compat History and compatibility
+
+Previous versions of LHAPDF were written in Fortran 77/90 and are documented at
+http://lhapdf.hepforge.org/lhapdf5/ . LHAPDF6 vastly reduces the memory overhead
+of the Fortran LHAPDF (from gigabytes to megabytes!), entirely removes
+restrictions on numbers of concurrent PDFs, allows access to single PDF members
+without needing to load whole sets, and separates a new standardised PDF data
+format from the code library so that new PDF sets may be created and released
+easier and faster. The C++ LHAPDF6 also permits arbitrary parton contents via
+the standard PDG ID code scheme, is computationally more efficient (particularly
+if only one or two flavours are required at each phase space point, as in PDF
+reweighting), and uses a flexible metadata system which fixes many fundamental
+metadata and concurrency bugs in LHAPDF5.
 
 Compatibility routines are provided as standard for existing C++ and Fortran
 codes using the LHAPDF5 and PDFLIB legacy interfaces, so you can keep using your
