@@ -14,20 +14,25 @@ namespace LHAPDF {
   std::map<int, std::string>& getPDFIndex() {
     static map<int, string> _lhaindex;
     if (_lhaindex.empty()) { // The map needs to be populated first
-      string indexpath = findFile("pdfsets.index");
-      if (indexpath.empty()) throw ReadError("Could not find a pdfsets.index file");
+      vector<string> indexpaths = findFiles("pdfsets.index");
+      if (indexpaths.empty()) throw ReadError("Could not find any pdfsets.index files");
       try {
-        IFile file(indexpath.c_str());
-        string line;
-        while (getline(*file, line)) {
-          line = trim(line);
-          if (line.empty() || line.find("#") == 0) continue;
-          istringstream tokens(line);
-          int id; string setname;
-          tokens >> id;
-          tokens >> setname;
-          // cout << id << " -> " << _lhaindex[id] << endl;
-          _lhaindex[id] = setname;
+        for (const string indexpath : indexpaths) {
+          IFile file(indexpath.c_str());
+          string line;
+          while (getline(*file, line)) {
+            line = trim(line);
+            if (line.empty() || line.find("#") == 0) continue;
+            istringstream tokens(line);
+            int id; string setname;
+            tokens >> id;
+            tokens >> setname;
+            // cout << id << " -> " << _lhaindex[id] << endl;
+            // Insert this line into the map iff it doesn't already exist: allows index merging & overriding
+            if (_lhaindex.count(id) == 0) {
+              _lhaindex[id] = setname;
+            }
+          }
         }
       } catch (const std::exception& ex) {
         throw ReadError("Trouble when reading " + indexpath + ": " + ex.what());

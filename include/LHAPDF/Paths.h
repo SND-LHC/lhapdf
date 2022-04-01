@@ -54,6 +54,9 @@ namespace LHAPDF {
   /// If no matching file is found, return an empty path.
   std::string findFile(const std::string& target);
 
+  /// Return all locations in which a file is found
+  std::vector<std::string> findFiles(const std::string& target) {
+
   ///@}
 
 
