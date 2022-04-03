@@ -7,6 +7,7 @@
 #include "LHAPDF/Info.h"
 #include "LHAPDF/Config.h"
 #include <dirent.h>
+using namespace std;
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -57,9 +58,7 @@ namespace LHAPDF {
     if (target.empty()) return rtn;
     for (const string& base : paths()) {
       const string p = (startswith(target, "/") || startswith(target, ".")) ? target : base / target;
-      if (file_exists(p))
-        rtn.push_back(p);
-      }
+      if (file_exists(p)) rtn.push_back(p);
     }
     return rtn;
   }
