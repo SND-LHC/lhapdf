@@ -25,26 +25,34 @@ namespace LHAPDF {
   /// See the PDFSet class and its PDFSet::uncertainty functions for usage.
   /// @{
 
+
   /// @brief Structure for storage of uncertainty info calculated over a PDF error set
   ///
   /// Used by the PDFSet::uncertainty functions.
   struct PDFUncertainty {
     /// Constructor
     PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1,
-		   double eplus_pdf=0, double eminus_pdf=0, double esymm_pdf=0, double e_par=0)
+                   double eplus_pdf=0, double eminus_pdf=0, double esymm_pdf=0,
+                   double eplus_par=0, double eminus_par=0, double esymm_par=0)
       : central(cent), errplus(eplus), errminus(eminus), errsymm(esymm), scale(scalefactor),
-        errplus_pdf(eplus_pdf), errminus_pdf(eminus_pdf), errsymm_pdf(esymm_pdf), err_par(e_par)
+        errplus_pdf(eplus_pdf), errminus_pdf(eminus_pdf), errsymm_pdf(esymm_pdf),
+        errplus_par(eplus_par), errminus_par(eminus_par), errsymm_par(esymm_par)
     {    }
     /// Variables for the central value, +ve, -ve & symmetrised errors, and a CL scalefactor
     double central, errplus, errminus, errsymm, scale;
     /// Add extra variables for separate PDF and parameter variation errors with combined sets
-    double errplus_pdf, errminus_pdf, errsymm_pdf, err_par;
+    double errplus_pdf, errminus_pdf, errsymm_pdf;
+    double errplus_par, errminus_par, errsymm_par, err_par; ///< @deprecated Remove redundant err_par
+    /// @todo Provide a full error breakdown by par components?
   };
+
+
+  /// @todo Add a struct for error structure
 
   /// @}
 
 
-  /// Class for PDF set metadata and manipulation
+  /// Class for PDF-set metadata and manipulation
   class PDFSet : public Info {
   public:
 
@@ -87,6 +95,9 @@ namespace LHAPDF {
       return to_lower(get_entry("ErrorType", "UNKNOWN"));
     }
 
+    /// Get the structured decomposition of the error-type string
+    std::vector<std::pair<std::string,size_t>> errorStructure() const;
+
     /// @brief Get the confidence level of the Hessian eigenvectors, in percent.
     ///
     /// If not defined, assume 1-sigma = erf(1/sqrt(2)) =~ 68.268949% by default,
@@ -99,6 +110,13 @@ namespace LHAPDF {
     // }
     size_t size() const {
       return get_entry_as<unsigned int>("NumMembers");
+    }
+
+    /// Number of error members in this set
+    ///
+    /// @note Equal to size()-1
+    size_t errSize() const {
+      return size()-1;
     }
 
     /// @}

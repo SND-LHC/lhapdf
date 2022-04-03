@@ -1,3 +1,9 @@
+2022-04-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a parser for the extended error-type string format, and
+	start implementation of the extended uncertainty computation using
+	it.
+
 2021-09-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.4.0 release.

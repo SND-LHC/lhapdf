@@ -37,15 +37,54 @@ namespace LHAPDF {
 
 
 
+  /// Parse extended error type syntax
+  vector<pair<string,size_t>> PDFSet::errorStructure() const {
+    vector<pair<string,size_t>> rtn;
+
+    // Loop over the quadrature parts, separated by +  signs, after extracting the core part
+    vector<string> quadparts = split(errorType(), "+");
+    rtn.push_back({quadparts[0], 0});
+    size_t nextraparts = 0;
+    for (size_t iq = 1; iq < quadparts.size(); ++iq) {
+      const string& qpart = quadparts[iq];
+      size_t qsize = 0;
+      string qname = "";
+
+      // Loop over any envelope components, separated by * signs
+      vector<string> envparts = split(qpart, "*");
+      for (const string& epart : envparts) {
+        // Determine if a pair or singleton variation
+        size_t esize = 2;
+        string ename = epart;
+        if (startswith(epart, "#")) {
+          esize = 1;
+          ename = ename.substr(1);
+        }
+        // Update the quadrature-part size and name
+        qsize += esize;
+        qname += (qname.empty() ? "" : ",") + ename;
+        nextraparts += qsize;
+      }
+
+      // Finalise the maybe-envelope name, and add to the return list
+      if (envparts.size() > 1) qname = "env<" + qname + ">";
+      rtn.push_back({qname, qsize});
+    }
+
+    // Finally, compute and set the size of the core errors
+    rtn[0].second = errSize() - nextraparts;
+
+    return rtn;
+  }
+
+
   PDFUncertainty PDFSet::uncertainty(const vector<double>& values, double cl, bool alternative) const {
     if (values.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Input vector must contain values for all PDF members.");
 
     // PDF members labelled 0 to nmem, excluding possible parameter variations.
-    size_t nmem = size()-1;
-    const size_t npar = countchar(errorType(), '+');
-    nmem -= 2*npar;
-
+    auto errstruct = errorStructure(); ///< @todo Avoid expensive recomputations... cache structure on PDFSet?
+    size_t nmem = errstruct[0].second;
     if (nmem <= 0)
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. PDF set must contain more than just the central value.");
 
@@ -60,14 +99,17 @@ namespace LHAPDF {
     PDFUncertainty rtn;
     rtn.central = values[0];
 
+
+    // Compute core uncertainty component
     if (startswith(errorType(), "replicas")) {
 
       if (alternative) {
         // Compute median and requested CL directly from probability distribution of replicas.
         // Sort "values" into increasing order, ignoring zeroth member (average over replicas).
         // Also ignore possible parameter variations included at the end of the set.
-        vector<double> sorted = values;
-        sort(sorted.begin()+1, sorted.end()-2*npar);
+        vector<double> sorted(nmem);
+        copy(values.begin()+1, values.begin()+1+nmem+1, sorted.begin());
+        sort(sorted.begin(), sorted.end());
         // Define central value to be median.
         if (nmem % 2) { // odd nmem => one middle value
           rtn.central = sorted[nmem/2 + 1];
@@ -79,7 +121,7 @@ namespace LHAPDF {
         const int lower = 1 + round(0.5*(1-reqCL)*nmem); // round to nearest integer
         rtn.errplus = sorted[upper] - rtn.central;
         rtn.errminus = rtn.central - sorted[lower];
-        rtn.errsymm = 0.5*(rtn.errplus + rtn.errminus); // symmetrised
+        rtn.errsymm = (rtn.errplus + rtn.errminus)/2.0; // symmetrised
 
       } else {
 
@@ -123,8 +165,9 @@ namespace LHAPDF {
       throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::uncertainty.");
     }
 
+
+    // Apply scaling to Hessian sets or replica sets with alternative=false.
     if (setCL != reqCL) {
-      // Apply scaling to Hessian sets or replica sets with alternative=false.
 
       // Calculate the qth quantile of the chi-squared distribution with one degree of freedom.
       // Examples: quantile(dist, q) = {0.988946, 1, 2.70554, 3.84146, 4} for q = {0.68, 1-sigma, 0.90, 0.95, 2-sigma}.
@@ -141,24 +184,37 @@ namespace LHAPDF {
 
     }
 
+    // Store core variation uncertainties
     rtn.errplus_pdf = rtn.errplus;
     rtn.errminus_pdf = rtn.errminus;
     rtn.errsymm_pdf = rtn.errsymm;
-    if (npar > 0) {
 
-      // All individual parameter variation uncertainties are added in quadrature.
-      double err_par = 0;
-      for (size_t ipar = 1; ipar <= npar; ipar++) {
-        err_par += sqr(values[nmem+2*ipar-1]-values[nmem+2*ipar]);
+
+    // Compute signed parameter-variation errors
+    double errsq_par_plus = 0, errsq_par_minus = 0;
+    size_t index = nmem;
+    for (size_t iq = 1; iq < errstruct.size(); ++iq) {
+      double vmin = rtn.central, vmax = rtn.central;
+      for (size_t ie = 0; ie < errstruct[iq].second; ++ie) {
+        index += 1;
+        vmin = min(values[index], vmin);
+        vmax = max(values[index], vmax);
       }
-      // Calculate total uncertainty from parameter variation with same scaling as for PDF uncertainty.
-      rtn.err_par = rtn.scale * 0.5 * sqrt(err_par);
-      // Add parameter variation uncertainty in quadrature with PDF uncertainty.
-      rtn.errplus = sqrt( sqr(rtn.errplus_pdf) + sqr(rtn.err_par) );
-      rtn.errminus = sqrt( sqr(rtn.errminus_pdf) + sqr(rtn.err_par) );
-      rtn.errsymm = sqrt( sqr(rtn.errsymm_pdf) + sqr(rtn.err_par) );
-
+      errsq_par_plus += sqr(vmax-rtn.central);
+      errsq_par_minus += sqr(vmin-rtn.central);
     }
+
+    // Add the parameter-variation uncertainty to total, with same scaling as for PDF uncertainty.
+    rtn.errplus_par = rtn.scale * sqrt(errsq_par_plus);
+    rtn.errminus_par = rtn.scale * sqrt(errsq_par_minus);
+    rtn.errsymm_par = (rtn.errplus_par + rtn.errminus_par)/2.0;
+    rtn.err_par = rtn.errsymm_par; ///< @todo Remove
+
+    // Add parameter variation uncertainties in quadrature with PDF uncertainty.
+    rtn.errplus = sqrt( sqr(rtn.errplus_pdf) + sqr(rtn.errplus_par) );
+    rtn.errminus = sqrt( sqr(rtn.errminus_pdf) + sqr(rtn.errminus_par) );
+    rtn.errsymm = (rtn.errplus + rtn.errminus)/2.0;
+
 
     return rtn;
   }
