@@ -30,6 +30,8 @@ namespace LHAPDF {
   ///
   /// Used by the PDFSet::uncertainty functions.
   struct PDFUncertainty {
+    using ErrPairs = std::vector<std::pair<double,double>>;
+
     /// Constructor
     PDFUncertainty(double cent=0, double eplus=0, double eminus=0, double esymm=0, double scalefactor=1,
                    double eplus_pdf=0, double eminus_pdf=0, double esymm_pdf=0,
@@ -40,14 +42,41 @@ namespace LHAPDF {
     {    }
     /// Variables for the central value, +ve, -ve & symmetrised errors, and a CL scalefactor
     double central, errplus, errminus, errsymm, scale;
-    /// Add extra variables for separate PDF and parameter variation errors with combined sets
+
+    /// Variables for separate PDF and parameter variation errors with combined sets
     double errplus_pdf, errminus_pdf, errsymm_pdf;
-    double errplus_par, errminus_par, errsymm_par, err_par; ///< @deprecated Remove redundant err_par
-    /// @todo Provide a full error breakdown by par components?
+    double errplus_par, errminus_par, errsymm_par;
+    double err_par; ///< @deprecated Remove redundant err_par
+
+    /// Full error-breakdown of all quadrature uncertainty components
+    ErrPairs errs;
   };
 
 
-  /// @todo Add a struct for error structure
+  /// @brief Structure encoding the structure of the PDF error-set
+  struct PDFErrInfo {
+    using QuadParts = std::vector<std::pair<std::string, size_t>>;
+
+    /// Constructor
+    PDFErrInfo(QuadParts qparts)
+      : parts(qparts)
+    {    }
+
+    /// Error-set quadrature parts
+    QuadParts parts;
+
+    /// Number of core-set members
+    size_t nmemCore() {
+      return parts[0].second;
+    }
+    /// Number of par-set members
+    size_t nmemPar() {
+      size_t rtn = 0;
+      for (size_t i = 1; i < parts.size(); ++i) rtn += parts[i].second;
+      return rtn;
+    }
+
+  };
 
   /// @}
 
@@ -96,7 +125,7 @@ namespace LHAPDF {
     }
 
     /// Get the structured decomposition of the error-type string
-    std::vector<std::pair<std::string,size_t>> errorStructure() const;
+    PDFErrInfo errorInfo() const;
 
     /// @brief Get the confidence level of the Hessian eigenvectors, in percent.
     ///

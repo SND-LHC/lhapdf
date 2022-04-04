@@ -38,8 +38,8 @@ namespace LHAPDF {
 
 
   /// Parse extended error type syntax
-  vector<pair<string,size_t>> PDFSet::errorStructure() const {
-    vector<pair<string,size_t>> rtn;
+  PDFErrInfo PDFSet::errorInfo() const {
+    PDFErrInfo::QuadParts rtn;
 
     // Loop over the quadrature parts, separated by +  signs, after extracting the core part
     vector<string> quadparts = split(errorType(), "+");
@@ -74,7 +74,7 @@ namespace LHAPDF {
     // Finally, compute and set the size of the core errors
     rtn[0].second = errSize() - nextraparts;
 
-    return rtn;
+    return PDFErrInfo(rtn);
   }
 
 
@@ -83,8 +83,8 @@ namespace LHAPDF {
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Input vector must contain values for all PDF members.");
 
     // PDF members labelled 0 to nmem, excluding possible parameter variations.
-    auto errstruct = errorStructure(); ///< @todo Avoid expensive recomputations... cache structure on PDFSet?
-    size_t nmem = errstruct[0].second;
+    PDFErrInfo errinfo = errorInfo(); ///< @todo Avoid expensive recomputations... cache structure on PDFSet?
+    size_t nmem = errinfo.nmemCore();
     if (nmem <= 0)
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. PDF set must contain more than just the central value.");
 
@@ -193,9 +193,9 @@ namespace LHAPDF {
     // Compute signed parameter-variation errors
     double errsq_par_plus = 0, errsq_par_minus = 0;
     size_t index = nmem;
-    for (size_t iq = 1; iq < errstruct.size(); ++iq) {
+    for (size_t iq = 1; iq < errinfo.parts.size(); ++iq) {
       double vmin = rtn.central, vmax = rtn.central;
-      for (size_t ie = 0; ie < errstruct[iq].second; ++ie) {
+      for (size_t ie = 0; ie < errinfo.parts[iq].second; ++ie) {
         index += 1;
         vmin = min(values[index], vmin);
         vmax = max(values[index], vmax);
