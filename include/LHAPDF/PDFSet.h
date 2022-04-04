@@ -48,7 +48,7 @@ namespace LHAPDF {
     double errplus_par, errminus_par, errsymm_par;
     double err_par; ///< @deprecated Remove redundant err_par
 
-    /// Full error-breakdown of all quadrature uncertainty components
+    /// Full error-breakdown of all quadrature uncertainty components, as (+,-) pairs
     ErrPairs errs;
   };
 

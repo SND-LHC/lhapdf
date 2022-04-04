@@ -188,6 +188,7 @@ namespace LHAPDF {
     rtn.errplus_pdf = rtn.errplus;
     rtn.errminus_pdf = rtn.errminus;
     rtn.errsymm_pdf = rtn.errsymm;
+    rtn.errs.push_back({rtn.errplus_pdf, rtn.errminus_pdf}); ///< @note (+,-) pair-ordering
 
 
     // Compute signed parameter-variation errors
@@ -200,8 +201,11 @@ namespace LHAPDF {
         vmin = min(values[index], vmin);
         vmax = max(values[index], vmax);
       }
-      errsq_par_plus += sqr(vmax-rtn.central);
-      errsq_par_minus += sqr(vmin-rtn.central);
+      const double eplus = vmax - rtn.central;
+      const double eminus = rtn.central - vmin;
+      rtn.errs.push_back({eplus,eminus});
+      errsq_par_plus += sqr(eplus);
+      errsq_par_minus += sqr(eminus);
     }
 
     // Add the parameter-variation uncertainty to total, with same scaling as for PDF uncertainty.
