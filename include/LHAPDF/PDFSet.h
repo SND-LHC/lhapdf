@@ -15,6 +15,9 @@
 
 namespace LHAPDF {
 
+  /// CL percentage for a Gaussian 1-sigma
+  constexpr double CL1SIGMA = 100*erf(1/sqrt(2));
+
 
   // Forward declaration
   class PDF;
@@ -40,16 +43,17 @@ namespace LHAPDF {
         errplus_pdf(eplus_pdf), errminus_pdf(eminus_pdf), errsymm_pdf(esymm_pdf),
         errplus_par(eplus_par), errminus_par(eminus_par), errsymm_par(esymm_par)
     {    }
+
     /// Variables for the central value, +ve, -ve & symmetrised errors, and a CL scalefactor
     double central, errplus, errminus, errsymm, scale;
 
     /// Variables for separate PDF and parameter variation errors with combined sets
     double errplus_pdf, errminus_pdf, errsymm_pdf;
     double errplus_par, errminus_par, errsymm_par;
-    double err_par; ///< @deprecated Remove redundant err_par
+    double err_par; ///< @deprecated Remove redundant err_par; use errsymm_par
 
     /// Full error-breakdown of all quadrature uncertainty components, as (+,-) pairs
-    ErrPairs errs;
+    ErrPairs errparts;
   };
 
 
@@ -58,19 +62,25 @@ namespace LHAPDF {
     using QuadParts = std::vector<std::pair<std::string, size_t>>;
 
     /// Constructor
-    PDFErrInfo(QuadParts qparts)
-      : parts(qparts)
+    PDFErrInfo(QuadParts qparts, double cl, const std::string& errtypestr="")
+      : parts(qparts), conflevel(cl), errtype(errtypestr)
     {    }
 
     /// Error-set quadrature parts
     QuadParts parts;
 
+    /// Default confidence-level
+    double conflevel;
+
+    /// Error-type annotation
+    std::string errtype;
+
     /// Number of core-set members
-    size_t nmemCore() {
+    size_t nmemCore() const {
       return parts[0].second;
     }
     /// Number of par-set members
-    size_t nmemPar() {
+    size_t nmemPar() const {
       size_t rtn = 0;
       for (size_t i = 1; i < parts.size(); ++i) rtn += parts[i].second;
       return rtn;
@@ -293,7 +303,18 @@ namespace LHAPDF {
     ///
     /// @todo Add option to restrict replica mean & stddev calculation to a central CI set?
     PDFUncertainty uncertainty(const std::vector<double>& values,
-                               double cl=100*erf(1/sqrt(2)), bool alternative=false) const;
+                               double cl=CL1SIGMA, bool alternative=false) const;
+
+    // // Trick to ensure no calls with implicit type conversion
+    // template <typename T1, typename T2>
+    // void uncertainty(const std::vector<double>& values, T1, T2) const = delete;
+
+    // /// Alternative form allowing the alternative computation with default CL
+    // PDFUncertainty uncertainty(const std::vector<double>& values,
+    //                            bool alternative, double cl=CL1SIGMA) const {
+    //   return uncertainty(values, cl, alternative);
+    // }
+
 
     /// @brief Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
     ///
@@ -304,9 +325,21 @@ namespace LHAPDF {
     /// See the @ref uncertainties group for more details
     void uncertainty(PDFUncertainty& rtn,
                      const std::vector<double>& values,
-                     double cl=100*erf(1/sqrt(2)), bool alternative=false) const {
+                     double cl=CL1SIGMA, bool alternative=false) const {
       rtn = uncertainty(values, cl, alternative);
     }
+
+    // // Trick to ensure no calls with implicit type conversion
+    // template <typename T1, typename T2>
+    // void uncertainty(PDFUncertainty& rtn, const std::vector<double>& values, T1, T2) const = delete;
+
+    // /// Alternative form allowing the alternative computation with default CL
+    // void uncertainty(PDFUncertainty& rtn,
+    //                  const std::vector<double>& values,
+    //                  bool alternative, double cl=CL1SIGMA) const {
+    //   uncertainty(rtn, values, cl, alternative);
+    // }
+
 
     /// @brief Calculate the PDF correlation between @c valuesA and @c valuesB using appropriate formulae for this set.
     ///
@@ -345,7 +378,8 @@ namespace LHAPDF {
     double randomValueFromHessian(const std::vector<double>& values, const std::vector<double>& randoms, bool symmetrise=true) const;
 
 
-    /// Check that the PdfType of each member matches the ErrorType of the set.
+    /// Check that the type of each member matches the ErrorType of the set.
+    ///
     /// @todo We need to make the signature clearer -- what is the arg? Why not
     ///   automatically check the members? Why not a plural name? Why not on PDF?
     ///   "Hiding" the name for now with the leading underscore.

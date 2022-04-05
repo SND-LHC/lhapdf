@@ -32,18 +32,18 @@ namespace LHAPDF {
 
   double PDFSet::errorConfLevel() const {
     // Return -1 or similar invalid value if errorType is replicas: requires changes in uncertainty code below.
-    return get_entry_as<double>("ErrorConfLevel", (!startswith(errorType(), "replicas")) ? 100*erf(1/sqrt(2)) : -1);
+    return get_entry_as<double>("ErrorConfLevel", (!startswith(errorType(), "replicas")) ? CL1SIGMA : -1);
   }
 
 
 
   /// Parse extended error type syntax
   PDFErrInfo PDFSet::errorInfo() const {
-    PDFErrInfo::QuadParts rtn;
+    PDFErrInfo::QuadParts parts;
 
     // Loop over the quadrature parts, separated by +  signs, after extracting the core part
     vector<string> quadparts = split(errorType(), "+");
-    rtn.push_back({quadparts[0], 0});
+    parts.push_back({quadparts[0], 0});
     size_t nextraparts = 0;
     for (size_t iq = 1; iq < quadparts.size(); ++iq) {
       const string& qpart = quadparts[iq];
@@ -68,13 +68,13 @@ namespace LHAPDF {
 
       // Finalise the maybe-envelope name, and add to the return list
       if (envparts.size() > 1) qname = "env<" + qname + ">";
-      rtn.push_back({qname, qsize});
+      parts.push_back({qname, qsize});
     }
 
     // Finally, compute and set the size of the core errors
-    rtn[0].second = errSize() - nextraparts;
+    parts[0].second = errSize() - nextraparts;
 
-    return PDFErrInfo(rtn);
+    return PDFErrInfo(parts, errorConfLevel(), errorType());
   }
 
 
@@ -90,7 +90,7 @@ namespace LHAPDF {
 
     // Get set- and requested conf levels (converted from %) and check sanity (req CL = set CL if cl < 0).
     // For replica sets, we internally use a nominal setCL corresponding to 1-sigma, since errorConfLevel() == -1.
-    const double setCL = (!startswith(errorType(), "replicas")) ? errorConfLevel() / 100.0 : erf(1/sqrt(2));
+    const double setCL = (!startswith(errorType(), "replicas")) ? errorConfLevel() / 100.0 : CL1SIGMA;
     const double reqCL = (cl >= 0) ? cl / 100.0 : setCL; // convert from percentage
     if (!in_range(reqCL, 0, 1) || !in_range(setCL, 0, 1))
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Requested or PDF set confidence level outside [0,1] range.");
@@ -188,7 +188,7 @@ namespace LHAPDF {
     rtn.errplus_pdf = rtn.errplus;
     rtn.errminus_pdf = rtn.errminus;
     rtn.errsymm_pdf = rtn.errsymm;
-    rtn.errs.push_back({rtn.errplus_pdf, rtn.errminus_pdf}); ///< @note (+,-) pair-ordering
+    rtn.errparts.push_back({rtn.errplus_pdf, rtn.errminus_pdf}); ///< @note (+,-) pair-ordering
 
 
     // Compute signed parameter-variation errors
@@ -203,7 +203,7 @@ namespace LHAPDF {
       }
       const double eplus = vmax - rtn.central;
       const double eminus = rtn.central - vmin;
-      rtn.errs.push_back({eplus,eminus});
+      rtn.errparts.push_back({eplus,eminus});
       errsq_par_plus += sqr(eplus);
       errsq_par_minus += sqr(eminus);
     }
