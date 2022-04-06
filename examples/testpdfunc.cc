@@ -26,9 +26,9 @@ void printUncs(const LHAPDF::PDFSet& set, const vector<double>& vals, double cl,
   cout.precision(5);
   cout << varname << " = " << err.central << " +" << err.errplus << " -" << err.errminus << " (+-" << err.errsymm << ")" << endl;
   // Break down into quadrature-combined uncertainty components
-  for (size_t i = 1; i < errinfo.parts.size(); ++i) {
-    cout << "  " << errinfo.parts[i].first << endl;
-    cout << "    " << setw(12) << err.errparts[i].first << setw(12) << err.errparts[i].second << endl;
+  for (size_t i = 0; i < errinfo.qparts.size(); ++i) {
+    //cout << "  " << errinfo.qpartName(i) << endl;
+    cout << "  " << setw(12) << err.errparts[i].first << setw(12) << err.errparts[i].second << "  " << errinfo.qpartName(i) << endl;
   }
 }
 

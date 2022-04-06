@@ -8,6 +8,42 @@
 namespace LHAPDF {
 
 
+  string PDFErrInfo::qpartName(size_t iq) const {
+    const EnvParts& eparts = qparts[iq];
+    if (eparts.size() == 1) return eparts[0].first;
+    string qname = "[";
+    for (size_t ie = 0; ie < eparts.size(); ++ie) {
+      qname += (ie == 0 ? "" : ",") + eparts[ie].first;
+    }
+    qname += "]";
+    return qname;
+  }
+
+  vector<string> PDFErrInfo::qpartNames() const {
+    vector<string> rtn;  rtn.reserve(qparts.size());
+    for (size_t iq = 0; iq < qparts.size(); ++iq) rtn.push_back(qpartName(iq));
+    return rtn;
+  }
+
+
+  size_t PDFErrInfo::nmemCore() const {
+    return qparts[0][0].second;
+  }
+
+  size_t PDFErrInfo::nmemPar() const {
+    size_t rtn = 0;
+    for (size_t i = 1; i < qparts.size(); ++i) {
+      for (size_t j = 1; j < qparts[i].size(); ++j) {
+        rtn += qparts[i][j].second;
+      }
+    }
+    return rtn;
+  }
+
+
+
+
+
   PDFSet::PDFSet(const string& setname) {
     /// @todo Hmm, this relies on the standard search path system ... currently no way to provide a absolute path
     _setname = setname;
@@ -39,42 +75,35 @@ namespace LHAPDF {
 
   /// Parse extended error type syntax
   PDFErrInfo PDFSet::errorInfo() const {
-    PDFErrInfo::QuadParts parts;
+    PDFErrInfo::QuadParts qparts;
 
     // Loop over the quadrature parts, separated by +  signs, after extracting the core part
-    vector<string> quadparts = split(errorType(), "+");
-    parts.push_back({quadparts[0], 0});
-    size_t nextraparts = 0;
-    for (size_t iq = 1; iq < quadparts.size(); ++iq) {
-      const string& qpart = quadparts[iq];
-      size_t qsize = 0;
-      string qname = "";
+    vector<string> quadstrs = split(errorType(), "+");
+    qparts.reserve(quadstrs.size());
+    qparts.push_back({{quadstrs[0], 0}});
+    size_t nmempar = 0;
+
+    for (size_t iq = 1; iq < quadstrs.size(); ++iq) {
+      PDFErrInfo::EnvParts eparts;
 
       // Loop over any envelope components, separated by * signs
-      vector<string> envparts = split(qpart, "*");
-      for (const string& epart : envparts) {
+      const string& qstr = quadstrs[iq];
+      vector<string> envstrs = split(qstr, "*");
+      for (const string& estr : envstrs) {
         // Determine if a pair or singleton variation
-        size_t esize = 2;
-        string ename = epart;
-        if (startswith(epart, "#")) {
-          esize = 1;
-          ename = ename.substr(1);
-        }
-        // Update the quadrature-part size and name
-        qsize += esize;
-        qname += (qname.empty() ? "" : ",") + ename;
-        nextraparts += qsize;
+        size_t esize = (startswith(estr, "#") || startswith(estr, "$")) ? 1 : 2;
+        string ename = estr;
+        eparts.push_back({ename,esize});
+        nmempar += esize;
       }
 
-      // Finalise the maybe-envelope name, and add to the return list
-      if (envparts.size() > 1) qname = "env<" + qname + ">";
-      parts.push_back({qname, qsize});
+      qparts.push_back(eparts);
     }
 
     // Finally, compute and set the size of the core errors
-    parts[0].second = errSize() - nextraparts;
+    qparts[0][0].second = errSize() - nmempar;
 
-    return PDFErrInfo(parts, errorConfLevel(), errorType());
+    return PDFErrInfo(qparts, errorConfLevel(), errorType());
   }
 
 
@@ -194,12 +223,26 @@ namespace LHAPDF {
     // Compute signed parameter-variation errors
     double errsq_par_plus = 0, errsq_par_minus = 0;
     size_t index = nmem;
-    for (size_t iq = 1; iq < errinfo.parts.size(); ++iq) {
+    for (size_t iq = 1; iq < errinfo.qparts.size(); ++iq) {
+      const PDFErrInfo::EnvParts& eparts = errinfo.qparts[iq];
+
+      // Build envelope from pairs, singletons, or symmetrised singletons
       double vmin = rtn.central, vmax = rtn.central;
-      for (size_t ie = 0; ie < errinfo.parts[iq].second; ++ie) {
-        index += 1;
-        vmin = min(values[index], vmin);
-        vmax = max(values[index], vmax);
+      for (const PDFErrInfo::EnvPart& epart : eparts) {
+        /// @todo Handle #/$ one-side / symm / standard pair-building
+
+        const bool symm = startswith(epart.first, "$");
+        for (size_t ie = 0; ie < epart.second; ++ie) {
+          index += 1;
+          if (!symm) {
+            vmin = min(values[index], vmin);
+            vmax = max(values[index], vmax);
+          } else {
+            const double delta = values[index] - rtn.central;
+            vmin = min({values[index], rtn.central-delta, vmin});
+            vmax = max({values[index], rtn.central-delta, vmax});
+          }
+        }
       }
       const double eplus = vmax - rtn.central;
       const double eminus = rtn.central - vmin;
@@ -228,6 +271,9 @@ namespace LHAPDF {
   double PDFSet::correlation(const vector<double>& valuesA, const vector<double>& valuesB) const {
     if (valuesA.size() != size() || valuesB.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::correlation. Input vectors must contain values for all PDF members.");
+
+    /// @todo Fix to use extended error scheme
+    return 0.0;
 
     const PDFUncertainty errA = uncertainty(valuesA, -1);
     const PDFUncertainty errB = uncertainty(valuesB, -1);
@@ -267,6 +313,9 @@ namespace LHAPDF {
   double PDFSet::randomValueFromHessian(const vector<double>& values, const vector<double>& randoms, bool symmetrise) const {
     if (values.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. Input vector must contain values for all PDF members.");
+
+    /// @todo Fix to use extended error scheme
+    return 0.0;
 
     double frand = 0.0;
     double scale = uncertainty(values).scale;
@@ -319,9 +368,12 @@ namespace LHAPDF {
   }
 
 
-  void PDFSet::_checkPdfType(const std::vector<string>& pdftypes) const {
+  void PDFSet::_checkPdfType(const vector<string>& pdftypes) const {
     if (pdftypes.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::checkPdfType. Input vector must contain values for all PDF members.");
+
+    /// @todo Fix to use extended error scheme
+    return;
 
     // PDF members labelled 0 to nmem, excluding possible parameter variations.
     size_t nmem = size()-1;

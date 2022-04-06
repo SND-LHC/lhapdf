@@ -59,15 +59,17 @@ namespace LHAPDF {
 
   /// @brief Structure encoding the structure of the PDF error-set
   struct PDFErrInfo {
-    using QuadParts = std::vector<std::pair<std::string, size_t>>;
+    using EnvPart = std::pair<std::string, size_t>;
+    using EnvParts = std::vector<EnvPart>;
+    using QuadParts = std::vector<EnvParts>;
 
     /// Constructor
-    PDFErrInfo(QuadParts qparts, double cl, const std::string& errtypestr="")
-      : parts(qparts), conflevel(cl), errtype(errtypestr)
+    PDFErrInfo(QuadParts parts, double cl, const std::string& errtypestr="")
+      : qparts(parts), conflevel(cl), errtype(errtypestr)
     {    }
 
     /// Error-set quadrature parts
-    QuadParts parts;
+    QuadParts qparts;
 
     /// Default confidence-level
     double conflevel;
@@ -75,16 +77,15 @@ namespace LHAPDF {
     /// Error-type annotation
     std::string errtype;
 
+    /// Calculated name of a quadrature part
+    std::string qpartName(size_t iq) const;
+    /// Calculated names of all quadrature parts
+    std::vector<std::string> qpartNames() const;
+
     /// Number of core-set members
-    size_t nmemCore() const {
-      return parts[0].second;
-    }
+    size_t nmemCore() const;
     /// Number of par-set members
-    size_t nmemPar() const {
-      size_t rtn = 0;
-      for (size_t i = 1; i < parts.size(); ++i) rtn += parts[i].second;
-      return rtn;
-    }
+    size_t nmemPar() const;
 
   };
 
