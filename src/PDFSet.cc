@@ -67,7 +67,7 @@ namespace LHAPDF {
 
 
   double PDFSet::errorConfLevel() const {
-    // Return -1 or similar invalid value if errorType is replicas: requires changes in uncertainty code below.
+    // Return -1 or similar invalid value if errorType is replicas
     return get_entry_as<double>("ErrorConfLevel", (!startswith(errorType(), "replicas")) ? CL1SIGMA : -1);
   }
 
@@ -119,7 +119,7 @@ namespace LHAPDF {
 
     // Get set- and requested conf levels (converted from %) and check sanity (req CL = set CL if cl < 0).
     // For replica sets, we internally use a nominal setCL corresponding to 1-sigma, since errorConfLevel() == -1.
-    const double setCL = (!startswith(errorType(), "replicas")) ? errorConfLevel() / 100.0 : CL1SIGMA;
+    const double setCL = (errinfo.coreType() != "replicas") ? errorConfLevel() / 100.0 : CL1SIGMA;
     const double reqCL = (cl >= 0) ? cl / 100.0 : setCL; // convert from percentage
     if (!in_range(reqCL, 0, 1) || !in_range(setCL, 0, 1))
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Requested or PDF set confidence level outside [0,1] range.");
@@ -130,7 +130,7 @@ namespace LHAPDF {
 
 
     // Compute core uncertainty component
-    if (startswith(errorType(), "replicas")) {
+    if (errinfo.coreType() == "replicas") {
 
       if (alternative) {
         // Compute median and requested CL directly from probability distribution of replicas.
@@ -167,7 +167,7 @@ namespace LHAPDF {
         rtn.errplus = rtn.errminus = rtn.errsymm = sd;
       }
 
-    } else if (startswith(errorType(), "symmhessian")) {
+    } else if (errinfo.coreType() == "symmhessian") {
 
       double errsymm = 0;
       for (size_t ieigen = 1; ieigen <= nmem; ieigen++) {
@@ -176,7 +176,7 @@ namespace LHAPDF {
       errsymm = sqrt(errsymm);
       rtn.errplus = rtn.errminus = rtn.errsymm = errsymm;
 
-    } else if (startswith(errorType(), "hessian")) {
+    } else if (errinfo.coreType() == "hessian") {
 
       // Calculate the asymmetric and symmetric Hessian uncertainties
       // using Eqs. (2.1), (2.2) and (2.6) of arXiv:1106.5788v2.
@@ -272,36 +272,34 @@ namespace LHAPDF {
     if (valuesA.size() != size() || valuesB.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::correlation. Input vectors must contain values for all PDF members.");
 
-    /// @todo Fix to use extended error scheme
-    return 0.0;
-
     const PDFUncertainty errA = uncertainty(valuesA, -1);
     const PDFUncertainty errB = uncertainty(valuesB, -1);
 
-    // PDF members labelled 0 to nmem, excluding possible parameter variations.
-    size_t nmem = size()-1;
-    const size_t npar = countchar(errorType(), '+');
-    nmem -= 2*npar;
-
     double cor = 0.0;
-    if (startswith(errorType(), "replicas") && nmem > 1) {
+    const PDFErrInfo errinfo = errorInfo();
+    if (errinfo.coreType() == "replicas" && errinfo.nmemCore() > 1) {
 
-      // Calculate the correlation using Eq. (2.7) of arXiv:1106.5788v2.
-      for (size_t imem = 1; imem <= nmem; imem++)
+      // Calculate the correlation over replicas using Eq. (2.7) of arXiv:1106.5788
+      for (size_t imem = 1; imem < errinfo.nmemCore()+1; imem++) {
         cor += valuesA[imem] * valuesB[imem];
-      cor = (cor/nmem - errA.central*errB.central) / (errA.errsymm_pdf*errB.errsymm_pdf) * nmem/(nmem-1.0);
+      }
+      cor = (cor/errinfo.nmemCore() - errA.central*errB.central) / (errA.errsymm_pdf*errB.errsymm_pdf);
+      cor *= errinfo.nmemCore() / (errinfo.nmemCore()-1.0); //< bias correction
 
-    } else if (startswith(errorType(), "symmhessian")) {
+    } else if (errinfo.coreType() == "symmhessian") {
 
-      for (size_t ieigen = 1; ieigen <= nmem; ieigen++)
+      // Calculate the correlation over symmetrised Hessian vectors
+      for (size_t ieigen = 1; ieigen <= errinfo.nmemCore()+1; ieigen++) {
         cor += (valuesA[ieigen]-errA.central) * (valuesB[ieigen]-errB.central);
+      }
       cor /= errA.errsymm_pdf * errB.errsymm_pdf;
 
-    } else if (startswith(errorType(), "hessian")) {
+    } else if (errinfo.coreType() == "hessian") {
 
-      // Calculate the correlation using Eq. (2.5) of arXiv:1106.5788v2.
-      for (size_t ieigen = 1; ieigen <= nmem/2; ieigen++)
+      // Calculate the correlation over asymm Hessian vectors using Eq. (2.5) of arXiv:1106.5788
+      for (size_t ieigen = 1; ieigen <= errinfo.nmemCore()/2 + 1; ieigen++) {
         cor += (valuesA[2*ieigen-1]-valuesA[2*ieigen]) * (valuesB[2*ieigen-1]-valuesB[2*ieigen]);
+      }
       cor /= 4.0 * errA.errsymm_pdf * errB.errsymm_pdf;
 
     }
@@ -314,51 +312,37 @@ namespace LHAPDF {
     if (values.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. Input vector must contain values for all PDF members.");
 
-    /// @todo Fix to use extended error scheme
-    return 0.0;
-
-    double frand = 0.0;
-    double scale = uncertainty(values).scale;
-
-    // PDF members labelled 0 to nmem, excluding possible parameter variations.
-    size_t nmem = size()-1;
-    const size_t npar = countchar(errorType(), '+');
-    nmem -= 2*npar;
-
-    // Allocate number of eigenvectors based on ErrorType.
-    size_t neigen = 0;
-    if (startswith(errorType(), "hessian")) {
-      neigen = nmem/2;
-    } else if (startswith(errorType(), "symmhessian")) {
-      neigen = nmem;
-    } else {
+    const PDFErrInfo errinfo = errorInfo();
+    if (!contains(errinfo.coreType(), "hessian")) {
       throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. This PDF set is not in the Hessian format.");
     }
 
-    if (randoms.size() != neigen)
+    const size_t neigen = (errinfo.coreType() == "hessian") ? errinfo.nmemCore()/2 : errinfo.nmemCore();
+    if (randoms.size() != neigen) {
       throw UserError("Error in LHAPDF::PDFSet::randomValueFromHessian. Input vector must contain random numbers for all eigenvectors.");
+    }
 
-    frand = values[0];
-
-    if (startswith(errorType(), "symmhessian")) {
+    PDFUncertainty unc = uncertainty(values);
+    double frand = values[0];
+    if (errinfo.coreType() == "symmhessian") {
 
       // Loop over number of eigenvectors.
       for (size_t ieigen = 1; ieigen <= neigen; ieigen++) {
         double r = randoms[ieigen-1]; // Gaussian random number
-        frand += r*(values[ieigen]-values[0])*scale;
+        frand += r*(values[ieigen]-values[0]) * unc.scale;
       }
 
-    } else if (startswith(errorType(), "hessian")) {
+    } else if (errinfo.coreType() == "hessian") {
 
       // Use either Eq. (6.4) or corrected Eq. (6.5) of arXiv:1205.4024v2.
       // Loop over number of eigenvectors.
       for (size_t ieigen = 1; ieigen <= neigen; ieigen++) {
         double r = randoms[ieigen-1]; // Gaussian random number
         if (symmetrise) {
-          frand += 0.5*r*(values[2*ieigen-1]-values[2*ieigen]) * scale;
+          frand += 0.5*r*(values[2*ieigen-1]-values[2*ieigen]) * unc.scale;
         } else { // not symmetrised
-          if (r < 0.0) frand -= r*(values[2*ieigen]-values[0]) * scale; // negative direction
-          else frand += r*(values[2*ieigen-1]-values[0]) * scale; // positive direction
+          if (r < 0.0) frand -= r*(values[2*ieigen]-values[0]) * unc.scale; // negative direction
+          else frand += r*(values[2*ieigen-1]-values[0]) * unc.scale; // positive direction
         }
       }
 
@@ -371,42 +355,35 @@ namespace LHAPDF {
   void PDFSet::_checkPdfType(const vector<string>& pdftypes) const {
     if (pdftypes.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::checkPdfType. Input vector must contain values for all PDF members.");
-
-    /// @todo Fix to use extended error scheme
-    return;
-
-    // PDF members labelled 0 to nmem, excluding possible parameter variations.
-    size_t nmem = size()-1;
-    const size_t npar = countchar(errorType(), '+');
-    nmem -= 2*npar;
+    const PDFErrInfo errinfo = errorInfo();
 
     // Check that zeroth member has "PdfType: central".
     if (pdftypes[0] != "central")
       throw MetadataError("Member 0, \"PdfType: " + pdftypes[0] + "\" should be \"PdfType: central\".");
 
-    // Check that PDF members have "PdfType: replica" or "PdfType: error".
-    if (startswith(errorType(), "replicas")) {
-      for (size_t imem = 1; imem <= nmem; imem++) {
-        if (pdftypes[imem] != "replica")
-          throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: replica\".");
-      }
-    } else if (startswith(errorType(), "symmhessian") || startswith(errorType(), "hessian")) {
-      for (size_t imem = 1; imem <= nmem; imem++) {
-        if (pdftypes[imem] != "error")
-          throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: error\".");
-      }
+    // Check that PDF-error members have "PdfType: replica" or "PdfType: error".
+    string exptype = "";
+    if (errinfo.coreType() == "replicas") {
+      exptype = "replica";
+    } else if (contains(errorType(), "hessian")) {
+      exptype = "error";
     } else {
       throw MetadataError("\"ErrorType: " + errorType() + "\" not supported by LHAPDF::PDFSet::checkPdfType.");
     }
+    for (size_t imem = 1; imem < errinfo.nmemCore()+1; imem++) {
+      if (pdftypes[imem] != exptype) {
+        throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: " + exptype + "\".");
+      }
+    }
 
-    // Check that possible parameter variations have "PdfType: central".
-    for (size_t imem = nmem+1; imem <= size()-1; imem++) {
-      if (pdftypes[imem] != "central")
-        throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: central\".");
+    // Check that possible parameter variations have "PdfType: central" or "PdfType: variation".
+    for (size_t imem = errinfo.nmemCore()+1; imem < size(); imem++) {
+      if (pdftypes[imem] != "central" && pdftypes[imem] != "variation") {
+        throw MetadataError("Member " + to_str(imem) + ", \"PdfType: " + pdftypes[imem] + "\" should be \"PdfType: central\" or \"PdfType: variation\".");
+      }
     }
 
     //cout << "Success: PdfType of each member matches the ErrorType of the set." << endl;
-
   }
 
 

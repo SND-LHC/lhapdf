@@ -78,6 +78,9 @@ namespace LHAPDF {
     std::string errtype;
 
     /// Calculated name of a quadrature part
+    std::string coreType() const { return qpartName(0); }
+
+    /// Calculated name of a quadrature part
     std::string qpartName(size_t iq) const;
     /// Calculated names of all quadrature parts
     std::vector<std::string> qpartNames() const;
