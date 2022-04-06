@@ -16,7 +16,7 @@
 namespace LHAPDF {
 
   /// CL percentage for a Gaussian 1-sigma
-  constexpr double CL1SIGMA = 100*erf(1/sqrt(2));
+  const double CL1SIGMA = 100*erf(1/sqrt(2));
 
 
   // Forward declaration
