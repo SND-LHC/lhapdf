@@ -305,15 +305,39 @@ OPTIONAL (but should be present if there is an error set)
 A set-level declaration of the type of error treatment provided by this set.
 
 Additional members can be given at the end of a set to allow estimation of
-uncertainties due to parameter variation (for example, alphaS or heavy-quark masses).
-The number of parameters, npar, is determined by counting the number of "+" characters
-in the ErrorType, and the last 2*npar members of the set should correspond to parameter
-variations, i.e. the central PDF fits obtained when a given parameter is moved up or down
-from the nominal value.  For example, "ErrorType: replicas+as+mc+mb+mt" could be used for
-a set where the last eight members correspond to variation of AlphaS, MCharm, MBottom and
-MTop, respectively.  The parameter variation uncertainty is calculated by summing in
-quadrature half the difference between each of the two relevant members.  This is added
-in quadrature to the PDF uncertainty to obtain a combined PDF+parameter uncertainty.
+uncertainties due to parameter variation (for example, alphaS or heavy-quark masses),
+with string-formatting rules to specify how they are to be combined.
+
+The top-level division of the error-type string is into components to be combined
+in signed quadrature (i.e. separate quadrature combination for positive and negative
+variations of the observable from the nominal. These components are separated by `+`
+signs in the ErrorType string.
+
+Each quadrature component is treated as a (+,-) pair, in general formed from the
+envelope of several variation members. The named terms in such an envelope are
+separated by `*` symbols, and their core name should follow C-like naming
+restrictions: alphanumeric and underscore characters, and they cannot start with
+a digit. You are encouraged to keep these names simple and limit use of
+underscores to essential situations.
+
+Each term corresponds to either one or two PDF members, depending on the optional
+presence of a prefix symbol:
+- if there is no prefix preceding the core name, it is taken to denote a
+  (usually "up/down") parameter-variation pair;
+- if there is a preceding `#` character, the term is derived from a single member
+  with a resulting (+,0) or (0,-) error pair;
+- and if prefixed by a `$` character, it represents a single variation-member
+  whose effect is to be symmetrised to a (delta,delta) error pair.
+A generally asymmetric envelope is returned from the union of these pairs as the
+total (+,-) pair for that quadrature term.
+
+Examples:
+- `symmhessian`: a symmetric Hessian PDF error-set with no parameter variations.
+- `replicas+alphas+mb`: a replica set with two pairs of parameter variations to be combined in quadrature.
+- `hessian+alphas+$mc`: a Hessian set with a pair variation and a single-member variation to be symmetrised.
+- `replicas+alphas+#fit1*#fit2*$foo+mb`: a replica set with a 3-member envelope made from a mix of asymmetric
+    and symmetrised variations, and a final pair of variations: 4 error-groups to be combined in quadrature.
+
 See the demonstration programs in "examples/testpdfunc.cc" and "examples/testpdfunc.py".
 
 
@@ -449,10 +473,11 @@ OPTIONAL
 PdfType
 -------
 MANDATORY
-(enum string): 'central' or 'error' or 'replica'
+(enum string): 'central' or 'error' or 'replica' or 'variation'
 
 The type of this PDF, i.e. is it a central (canonical) PDF or is it meant for
 use as either a Hessian error or a replica member of a statistical ensemble.
-Parameter variation members given at the end of a set should have type 'central'.
+Parameter variation members given at the end of a set should have type 'variation',
+(but 'central' is allowed for backward compatibility).
 
 */
