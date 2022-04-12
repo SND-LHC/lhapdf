@@ -1,3 +1,9 @@
+2022-04-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Use the PDFSet::lhapdfID() function by preference to return a
+	PDF::lhapdfID(), thereby avoiding the index-file lookup if
+	possible.
+
 2021-09-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.4.0 release.

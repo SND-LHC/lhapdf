@@ -78,7 +78,7 @@ namespace LHAPDF {
     for (int id : flavors()) rtn[id] = xfxQ2(id, x, q2);
   }
 
-  void PDF::xfxQ2(double x, double q2, std::vector<double>& rtn) const {    
+  void PDF::xfxQ2(double x, double q2, std::vector<double>& rtn) const {
     rtn.clear();
     rtn.resize(13);
     _xfxQ2(x, q2, rtn);
@@ -110,10 +110,13 @@ namespace LHAPDF {
 
 
   int PDF::lhapdfID() const {
-    //return set().lhapdfID() + memberID()
-    /// @todo Add failure tolerance if pdfsets.index not found
+    const int memid = memberID();
     try {
-      return lookupLHAPDFID(_setname(), memberID());
+      try {
+        return set().lhapdfID() + memid;
+      } catch (const Exception&) {
+        return lookupLHAPDFID(_setname(), memid);
+      }
     } catch (const Exception&) {
       return -1; //< failure
     }
