@@ -75,6 +75,9 @@ namespace LHAPDF {
 
   /// Parse extended error type syntax
   PDFErrInfo PDFSet::errorInfo() const {
+    if (_errinfo.qparts.size()) return _errinfo;
+
+    // If not already populated, create the _errinfo cache object
     PDFErrInfo::QuadParts qparts;
 
     // Loop over the quadrature parts, separated by +  signs, after extracting the core part
@@ -103,11 +106,15 @@ namespace LHAPDF {
     // Finally, compute and set the size of the core errors
     qparts[0][0].second = errSize() - nmempar;
 
-    return PDFErrInfo(qparts, errorConfLevel(), errorType());
+    // Set the cache and return
+    _errinfo = PDFErrInfo(qparts, errorConfLevel(), errorType());
+    return _errinfo;
   }
 
 
-  PDFUncertainty PDFSet::uncertainty(const vector<double>& values, double cl, bool alternative) const {
+  void PDFSet::uncertainty(PDFUncertainty& rtn, const vector<double>& values, double cl, bool alternative) const {
+    // rtn.clear();
+
     if (values.size() != size())
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Input vector must contain values for all PDF members.");
 
@@ -124,8 +131,7 @@ namespace LHAPDF {
     if (!in_range(reqCL, 0, 1) || !in_range(setCL, 0, 1))
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Requested or PDF set confidence level outside [0,1] range.");
 
-    // Return value
-    PDFUncertainty rtn;
+    // Central value
     rtn.central = values[0];
 
 
@@ -261,11 +267,18 @@ namespace LHAPDF {
     rtn.errplus = sqrt( sqr(rtn.errplus_pdf) + sqr(rtn.errplus_par) );
     rtn.errminus = sqrt( sqr(rtn.errminus_pdf) + sqr(rtn.errminus_par) );
     rtn.errsymm = (rtn.errplus + rtn.errminus)/2.0;
-
-
-    return rtn;
   }
 
+
+  void PDFSet::uncertainties(vector<PDFUncertainty>& rtn,
+                             const vector<vector<double>>& observables_values,
+                             double cl, bool alternative) const {
+    rtn.clear();
+    rtn.reserve(observables_values.size());
+    for (const vector<double>& values : observables_values) {
+      rtn.push_back( uncertainty(values, cl, alternative) );
+    }
+  }
 
 
   double PDFSet::correlation(const vector<double>& valuesA, const vector<double>& valuesB) const {

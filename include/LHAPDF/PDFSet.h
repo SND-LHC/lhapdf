@@ -57,6 +57,7 @@ namespace LHAPDF {
   };
 
 
+
   /// @brief Structure encoding the structure of the PDF error-set
   struct PDFErrInfo {
     using EnvPart = std::pair<std::string, size_t>;
@@ -68,7 +69,7 @@ namespace LHAPDF {
       : qparts(parts), conflevel(cl), errtype(errtypestr)
     {    }
 
-    /// Default constructor (for STL and Cython)
+    /// Default constructor (for STL, Cython, etc.)
     PDFErrInfo() {}
 
     /// Error-set quadrature parts
@@ -96,6 +97,7 @@ namespace LHAPDF {
   };
 
   /// @}
+
 
 
   /// Class for PDF-set metadata and manipulation
@@ -278,7 +280,7 @@ namespace LHAPDF {
     /// See the @ref uncertainties group for more details
     /// @{
 
-    /// @brief Calculate central value and error from vector @c values with appropriate formulae for this set
+    /// @brief Calculate the central value and PDF uncertainty on an observable.
     ///
     /// @warning The @c values vector corresponds to the members of this PDF set and must be ordered accordingly.
     ///
@@ -310,7 +312,12 @@ namespace LHAPDF {
     ///
     /// @todo Add option to restrict replica mean & stddev calculation to a central CI set?
     PDFUncertainty uncertainty(const std::vector<double>& values,
-                               double cl=CL1SIGMA, bool alternative=false) const;
+                               double cl=CL1SIGMA, bool alternative=false) const {
+      PDFUncertainty rtn;
+      uncertainty(rtn, values, cl, alternative);
+      return rtn;
+    }
+
 
     // // Trick to ensure no calls with implicit type conversion
     // template <typename T1, typename T2>
@@ -323,7 +330,7 @@ namespace LHAPDF {
     // }
 
 
-    /// @brief Calculate PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
+    /// @brief Calculate the PDF uncertainty on an observable (as above), with efficient no-copy return to the @c rtn argument.
     ///
     /// @warning The @c values vector corresponds to the members of this PDF set and must be ordered accordingly.
     ///
@@ -332,9 +339,7 @@ namespace LHAPDF {
     /// See the @ref uncertainties group for more details
     void uncertainty(PDFUncertainty& rtn,
                      const std::vector<double>& values,
-                     double cl=CL1SIGMA, bool alternative=false) const {
-      rtn = uncertainty(values, cl, alternative);
-    }
+                     double cl=CL1SIGMA, bool alternative=false) const;
 
     // // Trick to ensure no calls with implicit type conversion
     // template <typename T1, typename T2>
@@ -346,6 +351,35 @@ namespace LHAPDF {
     //                  bool alternative, double cl=CL1SIGMA) const {
     //   uncertainty(rtn, values, cl, alternative);
     // }
+
+
+    /// @brief Calculate PDF uncertainties on multiple observables at once.
+    ///
+    /// The @c observables_values nested vector is a list of variation-value
+    /// lists, with the first (outer) index corresponding to the M observables,
+    /// e.g. a set of differential-observable bins, and the inner index the N PDF
+    /// members.
+    ///
+    /// The return value is an M-element vector of PDFUncertainty summaray
+    /// structs, one per observable.
+    ///
+    /// @warning The inner @c _values vector corresponds to the members of this
+    /// PDF set and must be ordered accordingly.
+    std::vector<PDFUncertainty> uncertainties(const std::vector<std::vector<double>>& observables_values,
+                                              double cl=CL1SIGMA, bool alternative=false) const {
+      std::vector<PDFUncertainty> rtn;
+      uncertainties(rtn, observables_values, cl, alternative);
+      return rtn;
+    }
+
+
+    /// @brief Calculate multiple PDF uncertainties (as above), with efficient no-copy return to the @c rtn argument.
+    ///
+    /// @warning The inner @c _values vector corresponds to the members of this
+    /// PDF set and must be ordered accordingly.
+    void uncertainties(std::vector<PDFUncertainty>& rtn,
+                       const std::vector<std::vector<double>>& observables_values,
+                       double cl=CL1SIGMA, bool alternative=false) const;
 
 
     /// @brief Calculate the PDF correlation between @c valuesA and @c valuesB using appropriate formulae for this set.
@@ -399,6 +433,9 @@ namespace LHAPDF {
 
     /// Name of this set
     std::string _setname;
+
+    /// Cached PDF error-info breakdown struct
+    mutable PDFErrInfo _errinfo;
 
   };
 
