@@ -122,9 +122,9 @@ if test x$enable_python == xyes; then
     PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True))"`
     AC_SUBST(PYTHON_PATH)
   fi
-  AM_CHECK_CYTHON([0.19], [:], [:])
+  AM_CHECK_CYTHON([0.24], [:], [:])
   if test x$CYTHON_FOUND = xyes; then
-    AC_MSG_NOTICE([Cython >= 0.19 found: Python extension source can be rebuilt (for developers)])
+    AC_MSG_NOTICE([Cython >= 0.24 found: Python extension source can be rebuilt (for developers)])
   fi
 fi
 AM_CONDITIONAL(WITH_PYTHON, [test x$PYTHON != x])
