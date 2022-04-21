@@ -9,8 +9,6 @@
 #include "LHAPDF/FileIO.h"
 #include <iostream>
 #include <sstream>
-#include <locale>
-#include <clocale>
 #include <string>
 #include <stdexcept>
 #include <cstring>
@@ -113,16 +111,10 @@ namespace LHAPDF {
       // Constructor from char*
       NumParser(const char* line=0) {
         reset(line);
-        _set_locale();
       }
       // Constructor from std::string
       NumParser(const string& line) {
         reset(line);
-        _set_locale();
-      }
-      // Destructor
-      ~NumParser() {
-        _reset_locale();
       }
 
       // Re-init to new line as char*
@@ -148,27 +140,10 @@ namespace LHAPDF {
 
     private:
 
-      // Changes the thread-local locale to interpret numbers in the "C" locale
-      void _set_locale() {
-        _locale_set = newlocale(LC_NUMERIC_MASK, "C", NULL);
-        _locale_prev = uselocale(_locale_set);
-        if (!_locale_prev) {
-          throw ReadError(string("Error setting locale: ") + strerror(errno));
-        }
-      }
-      // Returns the locale to the original setting
-      void _reset_locale() {
-        if (!uselocale(_locale_prev)) {
-          throw ReadError(string("Error setting locale: ") + strerror(errno));
-        }
-        freelocale(_locale_set);
-      }
-
       void _get(double& x) { x = std::strtod(_next, &_new_next); }
       void _get(float& x) { x = std::strtof(_next, &_new_next); }
       void _get(int& i) { i = std::strtol(_next, &_new_next, 10); } // force base 10!
 
-      locale_t _locale_set, _locale_prev;
       char *_next, *_new_next;
       bool _error;
 
