@@ -1,6 +1,7 @@
 from libcpp.string cimport string
 from libcpp.map cimport map
 from libcpp.vector cimport vector
+from libcpp.pair cimport pair
 from libcpp cimport bool
 
 
@@ -70,12 +71,14 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         vector[PDF*] mkPDFs()
         PDF* mkPDF(int)
         size_t size() except +
+        size_t errSize() except +
         string name() except +
         string description()
         int lhapdfID() except +
         int dataversion() except +
         void _print "print" () except + # TODO: map the second (verbosity) argument
         string errorType() except +
+        PDFErrInfo errorInfo() except +
         double errorConfLevel() except +
         PDFUncertainty uncertainty(vector[double]&, double, bool) except +
         #void uncertainty(PDFUncertainty&, vector[double]&, double, bool) except +
@@ -120,7 +123,22 @@ cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
         double errplus_pdf
         double errminus_pdf
         double errsymm_pdf
-        double err_par
+        double errplus_par
+        double errminus_par
+        double errsymm_par
+        double err_par  #< deprecated, remove
+        vector[pair[double,double]] errparts
+
+cdef extern from "../../include/LHAPDF/PDFSet.h" namespace "LHAPDF":
+    cdef struct PDFErrInfo:
+        vector[vector[pair[string,size_t]]] qparts
+        double conflevel
+        string errtype
+        string coreType()
+        string qpartName(size_t iq)
+        vector[string] qpartNames()
+        size_t nmemCore()
+        size_t nmemPar()
 
 cdef extern from "../../include/LHAPDF/PDFInfo.h" namespace "LHAPDF":
     cdef cppclass PDFInfo(Info.Info):

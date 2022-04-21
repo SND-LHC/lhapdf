@@ -68,6 +68,9 @@ namespace LHAPDF {
       : qparts(parts), conflevel(cl), errtype(errtypestr)
     {    }
 
+    /// Default constructor (for STL and Cython)
+    PDFErrInfo() {}
+
     /// Error-set quadrature parts
     QuadParts qparts;
 
