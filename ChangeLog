@@ -3,6 +3,12 @@
 	* Apply thread locality fixes to caches, active-set management in
 	LHAGlue, and non-MPI file-IO objects. Thanks to Christoph Schwan.
 
+2022-04-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Use the PDFSet::lhapdfID() function by preference to return a
+	PDF::lhapdfID(), thereby avoiding the index-file lookup if
+	possible.
+
 2022-04-01  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Assemble the PDF-set index from _all_ pdfsets.index files found
