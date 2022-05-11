@@ -11,9 +11,12 @@
 #include <algorithm>
 #include <map>
 
+// Include MPI features if requested, to avoid expensive repeated data-file reads
+// on MPI clusters, and avoid making the FileIO thread-local in MPI mode
 #include <sys/stat.h>
 #ifdef HAVE_MPI
 #include <mpi.h>
+#define thread_local
 #endif
 
 namespace LHAPDF {
