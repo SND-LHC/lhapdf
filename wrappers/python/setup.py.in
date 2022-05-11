@@ -9,7 +9,7 @@ incdir_src = os.path.abspath("@top_srcdir@/include")
 incdir_build = os.path.abspath("@top_builddir@/include")
 libdir = os.path.abspath("@top_builddir@/src/.libs")
 
-## Configure the C++ extension and LHAPDF package
+## Configure the C++ extension
 ext = Extension("lhapdf",
                 ["lhapdf.cpp"],
                 include_dirs=[incdir_src, incdir_build],
@@ -17,6 +17,15 @@ ext = Extension("lhapdf",
                 library_dirs=[libdir],
                 language="C++",
                 libraries=["stdc++", "LHAPDF"])
+
+## Configure the Python package
 setup(name="LHAPDF",
       version="@PACKAGE_VERSION@",
+      description="The LHAPDF parton density evaluation library",
+      author="LHAPDF Collaboration",
+      author_email="lhapdf-dev@cern.ch",
+      url="https://lhapdf.hepforge.org/",
+      long_description="",
+      long_description_content_type="text/plain",
+      license="GPLv3",
       ext_modules=[ext])
