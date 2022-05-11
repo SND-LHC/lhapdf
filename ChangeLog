@@ -14,6 +14,12 @@
 	start implementation of the extended uncertainty computation using
 	it.
 
+2022-04-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Assemble the PDF-set index from _all_ pdfsets.index files found
+	in the search paths, with earlier appearances taking precedence:
+	allows use of partial indices in overload directories.
+
 2021-09-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.4.0 release.

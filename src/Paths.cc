@@ -7,6 +7,7 @@
 #include "LHAPDF/Info.h"
 #include "LHAPDF/Config.h"
 #include <dirent.h>
+using namespace std;
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -15,7 +16,7 @@
 namespace LHAPDF {
 
 
-  std::vector<std::string> paths() {
+  vector<string> paths() {
     // Use LHAPDF_DATA_PATH for all path storage
     char* pathsvar = getenv("LHAPDF_DATA_PATH");
     // But fall back to looking in LHAPATH if the preferred var is not defined
@@ -33,7 +34,7 @@ namespace LHAPDF {
   }
 
 
-  void setPaths(const std::string& pathstr) {
+  void setPaths(const string& pathstr) {
     setenv("LHAPDF_DATA_PATH", pathstr.c_str(), 1);
   }
 
@@ -52,7 +53,18 @@ namespace LHAPDF {
   }
 
 
-  const std::vector<std::string>& availablePDFSets() {
+  vector<string> findFiles(const string& target) {
+    vector<string> rtn;
+    if (target.empty()) return rtn;
+    for (const string& base : paths()) {
+      const string p = (startswith(target, "/") || startswith(target, ".")) ? target : base / target;
+      if (file_exists(p)) rtn.push_back(p);
+    }
+    return rtn;
+  }
+
+
+  const vector<string>& availablePDFSets() {
     // Cached path list
     static vector<string> rtn;
     // Return cached list if valid
