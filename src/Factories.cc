@@ -27,7 +27,7 @@ namespace LHAPDF {
 
 
   PDFSet& getPDFSet(const string& setname) {
-    static map<string, PDFSet> _sets;
+    static thread_local map<string, PDFSet> _sets;
     map<string, PDFSet>::iterator it = _sets.find(setname);
     if (it != _sets.end()) return it->second;
     _sets[setname] = PDFSet(setname);
