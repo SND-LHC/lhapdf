@@ -25,7 +25,7 @@ namespace LHAPDF {
       shared.q2_upper = ( (iq2 + 1 == grid.q2size() -1) || (grid.q2s(iq2+1) == grid.q2s(iq2+2)) );
       //const bool ix_lower = ( (ix == 0) );
       //const bool ix_upper = ( (ix == grid.xsize()) );
-    
+
       // Distance parameters
       shared.dx = grid.xs(ix+1) - grid.xs(ix);
       shared.tx = (x - grid.xs(ix)) / shared.dx;
@@ -38,22 +38,23 @@ namespace LHAPDF {
       shared.tq = (q2 - grid.q2s(iq2)) / shared.dq;
       return shared;
     }
-    
-    // One-dimensional linear interpolation for y(x)
-    inline double _interpolateLinear(double x, double xl, double xh, double yl, double yh)	{
-      assert(x >= xl);
-      assert(xh >= x);
-      return yl + (x - xl) / (xh - xl) * (yh - yl);
-    }
 
-    inline double _interpolateCubic(double T, const double *coeffs){
+    // // One-dimensional linear interpolation for y(x)
+    // inline double _interpolateLinear(double x, double xl, double xh, double yl, double yh) {
+    //   assert(x >= xl);
+    //   assert(xh >= x);
+    //   return yl + (x - xl) / (xh - xl) * (yh - yl);
+    // }
+
+    // One-dimensional cubic interpolation for y(x)
+    inline double _interpolateCubic(double T, const double *coeffs) {
       const double x = T;
       const double x2 = x*x;
       const double x3 = x2*x;
       return coeffs[0]*x3 + coeffs[1]*x2 + coeffs[2]*x + coeffs[3];
     }
-    
-    // One-dimensional cubic interpolation    
+
+    // One-dimensional cubic interpolation
     inline double _interpolateCubic(double T, double VL, double VDL, double VH, double VDH) {
       // Pre-calculate powers of T
       const double t2 = T*T;
@@ -74,7 +75,7 @@ namespace LHAPDF {
       // Points in Q2
       double vl = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2,id,0));
       double vh = _interpolateCubic(_share.tx, &grid.coeff(ix,iq2+1,id,0));
-    
+
       // Derivatives in Q2
       double vdl, vdh;
       if (_share.q2_lower) {
@@ -107,8 +108,8 @@ namespace LHAPDF {
     void _checkGridSize(const KnotArray& grid, size_t ix, size_t iq2){
       // MK: if they have at least 2 knots, falls back to linear interpolator
       if (grid.xsize() < 4)
-	throw GridError("PDF subgrids are required to have at least 4 x-knots for use with BicubicInterpolator");    
-      if (grid.q2size() < 4) 
+	throw GridError("PDF subgrids are required to have at least 4 x-knots for use with BicubicInterpolator");
+      if (grid.q2size() < 4)
 	throw GridError("PDF subgrids are required to have at least 4 Q2-knots for use with BicubicInterpolator");
     }
 
@@ -130,11 +131,11 @@ namespace LHAPDF {
     }
   }
 
-  
+
   double BicubicInterpolator::_interpolateXQ2(const KnotArray& grid, double x, size_t ix, double q2, size_t iq2, int id) const {
     _checkGridSize(grid, ix, iq2);
     shared_data shared = fill(grid, x, q2, ix, iq2);
-    
+
     /// @todo Allow interpolation right up to the borders of the grid in Q2 and x... the last inter-knot range is currently broken
     /// @todo Also treat the x top/bottom edges carefully, cf. the Q2 ones
     return _interpolate(grid, ix, iq2, id, shared);
