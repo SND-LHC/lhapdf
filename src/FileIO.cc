@@ -11,16 +11,19 @@
 #include <algorithm>
 #include <map>
 
+// Include MPI features if requested, to avoid expensive repeated data-file reads
+// on MPI clusters, and avoid making the FileIO thread-local in MPI mode
 #include <sys/stat.h>
 #ifdef HAVE_MPI
 #include <mpi.h>
+#define thread_local
 #endif
 
 namespace LHAPDF {
 
 
   typedef std::map<std::string,std::string> FileContentMap;
-  static FileContentMap lhapdf_filecontents;
+  static thread_local FileContentMap lhapdf_filecontents;
 
 
   template <class FILETYPE>

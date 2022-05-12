@@ -1,9 +1,18 @@
 #! /usr/bin/env python
 
-import os
-from distutils.core import setup
+from __future__ import print_function
+
+import os, sys
 from glob import glob
-from distutils.extension import Extension
+try:
+    from distutils.core import setup
+    from distutils.extension import Extension
+except ImportError:
+    try:
+        from setuptools import setup, Extension
+    except ImportError:
+        print("setuptools or distutils required for Python lhapdf module build+install")
+        sys.exit(1)
 
 incdir_src = os.path.abspath("@top_srcdir@/include")
 incdir_build = os.path.abspath("@top_builddir@/include")

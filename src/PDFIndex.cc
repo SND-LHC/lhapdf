@@ -12,11 +12,11 @@ namespace LHAPDF {
 
 
   std::map<int, std::string>& getPDFIndex() {
-    static map<int, string> _lhaindex;
+    static thread_local map<int, string> _lhaindex;
     if (_lhaindex.empty()) { // The map needs to be populated first
       vector<string> indexpaths = findFiles("pdfsets.index");
       if (indexpaths.empty()) throw ReadError("Could not find any pdfsets.index files");
-      for (const string indexpath : indexpaths) {
+      for (const string& indexpath : indexpaths) {
         try {
           IFile file(indexpath.c_str());
           string line;
