@@ -9,6 +9,22 @@
 	* Apply thread locality fixes to caches, active-set management in
 	LHAGlue, and non-MPI file-IO objects. Thanks to Christoph Schwan.
 
+2022-04-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add PDFSet::uncertainties() methods to compute multiple
+	observable uncertainties at once.
+
+	* Chain the in-place and return by value PDFSet::uncertainty()
+	methods in the more efficient order.
+
+	* Lazily cache the PDFSet error-info struct.
+
+2022-04-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a parser for the extended error-type string format, and
+	start implementation of the extended uncertainty computation using
+	it.
+
 2022-04-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Use the PDFSet::lhapdfID() function by preference to return a
