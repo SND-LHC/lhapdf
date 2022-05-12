@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([LHAPDF],[6.4.1a],[lhapdf-support@cern.ch],[LHAPDF])
+AC_INIT([LHAPDF],[6.4.0],[lhapdf-support@cern.ch],[LHAPDF])
 if test "$prefix" = "$PWD"; then
   AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
 fi
@@ -115,12 +115,17 @@ AC_ARG_ENABLE([python],
   [AC_HELP_STRING(--disable-python, [disable the build of the Python interface (default=enabled)])],
   [], [enable_python=yes])
 if test x$enable_python == xyes; then
-  AC_PATH_PROG(PYTHON, python)
+  AX_PYTHON_DEVEL([>= '2.7.3'])
   if test x$PYTHON != x; then
     PYTHON_VERSION=`$PYTHON -c "import sys; print('.'.join(map(str, sys.version_info@<:@:2@:>@)))"`
+    PYTHON_FULL_VERSION=`$PYTHON -c 'from __future__ import print_function; import platform; print(platform.python_version())'`
+    PYTHON_MAJOR_VERSION=`$PYTHON -c 'from __future__ import print_function; import sys; print(sys.version_info.major)'`
     AC_SUBST(PYTHON_VERSION)
-    PYTHON_PATH=`$PYTHON -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True))"`
+    AC_SUBST(PYTHON_FULL_VERSION)
+    AC_SUBST(PYTHON_MAJOR_VERSION)
+    PYTHON_PATH=`$PYTHON -c "from __future__ import print_function; import sysconfig; print(sysconfig.get_path('platlib', 'posix_user', vars={'userbase' : '$prefix'}))"`
     AC_SUBST(PYTHON_PATH)
+    AC_MSG_NOTICE([LHAPDF Python library to be installed to $PYTHON_PATH])
   fi
   AM_CHECK_CYTHON([0.24], [:], [:])
   if test x$CYTHON_FOUND = xyes; then
