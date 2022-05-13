@@ -6,8 +6,13 @@ LHAPDF6 TODO list
 =================
 
 
-VERSION 6.4.x
+VERSION 6.5.x
 -------------
+
+- **Use pdfsets.index lookup from core lib in lhapdf script**
+
+  For consistency in index-file combination, etc. in "lhapdf update" and so-on.
+  Cf. Matt Feickert bug report.
 
 
 - **Expose setInterpolator/setExtrapolator functions in Python**
@@ -16,33 +21,6 @@ VERSION 6.4.x
   extrapolator of a PDF or set from Python as well as C++, at least via the string-arg
   overloads. But these functions are specific to GridPDF... do we need to expose that
   as a derived type, and use it for the PDFs built that way?
-
-
-- **CPU-optimize the grid PDF interpolator code**
-
-   Cache log(x), log(Q) between samplings -> log() still accounts for 15% of
-   CPU. Caching grid index lookup, caching interpolation weights, encourage
-   vectorization, optimise cache-friendliness. Multi-place caching given usage mode.
-
-- **Copy rather than recompute subgrid data and hashes between flavours?**
-
-- **Apply cache thread-safety patch if still relevant**
-
-
-VERSION 6.5.x
--------------
-
-- **5th order polynomials with fallback**
-
-  Based on Tushar's GSoC work.
-
-
-- **Lagrange polynomial interpolation with Chebyshev knots**
-
-  The idea is to provide a smooth "whole function" interpolation with no
-  derivative discontinuities across knot points... at the cost of having
-  to perform whole-function fits. Chebyshev knots are denser at the
-  ends of the range, to calm Runge's phenomenon.
 
 
 - **Mix and match 1D interpolators**
@@ -65,6 +43,35 @@ VERSION 6.5.x
 
 
 - **Consider extrapolated cubic splines at subgrid edges (cf. Valerio Bertone et al)**
+
+
+VERSION 6.6.x
+-------------
+
+- **3- and 4-param interpolation for resolved-photon/TMD PDFs**
+
+  Cf. Max/Peter/Andy project.
+
+
+- **Lagrange polynomial interpolation with Chebyshev knots**
+
+  The idea is to provide a smooth "whole function" interpolation with no
+  derivative discontinuities across knot points... at the cost of having
+  to perform whole-function fits. Chebyshev knots are denser at the
+  ends of the range, to calm Runge's phenomenon.
+
+  Done by Max and Andy, need N3LO testing.
+
+
+- **GPU/etc. grid PDF implementation via KOKKOS**
+
+  Done by Max, to be made public.
+
+
+- **5th order polynomials with fallback**
+
+  Based on Tushar's GSoC work.
+
 
 
 VERSION 7.0.x
