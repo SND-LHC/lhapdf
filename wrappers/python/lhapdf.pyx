@@ -300,29 +300,82 @@ cdef class Info:
         self._ptr.set_entry(text_encode(key), text_encode(str(value)))
 
 
-class PDFUncertainty:
+cdef class PDFUncertainty:
     """\
     A simple struct containing components of a value with uncertainties calculated
     from a PDF set.
 
     Attributes are central, errplus, errminus, errsymm, and scale.
     Extra attributes to return the separate PDF and parameter errors for combined
-    PDF+parameter sets are errplus_pdf, errminus_pdf, errsymm_pdf and err_par.
+    PDF+parameter sets are errplus_pdf, errminus_pdf, errsymm_pdf, and
+    errplus_par, errminus_par, errsymm_par. The full breakdown of quadrature
+    error components is in errparts.
 
     Convenience attributes are provided for returning the maximum and minimum
     values in the error range (as opposed to the size of deviations from the central
     value) and for returning pairs of down/up errors and min/max values.
     """
-    def __init__(self, central=0.0, errplus=0.0, errminus=0.0, errsymm=0.0, scale=0.0, errplus_pdf=0.0, errminus_pdf=0.0, errsymm_pdf=0.0, err_par=0.0):
-        self.central  = central
-        self.errplus  = errplus
-        self.errminus = errminus
-        self.errsymm  = errsymm
-        self.scale    = scale
-        self.errplus_pdf  = errplus_pdf
-        self.errminus_pdf = errminus_pdf
-        self.errsymm_pdf  = errsymm_pdf
-        self.err_par       = err_par
+    cdef c.PDFUncertainty* _ptr
+    cdef set_ptr(self, c.PDFUncertainty* ptr):
+        self._ptr = ptr
+
+    def __dealloc__(self):
+        pass
+
+    @property
+    def central(self):
+        return self._ptr.central
+
+    @property
+    def errplus(self):
+        return self._ptr.errplus
+
+    @property
+    def errminus(self):
+        return self._ptr.errminus
+
+    @property
+    def errsymm(self):
+        return self._ptr.errsymm
+
+    @property
+    def scale(self):
+        return self._ptr.scale
+
+    @property
+    def errplus_pdf(self):
+        return self._ptr.errplus_pdf
+
+    @property
+    def errminus_pdf(self):
+        return self._ptr.errminus_pdf
+
+    @property
+    def errsymm_pdf(self):
+        return self._ptr.errsymm_pdf
+
+    @property
+    def errplus_par(self):
+        return self._ptr.errplus_par
+
+    @property
+    def errminus_par(self):
+        return self._ptr.errminus_par
+
+    @property
+    def errsymm_par(self):
+        return self._ptr.errsymm_par
+
+    # Deprecated: remove
+    @property
+    def err_par(self):
+        return self._ptr.err_par
+
+    @property
+    def errparts(self):
+        return self._ptr.errparts
+
+    #-------------
 
     @property
     def errs(self):
@@ -356,6 +409,67 @@ class PDFUncertainty:
     def errrange_pdf(self):
         return [self.errmin_pdf, self.errmax_pdf]
 
+    @property
+    def errmin_par(self):
+        return self.central - self.errminus_par
+
+    @property
+    def errmax_par(self):
+        return self.central + self.errplus_par
+
+    @property
+    def errrange_par(self):
+        return [self.errmin_par, self.errmax_par]
+
+
+
+cdef class PDFErrInfo:
+    """\
+    A struct giving the breakdown of error computations across the PDF error-set
+    members. The general error-type string is parsed into quadrature components,
+    each of which is a signed pair computed via one-sided, symmetrised, or enveloped
+    bands from subsets of PDF members wrt the nominal.
+    """
+    cdef c.PDFErrInfo* _ptr
+    cdef set_ptr(self, c.PDFErrInfo* ptr):
+        self._ptr = ptr
+
+    def __dealloc__(self):
+        pass
+
+    @property
+    def qparts(self):
+        return self._ptr.qparts
+
+    @property
+    def confLevel(self):
+        return self._ptr.conflevel
+
+    @property
+    def errType(self):
+        return self._ptr.errtype
+
+    @property
+    def coreType(self):
+        return self._ptr.coreType()
+
+    # @property
+    # def qpartName(self, index):
+    #     return self._ptr.qpartName(index)
+
+    @property
+    def qpartNames(self):
+        return self._ptr.qpartNames()
+
+    @property
+    def nmemCore(self):
+        return self._ptr.nmemCore()
+
+    @property
+    def nmemPar(self):
+        return self._ptr.nmemPar()
+
+
 
 cdef class PDFSet:
     """\
@@ -378,6 +492,11 @@ cdef class PDFSet:
     def size(self):
         "The total number of members in this set."
         return self._ptr.size()
+
+    @property
+    def errSize(self):
+        "The number of error members in this set."
+        return self._ptr.errSize()
 
     @property
     def name(self):
@@ -403,6 +522,14 @@ cdef class PDFSet:
     def errorType(self):
         "Type of error treatment in this PDF set."
         return self._ptr.errorType()
+
+    @property
+    def errorInfo(self):
+        "Type of error treatment in this PDF set."
+        cdef c.PDFErrInfo ei = self._ptr.errorInfo()
+        pei = PDFErrInfo()
+        pei.set_ptr(&ei)
+        return pei
 
     @property
     def errorConfLevel(self):
@@ -455,16 +582,21 @@ cdef class PDFSet:
         """\
         Return a PDFUncertainty object corresponding to central value and errors computed
         from the vals list. If unspecified (as a percentage), the confidence level cl defaults
-        to 1-sigma. For replicas, by default (alternative=False) the central value is given by
+        to 1-sigma.
+
+        For replicas, by default (alternative=False) the central value is given by
         the mean and the uncertainty by the standard deviation (possibly rescaled to cl), but
         setting alternative=True will instead construct a confidence interval from the
         probability distribution of replicas, with the central value given by the median.
-        For a combined PDF+parameter set, the parameter variation uncertainties are computed
-        from the last 2*npar set members, where npar is the number of parameters, and a
-        breakdown of the separate PDF and parameter variation uncertainties is available.
+
+        A breakdown of uncertainties into quadrature components is available from the
+        PDFUncertainty object, grouped as per the qParts from errorInfo() -> PDFErrInfo.
         """
         cdef c.PDFUncertainty unc = self._ptr.uncertainty(vals, cl, alternative)
-        return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale, unc.errplus_pdf, unc.errminus_pdf, unc.errsymm_pdf, unc.err_par)
+        # return PDFUncertainty(unc.central, unc.errplus, unc.errminus, unc.errsymm, unc.scale, unc.errplus_pdf, unc.errminus_pdf, unc.errsymm_pdf, unc.err_par)
+        punc = PDFUncertainty()
+        punc.set_ptr(&unc)
+        return punc
 
     def correlation(self, valsA, valsB):
         """Return the PDF correlation between valsA and valsB using appropriate formulae for this set."""

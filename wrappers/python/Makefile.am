@@ -25,14 +25,16 @@ fix-out-of-source: $(FIXSOURCES)
 
 if WITH_PYTHON
 
-AM_CPPFLAGS =
+#AM_CPPFLAGS =
 PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS) -I$(srcdir)"
 
 ## Always force setup.py, it's not good at guessing what needs to rebuild
 all-local: fix-out-of-source
+	@test "${FORCE}" = 1 && touch lhapdf.pyx || true
 	$(PYEXT_ENV) $(PYTHON) setup.py install --install-lib=build/ --force
 
 install-exec-local:
+	@test "${FORCE}" = 1 && touch lhapdf.pyx || true
 	$(PYEXT_ENV) $(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix) --force
 
 uninstall-local:
