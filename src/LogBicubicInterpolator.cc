@@ -50,7 +50,7 @@ namespace LHAPDF {
     ///
     /// @arg t is the fractional distance of the evaluation x into the dx
     /// interval.  @arg vl and @arg vh are the function values at the low and
-    /// high edges of the interval. @arg vl and @arg vh are linearly
+    /// high edges of the interval. @arg vdl and @arg vdh are linearly
     /// extrapolated value changes from the product of dx and the discrete low-
     /// and high-edge derivative estimates.
     ///
@@ -88,7 +88,8 @@ namespace LHAPDF {
       double vh = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2+1,id,0));
 
       // Derivatives in Q2
-      /// @todo changes derivative approximation to take knot distance into account
+      /// @todo Rewrite so initial vdl, vdh = (vh - vl), then update if needed: reduce duplication
+      /// @todo Change derivative approximation to take knot distance into account
       double vdl, vdh;
       if (_share.q2_lower) {
         // Forward difference for lower q
@@ -105,8 +106,8 @@ namespace LHAPDF {
         vdl = (vdh + (vl - vll) * _share.dlogq_1 * _share.dlogq_0) * 0.5;
       } else {
         // Central difference for both q
+        /// @todo Replace with better derivative estimates?
         double vll = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2-1,id,0));
-        // replace with better derivative estimate?
         vdl = ( (vh - vl) + (vl - vll)*_share.dlogq_1 * _share.dlogq_0 ) * 0.5;
         double vhh = _interpolateCubic(_share.tlogx, &grid.coeff(ix,iq2+2,id,0));
         vdh = ( (vh - vl) + (vhh - vh)*_share.dlogq_1 * _share.dlogq_2 ) * 0.5;
