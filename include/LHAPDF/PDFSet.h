@@ -292,7 +292,7 @@ namespace LHAPDF {
     /// given by the mean and is not necessarily "values[0]" for quantities with a non-linear
     /// dependence on PDFs, while the uncertainty is given by the standard deviation.
     ///
-    /// Optional argument @c clpct is used to rescale uncertainties to a
+    /// Optional argument @c cl is used to rescale uncertainties to a
     /// particular confidence level (in percent); a negative number will rescale to the
     /// default CL for this set.
     ///

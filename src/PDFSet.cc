@@ -126,7 +126,7 @@ namespace LHAPDF {
 
     // Get set- and requested conf levels (converted from %) and check sanity (req CL = set CL if cl < 0).
     // For replica sets, we internally use a nominal setCL corresponding to 1-sigma, since errorConfLevel() == -1.
-    const double setCL = (errinfo.coreType() != "replicas") ? errorConfLevel() / 100.0 : CL1SIGMA;
+    const double setCL = (errinfo.coreType() != "replicas") ? errorConfLevel()/100.0 : CL1SIGMA/100.0;
     const double reqCL = (cl >= 0) ? cl / 100.0 : setCL; // convert from percentage
     if (!in_range(reqCL, 0, 1) || !in_range(setCL, 0, 1))
       throw UserError("Error in LHAPDF::PDFSet::uncertainty. Requested or PDF set confidence level outside [0,1] range.");

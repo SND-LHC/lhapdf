@@ -1,3 +1,12 @@
+2022-05-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 6.5.1 release.
+
+	* Add uncertainty testing to release process.
+
+	* Fix typo in PDFSet.cc use of default uncertainty CL in
+	percent. Thanks to Christoph Schwan for rapid detection and debug.
+
 2022-05-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.5.0 release.
