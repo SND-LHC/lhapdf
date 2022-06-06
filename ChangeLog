@@ -1,3 +1,8 @@
+2022-06-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fail with an actually helpful exception message if lhapdf.conf
+	can't be found.
+
 2022-05-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 6.5.1 release.

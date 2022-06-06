@@ -15,7 +15,8 @@ namespace LHAPDF {
     // Test for emptiness and only initialise *once*:
     if (_cfg._metadict.empty()) {
       std::string confpath = findFile("lhapdf.conf");
-      if (!confpath.empty()) _cfg.load(confpath);
+      if (confpath.empty()) throw ReadError("Couldn't find required lhapdfd.conf system config file");
+      _cfg.load(confpath);
     }
     return _cfg;
   }
