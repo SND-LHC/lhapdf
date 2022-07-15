@@ -331,6 +331,7 @@ extern "C" {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // Evaluate for the 13 LHAPDF5 standard partons (-6..6)
+    /// @todo Update to the new optimised all-flavour C++ method
     for (int i = 0; i < 13; ++i) {
       try {
         xfs[i] = ACTIVESETS[nset].member(nmem)->xfxQ2(i-6, x, q2);
@@ -763,6 +764,7 @@ extern "C" {
     if (ACTIVESETS.find(nset) == ACTIVESETS.end())
       throw LHAPDF::UserError("Trying to use LHAGLUE set #" + LHAPDF::to_str(nset) + " but it is not initialised");
     // Evaluate for the 13 LHAPDF5 standard partons (-6..6)
+    /// @todo Update to the new optimised all-flavour C++ method
     for (int i = 0; i < 13; ++i) {
       try {
         fxq[i] = ACTIVESETS[nset].activeMember()->xfxQ(i-6, x, q);
