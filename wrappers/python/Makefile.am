@@ -28,18 +28,16 @@ if WITH_PYTHON
 #AM_CPPFLAGS =
 PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS) -I$(srcdir)"
 
-## Always force setup.py, it's not good at guessing what needs to rebuild
 all-local: fix-out-of-source
 	@test "${FORCE}" = 1 && touch lhapdf.pyx || true
-	$(PYEXT_ENV) $(PYTHON) setup.py install --install-lib=build/ --force
+	$(PYEXT_ENV) $(PYTHON) build.py
 
 install-exec-local:
-	@test "${FORCE}" = 1 && touch lhapdf.pyx || true
-	$(PYEXT_ENV) $(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix) --force
+	$(MKDIR_P) $(DESTDIR)$(PYTHON_PATH)/; \
+	cp -r $(abs_builddir)/build/lhapdf $(DESTDIR)$(PYTHON_PATH)/
 
 uninstall-local:
-	rm -f $(DESTDIR)$(PYTHON_PATH)/lhapdf.so
-	rm -f  $(DESTDIR)$(PYTHON_PATH)/LHAPDF-$(VERSION)-py$(PYTHON_VERSION).egg-info
+	rm -rf $(DESTDIR)$(PYTHON_PATH)/lhapdf
 
 clean-local: fix-out-of-source
 	@rm -f $(builddir)/*.pyc
@@ -49,7 +47,7 @@ clean-local: fix-out-of-source
 	rm -f $<
 
 distclean-local:
-	@rm -f LHAPDF.egg-info
+	@true
 
 else
 
