@@ -103,6 +103,8 @@ build-ubuntu-gcc-py2:
     - ./testpdfunc CT10nlo
     - ./testpdf CT10nlo 0
     - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("CT10nlo/0"); print(p); print(p.xfxQ(21,1e-3,126.0))'
+    - lhapdf get LUXlep-NNPDF31_nlo_as_0118_luxqed
+    - python -c 'from __future__ import print_function; import lhapdf; p = lhapdf.mkPDF("LUXlep-NNPDF31_nlo_as_0118_luxqed/0"); print(p); print(p.xfxQ(15,1e-3,126.0))'
     # - gfortran fexample1.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample1
     # - gfortran fexample2.f90 -L$INSTALL_PREFIX/lib -lLHAPDF -o fexample2
     - ./fexample1
