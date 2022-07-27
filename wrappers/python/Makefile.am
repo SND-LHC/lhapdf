@@ -33,11 +33,13 @@ all-local: fix-out-of-source
 	$(PYEXT_ENV) $(PYTHON) build.py
 
 install-exec-local:
-	$(MKDIR_P) $(DESTDIR)$(PYTHON_PATH)/; \
+	$(MKDIR_P) $(DESTDIR)$(PYTHON_PATH)/ && \
 	cp -r $(abs_builddir)/build/lhapdf $(DESTDIR)$(PYTHON_PATH)/
 
 uninstall-local:
-	rm -rf $(DESTDIR)$(PYTHON_PATH)/lhapdf
+	rm -rf $(DESTDIR)$(PYTHON_PATH)/lhapdf; \
+	rmdir $(DESTDIR)$(PYTHON_PATH) || true
+
 
 clean-local: fix-out-of-source
 	@rm -f $(builddir)/*.pyc
