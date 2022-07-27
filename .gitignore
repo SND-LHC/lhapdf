@@ -17,7 +17,7 @@ doc/Doxyfile
 include/LHAPDF/Version.h
 include/LHAPDF/stamp-*
 wrappers/python/lhapdf.cpp
-wrappers/python/setup.py
+wrappers/python/build.py
 wrappers/python/fix-out-of-source
 tests/test*
 tests/*.dat
