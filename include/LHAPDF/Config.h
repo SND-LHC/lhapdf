@@ -17,7 +17,7 @@ namespace LHAPDF {
   public:
 
     /// @name Fetching/creation
-    ///@{
+    /// @{
 
     /// Get the global configuration object
     ///
@@ -28,7 +28,7 @@ namespace LHAPDF {
     /// @note The LHAPDF system is responsible for deletion of the returned
     /// object. Do NOT delete it yourself!
     static Config& get();
-    ///@}
+    /// @}
 
 
     /// Config destructor, used for end-of-run banner printing
@@ -46,23 +46,27 @@ namespace LHAPDF {
 
 
   /// @defgroup verb Verbosity control
-  ///@{
+  /// @{
 
   /// Convenient way to get the current verbosity level
   ///
-  /// @note Verbosity, like any other flag, can also be set at lower levels. But who does that, really?!?
+  /// Levels: 0=silent, 1=standard, 2=debug
+  ///
+  /// @note Verbosity is actually managed via the Info class hierarchy and can also be obtained from there.
   inline int verbosity() {
     return Config::get().get_entry_as<int>("Verbosity", 1);
   }
 
   /// Convenient way to set the verbosity level
   ///
-  /// @note Verbosity, like any other flag, can also be set at lower levels. But who does that, really?!?
+  /// Levels: 0=silent, 1=standard, 2=debug
+  ///
+  /// @note Verbosity is actually managed via the Info class hierarchy and can also be set there.
   inline void setVerbosity(int v) {
     Config::get().set_entry("Verbosity", v);
   }
 
-  ///@}
+  /// @}
 
 
 }
