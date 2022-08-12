@@ -1,5 +1,7 @@
 2022-08-12  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 6.5.2 release.
+
 	* Fix range of member iteration when computing correlations with
 	the next extended-errorset scheme. Thanks to Marjorie Shapiro for
 	highlighting the issue and fix.
