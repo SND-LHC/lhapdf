@@ -49,7 +49,7 @@ for pname in args.PNAMES:
     print("\n", "alpha_s =\n", pprint.pformat(alphas))
 
     ## xf
-    for pid in xrange(-6, 7):
+    for pid in range(-6, 7):
         xfs = np.array([[p.xfxQ(pid, x, q) for x in xs] for q in qs])
         print("\n", ("xf_%d =\n" % pid), xfs)
     print("")

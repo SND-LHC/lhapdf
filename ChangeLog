@@ -1,3 +1,9 @@
+2022-08-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix range of member iteration when computing correlations with
+	the next extended-errorset scheme. Thanks to Marjorie Shapiro for
+	highlighting the issue and fix.
+
 2022-07-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Update internal yaml-cpp version to fix compiler warnings.

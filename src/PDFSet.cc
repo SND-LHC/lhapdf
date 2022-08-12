@@ -302,7 +302,7 @@ namespace LHAPDF {
     } else if (errinfo.coreType() == "symmhessian") {
 
       // Calculate the correlation over symmetrised Hessian vectors
-      for (size_t ieigen = 1; ieigen <= errinfo.nmemCore()+1; ieigen++) {
+      for (size_t ieigen = 1; ieigen < errinfo.nmemCore()+1; ieigen++) {
         cor += (valuesA[ieigen]-errA.central) * (valuesB[ieigen]-errB.central);
       }
       cor /= errA.errsymm_pdf * errB.errsymm_pdf;
@@ -310,7 +310,7 @@ namespace LHAPDF {
     } else if (errinfo.coreType() == "hessian") {
 
       // Calculate the correlation over asymm Hessian vectors using Eq. (2.5) of arXiv:1106.5788
-      for (size_t ieigen = 1; ieigen <= errinfo.nmemCore()/2 + 1; ieigen++) {
+      for (size_t ieigen = 1; ieigen < errinfo.nmemCore()/2 + 1; ieigen++) {
         cor += (valuesA[2*ieigen-1]-valuesA[2*ieigen]) * (valuesB[2*ieigen-1]-valuesB[2*ieigen]);
       }
       cor /= 4.0 * errA.errsymm_pdf * errB.errsymm_pdf;

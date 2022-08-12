@@ -89,6 +89,11 @@ int main(int argc, char* argv[]) {
   printUncs(set, xuAll, -1, "xu"); //< -1 => same C.L. as set
   cout << endl;
 
+  // Calculate sanity-check PDF self-correlation between gluon and gluon.
+  const double autocorr = set.correlation(xgAll, xgAll);
+  cout << "Self-correlation of xg = " << autocorr << endl;
+  cout << endl;
+
   // Calculate PDF correlation between gluon and up-quark.
   // (This is the PDF-only correlation if npar > 0.)
   const double corr = set.correlation(xgAll, xuAll);
