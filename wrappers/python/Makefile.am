@@ -1,4 +1,4 @@
-EXTRA_DIST = lhapdf.cpp lhapdf.pyx clhapdf.pxd
+EXTRA_DIST = lhapdf.cpp lhapdf.pyx clhapdf.pxd __init__.py
 
 if WITH_CYTHON
 lhapdf.cpp: lhapdf.pyx clhapdf.pxd
@@ -30,7 +30,7 @@ PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" C
 
 all-local: fix-out-of-source
 	@test "${FORCE}" = 1 && touch lhapdf.pyx || true
-	$(PYEXT_ENV) $(PYTHON) build.py
+	$(PYEXT_ENV) LHAPDF_LOCAL=1 $(PYTHON) build.py
 
 install-exec-local:
 	$(MKDIR_P) $(DESTDIR)$(PYTHON_PATH)/ && \
