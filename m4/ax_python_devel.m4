@@ -79,7 +79,7 @@ AC_DEFUN([AX_PYTHON_DEVEL],[
 		will be appended to the Python interpreter
 		canonical name.])
 
-	AC_PATH_PROG([PYTHON],[python[$PYTHON_VERSION]])
+	AC_PATH_PROG([PYTHON],[python])
 	if test -z "$PYTHON"; then
 	   AC_MSG_ERROR([Cannot find python$PYTHON_VERSION in your system path])
 	   PYTHON_VERSION=""
